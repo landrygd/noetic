@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>chat</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="deleteChat()">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+      <ion-button (click)="play()">
+        <ion-icon slot="icon-only" name="play"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-reorder-group (ionItemReorder)="doReorder($event)" disabled="false">
+    <ion-grid fixed *ngFor="let log of firebase.chatLogs; index as i" class="ion-no-margin">
+      <app-log [log]="log" [index]="i" [edit]="true" [selected]="isLogSelected(i)" (click)="select(i)" button></app-log>
+    </ion-grid>
+  </ion-reorder-group>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <app-avatar slot="start" *ngFor="let actor of firebase.bookActor" (click)="setActor(actor.id)" [actorId]="actor.id" [ngClass]="getClassFabActor(actor.id)"></app-avatar>
+      <ion-fab-button size="small" (click)="newActor()" class="avatarButton" style="opacity: 0.5;">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-button *ngFor="let act of actions" (click)="setAction(act.name)" [ngClass]="getClassAction(act.name)">
+        <ion-icon slot="icon-only" [name]="act.icon" color="medium"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <app-avatar slot="start" [actorId]="actor"></app-avatar>
+      <ion-textarea rows="1" [(ngModel)]='text' placeholder="Enter a message..." (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
+      <ion-button (click)="send()">
+        <ion-icon slot="icon-only" name="send" ></ion-icon>
+      </ion-button>
+  </ion-toolbar>
+</ion-footer>

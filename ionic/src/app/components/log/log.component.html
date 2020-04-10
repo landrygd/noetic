@@ -1,0 +1,32 @@
+<ion-row lines="none" [ngClass]="getClass()" class="ion-no-margin">
+  <ion-col size="2" *ngIf="actor !== 'Narrator'">
+    <app-avatar [actorId]="actor" class="ion-no-margin"></app-avatar>
+  </ion-col>
+  <ion-col size="8" *ngIf="actor !== 'Narrator'">
+    <ion-note>{{name}}</ion-note>
+    <ion-item color="transparent" lines="none" class="ion-no-margin ion-no-padding">
+      <ion-card color="primary" class="ion-no-margin">
+        <ion-card-content *ngIf="action == 'talk'">
+          {{msg}}
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+  </ion-col>
+  <ion-col size="10" *ngIf="actor == 'Narrator'">
+    <ion-card color="light">
+      <ion-card-content *ngIf="action == 'talk'">
+        {{msg}}
+      </ion-card-content>
+    </ion-card>
+  </ion-col>
+  <ion-col size="1" *ngIf="edit">
+    <ion-buttons *ngIf="selected">
+      <ion-button (click)="delete()">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-col>
+  <ion-col size="1" *ngIf="edit">
+    <ion-reorder></ion-reorder>
+  </ion-col>
+</ion-row>

@@ -1,0 +1,6 @@
+<ion-fab-button size="small">
+  <ion-avatar *ngIf="haveAvatar()">
+    <ion-img [src]="avatar"></ion-img>
+  </ion-avatar>
+  <ion-label *ngIf="!haveAvatar()">{{getInitial()}}</ion-label>
+</ion-fab-button>

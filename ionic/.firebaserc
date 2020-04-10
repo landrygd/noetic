@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "noetic-app": {
+      "hosting": {
+        "app": [
+          "noetic-app"
+        ]
+      }
+    }
+  }
+}

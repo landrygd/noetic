@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>New Chat</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-item>
+    <ion-label position="floating">Name</ion-label>
+    <ion-input [(ngModel)]="chat.name" type="text" placeholder="Chat name..."></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Description</ion-label>
+    <ion-input [(ngModel)]="chat.desc" type="text" placeholder="Chat description..."></ion-input>
+  </ion-item>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()" color="medium">
+        <ion-icon slot="start" name="close"></ion-icon>
+        Cancel
+      </ion-button>
+      <ion-button (click)="confirm()" color="success">
+        <ion-icon slot="start" name="checkmark"></ion-icon>
+        Confirm
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Book name</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ion-item *ngFor="let chat of firebase.bookStory" button details (click)="openChat(chat.id)">
+  <ion-icon slot="start" name="chatbox"></ion-icon>
+  <ion-label>{{chat.name}}</ion-label>
+</ion-item>
+</ion-content>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button>
+    <ion-icon name="add" (click)="addChat()"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
