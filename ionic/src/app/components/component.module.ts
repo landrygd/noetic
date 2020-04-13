@@ -13,7 +13,7 @@ import { LogComponent } from './log/log.component';
   declarations: [
     CardBookComponent, 
     AvatarComponent,
-    LogComponent
+    LogComponent,
   ],
   imports: [
     CommonModule,
@@ -24,7 +24,7 @@ import { LogComponent } from './log/log.component';
   exports: [
     CardBookComponent, 
     AvatarComponent,
-    LogComponent
+    LogComponent,
   ]
 })
 export class ComponentModule { }

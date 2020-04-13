@@ -17,33 +17,40 @@
 
 <ion-content>
   <ion-reorder-group (ionItemReorder)="doReorder($event)" disabled="false">
-    <ion-grid fixed *ngFor="let log of firebase.chatLogs; index as i" class="ion-no-margin">
-      <app-log [log]="log" [index]="i" [edit]="true" [selected]="isLogSelected(i)" (click)="select(i)" button></app-log>
+    <ion-grid fixed class="ion-no-padding ion-no-margin" *ngFor="let log of firebase.chatLogs; index as i">
+      <app-log  class="ion-no-margin" [log]="log" [index]="i" [edit]="true" [selected]="isLogSelected(i)" (click)="select(i)" button ></app-log>
     </ion-grid>
   </ion-reorder-group>
+  <ion-row style="height: 64px"></ion-row>
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+    <ion-fab-button><ion-icon name="ellipsis-horizontal"></ion-icon></ion-fab-button>
+    <ion-fab-list side="end">
+      <ion-fab-button *ngFor="let act of actions" color="primary" (click)="newAction(act.name)">
+        <ion-icon [name]="act.icon"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>
 
 <ion-footer>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <app-avatar slot="start" *ngFor="let actor of firebase.bookActor" (click)="setActor(actor.id)" [actorId]="actor.id" [ngClass]="getClassFabActor(actor.id)"></app-avatar>
       <ion-fab-button size="small" (click)="newActor()" class="avatarButton" style="opacity: 0.5;">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
-    </ion-buttons>
-  </ion-toolbar>
-  <ion-toolbar>
-    <ion-buttons>
-      <ion-button *ngFor="let act of actions" (click)="setAction(act.name)" [ngClass]="getClassAction(act.name)">
-        <ion-icon slot="icon-only" [name]="act.icon" color="medium"></ion-icon>
-      </ion-button>
+      <app-avatar slot="start" *ngFor="let actor of firebase.bookActor" (click)="setActor(actor.id)" [actorId]="actor.id" [ngClass]="getClassFabActor(actor.id)"></app-avatar>
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>
     <app-avatar slot="start" [actorId]="actor"></app-avatar>
-      <ion-textarea rows="1" [(ngModel)]='text' placeholder="Enter a message..." (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
-      <ion-button (click)="send()">
-        <ion-icon slot="icon-only" name="send" ></ion-icon>
-      </ion-button>
+      <ion-textarea [disabled]='textarea' rows="1" [(ngModel)]='text' placeholder="Enter a message..." (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
+      <ion-buttons slot="end">
+        <ion-button (click)="plus()" expand="block" fill="clear" shape="round" color="medium">
+          <ion-icon slot="icon-only" name="add" ></ion-icon>
+        </ion-button>
+        <ion-button (click)="send()" expand="block" fill="clear" shape="round" color="primary">
+          <ion-icon slot="icon-only" name="send" ></ion-icon>
+        </ion-button>
+      </ion-buttons>
   </ion-toolbar>
 </ion-footer>

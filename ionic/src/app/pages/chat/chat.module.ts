@@ -9,6 +9,7 @@ import { ChatPageRoutingModule } from './chat-routing.module';
 import { ChatPage } from './chat.page';
 import { ComponentModule } from 'src/app/components/component.module';
 import { NewActorComponent } from 'src/app/components/modals/new-actor/new-actor.component';
+import { NewQuestionComponent } from 'src/app/components/modals/new-question/new-question.component';
 
 @NgModule({
   imports: [
@@ -19,6 +20,9 @@ import { NewActorComponent } from 'src/app/components/modals/new-actor/new-actor
     ComponentModule
   ],
   declarations: [ChatPage],
-  entryComponents: [NewActorComponent]
+  entryComponents: [
+    NewActorComponent, 
+    NewQuestionComponent
+  ]
 })
 export class ChatPageModule {}

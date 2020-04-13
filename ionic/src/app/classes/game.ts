@@ -1,40 +1,126 @@
+import { FirebaseService } from '../services/firebase.service';
+
+// interface GameInterface {
+//   name: string,
+//   book: string,
+//   date: string,
+//   chat: any,
+//   data: object,
+// }
+
 export class Game {
 
   name: string = "New game";
   book: string = "main";
   date: string = new Date().toUTCString();
-  host: string = "unknowed";
-  log: number = 0;
-  chat: string = "main";
-  place: string = "main";
-  players: any[] = [];
+  chat = {
+    main: {
+      name: "main",
+      host: "unknowed",
+      log: 0,
+      place: "main",
+      players: [],
+      data: {}
+    }
+  };
   data: object = {
     global: {},
     player: {}
   }
 
-  constructor(name: string, host: string, book: string, chat: string ='main', log: number = 0) {
+  chatId: string;
+
+  constructor(
+    name: string = 'unknowed', 
+    host: string = 'unknowed', 
+    book: string = 'unknowed', 
+    chatName: string ='main', 
+    public firebase: FirebaseService) {
     this.name = name;
-    this.host = host;
     this.book = book;
-    this.chat = chat;
-    this.log = log;
+    this.chat.main.name = chatName;
+    this.chat.main.log = 0;
+    this.chat.main.host = host;
+    this.chat.main.players.push(host);
   }
 
-  addPlayer(player: string) {
-    this.players.push(player);
+  setFromJson(json) {
+    this.name = json.name;
+    this.book = json.book;
+    this.date = json.date;
+    this.chat = json.chat;
+    this.data = json.data;
   }
 
   getJson(): object {
     return { 
       name: this.name,
       date: this.date,
-      host: this.host,
-      log: this.log,
+      book: this.book,
       chat: this.chat,
-      place: this.place,
-      players: this.players,
-      data: this.data,
+      data: this.data
     }
+  }
+
+  setChatId(chatId) {
+    this.chatId = chatId
+  }
+
+  getCurHost(): string {
+    return this.chat[this.chatId].host;
+  }
+
+  getChatLogs(): any[] {
+    return this.firebase.chatLogs;
+  }
+
+  getChat(): any[] {
+    return this.chat[this.chatId];
+  }
+
+  getLogId(): number {
+    return this.chat[this.chatId].log;
+  }
+
+  getChatId(): string {
+    return this.chatId;
+  }
+
+  getLog() {
+    return this.firebase.getLog(this.getLogId());
+  }
+
+  isHost(): boolean {
+    return this.firebase.userId == this.getCurHost();
+  }
+
+  getAnswerGoto(): number {
+    const answers = this.getAnswersList();
+    const index = answers.indexOf(Math.max(...answers));
+    return this.getAnswers()[index]['goto'];
+  }
+
+  getAnswers(): any[] {
+    return this.getLog()['answers'];
+  }
+
+  getAnswersList(): any[] {
+    return this.getChat()['answers'];
+  }
+
+  getAnswersCount(): number {
+    let res = 0;
+    this.getAnswersList().forEach((value) => {
+      res += value;
+    })
+    return res;
+  }
+
+  getPlayerList(): any[] {
+    return this.getChat()["players"];
+  }
+
+  getPlayerCount(): number {
+    return this.getPlayerList().length;
   }
 }

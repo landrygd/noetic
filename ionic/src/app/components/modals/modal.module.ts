@@ -8,6 +8,7 @@ import { NewPlaceComponent } from './new-place/new-place.component';
 import { NewObjectComponent } from './new-object/new-object.component';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { NewQuestionComponent } from './new-question/new-question.component';
 
 
 
@@ -19,6 +20,7 @@ import { IonicModule } from '@ionic/angular';
     NewChatComponent,
     NewPlaceComponent,
     NewObjectComponent,
+    NewQuestionComponent
   ],
   imports: [
     CommonModule,
@@ -32,6 +34,7 @@ import { IonicModule } from '@ionic/angular';
     NewChatComponent,
     NewPlaceComponent,
     NewObjectComponent,
+    NewQuestionComponent
   ]
 })
 export class ModalModule { }

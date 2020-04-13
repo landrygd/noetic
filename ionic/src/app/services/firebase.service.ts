@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ToastController, NavController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { Game } from '../classes/game';
 import { AngularFireDatabase } from '@angular/fire/database';
 
@@ -222,10 +222,8 @@ export class FirebaseService {
   login(loginData) {
     this.afAuth.signInWithEmailAndPassword(loginData.email, loginData.password)
     .then(auth => {
-      console.log('utilisateur connecté');
     })
     .catch(err => {
-      console.log('Erreur: ' + err);
       this.errorMail();
     });
   }
@@ -233,7 +231,6 @@ export class FirebaseService {
   signUp(loginData) {
     this.afAuth.createUserWithEmailAndPassword(loginData.email, loginData.password)
     .then(auth => {
-      console.log('utilisateur connecté');
       const user = this.firestore.collection("/users").doc(auth.user.uid);
       user.set({name: loginData.email,
         book: [],
@@ -243,20 +240,17 @@ export class FirebaseService {
       });
     })
     .catch(err => {
-      console.log('Erreur: ' + err);
       this.errorMail();
     });
   }
 
-  newGame(curBookId = this.curBookId) {
+  newGame(game: Game, curBookId = this.curBookId) {
     const id = this.firerealtime.createPushId();
     this.curGame = id;
     this.curBookId = curBookId;
     this.syncBook();
     this.curChat = this.getFirstChat();
     this.syncChat();
-    let game: Game = new Game('New Game', this.userId, this.curBookId);
-    game.addPlayer(this.userId);
     const itemRef = this.firerealtime.object('games/'+id);
     itemRef.set(game.getJson());
   }
@@ -301,8 +295,63 @@ export class FirebaseService {
     return this.mail;
   }
 
+  getLabels(): any[] {
+    let res = [];
+    this.chatLogs.forEach(element => {
+      if(element.action == 'label') {
+        res.push(element.number);
+      }
+    });
+    return res;
+  }
+
+  getNewLabel(): number {
+    let labels = this.getLabels();
+    labels = labels.sort();
+    for(let i = 0; i<labels.length; i++) {
+      if(labels[i] !== i+1) {
+        return i+1;
+      }
+    }
+    return labels.length+1;
+  }
+
+  getLabelLine(number) {
+    for(let i = 0; i<this.chatLogs.length; i++) {
+      const log = this.chatLogs[i];
+      if(log["action"] == 'label') {
+        if(log['number'] == number) {
+          return i;
+        }
+      }
+    }
+    return -1;
+  }
+
   logout() {
     this.afAuth.signOut().then(() => this.navCtrl.navigateRoot(['/login']));
   }
+
+  haveChat(chatName: string): boolean {
+    for(let i = 0; i<this.bookStory.length; i++) {
+      const chat = this.bookStory[i];
+      if(chat.name == chatName) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  getChatIdByName(chatName: string) {
+    for(let i = 0; i<this.bookStory.length; i++) {
+      const chat = this.bookStory[i];
+      if(chat.name == chatName) {
+        return chat.id;
+      }
+    }
+    return this.curChat;
+  }
+
+
 }
 

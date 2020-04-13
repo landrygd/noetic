@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
+import { NewQuestionComponent } from '../modals/new-question/new-question.component';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-log',
@@ -15,12 +17,15 @@ export class LogComponent implements OnInit {
   @Input() edit: boolean = false;
 
   action: string = 'talk';
-  actor: string = 'narrator';
+  actor: string = '';
   color: string = 'primary';
   msg: string = '';
   name: string = '';
+  number: number = 0;
+  answers: any[] = [];
+  chat: string = '';
 
-  constructor(private firebase: FirebaseService) {
+  constructor(private firebase: FirebaseService, private modalCtrl: ModalController) {
 
   }
 
@@ -38,6 +43,15 @@ export class LogComponent implements OnInit {
     if(this.log.hasOwnProperty('msg')) {
       this.msg = this.log['msg'];
     }
+    if(this.log.hasOwnProperty('number')) {
+      this.number = this.log['number'];
+    }
+    if(this.log.hasOwnProperty('answers')) {
+      this.answers = this.log['answers'];
+    }
+    if(this.log.hasOwnProperty('chat')) {
+      this.chat = this.log['chat'];
+    }
   }
 
   getClass() {
@@ -50,5 +64,18 @@ export class LogComponent implements OnInit {
 
   delete() {
     this.firebase.deleteChatLog(this.index);
+  }
+
+  async editAnswers() {
+    const modal = await this.modalCtrl.create({
+      component: NewQuestionComponent,
+      componentProps: {
+        actor: this.actor,
+        msg: this.msg,
+        answers: this.answers,
+        curIndex: this.index
+      }
+    });
+    return await modal.present();
   }
 }
