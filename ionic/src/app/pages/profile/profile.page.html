@@ -1,0 +1,37 @@
+
+
+<ion-content>
+  <div class="header">
+    <ion-toolbar style="--background: transparent; opacity: 0.5;">
+      <ion-buttons slot="start">
+        <ion-button (click)="onClick()" fill="clear" shape="round">
+          <ion-icon slot="icon-only" name="person-add"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-buttons slot="end">
+        <ion-button (click)="onClick()" fill="clear" shape="round">
+          <ion-icon slot="icon-only" name="share-social"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </div>
+  <div class="flex">
+    <ion-avatar>
+      <ion-img [src]="firebase.avatarURL" (click)="changeAvatar()" button></ion-img>
+    </ion-avatar>
+  </div>
+  <h1 class="ion-text-center">Elon le boss</h1>
+  <ion-text color="medium" class="ion-text-center">
+  <p>Tu peu pa me teste je sui tro for</p>
+  <p>999M Abonnés</p>
+  </ion-text>
+  <div class="subscribe">
+    <ion-button (click)="onClick()" expand="block" fill="solid" shape="round" style="width: 50vw;">
+      S'abonner
+    </ion-button>
+  </div>
+  <h1 class="ion-margin-start">Mes histoires</h1>
+  
+</ion-content>
+
+

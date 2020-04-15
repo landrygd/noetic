@@ -9,6 +9,8 @@ import { NewObjectComponent } from './new-object/new-object.component';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { NewQuestionComponent } from './new-question/new-question.component';
+import { UploadComponent } from './upload/upload.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 
 
@@ -20,12 +22,14 @@ import { NewQuestionComponent } from './new-question/new-question.component';
     NewChatComponent,
     NewPlaceComponent,
     NewObjectComponent,
-    NewQuestionComponent
+    NewQuestionComponent,
+    UploadComponent
   ],
   imports: [
     CommonModule,
     IonicModule,
-    FormsModule
+    FormsModule,
+    ImageCropperModule
   ],
   exports: [
     NewActionComponent,
@@ -34,7 +38,8 @@ import { NewQuestionComponent } from './new-question/new-question.component';
     NewChatComponent,
     NewPlaceComponent,
     NewObjectComponent,
-    NewQuestionComponent
+    NewQuestionComponent,
+    UploadComponent
   ]
 })
 export class ModalModule { }

@@ -32,12 +32,13 @@ export class GamePage implements OnInit {
     public alertCtrl: AlertController,
     public actionSheetController: ActionSheetController
     ) { 
-      this.game = new Game('New Game', this.firebase.userId, this.firebase.curBookId, 'main', this.firebase);
-      this.firebase.newGame(this.game);
     }
 
   ngOnInit() {
+    this.game = new Game('New Game', this.firebase.userId, this.firebase.curBookId, 'main', this.firebase);
+    this.firebase.newGame(this.game);
     this.id = this.firebase.curGame;
+    setTimeout(()=> {
     this.sub = this.database.object("games/"+this.id).valueChanges().subscribe((value) => {
       this.game.setFromJson(value);
       this.game.setChatId(this.chatId);
@@ -96,6 +97,7 @@ export class GamePage implements OnInit {
       }
       this.scrollToBottom();
     });
+  }, 1000);
   }
 
   scrollToBottom() {

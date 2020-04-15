@@ -1,9 +1,8 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>search</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header-menu></app-header-menu>
+<ion-toolbar>
+  <ion-searchbar placeholder="Chercher un chat" inputmode="text" type="text" (ionChange)="onSearchChange($event)" [debounce]="250" showCancelButton="250"></ion-searchbar>
+</ion-toolbar>
 
 <ion-content>
-
+  <app-card-book *ngFor="let book of search" [name]="book.name" (click)="open(book)" ></app-card-book>
 </ion-content>

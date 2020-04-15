@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { ToastController } from '@ionic/angular';
+import { ToastController, NavController } from '@ionic/angular';
 import { FirebaseService } from 'src/app/services/firebase.service';
 
 @Component({
@@ -15,7 +15,8 @@ export class LoginPage implements OnInit {
   };
 
   constructor( 
-    public firebase: FirebaseService
+    public firebase: FirebaseService,
+    public navCtrl: NavController
     ) { }
 
   ngOnInit() {
@@ -26,6 +27,6 @@ export class LoginPage implements OnInit {
   }
 
   signUp() {
-    this.firebase.signUp(this.loginData);
+    this.navCtrl.navigateRoot('register');
   }
 }

@@ -11,6 +11,9 @@ export class SettingsBookPage implements OnInit {
 
   constructor(public alertController: AlertController, public firebase: FirebaseService) {}
 
+  ngOnInit() {
+  }
+
   async alertDelete() {
     const alert = await this.alertController.create({
       header: 'Delete the book',
@@ -28,14 +31,34 @@ export class SettingsBookPage implements OnInit {
         }
       ]
     });
-
     await alert.present();
   }
 
-  ngOnInit() {
+  async alertPublish() {
+    const alert = await this.alertController.create({
+      header: 'Publier le livre',
+      message: 'Etes vous sûr de rendre ce livre publique?',
+      buttons: [
+        {
+          text: 'Non',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: 'Oui',
+          handler: () => {
+            this.firebase.publishBook();
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   delete() {
     this.alertDelete();
+  }
+
+  publish() {
+    this.alertPublish();
   }
 }

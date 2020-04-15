@@ -47,6 +47,22 @@ const routes: Routes = [
   {
     path: 'game',
     loadChildren: () => import('./pages/game/game.module').then( m => m.GamePageModule)
+  },
+  {
+    path: 'profile',
+    loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule)
+  },
+  {
+    path: 'register',
+    loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
+  },
+  {
+    path: 'cover',
+    loadChildren: () => import('./pages/cover/cover.module').then( m => m.CoverPageModule)
+  },
+  {
+    path: 'new-book',
+    loadChildren: () => import('./pages/new-book/new-book.module').then( m => m.NewBookPageModule)
   }
 ];
 @NgModule({

@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { LibPageRoutingModule } from './lib-routing.module';
 
 import { LibPage } from './lib.page';
+import { ComponentModule } from 'src/app/components/component.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    LibPageRoutingModule
+    LibPageRoutingModule,
+    ComponentModule
   ],
   declarations: [LibPage]
 })

@@ -1,0 +1,31 @@
+<ion-content >
+  <div class="bg ion-padding">
+    <div class="padding ion-padding">
+      <div class="logo ion-margin ion-padding">
+        <img src="../../assets/logo.png">
+      </div>
+
+      <ion-item class="glass" lines="none">
+        <ion-icon name="person" slot="start"></ion-icon>
+        <ion-input type="mail" placeholder="Pseudo" [(ngModel)]="registerData.name"></ion-input>
+      </ion-item>
+
+      <ion-item class="glass" lines="none">
+        <ion-icon name="mail" slot="start"></ion-icon>
+        <ion-input type="mail" placeholder="Adresse email" [(ngModel)]="registerData.email"></ion-input>
+      </ion-item>
+
+      <ion-item class="glass" lines="none">
+        <ion-icon name="key" slot="start"></ion-icon>
+        <ion-input type="password" placeholder="Mot de passe" [(ngModel)]="registerData.password"></ion-input>
+      </ion-item>
+
+      <ion-button  expand="block" shape="round" fill="solid" (click)="signUp()">S'inscrire</ion-button>
+
+      <ion-text color="dark" class="ion-text-center">
+        <p (click)="login()">Retour</p>
+      </ion-text>
+    </div>
+  </div>
+</ion-content>
+

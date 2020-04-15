@@ -1,20 +1,23 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button menu="menuId"></ion-menu-button>
+    <ion-img src="/assets/logo.png" style="width: 4em;" slot="start" class="ion-margin-start"></ion-img>
+    <ion-searchbar 
+      placeholder="Chercher une histoire" 
+      inputmode="text" 
+      type="text" 
+      (ionChange)="onSearchChange($event)" 
+      [debounce]="250" 
+      showCancelButton="never"
+      searchIcon="search"
+      ></ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="more()">
+        <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+      </ion-button>
     </ion-buttons>
-    <ion-button slot="end" (click)="logout()" expand="block" fill="clear" shape="round" color="danger">
-      Se déconnecter
-    </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <app-card-book *ngFor="let book of firebase.userBooks" [name]="book.name" [id]="book.id"></app-card-book>
+  <app-card-book *ngFor="let book of firebase.userBooks" [name]="book.name" (click)="open(book.id)"></app-card-book>
 </ion-content>
-
-<ion-fab vertical="bottom" horizontal="end" slot="fixed">
-  <ion-fab-button (click)="addBook()">
-    <ion-icon name="add"></ion-icon>
-  </ion-fab-button>
-</ion-fab>

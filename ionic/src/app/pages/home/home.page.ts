@@ -21,8 +21,12 @@ export class HomePage implements OnInit {
     });
     return await modal.present();
   }
-  
-  logout() {
-    this.firebase.logout();
+
+  open(id) {
+    this.firebase.openBook(id);
+  }
+
+  onSearchChange(event) {
+    
   }
 }

@@ -8,16 +8,6 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: 'search',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('../search/search.module').then(m => m.SearchPageModule)
-          }
-        ]
-      },
-      {
         path: 'home',
         children: [
           {
@@ -28,12 +18,12 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'lib',
+        path: 'profil',
         children: [
           {
             path: '',
             loadChildren: () =>
-              import('../lib/lib.module').then(m => m.LibPageModule)
+              import('../profile/profile.module').then(m => m.ProfilePageModule)
           }
         ]
       },

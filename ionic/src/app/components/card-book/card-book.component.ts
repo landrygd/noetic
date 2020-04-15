@@ -1,6 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-card-book',
@@ -9,15 +7,12 @@ import { NavController } from '@ionic/angular';
 })
 export class CardBookComponent implements OnInit {
 
-  @Input() name: string;
-  @Input() id: string;
+  cover=''
 
-  constructor(public firebase: FirebaseService, public navCtrl: NavController) { }
+  @Input() name: string;
+
+  constructor() {}
 
   ngOnInit() {}
-
-  open() {
-    this.firebase.openBook(this.id);
-  }
 
 }

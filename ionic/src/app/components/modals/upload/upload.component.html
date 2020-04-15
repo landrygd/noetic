@@ -1,3 +1,46 @@
-<p>
-  upload works!
-</p>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Upload an image
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style='height: 100%;'>
+  <image-cropper
+      cropperMinHeight="200"
+      style='height: 100%;'
+      [imageChangedEvent]="imageChangedEvent"
+      [maintainAspectRatio]="true"
+      [containWithinAspectRatio]="true"
+      [aspectRatio]="ratio"
+      format="png"
+      (imageCropped)="imageCropped($event)"
+      (imageLoaded)="imageLoaded()"
+      (cropperReady)="cropperReady()"
+      (loadImageFailed)="loadImageFailed()"
+      [resizeToWidth]='width'
+      *ngIf="imported"
+  ></image-cropper>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item>
+      <ion-label id="profile_image" color="primary" stacked>Upload a file</ion-label>
+      <input type="file" (change)="fileChangeEvent($event)"/>
+    </ion-item>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()" color="medium">
+        <ion-icon slot="start" name="close"></ion-icon>
+        Cancel
+      </ion-button>
+      <ion-button (click)="confirm()" color="success" [disabled]="!imported">
+        <ion-icon slot="start" name="checkmark"></ion-icon>
+        Confirm
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,45 @@
+<ion-content>
+  <ion-card>
+    <ion-card-header >
+      <img class="cover" alt="star" [src]="cover" *ngIf="cover"/>
+      <ion-button (click)="changeCover()" expand="block" fill="clear" shape="round">
+        Changer la couverture
+      </ion-button>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="floating">Titre</ion-label>
+        <ion-input [(ngModel)]="book.name" type="text" placeholder="Entrez un titre"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Description</ion-label>
+        <ion-input [(ngModel)]="book.desc" type="text" placeholder="Entrez une courte description"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]="tag" type="text" placeholder="Ajouter un tag" (keypress)="enter($event.keyCode)"></ion-input>
+        <ion-button (click)="addTag()" expand="block" fill="clear" shape="round" slot="end">
+          <ion-icon slot="icon-only" name="add"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <ion-chip color="primary" mode="ios" outline="true" *ngFor="let t of book.tags">
+        <ion-label>{{t}}</ion-label>
+        <ion-icon name="close-circle"></ion-icon>
+      </ion-chip>
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()" color="medium">
+        <ion-icon slot="start" name="close"></ion-icon>
+        Annuler
+      </ion-button>
+      <ion-button (click)="confirm()" color="success">
+        <ion-icon slot="start" name="checkmark"></ion-icon>
+        Créer une histoire
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

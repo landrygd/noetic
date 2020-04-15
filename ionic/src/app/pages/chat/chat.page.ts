@@ -146,7 +146,7 @@ export class ChatPage implements OnInit {
   }
 
   play() {
-    this.navCtrl.navigateForward("/game");
+    this.firebase.play();
   }
 
   isLogSelected(index) {

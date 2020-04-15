@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FirebaseService } from 'src/app/services/firebase.service';
 
 @Component({
   selector: 'app-search',
@@ -7,9 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SearchPage implements OnInit {
 
-  constructor() { }
+  search: any[] = [];
+
+  constructor(public firebase: FirebaseService) { }
 
   ngOnInit() {
   }
 
+  onSearchChange(event){
+    const filter = event.target.value
+    this.search = this.firebase.search(filter);
+  }
+
+  open(json) {
+    this.firebase.openCover(json);
+  }
 }
