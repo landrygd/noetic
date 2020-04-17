@@ -2,16 +2,19 @@
   height: 100%;
 }
 
-.backdrop{
-  width: 100%;
+ion-grid{
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-content: center;
+}
+
+.backdrop {
   backdrop-filter: blur(10px) brightness(60%);
+}
+
+.backdrop ion-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 ion-fab-button {

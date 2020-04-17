@@ -69,13 +69,6 @@ export class CoverPage implements OnInit {
     this.navCtrl.back();
   }
 
-  // authorsToString() {
-  //   let res:string = "";
-  //   res = this.authors.join(', ');
-  //   res = res.replace(/,(?=[^,]*$)/, ' et');
-  //   return res;
-  // }
-
   isAuthor() {
     return this.authorsId.includes(this.firebase.userId);
   }

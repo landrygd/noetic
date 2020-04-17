@@ -6,6 +6,7 @@ import { Subscription, Observable } from 'rxjs';
 import { Game } from '../classes/game';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { TraductionService } from './traductionService.service';
 
 export interface User { 
   book: any []; 
@@ -52,7 +53,8 @@ export class FirebaseService {
     private firestore: AngularFirestore, 
     public afAuth: AngularFireAuth, 
     public firerealtime: AngularFireDatabase,
-    public firestorage: AngularFireStorage
+    public firestorage: AngularFireStorage,
+    public translator: TraductionService
   ) {
     this.afAuth.authState.subscribe(auth => {
       if (!auth) {
@@ -123,10 +125,9 @@ export class FirebaseService {
         data.docs.forEach((doc)=>this.firestore.collection("/books").doc(bookId).collection(subCollection).doc(doc.id).delete());
       });
     })
-    if(this.book.cover.charAt(0) === 'b') {
-      this.firestorage.ref("books/"+bookId+"/cover.png").delete();
-    }
-    
+    this.book.ref.forEach(ref => {
+      this.firestorage.ref("books/"+bookId+"/"+ref).delete();
+    });
     this.firestore.collection("/books").doc(bookId).delete();
   }
 
@@ -240,7 +241,7 @@ export class FirebaseService {
     .then(auth => {
     })
     .catch(err => {
-      this.errorMail();
+      this.error('Email ou mot de passe incorrect');
     });
   }
 
@@ -256,11 +257,13 @@ export class FirebaseService {
         followers: [],
         credit: 0,
         first: true,
-        avatar: '../../../assets/avatar/default.png'
+        birthday: registerData.birthday,
+        avatar: '../../../assets/avatar/default.png',
+        lang: this.translator.getCurLanguage()
       });
     })
     .catch(err => {
-      this.errorMail();
+      this.error('Email déjà utilisé');
     });
   }
 
@@ -285,9 +288,9 @@ export class FirebaseService {
     this.firerealtime.object('games/'+this.curGame).remove();
   }
 
-  async errorMail() {
+  async error(text) {
     const toast = await this.toastController.create({
-      message: 'Email ou mot de passe incorrect',
+      message: text,
       duration: 2000,
       position: 'top'
     });
@@ -388,6 +391,11 @@ export class FirebaseService {
       }
       if(type == 'cover') {
         this.firestorage.ref(path).getDownloadURL().subscribe((ref)=>{
+          if(!this.book.ref.includes('cover.png')) {
+            let refWithCover:any[] = this.book.ref;
+            refWithCover.push('cover.png');
+            this.firestore.collection('books').doc(id).update({ref:refWithCover});
+          }
           this.firestore.collection('books').doc(id).update({cover:ref});
         })
       }

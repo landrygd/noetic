@@ -5,27 +5,43 @@
         <img src="../../assets/logo.png">
       </div>
 
-      <ion-item class="glass" lines="none">
-        <ion-icon name="mail" slot="start"></ion-icon>
-        <ion-input type="mail" placeholder="Adresse email" [(ngModel)]="loginData.email"></ion-input>
-      </ion-item>
-
-      <ion-item class="glass" lines="none">
-        <ion-icon name="key" slot="start"></ion-icon>
-        <ion-input type="password" placeholder="Mot de passe" [(ngModel)]="loginData.password"></ion-input>
-      </ion-item>
-
-      <ion-text color="medium" class="ion-text-center">
-        <p>Mot de passe oublié ?</p>
-      </ion-text>
-
-      <ion-button  expand="block" shape="round" fill="solid" (click)="login()">Connexion</ion-button>
-      <ion-text color="medium" class="ion-text-center">
-        <p>Pas de compte?</p>
-      </ion-text>
-      <ion-text color="dark" class="ion-text-center">
-        <p (click)="signUp()">Créer un compte</p>
-      </ion-text>
+      <ion-grid fixed>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <form [formGroup]="loginForm" (ngSubmit)="login()" class="ion-align-items-center">
+              <ion-item class="glass" lines="none">
+                <ion-icon name="mail" slot="start"></ion-icon>
+                <ion-input required formControlName="email" type="mail" placeholder="Adresse email"></ion-input>
+              </ion-item>
+        
+              <ion-item class="glass" lines="none">
+                <ion-icon name="key" slot="start"></ion-icon>
+                <ion-input required formControlName="password" type="password" placeholder="Mot de passe"></ion-input>
+              </ion-item>
+        
+              <ion-text color="medium" class="ion-text-center">
+                <p>Mot de passe oublié ?</p>
+              </ion-text>
+        
+              <ion-button  expand="block" shape="round" fill="solid" (click)="login()" [disabled]="loginForm.invalid">
+                Se connecter
+              </ion-button>
+            </form>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <ion-text color="medium">
+              <p>Pas de compte?</p>
+            </ion-text>
+            <ion-button (click)="signUp()" expand="block" fill="clear" shape="round" color="medium">
+              Créer un compte
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      
+      
       <ion-text color="medium" class="ion-text-center">
         <p text-center>Ou connectez-vous avec</p>
       </ion-text>

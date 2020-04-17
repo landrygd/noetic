@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { ToastController, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { FirebaseService } from 'src/app/services/firebase.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -9,21 +9,27 @@ import { FirebaseService } from 'src/app/services/firebase.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  loginData = {
-    email: '',
-    password: ''
-  };
+  private loginForm : FormGroup;
 
   constructor( 
     public firebase: FirebaseService,
-    public navCtrl: NavController
-    ) { }
+    public navCtrl: NavController,
+    private formBuilder: FormBuilder
+    ) {
+      this.loginForm = this.formBuilder.group({
+        email: ['', Validators.compose([
+          Validators.required,
+          Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")])
+        ],
+        password: ['', Validators.required]
+      });
+    }
 
   ngOnInit() {
   }
 
   login() {
-    this.firebase.login(this.loginData);
+    this.firebase.login(this.loginForm.value);
   }
 
   signUp() {

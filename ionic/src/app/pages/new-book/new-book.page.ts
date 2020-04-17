@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
-import { DomSanitizer } from '@angular/platform-browser';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TraductionService } from 'src/app/services/traductionService.service';
 
 @Component({
   selector: 'app-new-book',
@@ -11,36 +12,52 @@ import { UploadComponent } from 'src/app/components/modals/upload/upload.compone
 })
 
 export class NewBookPage implements OnInit {
-  book = {
-    name: '',
-    desc: '',
-    first: 'main',
-    star: 0,
-    vote: 0,
-    view: 0,
-    tags:[],
-    cover: "../../../assets/cover/cover1.png",
-    cat:'undefined',
-    authors:[],
-    verso:""
-  }
   coverSize = "cover";
-  cover: string = "../../../assets/cover/cover1.png";
+  cover:string = "../../../assets/cover/cover1.png";
+  tags = [];
 
-  tag:string;
-  constructor(public firebase: FirebaseService, private sanitization:DomSanitizer, public modalCtrl: ModalController, public nacCtrl: NavController) {
+  bookForm: FormGroup;
+
+  constructor(
+    public firebase: FirebaseService, 
+    public modalCtrl: ModalController, 
+    public nacCtrl: NavController,
+    private formBuilder: FormBuilder,
+    private translator: TraductionService
+    ) {
     const max = 3;
     const min = 1;
     const coverNumber = Math.floor(Math.random()*(max-min+1)+min);
-    this.book.cover = "../../../assets/cover/cover"+coverNumber+".png";
-    this.cover = this.book.cover;
-    this.book.authors.push(this.firebase.userId);
+    this.cover = "../../../assets/cover/cover"+coverNumber+".png";
+    this.bookForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      desc: ['', Validators.required],
+      cat: ['undefined', Validators.required],
+      verso: [''],
+      tag: ['']
+    });
    }
 
   ngOnInit() {}
 
   confirm() {
-    this.firebase.addBook(this.book, this.cover);
+    const form = this.bookForm.value;
+    const book = {
+      name: form.name,
+      desc: form.desc,
+      first: 'main',
+      star: 0,
+      vote: 0,
+      view: 0,
+      tags:this.tags,
+      cover: this.cover,
+      cat:form.cat,
+      authors:[this.firebase.userId],
+      verso:form.verso,
+      lang: this.translator.getCurLanguage(),
+      ref:[]
+    }
+    this.firebase.addBook(book, this.cover);
   }
 
   async changeCover() {
@@ -68,13 +85,21 @@ export class NewBookPage implements OnInit {
   }
 
   addTag() {
-    this.book.tags.push(this.tag);
-    this.tag = "";
+    if(this.bookForm.value.tag !== "") {
+      if(!this.tags.includes(this.bookForm.value.tag)) {
+        this.tags.push(this.bookForm.value.tag);
+        this.bookForm.value.tag = "";
+        this.bookForm.patchValue({tag: ''});
+      }
+    }
+  }
+
+  removeTag(index) {
+    this.tags.splice(index, 1);
   }
 
   back() {
     this.nacCtrl.back();
   }
-
 }
 

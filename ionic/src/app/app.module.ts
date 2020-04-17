@@ -15,6 +15,9 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { HttpClient } from '@angular/common/http';
+import {TranslateModule} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyDAZRFBAHjrS8Ww03U95mMhX1-AD9rPDGo",
@@ -26,6 +29,10 @@ export const firebaseConfig = {
   appId: "1:467577218262:web:2914bf26f35fdfaaf8d577",
   measurementId: "G-NLHMEK6CM5"
 };
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -39,7 +46,8 @@ export const firebaseConfig = {
     AngularFireAuthModule,
     AngularFireStorageModule,
     AngularFirestoreModule,
-    ImageCropperModule
+    ImageCropperModule,
+    TranslateModule.forRoot(),
   ],
   providers: [
     StatusBar,

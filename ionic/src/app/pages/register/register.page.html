@@ -5,26 +5,53 @@
         <img src="../../assets/logo.png">
       </div>
 
-      <ion-item class="glass" lines="none">
-        <ion-icon name="person" slot="start"></ion-icon>
-        <ion-input type="mail" placeholder="Pseudo" [(ngModel)]="registerData.name"></ion-input>
-      </ion-item>
+      <ion-grid fixed>
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <form [formGroup]="registerForm" (ngSubmit)="signUp()" class="ion-align-items-center">
+              <ion-item class="glass" lines="none">
+                <ion-icon name="person" slot="start"></ion-icon>
+                <ion-input required formControlName="name" type="text" placeholder="Pseudo"></ion-input>
+              </ion-item>
+        
+              <ion-item class="glass" lines="none">
+                <ion-icon name="calendar" slot="start"></ion-icon>
+                <ion-datetime required formControlName="birthday" displayFormat="MM/DD/YYYY" placeholder="Date de naissance"></ion-datetime>
+              </ion-item>
+        
+              <ion-item class="glass" lines="none">
+                <ion-icon name="mail" slot="start"></ion-icon>
+                <ion-input required formControlName="email" type="mail" placeholder="Adresse mail"></ion-input>
+              </ion-item>
+        
+              <ion-item class="glass" lines="none">
+                <ion-icon name="key" slot="start"></ion-icon>
+                <ion-input required formControlName="password" type="password" placeholder="Mot de passe"></ion-input>
+              </ion-item>
+        
+              <ion-item class="glass" lines="none">
+                <ion-icon name="key" slot="start"></ion-icon>
+                <ion-input required formControlName="confirmPassword" type="password" placeholder="Répétez le mot de passe"></ion-input>
+              </ion-item>
+      
+              <ion-button block shape="round" color="primary" type="submit" fill="solid" [disabled]="registerForm.invalid">
+                S'incrire
+              </ion-button>
+            </form>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button (click)="login()" expand="block" fill="clear" shape="round" color="medium">
+              Retour
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
 
-      <ion-item class="glass" lines="none">
-        <ion-icon name="mail" slot="start"></ion-icon>
-        <ion-input type="mail" placeholder="Adresse email" [(ngModel)]="registerData.email"></ion-input>
-      </ion-item>
+      
 
-      <ion-item class="glass" lines="none">
-        <ion-icon name="key" slot="start"></ion-icon>
-        <ion-input type="password" placeholder="Mot de passe" [(ngModel)]="registerData.password"></ion-input>
-      </ion-item>
-
-      <ion-button  expand="block" shape="round" fill="solid" (click)="signUp()">S'inscrire</ion-button>
-
-      <ion-text color="dark" class="ion-text-center">
-        <p (click)="login()">Retour</p>
-      </ion-text>
+      
     </div>
   </div>
 </ion-content>
