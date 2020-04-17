@@ -1,45 +1,59 @@
-<ion-content>
-  <ion-card>
-    <ion-card-header >
-      <img class="cover" alt="star" [src]="cover" *ngIf="cover"/>
-      <ion-button (click)="changeCover()" expand="block" fill="clear" shape="round">
-        Changer la couverture
-      </ion-button>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-label position="floating">Titre</ion-label>
-        <ion-input [(ngModel)]="book.name" type="text" placeholder="Entrez un titre"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Description</ion-label>
-        <ion-input [(ngModel)]="book.desc" type="text" placeholder="Entrez une courte description"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input [(ngModel)]="tag" type="text" placeholder="Ajouter un tag" (keypress)="enter($event.keyCode)"></ion-input>
-        <ion-button (click)="addTag()" expand="block" fill="clear" shape="round" slot="end">
-          <ion-icon slot="icon-only" name="add"></ion-icon>
+<ion-content fullscreen>
+  <div class="cover" [ngStyle]="{'background': 'url('+cover+')', 'background-size': coverSize}"> 
+    <div class="backdrop">
+      <ion-fab vertical="top" horizontal="start" slot="fixed" (click)="back()">
+        <ion-fab-button>
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
+      <div>
+        <ion-button color="medium" (click)="changeCover()" expand="block" fill="solid" shape="round" style="opacity: 0.5; height: 10vh;">
+          <ion-icon name="image"></ion-icon>
+          Changer la couverture
         </ion-button>
-      </ion-item>
-      <ion-chip color="primary" mode="ios" outline="true" *ngFor="let t of book.tags">
-        <ion-label>{{t}}</ion-label>
-        <ion-icon name="close-circle"></ion-icon>
-      </ion-chip>
-
-    </ion-card-content>
-  </ion-card>
-</ion-content>
-<ion-footer>
-  <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-button (click)="cancel()" color="medium">
-        <ion-icon slot="start" name="close"></ion-icon>
-        Annuler
-      </ion-button>
-      <ion-button (click)="confirm()" color="success">
-        <ion-icon slot="start" name="checkmark"></ion-icon>
+        <ion-item class="glass" lines="none">
+          <ion-input [(ngModel)]="book.name" type="text" placeholder="Entrez un titre"></ion-input>
+        </ion-item>
+        <ion-item class="glass" lines="none">
+          <ion-input [(ngModel)]="book.desc" type="text" placeholder="Entrez une courte description"></ion-input>
+        </ion-item>
+        <ion-item class="glass" lines="none">
+          <ion-textarea [(ngModel)]="book.verso" placeholder="Entrez une description complète"></ion-textarea>
+        </ion-item>
+        <ion-item class="glass" lines="none">
+          <ion-label>Catégorie</ion-label>
+          <ion-select [(ngModel)]="book.cat" okText="Choisir" cancelText="Annuler">
+            <ion-select-option value="action">Action</ion-select-option>
+            <ion-select-option value="adventure">Aventure</ion-select-option>
+            <ion-select-option value="fanfiction">Fanfiction</ion-select-option>
+            <ion-select-option value="fantastic">Fantastique</ion-select-option>
+            <ion-select-option value="fiction">Fiction générale</ion-select-option>
+            <ion-select-option value="horror">Horreur</ion-select-option>
+            <ion-select-option value="humor">Humour</ion-select-option>
+            <ion-select-option value="mystery">Mystère</ion-select-option>
+            <ion-select-option value="nonfiction">Non-fiction</ion-select-option>
+            <ion-select-option value="paranormal">Paranormal</ion-select-option>
+            <ion-select-option value="romance">Romance</ion-select-option>
+            <ion-select-option value="sf">Science-fiction</ion-select-option>
+            <ion-select-option value="spiritual">Spirituel</ion-select-option>
+            <ion-select-option value="thiller">Thriller</ion-select-option>
+            <ion-select-option value="undefined">Non catégorisé</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item class="glass" lines="none">
+          <ion-input [(ngModel)]="tag" type="text" placeholder="Ajouter un tag" (keypress)="enter($event.keyCode)"></ion-input>
+          <ion-button (click)="addTag()" expand="block" fill="clear" shape="round" slot="end">
+            <ion-icon slot="icon-only" name="add"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-badge color="primary" mode="ios" *ngFor="let t of book.tags">
+          <ion-label>{{t}}</ion-label>
+          <ion-icon name="close-circle"></ion-icon>
+        </ion-badge>
+      </div>
+      <ion-button (click)="confirm()" color="primary" fill="solid" shape="round">
         Créer une histoire
       </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-footer>
+    </div>
+  </div>
+</ion-content>

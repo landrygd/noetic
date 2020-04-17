@@ -24,7 +24,7 @@ export class UploadComponent implements OnInit {
   ngOnInit() {
     if(this.type == 'cover') {
       this.ratio = 9/16;
-      this.width = 1080;
+      this.width = 180;
     }
   }
 

@@ -1,8 +1,6 @@
-
-
 <ion-content>
   <div class="header">
-    <ion-toolbar style="--background: transparent; opacity: 0.5;">
+    <ion-toolbar style="--background: transparent; opacity: 0.7;">
       <ion-buttons slot="start">
         <ion-button (click)="onClick()" fill="clear" shape="round">
           <ion-icon slot="icon-only" name="person-add"></ion-icon>
@@ -12,25 +10,37 @@
         <ion-button (click)="onClick()" fill="clear" shape="round">
           <ion-icon slot="icon-only" name="share-social"></ion-icon>
         </ion-button>
+        <ion-button (click)="options()" fill="clear" shape="round">
+          <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+        </ion-button>
       </ion-buttons>
     </ion-toolbar>
   </div>
   <div class="flex">
     <ion-avatar>
-      <ion-img [src]="firebase.avatarURL" (click)="changeAvatar()" button></ion-img>
+      <ion-img [src]="firebase.userData.avatar" (click)="changeAvatar()" button></ion-img>
     </ion-avatar>
   </div>
-  <h1 class="ion-text-center">Elon le boss</h1>
+  <h1 class="ion-text-center">{{name}}</h1>
   <ion-text color="medium" class="ion-text-center">
-  <p>Tu peu pa me teste je sui tro for</p>
-  <p>999M Abonnés</p>
+  <p>{{bio}}</p>
+  <p>{{sub}} Abonnés</p>
   </ion-text>
   <div class="subscribe">
     <ion-button (click)="onClick()" expand="block" fill="solid" shape="round" style="width: 50vw;">
       S'abonner
     </ion-button>
   </div>
-  <h1 class="ion-margin-start">Mes histoires</h1>
+  <h1 class="ion-text-center">Mes histoires</h1>
+  <ion-slides class="slides" [options]="slideOpts">
+    <ion-slide>
+    </ion-slide>
+    <ion-slide *ngFor="let book of firebase.userBooks">
+      <app-card-book [json]="book" (click)="open(book.id)" ></app-card-book>
+    </ion-slide>
+    <ion-slide>
+    </ion-slide>
+  </ion-slides>
   
 </ion-content>
 

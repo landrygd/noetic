@@ -8,13 +8,15 @@ import { NewBookPageRoutingModule } from './new-book-routing.module';
 
 import { NewBookPage } from './new-book.page';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
+import { ComponentModule } from 'src/app/components/component.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    NewBookPageRoutingModule
+    NewBookPageRoutingModule,
+    ComponentModule
   ],
   declarations: [NewBookPage],
   entryComponents: [UploadComponent]

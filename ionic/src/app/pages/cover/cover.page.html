@@ -1,22 +1,112 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
+  <div class="header">
+    <ion-toolbar style="--background: transparent; opacity: 0.7;">
+      <ion-buttons slot="start">
+        <ion-button (click)="back()" fill="clear" shape="round">
+          <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-buttons slot="end">
+        <ion-button (click)="onClick()" fill="clear" shape="round">
+          <ion-icon slot="icon-only" name="share-social"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </div>
+  <div class="flex">
+    <ion-card style="height: 320px;width: 180px;" class="ion-no-margin">
+      <ion-img [src]="url" style="height: 320px;width: 180px;"></ion-img>
+    </ion-card>
+  </div>
+  <h1 class="ion-text-center ion-no-margin">{{name}}</h1>
+  <div class="subscribe ion-no-margin">
+    <p>
+      {{view}}<ion-icon name="eye"></ion-icon>
+    </p>
+    <div class="ion-margin">
+      <ion-icon name="star" *ngFor="let i of getStars()"></ion-icon>
+    </div>
+    <p color="light" mode="ios">
+      {{0}}<ion-icon name="chatbubble"></ion-icon>
+    </p>
+  </div>
+  <div class="subscribe">
+    <ion-chip color="primary" mode="ios" outline="true" *ngFor="let author of authors">
+      <ion-label>{{author.name}}</ion-label>
+    </ion-chip>
+  </div>
+  <ion-text color="medium" class="ion-text-center">
+  <p>{{desc}}</p>
+  </ion-text>
+  <ion-text color="primary" class="ion-text-center">
+    <p>En savoir plus</p>
+  </ion-text>
+  <div class="subscribe">
+    <ion-badge color="primary" mode="ios" *ngFor="let tag of tags">
+      {{tag}}
+    </ion-badge>
+  </div>
+  <div class="subscribe">
+    <ion-button (click)="play()" expand="block" fill="solid" shape="round">
+      Lire
+    </ion-button>
+  </div>
+  <div class="subscribe">
+    <!-- <ion-button (click)="play()" expand="block" fill="solid" shape="round">
+      Continuer de lire
+    </ion-button> -->
+    <ion-button (click)="edit()" expand="block" fill="solid" shape="round" *ngIf="isAuthor()">
+      Editer
+    </ion-button>
+  </div>
   <ion-card>
-    <ion-card-header>
-      <ion-card-title>{{name}}</ion-card-title>
-      <ion-card-subtitle>{{desc}}</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      Awesome content
-      <ion-button (click)="play()" expand="block" fill="clear" shape="round">
-        Jouer
+    <ion-item lines="none">
+      <ion-avatar slot="start" style="width: 50px; height: 50px;">
+        <ion-img [src]="firebase.userData.avatar" (click)="changeAvatar()" button ></ion-img>
+      </ion-avatar>
+      <ion-buttons>
+        <ion-button *ngFor="let star of [0,0,0,0,0]; index as i" [color]="getStarColor(i)" (click)="setRate(i)">
+          <ion-icon slot="icon-only" name="star"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-textarea [(ngModel)]="comment.text" placeholder="Laisser un avis" (keypress)="enter($event.keyCode)"></ion-textarea>
+      <ion-button (click)="send()" expand="block" fill="clear" shape="round" slot="end">
+        <ion-icon slot="icon-only" name="send"></ion-icon>
       </ion-button>
-    </ion-card-content>
+    </ion-item>
   </ion-card>
+  <ion-grid fixed>
+    <ion-row *ngFor="let comment of firebase.comments">
+      <ion-col>
+        <ion-avatar style="width: 50px; height: 50px;">
+          <ion-img [src]="firebase.userData.avatar" (click)="changeAvatar()" button ></ion-img>
+        </ion-avatar>
+      </ion-col>
+      <ion-col size="10">
+        <ion-card>
+          <ion-item lines="none">
+            <ion-label color="primary" slot="start">
+                Pseudonyme<br>
+                <ion-icon name="star" *ngFor="let i of starToArray(comment.rate)" color="primary"></ion-icon>
+            </ion-label>
+            <ion-note slot="end" class="ion-text-end">
+              {{comment.date|timeAgo}} 
+            </ion-note>
+          </ion-item>
+          <ion-item lines="none">
+            <p>
+              <ion-text color="medium">
+                {{comment.text}}
+              </ion-text>
+            </p>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  
 </ion-content>
+
+

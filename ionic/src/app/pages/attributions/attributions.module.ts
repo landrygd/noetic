@@ -4,19 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CoverPageRoutingModule } from './cover-routing.module';
+import { AttributionsPageRoutingModule } from './attributions-routing.module';
 
-import { CoverPage } from './cover.page';
-import { PipesModule } from 'src/app/pipes/pipes.module';
+import { AttributionsPage } from './attributions.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    CoverPageRoutingModule,
-    PipesModule
+    AttributionsPageRoutingModule
   ],
-  declarations: [CoverPage]
+  declarations: [AttributionsPage]
 })
-export class CoverPageModule {}
+export class AttributionsPageModule {}

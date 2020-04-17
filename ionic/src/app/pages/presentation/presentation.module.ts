@@ -4,19 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CoverPageRoutingModule } from './cover-routing.module';
+import { PresentationPageRoutingModule } from './presentation-routing.module';
 
-import { CoverPage } from './cover.page';
-import { PipesModule } from 'src/app/pipes/pipes.module';
+import { PresentationPage } from './presentation.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    CoverPageRoutingModule,
-    PipesModule
+    PresentationPageRoutingModule
   ],
-  declarations: [CoverPage]
+  declarations: [PresentationPage]
 })
-export class CoverPageModule {}
+export class PresentationPageModule {}

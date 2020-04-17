@@ -8,7 +8,6 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import { ComponentModule } from 'src/app/components/component.module';
-import { NewBookComponent } from 'src/app/components/modals/new-book/new-book.component';
 
 @NgModule({
   imports: [
@@ -18,7 +17,6 @@ import { NewBookComponent } from 'src/app/components/modals/new-book/new-book.co
     HomePageRoutingModule,
     ComponentModule
   ],
-  declarations: [HomePage],
-  entryComponents: [NewBookComponent]
+  declarations: [HomePage]
 })
 export class HomePageModule {}

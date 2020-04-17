@@ -35,14 +35,16 @@ export class FirebaseService {
   bookActor: any[];
   bookPlace: any[];
   chatLogs: any[];
+  comments:any[] = [];
 
   bookSub: Subscription;
   bookStorySub: Subscription;
   bookActorSub: Subscription;
   bookPlaceSub: Subscription;
   chatLogsSub: Subscription;
+  commentsSub: Subscription;
 
-  avatarURL: any;
+  gotUser:string =""
 
   constructor(
     private toastController: ToastController, 
@@ -72,20 +74,10 @@ export class FirebaseService {
     this.firestore.collection('users').doc(this.userId).valueChanges().subscribe((value) => {
       this.userData = value;
       this.syncBooks();
-      if (this.avatarURL == undefined) {
-        if(this.haveAvatar()) {
-          this.updateAvatar();
-        }
-      } else {
-        this.avatarURL = "assets/avatar/man.png";
+      if (this.userData['first'] == true) {
+        this.navCtrl.navigateRoot('presentation');
+        this.firestore.collection("/users").doc(this.userId).update({first: false});
       }
-    });
-  }
-
-  updateAvatar() {
-    this.firestorage.ref("users/"+this.userId+"/avatar.png").getDownloadURL().subscribe((imgUrl)=>{
-      this.avatarURL = imgUrl;
-      this.navCtrl.navigateRoot(['/']);
     });
   }
 
@@ -124,14 +116,14 @@ export class FirebaseService {
     let bookList: any [] = this.userData.book;
     bookList.splice(bookList.indexOf(bookId),1);
     this.firestore.collection("/users").doc(this.userId).update({book: bookList});
-    const subCollections = ["story","actors","map"];
-    this.unsyncBook()
+    const subCollections = ["story","actors","map","comments"];
+    this.unsyncBook();
     subCollections.forEach((subCollection) => {
       this.firestore.collection("books").doc(bookId).collection(subCollection).get().subscribe((data) => {
         data.docs.forEach((doc)=>this.firestore.collection("/books").doc(bookId).collection(subCollection).doc(doc.id).delete());
       });
     })
-    if(this.book.hasOwnProperty('cover')) {
+    if(this.book.cover.charAt(0) === 'b') {
       this.firestorage.ref("books/"+bookId+"/cover.png").delete();
     }
     
@@ -263,7 +255,8 @@ export class FirebaseService {
         follow: [],
         followers: [],
         credit: 0,
-        first: true
+        first: true,
+        avatar: '../../../assets/avatar/default.png'
       });
     })
     .catch(err => {
@@ -383,26 +376,23 @@ export class FirebaseService {
     let path = '';
     if(type == 'userAvatar') {
       path = "users/"+id+"/avatar.png";
-      this.firestore.collection('users').doc(id).update({avatar:true});
     }
     if(type == 'cover') {
       path = "books/"+id+"/cover.png";
-      this.firestore.collection('books').doc(id).update({cover:true});
     }
     this.firestorage.ref(path).putString(file, 'data_url').then( () => {
       if(type == 'userAvatar') {
-        this.updateAvatar();
+        this.firestorage.ref(path).getDownloadURL().subscribe((ref)=>{
+          this.firestore.collection('users').doc(id).update({avatar:ref});
+        })
+      }
+      if(type == 'cover') {
+        this.firestorage.ref(path).getDownloadURL().subscribe((ref)=>{
+          this.firestore.collection('books').doc(id).update({cover:ref});
+        })
       }
     }
     );
-  }
-
-  haveAvatar() {
-    if (this.userData !== undefined) {
-      return this.userData.hasOwnProperty('avatar');
-    } else {
-      return false;
-    }
   }
 
   publishBook() {
@@ -427,6 +417,42 @@ export class FirebaseService {
   play(id = this.curBookId) {
     this.curBookId = id;
     this.navCtrl.navigateForward("/game");
+  }
+
+  getUserById(userId): Observable<any> {
+    return this.firestore.collection('users').doc(userId).get();
+  }
+
+  addComment(comment, bookId, commented=false, lastRate=0) {
+    if(commented) {
+      this.firestore.collection("books").doc(bookId).update({
+        star:this.book.star+comment.rate-lastRate,
+      });
+    } else {
+      this.firestore.collection("books").doc(bookId).update({
+        vote:this.book.vote+1,
+        star:this.book.star+comment.rate,
+      });
+    }
+    this.firestore.collection("books").doc(bookId).collection("comments").doc(this.userId).set(comment);
+  }
+
+  deleteComment(bookId) {
+    this.firestore.collection("books").doc(bookId).collection("comments").doc(this.userId).delete();
+  }
+
+  syncComments(bookId) { 
+    this.commentsSub = this.firestore.collection('books').doc(bookId).collection("comments").valueChanges().subscribe((value) => {
+      this.comments = value;
+    });
+  }
+
+  unsyncComments() {
+    this.commentsSub.unsubscribe();
+  }
+
+  haveCommented(bookId = this.curBookId): Observable<any> {
+    return this.firestore.collection('books').doc(bookId).collection('comments', ref => ref.where('userId', '==', this.userId )).get();
   }
 }
 

@@ -19,5 +19,25 @@
 </ion-header>
 
 <ion-content>
-  <app-card-book *ngFor="let book of firebase.userBooks" [name]="book.name" (click)="open(book.id)"></app-card-book>
+  <h1 class="ion-text-center">A la une</h1>
+  <ion-slides class="slides" [options]="slideOpts">
+    <ion-slide>
+    </ion-slide>
+    <ion-slide *ngFor="let book of firebase.userBooks">
+      <app-card-book [json]="book" ></app-card-book>
+    </ion-slide>
+    <ion-slide>
+    </ion-slide>
+  </ion-slides>
+
+  <h1 class="ion-text-center">Ma liste</h1>
+  <ion-slides class="slides" [options]="slideOpts">
+    <ion-slide>
+    </ion-slide>
+    <ion-slide *ngFor="let book of firebase.userBooks">
+      <app-card-book [json]="book"></app-card-book>
+    </ion-slide>
+    <ion-slide>
+    </ion-slide>
+  </ion-slides>
 </ion-content>

@@ -1,7 +1,4 @@
-<ion-card>
-  <ion-img src="../../../assets/cover/cover1.png"></ion-img>
-  <ion-card-header>
-    <ion-card-title>{{name}}</ion-card-title>
-    <ion-card-subtitle>{{desc}}</ion-card-subtitle>
-  </ion-card-header>
+<ion-card style="height: 320px;width: 180px;" (click)="open()" button>
+  <ion-img [src]="cover" style="height: 320px;width: 180px;"></ion-img>
 </ion-card>
+<p>{{name}}</p>

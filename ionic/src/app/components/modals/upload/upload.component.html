@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Upload an image
+      Charger une image
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -27,7 +27,6 @@
 <ion-footer>
   <ion-toolbar>
     <ion-item>
-      <ion-label id="profile_image" color="primary" stacked>Upload a file</ion-label>
       <input type="file" (change)="fileChangeEvent($event)"/>
     </ion-item>
   </ion-toolbar>
@@ -35,11 +34,11 @@
     <ion-buttons slot="end">
       <ion-button (click)="cancel()" color="medium">
         <ion-icon slot="start" name="close"></ion-icon>
-        Cancel
+        Annuler
       </ion-button>
       <ion-button (click)="confirm()" color="success" [disabled]="!imported">
         <ion-icon slot="start" name="checkmark"></ion-icon>
-        Confirm
+        Confirmer
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

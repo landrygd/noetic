@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { FirebaseService } from 'src/app/services/firebase.service';
 
 @Component({
   selector: 'app-card-book',
@@ -7,12 +8,22 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class CardBookComponent implements OnInit {
 
-  cover=''
+  @Input() json: object;
 
-  @Input() name: string;
+  name:string;
+  desc:string;
+  cover:string = "../../../assets/cover/cover1.png";
 
-  constructor() {}
+  constructor(public firebase: FirebaseService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.name = this.json['name'];
+    this.desc = this.json['desc'];
+    this.cover = this.json['cover'];
+  }
+
+  open() {
+    this.firebase.openCover(this.json);
+  }
 
 }

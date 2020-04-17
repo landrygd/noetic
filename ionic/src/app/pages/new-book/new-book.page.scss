@@ -1,6 +1,20 @@
 .cover{
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  height: 30vh;
+  height: 100%;
 }
+
+.backdrop{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  backdrop-filter: blur(10px) brightness(60%);
+}
+
+ion-fab-button {
+  --background: transparent;
+}
+
