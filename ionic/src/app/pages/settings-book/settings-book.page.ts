@@ -54,11 +54,36 @@ export class SettingsBookPage implements OnInit {
     await alert.present();
   }
 
+  async alertUnpublish() {
+    const alert = await this.alertController.create({
+      header: 'Arrêter de publier le livre',
+      message: 'Etes vous sûr de rendre ce livre privé?',
+      buttons: [
+        {
+          text: 'Non',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: 'Oui',
+          handler: () => {
+            this.firebase.unpublishBook();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+
   delete() {
     this.alertDelete();
   }
 
   publish() {
     this.alertPublish();
+  }
+
+  unpublish() {
+    this.alertUnpublish();
   }
 }

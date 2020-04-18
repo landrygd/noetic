@@ -27,8 +27,8 @@ export class FirebaseService {
   method: any;
   connected: boolean = false;
   userData: any;
-  userBooks: any [];
-  userList: any [];
+  userBooks: any [] = [];
+  userList: any [] = [];
   curBookId: string = 'none';
   curChat: string;
   curGame: string;
@@ -53,6 +53,23 @@ export class FirebaseService {
 
   gotUser:string =""
   profileUserId:string = "";
+
+  category=[
+    'action',
+    'adventure',
+    'fanfiction',
+    'fantastic',
+    'fiction',
+    'horror',
+    'humor',
+    'mystery',
+    'nonfiction',
+    'romance',
+    'scifi',
+    'thriller'
+  ]
+
+  mostVueList: any[];
 
   constructor(
     private toastController: ToastController, 
@@ -85,6 +102,9 @@ export class FirebaseService {
       this.userData = value;
       this.syncBooks();
       this.syncList();
+      if(this.mostVueList == undefined) {
+        this.mostVueList = this.getMostVue();
+      }
       if (this.userData['first'] == true) {
         this.navCtrl.navigateRoot('presentation');
         this.firestore.collection("/users").doc(this.userId).update({first: false});
@@ -93,31 +113,42 @@ export class FirebaseService {
   }
 
   syncBooks() { 
-    this.userBooksSub = this.firestore.collection('books', ref => ref.where('id', 'in', this.getUserBookData() )).valueChanges().subscribe((value) => {
-      this.userBooks = value;
-    });
-  }
-
-  getUserBookData() {
-    if (this.userData.book.length == 0) {
-      return [''];
-    } else {
-      return this.userData.book;
+    this.userBooks = [];
+    for(let i = 0; i<this.userData.book.length; i++) {
+      const bookId = this.userData.book[i];
+      this.userBooksSub = this.firestore.collection('books', ref => ref.where('id', '==', bookId)).valueChanges().subscribe((value) => {
+        this.userBooks[i] = value[0];
+      });
     }
   }
+
+  unsyncBooks() { 
+    this.userBooksSub.unsubscribe();
+  }
+
+  refreshBooks() { 
+    this.unsyncBooks();
+    setTimeout(()=>this.syncBooks(),500);
+  }
+
 
   syncList() { 
-    this.userListSub = this.firestore.collection('books', ref => ref.where('id', 'in', this.getUserListData() )).valueChanges().subscribe((value) => {
-      this.userList = value;
-    });
+    this.userList = [];
+    for(let i = 0; i<this.userData.list.length; i++) {
+      const bookId = this.userData.list[i];
+      this.userListSub = this.firestore.collection('books', ref => ref.where('id', '==', bookId)).valueChanges().subscribe((value) => {
+        this.userList[i] = value[0];
+      });
+    }
   }
 
-  getUserListData() {
-    if (this.userData.list.length == 0) {
-      return [''];
-    } else {
-      return this.userData.list;
-    }
+  unsyncList() { 
+    this.userListSub.unsubscribe();
+  }
+
+  refreshList() { 
+    this.unsyncList();
+    setTimeout(()=>this.syncList(),500);
   }
 
   addBook(book, cover="") {
@@ -156,6 +187,7 @@ export class FirebaseService {
       this.firestorage.ref("books/"+bookId+"/"+ref).delete();
     });
     this.firestore.collection("/books").doc(bookId).delete();
+    this.refreshBooks();
   }
 
   openBook(bookId) {
@@ -435,13 +467,43 @@ export class FirebaseService {
     this.firestore.collection("/books").doc(this.curBookId).update({public:true});
   }
 
-  search(filter): any[] {
+  unpublishBook() {
+    this.firestore.collection("/books").doc(this.curBookId).update({public:false});
+  }
+
+  search(filter:string): any[] {
     let res = [];
-    this.firestore.collection('books', ref => ref.where('public', '==', true).where('name', '==', filter)).get().subscribe((data) => {
+    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', this.userData.lang).where('name', '==', filter)).get().subscribe((data) => {
+      data.docs.forEach((doc)=>{
+        res.push(doc.data());
+      })
+    });
+    const filterArray = filter.split(" ");
+    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', this.userData.lang).where('tags', 'array-contains-any', filterArray)).get().subscribe((data) => {
       data.docs.forEach((doc)=>{
         res.push(doc.data());
       })
     })
+    return res
+  }
+
+  getCategory(category) {
+    let res = [];
+    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', this.userData.lang).where('cat', '==', category).orderBy('view','desc')).get().subscribe((data) => {
+      data.docs.forEach((doc)=>{
+        res.push(doc.data());
+      })
+    });
+    return res
+  }
+
+  getMostVue() {
+    let res = [];
+    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', this.userData.lang).orderBy('view','desc')).get().subscribe((data) => {
+      data.docs.forEach((doc)=>{
+        res.push(doc.data());
+      })
+    });
     return res
   }
 
@@ -495,6 +557,33 @@ export class FirebaseService {
 
   updateUserData(data:{}) {
     this.firestore.collection('users').doc(this.userId).update(data);
+  }
+
+  addToList(bookId) {
+    let list = this.userData.list;
+    list.push(bookId);
+    this.firestore.collection('users').doc(this.userId).update({list:list})
+  }
+
+  removeFromList(bookId) {
+    let list:any[] = this.userData.list;
+    const index = list.indexOf(bookId);
+    if (index > -1) {
+      list.splice(index, 1);
+    }
+    this.firestore.collection('users').doc(this.userId).update({list:list}).then(
+      ()=> this.refreshList()
+    );
+  }
+
+  haveFromList(bookId) {
+    let list:any[] = this.userData.list;
+    const index = list.indexOf(bookId);
+    if (index > -1) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

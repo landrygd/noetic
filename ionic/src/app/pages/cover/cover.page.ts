@@ -21,6 +21,8 @@ export class CoverPage implements OnInit {
   com: any[] = [];
   tags: any[] = [];
 
+  inList:boolean = false;
+
   comment = {
     userId: this.firebase.userId,
     text: "",
@@ -43,6 +45,7 @@ export class CoverPage implements OnInit {
     this.id = this.firebase.book.id;
     this.url = this.firebase.book.cover;
     this.authorsId = this.firebase.book.authors;
+    this.inList = this.firebase.haveFromList(this.firebase.book.id);
     this.authorsId.forEach((author)=>{
       this.firebase.getUserById(author).subscribe((value)=>this.authors.push(value.data()));
     });
@@ -89,9 +92,22 @@ export class CoverPage implements OnInit {
     this.comment.date = date;
     if(this.comment.rate !== 0 ) {
       this.firebase.addComment(this.comment, this.id, this.commented, this.lastRate);
+      this.toast("Avis envoyé");
     } else {
-      this.toast("Veuillez noter avant d'envoyer votre avis")
+      this.toast("Veuillez noter avant d'envoyer votre avis");
     }
+  }
+
+  addToList() {
+    this.firebase.addToList(this.firebase.book.id);
+    this.toast("Ajouté à la liste");
+    this.inList = true;
+  }
+
+  removeFromList() {
+    this.firebase.removeFromList(this.firebase.book.id);
+    this.toast("Retiré de la liste");
+    this.inList = false;
   }
 
   async toast(text) {

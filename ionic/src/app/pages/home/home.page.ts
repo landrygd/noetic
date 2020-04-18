@@ -9,6 +9,12 @@ import { ModalController, IonSlides, NavController } from '@ionic/angular';
 })
 export class HomePage implements OnInit {
 
+  search = "";
+
+  bookSearch: any[] = [];
+
+  curCategory = "undefined"
+
   constructor(public firebase: FirebaseService, public modalCtrl: ModalController, public navCtrl: NavController) { }
 
   ngOnInit() {
@@ -16,7 +22,7 @@ export class HomePage implements OnInit {
   }
 
   onSearchChange(event) {
-    
+    this.bookSearch = this.firebase.search(this.search);
   }
 
   slideOpts = {
@@ -107,4 +113,14 @@ export class HomePage implements OnInit {
       }
     }
   }
+  searchCategory(category) {
+    this.curCategory = category
+    this.bookSearch = this.firebase.getCategory(category);
+  }
+
+  clearSearch() {
+    this.curCategory = "undefined";
+    this.bookSearch = [];
+  }
+
 }

@@ -9,6 +9,7 @@ export class TraductionService {
   curLanguage:string = 'en';
 
   constructor(private translator: TranslateService) { 
+    this.curLanguage = this.translator.getBrowserLang();
   }
 
   init() {

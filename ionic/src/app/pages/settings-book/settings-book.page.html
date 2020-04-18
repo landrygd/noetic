@@ -9,8 +9,11 @@
 
 <ion-content>
   <ion-list>
-    <ion-button (click)="publish()" expand="block" fill="clear" shape="round">
+    <ion-button (click)="publish()" expand="block" fill="clear" shape="round" *ngIf="!firebase.book.public">
       Publier le livre
+    </ion-button>
+    <ion-button (click)="unpublish()" expand="block" fill="clear" shape="round" color="warning" *ngIf="firebase.book.public">
+      Arrêter de publier le livre
     </ion-button>
   </ion-list>
 </ion-content>

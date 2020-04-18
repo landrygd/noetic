@@ -56,9 +56,17 @@
     <!-- <ion-button (click)="play()" expand="block" fill="solid" shape="round">
       Continuer de lire
     </ion-button> -->
-    <ion-button (click)="edit()" expand="block" fill="solid" shape="round" *ngIf="isAuthor()" color="medium">
+    <ion-button (click)="edit()" expand="block" fill="clear" shape="round" *ngIf="isAuthor()" color="medium">
       <ion-icon name="create"></ion-icon>
       Editer
+    </ion-button>
+    <ion-button (click)="addToList(firebase.book.id)" expand="block" fill="clear" shape="round" *ngIf="!isAuthor() && !inList" color="medium">
+      <ion-icon name="list"></ion-icon>
+      Ajouter à la liste
+    </ion-button>
+    <ion-button (click)="removeFromList(firebase.book.id)" expand="block" fill="clear" shape="round" *ngIf="!isAuthor() && inList" color="medium">
+      <ion-icon name="list"></ion-icon>
+      Retirer de la liste
     </ion-button>
   </div>
   <ion-card>

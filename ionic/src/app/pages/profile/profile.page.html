@@ -54,7 +54,7 @@
     <ion-slide>
     </ion-slide>
     <ion-slide *ngFor="let book of firebase.userBooks">
-      <app-card-book [json]="book" (click)="open(book.id)" ></app-card-book>
+      <app-card-book [json]="book"></app-card-book>
     </ion-slide>
     <ion-slide>
     </ion-slide>
