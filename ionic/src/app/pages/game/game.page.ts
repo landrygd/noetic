@@ -46,7 +46,7 @@ export class GamePage implements OnInit {
       const chatLogs = this.game.getChatLogs();
       const chat = this.game.getChat();
       let logId = this.game.getLogId();
-      if(this.line !== logId && chatLogs !== []) {
+      if(this.line !== logId && chatLogs.length > 0) {
         this.line = logId;
         const log = this.game.getLog();
         if(log['action'] !== 'goto' && log['action'] !== 'label' && log['action'] !== 'gochat') {

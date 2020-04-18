@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
-import { ModalController, ActionSheetController, AlertController } from '@ionic/angular';
+import { ModalController, ActionSheetController, AlertController, NavController } from '@ionic/angular';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 
 @Component({
@@ -16,7 +16,8 @@ export class ProfilePage implements OnInit {
     public firebase: FirebaseService,
     public modalController: ModalController,
     public actionSheetController: ActionSheetController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    public navCtrl: NavController
     ) {
       this.ownProfile = this.firebase.profileUserId == this.firebase.userId
       if(this.ownProfile) {
@@ -194,5 +195,9 @@ export class ProfilePage implements OnInit {
       ]
     });
     await alert.present();
+  }
+
+  notif() {
+    this.navCtrl.navigateForward("notifs");
   }
 }

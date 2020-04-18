@@ -10,6 +10,7 @@ import { IonicModule } from '@ionic/angular';
 import { NewQuestionComponent } from './new-question/new-question.component';
 import { UploadComponent } from './upload/upload.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { SearchUserComponent } from './search-user/search-user.component';
 
 
 
@@ -21,7 +22,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     NewPlaceComponent,
     NewObjectComponent,
     NewQuestionComponent,
-    UploadComponent
+    UploadComponent,
+    SearchUserComponent
   ],
   imports: [
     CommonModule,
@@ -36,7 +38,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     NewPlaceComponent,
     NewObjectComponent,
     NewQuestionComponent,
-    UploadComponent
+    UploadComponent,
+    SearchUserComponent
   ]
 })
 export class ModalModule { }

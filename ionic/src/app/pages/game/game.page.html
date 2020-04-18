@@ -3,23 +3,24 @@
     <ion-buttons slot="start">
       <ion-button (click)="exit()">
         <ion-icon slot="start" name="exit"></ion-icon>
-        Exit
+        Quitter
       </ion-button>
     </ion-buttons>
-    <ion-title>Game</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-grid fixed *ngFor="let log of chatLogs; index as i" class="ion-no-margin">
-    <app-log [log]="log" [edit]="false" [index]="i" button></app-log>
-  </ion-grid>
+<ion-content padding class="bg">
+  <div class="backdrop">
+    <ion-grid fixed *ngFor="let log of chatLogs; index as i" class="ion-no-margin">
+      <app-log [log]="log" [edit]="false" [index]="i" button></app-log>
+    </ion-grid>
+  </div>
 </ion-content>
 
 <ion-footer>
   <ion-toolbar>
     <ion-button (click)="anwserList()" expand="block" fill="solid" shape="round" *ngIf="question">
-      Answer
+      Répondre
     </ion-button>
   </ion-toolbar>
   

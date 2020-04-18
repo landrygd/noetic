@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="profile"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Notifications</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="firebase.userNotifs.length == 0">
+    <ion-card-content>
+      Pas de notification pour le moment...
+    </ion-card-content>
+  </ion-card>
+  <ion-list *ngIf="firebase.userNotifs.length > 0">
+    <ion-item *ngFor="let notif of firebase.userNotifs; index as i">
+      <ion-label *ngIf="notif.type == 'invBook'" slot="start">{{notif.user}} vous propose d'écrire {{notif.book}} avec lui!</ion-label>
+
+      <ion-label *ngIf="notif.type == 'acceptedInvBook'" slot="start">{{notif.user}} a accepté votre invitation sur le livre {{notif.book}}!</ion-label>
+
+      <ion-buttons slot="end" *ngIf="isQuestion(notif.type)">
+        <ion-button (click)="refuse(notif)" expand="block" fill="clear" shape="round" color="medium" slot="primary">
+          <ion-icon slot="start" name="close"></ion-icon>
+          Refuser
+        </ion-button>
+        <ion-button (click)="accept(notif)" expand="block" fill="clear" shape="round" color="success" slot="primary">
+          <ion-icon slot="start" name="checkmark"></ion-icon>
+          Accepter
+        </ion-button>
+      </ion-buttons>
+
+      <ion-buttons slot="end" *ngIf="!isQuestion(notif.type)">
+        <ion-button (click)="erase(notif)" expand="block" fill="clear" shape="round" color="medium" slot="primary">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Effacer
+        </ion-button>
+      </ion-buttons>
+      
+    </ion-item>
+  </ion-list>
+</ion-content>

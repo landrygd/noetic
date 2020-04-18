@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { FirebaseService } from 'src/app/services/firebase.service';
+import { SearchUserComponent } from 'src/app/components/modals/search-user/search-user.component';
 
 @Component({
   selector: 'app-settings-book',
@@ -9,7 +10,10 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 })
 export class SettingsBookPage implements OnInit {
 
-  constructor(public alertController: AlertController, public firebase: FirebaseService) {}
+  constructor(public modalCtrl: ModalController, 
+    public alertController: AlertController, 
+    public firebase: FirebaseService, 
+    private toastController: ToastController) {}
 
   ngOnInit() {
   }
@@ -85,5 +89,28 @@ export class SettingsBookPage implements OnInit {
 
   unpublish() {
     this.alertUnpublish();
+  }
+
+  async invite() {
+    const modal = await this.modalCtrl.create({
+      component: SearchUserComponent
+    });
+    modal.onDidDismiss()
+      .then((data) => {
+        const userId = data["data"].userId;
+        if(userId !== "") {
+          this.firebase.inviteBook(userId);
+          this.toast('Invitation envoyée.')
+        }
+    });
+    return await modal.present();
+  }
+
+  async toast(text) {
+    const toast = await this.toastController.create({
+      message: text,
+      duration: 2000
+    });
+    toast.present();
   }
 }

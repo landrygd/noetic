@@ -29,6 +29,8 @@ export class FirebaseService {
   userData: any;
   userBooks: any [] = [];
   userList: any [] = [];
+  userNotifs: any[] = [];
+  unreadNotif: boolean = false;
   curBookId: string = 'none';
   curChat: string;
   curGame: string;
@@ -44,6 +46,7 @@ export class FirebaseService {
 
   userBooksSub: Subscription;
   userListSub: Subscription;
+  userNotifsSub: Subscription;
   bookSub: Subscription;
   bookStorySub: Subscription;
   bookActorSub: Subscription;
@@ -69,7 +72,9 @@ export class FirebaseService {
     'thriller'
   ]
 
-  mostVueList: any[];
+  mostVueList: any[] = [];
+
+  usersList: any[] = [];
 
   constructor(
     private toastController: ToastController, 
@@ -102,6 +107,7 @@ export class FirebaseService {
       this.userData = value;
       this.syncBooks();
       this.syncList();
+      this.syncNotifs();
       if(this.mostVueList == undefined) {
         this.mostVueList = this.getMostVue();
       }
@@ -120,6 +126,24 @@ export class FirebaseService {
         this.userBooks[i] = value[0];
       });
     }
+  }
+
+  syncNotifs() { 
+    this.userNotifs = [];
+    this.userNotifsSub = this.firestore.collection('users').doc(this.userId).collection('notifs').valueChanges().subscribe((value) => {
+      this.userNotifs = value;
+      this.unreadNotif = this.haveUnreadNotif();
+    });
+  }
+
+  haveUnreadNotif() {
+    for(let i = 0; i <this.userNotifs.length; i++) {
+      const notif = this.userNotifs[i];
+      if(!notif.read) {
+        return true;
+      }
+    }
+    return false;
   }
 
   unsyncBooks() { 
@@ -309,6 +333,7 @@ export class FirebaseService {
     .then(auth => {
       const user = this.firestore.collection("/users").doc(auth.user.uid);
       user.set({
+        id: auth.user.uid,
         name: registerData.name,
         book: [],
         list: [],
@@ -585,5 +610,38 @@ export class FirebaseService {
       return false;
     }
   }
+
+  sendNotif(type, userId, bookId = this.curBookId) {
+    const id = this.firestore.createId();
+    if (["invBook", "acceptedInvBook"].includes(type)) {
+      this.firestore.collection('users').doc(userId).collection('notifs').doc(id).set({id:id,type:type,user:this.userId,book:this.curBookId});
+    }
+  }
+
+  inviteBook(userId, bookId = this.curBookId) {
+    this.sendNotif("invBook",userId,bookId);
+  }
+
+  acceptInvitation(userId, bookId) {
+    let bookList = this.userData.book;
+    bookList.push(bookId);
+    this.firestore.collection("users").doc(this.userId).update({book: bookList});
+    this.sendNotif('acceptedInvBook', userId, bookId);
+    this.firestore.collection("books").doc(bookId).get().subscribe((data)=>{
+      const book = data.data();
+      let authors = book.authors;
+      authors.push(this.userId);
+      this.firestore.collection("books").doc(bookId).update({authors: authors});
+    });
+  }
+
+  eraseNotif(index) {
+    this.firestore.collection("users").doc(this.userId).collection("notifs").doc(index).delete();
+  }
+
+  getUsersByName(userName): Observable<any> {
+    return this.firestore.collection('users', ref => ref.where('name', '==', userName)).get();
+  }
+
 }
 

@@ -7,14 +7,18 @@ import { IonicModule } from '@ionic/angular';
 import { SettingsBookPageRoutingModule } from './settings-book-routing.module';
 
 import { SettingsBookPage } from './settings-book.page';
+import { ComponentModule } from 'src/app/components/component.module';
+import { SearchUserComponent } from 'src/app/components/modals/search-user/search-user.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    SettingsBookPageRoutingModule
+    SettingsBookPageRoutingModule,
+    ComponentModule
   ],
-  declarations: [SettingsBookPage]
+  declarations: [SettingsBookPage],
+  entryComponents: [SearchUserComponent]
 })
 export class SettingsBookPageModule {}

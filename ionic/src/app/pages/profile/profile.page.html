@@ -2,15 +2,18 @@
   <div class="header">
     <ion-toolbar style="--background: transparent; opacity: 0.7;">
       <ion-buttons slot="start">
-        <ion-button (click)="onClick()" fill="clear" shape="round">
-          <ion-icon slot="icon-only" name="person-add" *ngIf="!ownProfile"></ion-icon>
+        <!-- <ion-button (click)="onClick()" fill="clear" shape="round" *ngIf="!ownProfile">
+          <ion-icon slot="icon-only" name="person-add"></ion-icon>
+        </ion-button> -->
+        <ion-button (click)="notif()" fill="clear" shape="round" *ngIf="ownProfile">
+          <ion-icon slot="icon-only" name="notifications"></ion-icon>
         </ion-button>
       </ion-buttons>
       <ion-buttons slot="end">
-        <ion-button (click)="onClick()" fill="clear" shape="round">
+        <!-- <ion-button (click)="onClick()" fill="clear" shape="round">
           <ion-icon slot="icon-only" name="share-social"></ion-icon>
-        </ion-button>
-        <ion-button (click)="options()" fill="clear" shape="round">
+        </ion-button> -->
+        <ion-button (click)="options()" fill="clear" shape="round" *ngIf="ownProfile">
           <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
         </ion-button>
       </ion-buttons>
