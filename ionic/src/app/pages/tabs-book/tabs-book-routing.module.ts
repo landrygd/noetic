@@ -19,26 +19,6 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'map',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('../map/map.module').then(m => m.MapPageModule)
-          }
-        ]
-      },
-      {
-        path: 'settings',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('../settings-book/settings-book.module').then(m => m.SettingsBookPageModule)
-          }
-        ]
-      },
-      {
         path: '',
         redirectTo: 'story',
         pathMatch: 'full'

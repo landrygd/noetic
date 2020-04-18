@@ -1,6 +1,6 @@
 import { Component, OnInit, ComponentFactoryResolver } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
-import { NavController } from '@ionic/angular';
+import { NavController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-cover',
@@ -31,7 +31,7 @@ export class CoverPage implements OnInit {
   commented = false;
   lastRate = 0;
 
-  constructor(public firebase: FirebaseService, public navCtrl: NavController) { }
+  constructor(public firebase: FirebaseService, public navCtrl: NavController, private toastController: ToastController) { }
 
   ngOnInit() {
     this.name = this.firebase.book.name;
@@ -48,8 +48,8 @@ export class CoverPage implements OnInit {
     });
     this.firebase.syncComments(this.id);
     this.firebase.haveCommented(this.id).subscribe((value)=>{
-      if(value.data()) {
-        this.comment = value.data();
+      if(value.docs.length !== 0) {
+        this.comment = value.docs[0].data();
         this.commented = true;
         this.lastRate = this.comment.rate;
       }
@@ -73,10 +73,6 @@ export class CoverPage implements OnInit {
     return this.authorsId.includes(this.firebase.userId);
   }
 
-  getStars() {
-    return new Array(Math.round(this.star/Math.max(1,this.vote)));
-  }
-
   getStarColor(index) {
     if(index<this.comment.rate) {
       return "primary";
@@ -93,7 +89,17 @@ export class CoverPage implements OnInit {
     this.comment.date = date;
     if(this.comment.rate !== 0 ) {
       this.firebase.addComment(this.comment, this.id, this.commented, this.lastRate);
+    } else {
+      this.toast("Veuillez noter avant d'envoyer votre avis")
     }
+  }
+
+  async toast(text) {
+    const toast = await this.toastController.create({
+      message: text,
+      duration: 2000
+    });
+    toast.present();
   }
 
   starToArray(star) {

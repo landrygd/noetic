@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { NewChatComponent } from 'src/app/components/modals/new-chat/new-chat.component';
 import { FirebaseService } from 'src/app/services/firebase.service';
 
@@ -10,7 +10,7 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 })
 export class StoryPage implements OnInit {
 
-  constructor( private modalCtrl: ModalController, public firebase: FirebaseService) { }
+  constructor( private modalCtrl: ModalController, public firebase: FirebaseService, public navCtrl: NavController) { }
 
   ngOnInit() {
   }
@@ -24,6 +24,10 @@ export class StoryPage implements OnInit {
 
   openChat(chatId) {
     this.firebase.openChat(chatId);
+  }
+
+  settings() {
+    this.navCtrl.navigateForward("settings-book");
   }
 
 }

@@ -3,7 +3,12 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="tabs"></ion-back-button>
     </ion-buttons>
-    <ion-title>Book name</ion-title>
+    <ion-title>{{firebase.book.name}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="settings()" expand="block" fill="clear" shape="round">
+        <ion-icon slot="icon-only" name="settings"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

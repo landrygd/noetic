@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>settings-book</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs-book"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Paramètres</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -13,5 +16,5 @@
 </ion-content>
 
 <ion-button (click)="delete()" expand="block" fill="clear" shape="round" color="danger">
-  Delete book
+  Supprimer ce livre
 </ion-button>

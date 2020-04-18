@@ -56,7 +56,7 @@
                     </ion-button>
                   </ion-item>
                   <div>
-                    <ion-badge color="primary" mode="ios" *ngFor="let t of tags; index as i" class="ion-margin-end">
+                    <ion-badge color="primary" mode="ios" *ngFor="let t of tags; index as i" class="ion-margin-end ion-margin-bottom">
                       <ion-label>{{t}}</ion-label>
                       <ion-icon name="close-circle" (click)="removeTag(i)"></ion-icon>
                     </ion-badge>

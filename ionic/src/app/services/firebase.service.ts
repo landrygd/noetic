@@ -28,16 +28,22 @@ export class FirebaseService {
   connected: boolean = false;
   userData: any;
   userBooks: any [];
+  userList: any [];
   curBookId: string = 'none';
   curChat: string;
   curGame: string;
-  book: any;
+  book: any = {
+    name: 'loading',
+    desc: 'loading'
+  };
   bookStory: any[];
   bookActor: any[];
   bookPlace: any[];
   chatLogs: any[];
   comments:any[] = [];
 
+  userBooksSub: Subscription;
+  userListSub: Subscription;
   bookSub: Subscription;
   bookStorySub: Subscription;
   bookActorSub: Subscription;
@@ -46,6 +52,7 @@ export class FirebaseService {
   commentsSub: Subscription;
 
   gotUser:string =""
+  profileUserId:string = "";
 
   constructor(
     private toastController: ToastController, 
@@ -67,6 +74,7 @@ export class FirebaseService {
         this.method = auth.providerData[0].providerId;
         this.connected = true;
         this.syncUserData()
+        this.profileUserId = this.userId
         this.navCtrl.navigateRoot(['/']);
       }
     });
@@ -76,6 +84,7 @@ export class FirebaseService {
     this.firestore.collection('users').doc(this.userId).valueChanges().subscribe((value) => {
       this.userData = value;
       this.syncBooks();
+      this.syncList();
       if (this.userData['first'] == true) {
         this.navCtrl.navigateRoot('presentation');
         this.firestore.collection("/users").doc(this.userId).update({first: false});
@@ -84,33 +93,51 @@ export class FirebaseService {
   }
 
   syncBooks() { 
-    this.firestore.collection('books', ref => ref.where('id', 'in', this.getUserData() )).valueChanges().subscribe((value) => {
+    this.userBooksSub = this.firestore.collection('books', ref => ref.where('id', 'in', this.getUserBookData() )).valueChanges().subscribe((value) => {
       this.userBooks = value;
     });
   }
 
-  getUserData() {
+  getUserBookData() {
     if (this.userData.book.length == 0) {
       return [''];
     } else {
       return this.userData.book;
     }
-    
+  }
+
+  syncList() { 
+    this.userListSub = this.firestore.collection('books', ref => ref.where('id', 'in', this.getUserListData() )).valueChanges().subscribe((value) => {
+      this.userList = value;
+    });
+  }
+
+  getUserListData() {
+    if (this.userData.list.length == 0) {
+      return [''];
+    } else {
+      return this.userData.list;
+    }
   }
 
   addBook(book, cover="") {
     book.id = this.firestore.createId();
     this.curBookId = book.id;
-    this.addChat({name: 'main', desc: '', logs: []}, true);
     this.addActor({name: 'Narrator'});
     let bookList = this.userData.book;
     bookList.push(book.id);
     this.firestore.collection("/users").doc(this.userId).update({book: bookList});
-    this.firestore.collection("/books").doc(book.id).set(book);
-    if(cover!=="") {
+    if(cover.charAt(0) !== ".") {
       this.uploadFile("cover",cover,this.curBookId);
     }
-    this.openBook(book.id);
+    this.firestore.collection("/books").doc(book.id).set(book).then(()=> {
+      this.navCtrl.pop().then( ()=> {
+          this.openBook(book.id);
+          this.addChat({name: 'main', desc: '', logs: []}, true);
+        }
+      );
+      }
+    );
   }
 
   deleteBook(bookId = this.curBookId) {
@@ -133,8 +160,8 @@ export class FirebaseService {
 
   openBook(bookId) {
     this.curBookId = bookId;
-    this.navCtrl.navigateForward(["/tabs-book"]);
     this.syncBook();
+    this.navCtrl.navigateRoot(["/tabs-book"])
   }
 
   addChat(chat, main = false) {
@@ -252,14 +279,15 @@ export class FirebaseService {
       user.set({
         name: registerData.name,
         book: [],
-        lib: [],
+        list: [],
         follow: [],
         followers: [],
         credit: 0,
         first: true,
         birthday: registerData.birthday,
         avatar: '../../../assets/avatar/default.png',
-        lang: this.translator.getCurLanguage()
+        lang: this.translator.getCurLanguage(),
+        bio: "rien à dire pour le moment..."
       });
     })
     .catch(err => {
@@ -419,6 +447,8 @@ export class FirebaseService {
 
   openCover(bookJSON) {
     this.book = bookJSON;
+    this.book.stars = bookJSON["star"]/Math.max(bookJSON["vote"], 1);
+    this.book.starsArray = new Array(Math.round(this.book.stars));
     this.navCtrl.navigateForward('cover');
   }
 
@@ -461,6 +491,10 @@ export class FirebaseService {
 
   haveCommented(bookId = this.curBookId): Observable<any> {
     return this.firestore.collection('books').doc(bookId).collection('comments', ref => ref.where('userId', '==', this.userId )).get();
+  }
+
+  updateUserData(data:{}) {
+    this.firestore.collection('users').doc(this.userId).update(data);
   }
 }
 

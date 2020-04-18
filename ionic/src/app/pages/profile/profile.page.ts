@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
-import { ModalController, ActionSheetController } from '@ionic/angular';
+import { ModalController, ActionSheetController, AlertController } from '@ionic/angular';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 
 @Component({
@@ -10,23 +10,16 @@ import { UploadComponent } from 'src/app/components/modals/upload/upload.compone
 })
 export class ProfilePage implements OnInit {
 
-  name:string= "Inconnu";
-  bio:string= "Pas de bio...";
-  sub:number= 0;
+  ownProfile:boolean;
 
   constructor(
     public firebase: FirebaseService,
     public modalController: ModalController,
-    public actionSheetController: ActionSheetController
+    public actionSheetController: ActionSheetController,
+    private alertController: AlertController
     ) {
-      if(firebase.userData.hasOwnProperty('name')) {
-        this.name = firebase.userData['name'];
-      }
-      if(firebase.userData.hasOwnProperty('bio')) {
-        this.bio = firebase.userData['bio'];
-      }
-      if(firebase.userData.hasOwnProperty('sub')) {
-        this.sub = firebase.userData['sub'].length;
+      this.ownProfile = this.firebase.profileUserId == this.firebase.userId
+      if(this.ownProfile) {
       }
      }
 
@@ -147,5 +140,59 @@ export class ProfilePage implements OnInit {
           .transition(duration);
       }
     }
+  }
+
+  async changeUsername() {
+    const alert = await this.alertController.create({
+      header: 'Changer de pseudo',
+      inputs: [
+        {
+          name: 'name',
+          type: 'text',
+          placeholder: 'Votre pseudo',
+          value: this.firebase.userData.name,
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: 'Ok',
+          handler: (data) => {
+            this.firebase.updateUserData({name:data.name});
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async changeBio() {
+    const alert = await this.alertController.create({
+      header: 'Changer de bio',
+      inputs: [
+        {
+          name: 'bio',
+          type: 'text',
+          placeholder: 'Votre bio',
+          value: this.firebase.userData.bio,
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: 'Ok',
+          handler: (data) => {
+            this.firebase.updateUserData({bio:data.bio});
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 }
