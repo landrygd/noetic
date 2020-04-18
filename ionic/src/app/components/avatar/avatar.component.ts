@@ -10,6 +10,10 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 export class AvatarComponent implements OnInit {
 
   @Input() set actorId(actorId: string) {
+    console.log(actorId);
+    if(actorId == undefined) {
+      actorId = "Narrator";
+    }
     this.actor = this.firebase.getActorById(actorId);
     if(this.actor.hasOwnProperty('name')) {
       this.name = this.actor['name'];

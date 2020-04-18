@@ -178,7 +178,6 @@ export class FirebaseService {
   addBook(book, cover="") {
     book.id = this.firestore.createId();
     this.curBookId = book.id;
-    this.addActor({name: 'Narrator'});
     let bookList = this.userData.book;
     bookList.push(book.id);
     this.firestore.collection("/users").doc(this.userId).update({book: bookList});
@@ -187,9 +186,14 @@ export class FirebaseService {
     }
     this.firestore.collection("/books").doc(book.id).set(book).then(()=> {
       this.navCtrl.pop().then( ()=> {
-          this.openBook(book.id);
-          this.addChat({name: 'main', desc: '', logs: []}, true);
-        }
+        this.openBook(book.id);
+        setTimeout(()=>{
+          this.firestore.collection("/books").doc(this.curBookId).collection('actors').doc('Narrator').set({id: 'Narrator',name: 'Narrator'}).then(()=> {
+            this.addChat({name: 'main', desc: '', logs: []}, true);
+          })
+          
+        },100)
+      }
       );
       }
     );
@@ -275,11 +279,7 @@ export class FirebaseService {
   }
 
   addActor(actor) {
-    if(actor.name !== 'Narrator') {
-      actor.id = this.firestore.createId();
-    } else {
-      actor.id = 'Narrator';
-    }
+    actor.id = this.firestore.createId();
     this.firestore.collection("/books").doc(this.curBookId).collection('actors').doc(actor.id).set(actor);
   }
 
