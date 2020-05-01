@@ -12,23 +12,23 @@ import { TraductionService } from 'src/app/services/traductionService.service';
 })
 
 export class NewBookPage implements OnInit {
-  coverSize = "cover";
-  cover:string = "../../../assets/cover/cover1.png";
+  coverSize = 'cover';
+  cover = '../../../assets/cover/cover1.png';
   tags = [];
 
   bookForm: FormGroup;
 
   constructor(
-    public firebase: FirebaseService, 
-    public modalCtrl: ModalController, 
+    public firebase: FirebaseService,
+    public modalCtrl: ModalController,
     public nacCtrl: NavController,
     private formBuilder: FormBuilder,
     private translator: TraductionService
     ) {
     const max = 3;
     const min = 1;
-    const coverNumber = Math.floor(Math.random()*(max-min+1)+min);
-    this.cover = "../../../assets/cover/cover"+coverNumber+".png";
+    const coverNumber = Math.floor(Math.random() * (max - min + 1) + min);
+    this.cover = '../../../assets/cover/cover' + coverNumber + '.png';
     this.bookForm = this.formBuilder.group({
       name: ['', Validators.required],
       desc: ['', Validators.required],
@@ -42,21 +42,23 @@ export class NewBookPage implements OnInit {
 
   confirm() {
     const form = this.bookForm.value;
+    const title: string = form.name;
     const book = {
-      name: form.name,
+      title,
+      titleLower: title.toLowerCase(),
       desc: form.desc,
       first: 'main',
       star: 0,
       vote: 0,
       view: 0,
-      tags:this.tags,
+      tags: this.tags,
       cover: this.cover,
-      cat:form.cat,
-      authors:[this.firebase.userId],
-      verso:form.verso,
+      cat: form.cat,
+      authors: [this.firebase.userId],
+      verso: form.verso,
       lang: this.translator.getCurLanguage(),
-      ref:[]
-    }
+      ref: [],
+    };
     this.firebase.addBook(book, this.cover);
   }
 
@@ -69,26 +71,26 @@ export class NewBookPage implements OnInit {
     });
     modal.onDidDismiss()
       .then((data) => {
-        if(data['data']) {
-          this.cover = data['data'];
+        if (data.data) {
+          this.cover = data.data;
           this.coverSize = '';
-          setTimeout(()=>this.coverSize = 'cover',50);
+          setTimeout(() => this.coverSize = 'cover', 50);
         }
     });
     return await modal.present();
   }
 
   enter(keyCode) {
-    if (keyCode == 13) {
+    if (keyCode === 13) {
       this.addTag();
     }
   }
 
   addTag() {
-    if(this.bookForm.value.tag !== "") {
-      if(!this.tags.includes(this.bookForm.value.tag)) {
+    if (this.bookForm.value.tag !== '') {
+      if (!this.tags.includes(this.bookForm.value.tag)) {
         this.tags.push(this.bookForm.value.tag);
-        this.bookForm.value.tag = "";
+        this.bookForm.value.tag = '';
         this.bookForm.patchValue({tag: ''});
       }
     }

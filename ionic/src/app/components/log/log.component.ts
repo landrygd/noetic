@@ -11,54 +11,57 @@ import { ModalController } from '@ionic/angular';
 
 export class LogComponent implements OnInit {
 
-  @Input() log: object;
-  @Input() index: number = 0;
-  @Input() selected: boolean = false;
-  @Input() edit: boolean = false;
+  @Input() log: any;
+  @Input() index = 0;
+  @Input() selected = false;
+  @Input() edit = false;
+  @Input() speed = 200; // CPS Carractères Par Seconde
+  @Input() typing = false;
 
-  action: string = 'talk';
-  actor: string = '';
-  color: string = 'primary';
-  msg: string = '';
-  name: string = '';
-  number: number = 0;
+  action = 'talk';
+  actor = '';
+  color = 'primary';
+  msg = '';
+  name = '';
+  number = 0;
   answers: any[] = [];
-  chat: string = '';
+  chat = '';
 
-  constructor(private firebase: FirebaseService, private modalCtrl: ModalController) {
-
-  }
+  constructor(private firebase: FirebaseService, private modalCtrl: ModalController) {}
 
   ngOnInit() {
-    this.action = this.log['action'];
-    if(this.log.hasOwnProperty('actor')) {
-      this.actor = this.log['actor'];
-      if(this.actor !== 'Narrator') {
+    this.action = this.log.action;
+    if (this.log.hasOwnProperty('actor')) {
+      this.actor = this.log.actor;
+      if (this.actor !== 'Narrator') {
         this.name = this.firebase.getActorById(this.actor).name;
       }
     }
-    if(this.log.hasOwnProperty('color')) {
-      this.color = this.log['color'];
+    if (this.log.hasOwnProperty('color')) {
+      this.color = this.log.color;
     }
-    if(this.log.hasOwnProperty('msg')) {
-      this.msg = this.log['msg'];
+    if (this.log.hasOwnProperty('msg')) {
+      this.msg = this.log.msg;
+      if (this.typing) {
+        setTimeout(() => this.typing = false, (this.msg.length / this.speed) * 60000);
+      }
     }
-    if(this.log.hasOwnProperty('number')) {
-      this.number = this.log['number'];
+    if (this.log.hasOwnProperty('number')) {
+      this.number = this.log.number;
     }
-    if(this.log.hasOwnProperty('answers')) {
-      this.answers = this.log['answers'];
+    if (this.log.hasOwnProperty('answers')) {
+      this.answers = this.log.answers;
     }
-    if(this.log.hasOwnProperty('chat')) {
-      this.chat = this.log['chat'];
+    if (this.log.hasOwnProperty('chat')) {
+      this.chat = this.log.chat;
     }
   }
 
   getClass() {
-    if(this.selected) {
-      return "selected";
+    if (this.selected) {
+      return 'selected';
     } else {
-      return "notselected";
+      return 'notselected';
     }
   }
 

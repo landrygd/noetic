@@ -10,7 +10,7 @@
     "predeploy": "npm --prefix \"$RESOURCE_DIR\" run build"
   },
   "hosting": {
-    "public": "public",
+    "public": "ionic/www",
     "ignore": [
       "firebase.json",
       "**/.*",

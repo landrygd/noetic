@@ -6,8 +6,11 @@
     <ion-note>{{name}}</ion-note>
     <ion-item color="transparent" lines="none" class="ion-no-margin ion-no-padding">
       <ion-card color="primary" class="ion-no-margin">
-        <ion-card-content>
+        <ion-card-content *ngIf="!typing">
           {{msg}}
+        </ion-card-content>
+        <ion-card-content *ngIf="typing">
+          <ion-spinner name="dots" color="dark"></ion-spinner>
         </ion-card-content>
         <ion-button (click)="editAnswers()" expand="block" fill="solid" shape="round" *ngIf="edit && action == 'question'">
           Edit answers
@@ -17,8 +20,11 @@
   </ion-col>
   <ion-col size="10" *ngIf="actor == 'Narrator'">
     <ion-card color="light">
-      <ion-card-content>
+      <ion-card-content *ngIf="!typing">
         {{msg}}
+      </ion-card-content>
+      <ion-card-content *ngIf="typing" color="dark">
+        <ion-spinner name="dots" color="dark"></ion-spinner>
       </ion-card-content>
       <ion-button (click)="editAnswers()" expand="block" fill="clear" shape="round" *ngIf="edit && action == 'question'">
         Edit answers

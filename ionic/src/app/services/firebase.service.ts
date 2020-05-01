@@ -7,13 +7,14 @@ import { Game } from '../classes/game';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { TraductionService } from './traductionService.service';
+import { auth } from 'firebase/app';
 
-export interface User { 
-  book: any []; 
+export interface User {
+  book: any [];
   credit: number;
-  follow: number; 
-  lib: any []; 
-  name: string
+  follow: number;
+  lib: any [];
+  name: string;
 }
 
 @Injectable({
@@ -25,13 +26,13 @@ export class FirebaseService {
   userId: string;
   mail: string;
   method: any;
-  connected: boolean = false;
+  connected = false;
   userData: any;
   userBooks: any [] = [];
   userList: any [] = [];
   userNotifs: any[] = [];
-  unreadNotif: boolean = false;
-  curBookId: string = 'none';
+  unreadNotif = false;
+  curBookId = 'none';
   curChat: string;
   curGame: string;
   book: any = {
@@ -42,7 +43,7 @@ export class FirebaseService {
   bookActor: any[];
   bookPlace: any[];
   chatLogs: any[];
-  comments:any[] = [];
+  comments: any[] = [];
 
   userBooksSub: Subscription;
   userListSub: Subscription;
@@ -54,10 +55,10 @@ export class FirebaseService {
   chatLogsSub: Subscription;
   commentsSub: Subscription;
 
-  gotUser:string =""
-  profileUserId:string = "";
+  gotUser = '';
+  profileUserId = '';
 
-  category=[
+  category = [
     'action',
     'adventure',
     'fanfiction',
@@ -70,33 +71,35 @@ export class FirebaseService {
     'romance',
     'scifi',
     'thriller'
-  ]
+  ];
 
-  mostVueList: any[] = [];
+  mostVueList: any[];
 
   usersList: any[] = [];
 
   constructor(
-    private toastController: ToastController, 
+    private toastController: ToastController,
     public navCtrl: NavController,
-    private firestore: AngularFirestore, 
-    public afAuth: AngularFireAuth, 
+    private firestore: AngularFirestore,
+    public afAuth: AngularFireAuth,
     public firerealtime: AngularFireDatabase,
     public firestorage: AngularFireStorage,
     public translator: TraductionService
   ) {
     this.afAuth.authState.subscribe(auth => {
       if (!auth) {
-        // this.presentToast('non connecté');
         this.connected = false;
+        // console.log(this.translator.getCurLanguage());
+        this.mostVueList = this.getMostVue(this.translator.getCurLanguage());
       } else {
+        this.mostVueList = undefined;
         // this.presentToast('connecté: ' + auth.uid);
         this.userId = auth.uid;
         this.mail = auth.email;
         this.method = auth.providerData[0].providerId;
         this.connected = true;
-        this.syncUserData()
-        this.profileUserId = this.userId
+        this.syncUserData();
+        this.profileUserId = this.userId;
         this.navCtrl.navigateRoot(['/']);
       }
     });
@@ -108,19 +111,19 @@ export class FirebaseService {
       this.syncBooks();
       this.syncList();
       this.syncNotifs();
-      if(this.mostVueList == undefined) {
+      if (this.mostVueList === undefined) {
         this.mostVueList = this.getMostVue();
       }
-      if (this.userData['first'] == true) {
+      if (this.userData.first === true) {
         this.navCtrl.navigateRoot('presentation');
-        this.firestore.collection("/users").doc(this.userId).update({first: false});
+        this.firestore.collection('/users').doc(this.userId).update({first: false});
       }
     });
   }
 
-  syncBooks() { 
+  syncBooks() {
     this.userBooks = [];
-    for(let i = 0; i<this.userData.book.length; i++) {
+    for (let i = 0; i < this.userData.book.length; i++) {
       const bookId = this.userData.book[i];
       this.userBooksSub = this.firestore.collection('books', ref => ref.where('id', '==', bookId)).valueChanges().subscribe((value) => {
         this.userBooks[i] = value[0];
@@ -128,7 +131,7 @@ export class FirebaseService {
     }
   }
 
-  syncNotifs() { 
+  syncNotifs() {
     this.userNotifs = [];
     this.userNotifsSub = this.firestore.collection('users').doc(this.userId).collection('notifs').valueChanges().subscribe((value) => {
       this.userNotifs = value;
@@ -137,28 +140,28 @@ export class FirebaseService {
   }
 
   haveUnreadNotif() {
-    for(let i = 0; i <this.userNotifs.length; i++) {
+    for (let i = 0; i < this.userNotifs.length; i++) {
       const notif = this.userNotifs[i];
-      if(!notif.read) {
+      if (!notif.read) {
         return true;
       }
     }
     return false;
   }
 
-  unsyncBooks() { 
+  unsyncBooks() {
     this.userBooksSub.unsubscribe();
   }
 
-  refreshBooks() { 
+  refreshBooks() {
     this.unsyncBooks();
-    setTimeout(()=>this.syncBooks(),500);
+    setTimeout(() => this.syncBooks(), 500);
   }
 
 
-  syncList() { 
+  syncList() {
     this.userList = [];
-    for(let i = 0; i<this.userData.list.length; i++) {
+    for (let i = 0; i < this.userData.list.length; i++) {
       const bookId = this.userData.list[i];
       this.userListSub = this.firestore.collection('books', ref => ref.where('id', '==', bookId)).valueChanges().subscribe((value) => {
         this.userList[i] = value[0];
@@ -166,33 +169,33 @@ export class FirebaseService {
     }
   }
 
-  unsyncList() { 
+  unsyncList() {
     this.userListSub.unsubscribe();
   }
 
-  refreshList() { 
+  refreshList() {
     this.unsyncList();
-    setTimeout(()=>this.syncList(),500);
+    setTimeout(() => this.syncList(), 500);
   }
 
-  addBook(book, cover="") {
+  addBook(book, cover='') {
     book.id = this.firestore.createId();
     this.curBookId = book.id;
-    let bookList = this.userData.book;
+    const bookList = this.userData.book;
     bookList.push(book.id);
-    this.firestore.collection("/users").doc(this.userId).update({book: bookList});
-    if(cover.charAt(0) !== ".") {
-      this.uploadFile("cover",cover,this.curBookId);
+    this.firestore.collection('/users').doc(this.userId).update({book: bookList});
+    if (cover.charAt(0) !== '.') {
+      this.uploadFile('cover', cover, this.curBookId);
     }
-    this.firestore.collection("/books").doc(book.id).set(book).then(()=> {
-      this.navCtrl.pop().then( ()=> {
+    this.firestore.collection('/books').doc(book.id).set(book).then(() => {
+      this.navCtrl.pop().then( () => {
         this.openBook(book.id);
-        setTimeout(()=>{
-          this.firestore.collection("/books").doc(this.curBookId).collection('actors').doc('Narrator').set({id: 'Narrator',name: 'Narrator'}).then(()=> {
+        setTimeout(() => {
+          this.firestore.collection('/books').doc(this.curBookId).collection('actors').doc('Narrator').set({id: 'Narrator', name: 'Narrator'}).then(() => {
             this.addChat({name: 'main', desc: '', logs: []}, true);
-          })
-          
-        },100)
+          });
+
+        }, 100);
       }
       );
       }
@@ -200,44 +203,44 @@ export class FirebaseService {
   }
 
   deleteBook(bookId = this.curBookId) {
-    this.navCtrl.navigateRoot("/");
-    let bookList: any [] = this.userData.book;
-    bookList.splice(bookList.indexOf(bookId),1);
-    this.firestore.collection("/users").doc(this.userId).update({book: bookList});
-    const subCollections = ["story","actors","map","comments"];
+    this.navCtrl.navigateRoot('/');
+    const bookList: any [] = this.userData.book;
+    bookList.splice(bookList.indexOf(bookId), 1);
+    this.firestore.collection('/users').doc(this.userId).update({book: bookList});
+    const subCollections = ['story','actors','map','comments'];
     this.unsyncBook();
     subCollections.forEach((subCollection) => {
-      this.firestore.collection("books").doc(bookId).collection(subCollection).get().subscribe((data) => {
-        data.docs.forEach((doc)=>this.firestore.collection("/books").doc(bookId).collection(subCollection).doc(doc.id).delete());
+      this.firestore.collection('books').doc(bookId).collection(subCollection).get().subscribe((data) => {
+        data.docs.forEach((doc) => this.firestore.collection('/books').doc(bookId).collection(subCollection).doc(doc.id).delete());
       });
-    })
-    this.book.ref.forEach(ref => {
-      this.firestorage.ref("books/"+bookId+"/"+ref).delete();
     });
-    this.firestore.collection("/books").doc(bookId).delete();
+    this.book.ref.forEach(ref => {
+      this.firestorage.ref('books/'+ bookId +'/'+ ref).delete();
+    });
+    this.firestore.collection('/books').doc(bookId).delete();
     this.refreshBooks();
   }
 
   openBook(bookId) {
     this.curBookId = bookId;
     this.syncBook();
-    this.navCtrl.navigateRoot(["/tabs-book"])
+    this.navCtrl.navigateRoot(['/tabs-book']);
   }
 
   addChat(chat, main = false) {
-    if(main) {
+    if (main) {
       chat.id = 'main';
     } else {
       chat.id = this.firestore.createId();
     }
-    this.firestore.collection("/books").doc(this.curBookId).collection('story').doc(chat.id).set(chat).then(
+    this.firestore.collection('/books').doc(this.curBookId).collection('story').doc(chat.id).set(chat).then(
       () => this.openChat(chat.id)
     );
   }
 
   openChat(chatId) {
     this.curChat = chatId;
-    this.navCtrl.navigateForward(["/chat"]);
+    this.navCtrl.navigateForward(['/chat']);
     this.syncChat();
   }
 
@@ -265,9 +268,9 @@ export class FirebaseService {
 
 
   syncChat(chatId = this.curChat) {
-    this.chatLogsSub = this.firestore.collection('books').doc(this.curBookId).collection('story').doc(chatId).valueChanges().subscribe((value) => {
+    this.chatLogsSub = this.firestore.collection('books').doc(this.curBookId).collection('story').doc(chatId).valueChanges().subscribe((value: any) => {
       if (value !== undefined) {
-        this.chatLogs = value['logs'];
+        this.chatLogs = value.logs;
       } else {
         this.chatLogsSub.unsubscribe();
       }
@@ -280,38 +283,38 @@ export class FirebaseService {
 
   addActor(actor) {
     actor.id = this.firestore.createId();
-    this.firestore.collection("/books").doc(this.curBookId).collection('actors').doc(actor.id).set(actor);
+    this.firestore.collection('/books').doc(this.curBookId).collection('actors').doc(actor.id).set(actor);
   }
 
-  editChatLog (log, index = this.chatLogs.length) {
-    let res = this.chatLogs;
-    res.splice(index,1,log);
+  editChatLog(log, index = this.chatLogs.length) {
+    const res = this.chatLogs;
+    res.splice(index, 1, log);
     this.setChatLogs(res);
   }
 
   addChatLog(log, index = this.chatLogs.length) {
-    let res = this.chatLogs;
-    res.splice(index,0,log);
+    const res = this.chatLogs;
+    res.splice(index, 0, log);
     this.setChatLogs(res);
   }
 
   deleteChatLog(index = this.chatLogs.length) {
-    let res = this.chatLogs;
-    res.splice(index,1);
+    const res = this.chatLogs;
+    res.splice(index, 1);
     this.setChatLogs(res);
   }
 
   deleteChat(chatId = this.curChat) {
-    this.unsyncChat()
+    this.unsyncChat();
     this.firestore.collection('books').doc(this.curBookId).collection('story').doc(chatId).delete();
     this.navCtrl.navigateRoot('/tabs-book');
   }
 
   setChatLogs(logs) {
-    this.firestore.collection('books').doc(this.curBookId).collection('story').doc(this.curChat).update({logs:logs});
+    this.firestore.collection('books').doc(this.curBookId).collection('story').doc(this.curChat).update({logs});
   }
 
-  async presentToast(msg) {
+  async toast(msg) {
     const toast = await this.toastController.create({
       message: msg,
       duration: 1000
@@ -328,27 +331,39 @@ export class FirebaseService {
     });
   }
 
-  signUp(registerData) {
-    this.afAuth.createUserWithEmailAndPassword(registerData.email, registerData.password)
-    .then(auth => {
-      const user = this.firestore.collection("/users").doc(auth.user.uid);
-      user.set({
-        id: auth.user.uid,
-        name: registerData.name,
-        book: [],
-        list: [],
-        follow: [],
-        followers: [],
-        credit: 0,
-        first: true,
-        birthday: registerData.birthday,
-        avatar: '../../../assets/avatar/default.png',
-        lang: this.translator.getCurLanguage(),
-        bio: "rien à dire pour le moment..."
+  signUp(registerData, mode = 'email') {
+    if (mode === 'email') {
+      this.afAuth.createUserWithEmailAndPassword(registerData.email, registerData.password)
+      .then(auth => {
+        this.newUser(auth, registerData);
+      })
+      .catch(err => {
+        this.error('Email déjà utilisé');
       });
-    })
-    .catch(err => {
-      this.error('Email déjà utilisé');
+    }
+    if (mode === 'google') {
+      this.afAuth.signInWithPopup(new auth.GoogleAuthProvider()).then( auth => {
+          this.newUser(auth);
+        }
+      )
+    }
+  }
+
+  newUser(auth, registerData = {name: 'unknowed', birthday: 'unknowed'}) {
+    const user = this.firestore.collection('/users').doc(auth.user.uid);
+    user.set({
+      id: auth.user.uid,
+      name: registerData.name,
+      book: [],
+      list: [],
+      follow: [],
+      followers: [],
+      credit: 0,
+      first: true,
+      birthday: registerData.birthday,
+      avatar: '../../../assets/avatar/default.png',
+      lang: this.translator.getCurLanguage(),
+      bio: 'rien à dire pour le moment...'
     });
   }
 
@@ -359,7 +374,7 @@ export class FirebaseService {
     this.syncBook();
     this.curChat = this.getFirstChat();
     this.syncChat();
-    const itemRef = this.firerealtime.object('games/'+id);
+    const itemRef = this.firerealtime.object('games/' + id);
     itemRef.set(game.getJson());
   }
 
@@ -370,7 +385,7 @@ export class FirebaseService {
   leaveGame() {
     this.unsyncBook();
     this.unsyncChat();
-    this.firerealtime.object('games/'+this.curGame).remove();
+    this.firerealtime.object('games/' + this.curGame).remove();
   }
 
   async error(text) {
@@ -383,9 +398,9 @@ export class FirebaseService {
   }
 
   getActorById(id) {
-    for(let i = 0; i < this.bookActor.length; i++) {
+    for (let i = 0; i < this.bookActor.length; i++) {
       const actor = this.bookActor[i];
-      if(actor.id == id) {
+      if (actor.id === id) {
         return actor;
       }
     }
@@ -404,9 +419,9 @@ export class FirebaseService {
   }
 
   getLabels(): any[] {
-    let res = [];
+    const res = [];
     this.chatLogs.forEach(element => {
-      if(element.action == 'label') {
+      if (element.action === 'label') {
         res.push(element.number);
       }
     });
@@ -416,19 +431,19 @@ export class FirebaseService {
   getNewLabel(): number {
     let labels = this.getLabels();
     labels = labels.sort();
-    for(let i = 0; i<labels.length; i++) {
-      if(labels[i] !== i+1) {
-        return i+1;
+    for (let i = 0; i < labels.length; i++) {
+      if (labels[i] !== i + 1) {
+        return i + 1;
       }
     }
-    return labels.length+1;
+    return labels.length + 1;
   }
 
-  getLabelLine(number) {
-    for(let i = 0; i<this.chatLogs.length; i++) {
+  getLabelLine(nb) {
+    for (let i = 0; i < this.chatLogs.length; i++) {
       const log = this.chatLogs[i];
-      if(log["action"] == 'label') {
-        if(log['number'] == number) {
+      if (log.action === 'label') {
+        if (log.number === nb) {
           return i;
         }
       }
@@ -441,9 +456,9 @@ export class FirebaseService {
   }
 
   haveChat(chatName: string): boolean {
-    for(let i = 0; i<this.bookStory.length; i++) {
+    for (let i = 0; i < this.bookStory.length; i++) {
       const chat = this.bookStory[i];
-      if(chat.name == chatName) {
+      if (chat.name === chatName) {
         return true;
       }
     }
@@ -451,123 +466,130 @@ export class FirebaseService {
   }
 
   getChatIdByName(chatName: string) {
-    for(let i = 0; i<this.bookStory.length; i++) {
+    for (let i = 0; i < this.bookStory.length; i++) {
       const chat = this.bookStory[i];
-      if(chat.name == chatName) {
+      if (chat.name === chatName) {
         return chat.id;
       }
     }
     return this.curChat;
   }
 
-  uploadFile(type: string, file: any, id=this.userId) {
+  uploadFile(type: string, file: any, id= this.userId) {
     let path = '';
-    if(type == 'userAvatar') {
-      path = "users/"+id+"/avatar.png";
+    if (type == 'userAvatar') {
+      path = 'users/'+ id +'/avatar.png';
     }
-    if(type == 'cover') {
-      path = "books/"+id+"/cover.png";
+    if (type === 'cover') {
+      path = 'books/'+ id +'/cover.png';
     }
     this.firestorage.ref(path).putString(file, 'data_url').then( () => {
-      if(type == 'userAvatar') {
-        this.firestorage.ref(path).getDownloadURL().subscribe((ref)=>{
-          this.firestore.collection('users').doc(id).update({avatar:ref});
-        })
+      if (type === 'userAvatar') {
+        this.firestorage.ref(path).getDownloadURL().subscribe((ref) => {
+          this.firestore.collection('users').doc(id).update({avatar: ref});
+        });
       }
-      if(type == 'cover') {
-        this.firestorage.ref(path).getDownloadURL().subscribe((ref)=>{
-          if(!this.book.ref.includes('cover.png')) {
-            let refWithCover:any[] = this.book.ref;
+      if (type === 'cover') {
+        this.firestorage.ref(path).getDownloadURL().subscribe((ref) => {
+          if (!this.book.ref.includes('cover.png')) {
+            const refWithCover: any[] = this.book.ref;
             refWithCover.push('cover.png');
-            this.firestore.collection('books').doc(id).update({ref:refWithCover});
+            this.firestore.collection('books').doc(id).update({ref: refWithCover});
           }
-          this.firestore.collection('books').doc(id).update({cover:ref});
-        })
+          this.firestore.collection('books').doc(id).update({cover: ref});
+        });
       }
     }
     );
   }
 
   publishBook() {
-    this.firestore.collection("/books").doc(this.curBookId).update({public:true});
+    this.firestore.collection('/books').doc(this.curBookId).update({public: true});
   }
 
   unpublishBook() {
-    this.firestore.collection("/books").doc(this.curBookId).update({public:false});
+    this.firestore.collection('/books').doc(this.curBookId).update({public: false});
   }
 
-  search(filter:string): any[] {
-    let res = [];
-    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', this.userData.lang).where('name', '==', filter)).get().subscribe((data) => {
-      data.docs.forEach((doc)=>{
+  search(filter: string): any[] {
+    const res = [];
+    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', this.userData.lang).orderBy('titleLower').startAt(filter.toLowerCase()).endAt(filter.toLowerCase()+'\uf8ff')).get().subscribe((data) => {
+      data.docs.forEach((doc) => {
         res.push(doc.data());
-      })
+      });
     });
-    const filterArray = filter.split(" ");
+    const filterArray = filter.split(' ');
     this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', this.userData.lang).where('tags', 'array-contains-any', filterArray)).get().subscribe((data) => {
-      data.docs.forEach((doc)=>{
+      data.docs.forEach((doc) => {
         res.push(doc.data());
-      })
-    })
-    return res
+      });
+    });
+    return res;
   }
 
   getCategory(category) {
-    let res = [];
-    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', this.userData.lang).where('cat', '==', category).orderBy('view','desc')).get().subscribe((data) => {
-      data.docs.forEach((doc)=>{
+    const res = [];
+    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', this.userData.lang).where('cat', '==', category).orderBy('view', 'desc')).get().subscribe((data) => {
+      data.docs.forEach((doc) => {
         res.push(doc.data());
-      })
+      });
+      if (res.length === 0) {
+        this.toast('catégorie vide pour le moment');
+      }
     });
-    return res
+    return res;
   }
 
-  getMostVue() {
-    let res = [];
-    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', this.userData.lang).orderBy('view','desc')).get().subscribe((data) => {
-      data.docs.forEach((doc)=>{
+  getMostVue(lang = this.userData.lang) {
+    const res = [];
+    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', lang).orderBy('view', 'desc')).get().subscribe((data) => {
+      data.docs.forEach((doc) => {
         res.push(doc.data());
-      })
+      });
     });
-    return res
+    return res;
   }
 
   openCover(bookJSON) {
     this.book = bookJSON;
-    this.book.stars = bookJSON["star"]/Math.max(bookJSON["vote"], 1);
+    this.book.stars = bookJSON.star / Math.max(bookJSON.vote, 1);
     this.book.starsArray = new Array(Math.round(this.book.stars));
     this.navCtrl.navigateForward('cover');
   }
 
   play(id = this.curBookId) {
     this.curBookId = id;
-    this.navCtrl.navigateForward("/game");
+    this.navCtrl.navigateForward('/game');
   }
 
   getUserById(userId): Observable<any> {
     return this.firestore.collection('users').doc(userId).get();
   }
 
-  addComment(comment, bookId, commented=false, lastRate=0) {
-    if(commented) {
-      this.firestore.collection("books").doc(bookId).update({
-        star:this.book.star+comment.rate-lastRate,
+  getBookById(bookId): Observable<any> {
+    return this.firestore.collection('books').doc(bookId).get();
+  }
+
+  addComment(comment, bookId, commented= false, lastRate= 0) {
+    if (commented) {
+      this.firestore.collection('books').doc(bookId).update({
+        star: this.book.star + comment.rate - lastRate,
       });
     } else {
-      this.firestore.collection("books").doc(bookId).update({
-        vote:this.book.vote+1,
-        star:this.book.star+comment.rate,
+      this.firestore.collection('books').doc(bookId).update({
+        vote: this.book.vote + 1,
+        star: this.book.star + comment.rate,
       });
     }
-    this.firestore.collection("books").doc(bookId).collection("comments").doc(this.userId).set(comment);
+    this.firestore.collection('books').doc(bookId).collection('comments').doc(this.userId).set(comment);
   }
 
   deleteComment(bookId) {
-    this.firestore.collection("books").doc(bookId).collection("comments").doc(this.userId).delete();
+    this.firestore.collection('books').doc(bookId).collection('comments').doc(this.userId).delete();
   }
 
-  syncComments(bookId) { 
-    this.commentsSub = this.firestore.collection('books').doc(bookId).collection("comments").valueChanges().subscribe((value) => {
+  syncComments(bookId) {
+    this.commentsSub = this.firestore.collection('books').doc(bookId).collection('comments').valueChanges().subscribe((value) => {
       this.comments = value;
     });
   }
@@ -580,29 +602,29 @@ export class FirebaseService {
     return this.firestore.collection('books').doc(bookId).collection('comments', ref => ref.where('userId', '==', this.userId )).get();
   }
 
-  updateUserData(data:{}) {
+  updateUserData(data: {}) {
     this.firestore.collection('users').doc(this.userId).update(data);
   }
 
   addToList(bookId) {
-    let list = this.userData.list;
+    const list = this.userData.list;
     list.push(bookId);
-    this.firestore.collection('users').doc(this.userId).update({list:list})
+    this.firestore.collection('users').doc(this.userId).update({list});
   }
 
   removeFromList(bookId) {
-    let list:any[] = this.userData.list;
+    const list: any[] = this.userData.list;
     const index = list.indexOf(bookId);
     if (index > -1) {
       list.splice(index, 1);
     }
-    this.firestore.collection('users').doc(this.userId).update({list:list}).then(
-      ()=> this.refreshList()
+    this.firestore.collection('users').doc(this.userId).update({list}).then(
+      () => this.refreshList()
     );
   }
 
   haveFromList(bookId) {
-    let list:any[] = this.userData.list;
+    const list: any[] = this.userData.list;
     const index = list.indexOf(bookId);
     if (index > -1) {
       return true;
@@ -613,30 +635,30 @@ export class FirebaseService {
 
   sendNotif(type, userId, bookId = this.curBookId) {
     const id = this.firestore.createId();
-    if (["invBook", "acceptedInvBook"].includes(type)) {
-      this.firestore.collection('users').doc(userId).collection('notifs').doc(id).set({id:id,type:type,user:this.userId,book:this.curBookId});
+    if (['invBook', 'acceptedInvBook'].includes(type)) {
+      this.firestore.collection('users').doc(userId).collection('notifs').doc(id).set({id, type, user: this.userId, book: this.curBookId});
     }
   }
 
   inviteBook(userId, bookId = this.curBookId) {
-    this.sendNotif("invBook",userId,bookId);
+    this.sendNotif('invBook', userId, bookId);
   }
 
   acceptInvitation(userId, bookId) {
-    let bookList = this.userData.book;
+    const bookList = this.userData.book;
     bookList.push(bookId);
-    this.firestore.collection("users").doc(this.userId).update({book: bookList});
+    this.firestore.collection('users').doc(this.userId).update({book: bookList});
     this.sendNotif('acceptedInvBook', userId, bookId);
-    this.firestore.collection("books").doc(bookId).get().subscribe((data)=>{
+    this.firestore.collection('books').doc(bookId).get().subscribe((data) => {
       const book = data.data();
-      let authors = book.authors;
+      const authors = book.authors;
       authors.push(this.userId);
-      this.firestore.collection("books").doc(bookId).update({authors: authors});
+      this.firestore.collection('books').doc(bookId).update({authors});
     });
   }
 
   eraseNotif(index) {
-    this.firestore.collection("users").doc(this.userId).collection("notifs").doc(index).delete();
+    this.firestore.collection('users').doc(this.userId).collection('notifs').doc(index).delete();
   }
 
   getUsersByName(userName): Observable<any> {

@@ -12,7 +12,7 @@ import { TraductionService } from 'src/app/services/traductionService.service';
 export class RegisterPage implements OnInit {
 
   confirmPassword = '';
-  private registerForm : FormGroup;
+  registerForm: FormGroup;
 
   constructor(
     public firebase: FirebaseService,
@@ -25,7 +25,7 @@ export class RegisterPage implements OnInit {
       name: ['', Validators.required],
       email: ['', Validators.compose([
         Validators.required,
-        Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")])
+        Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')])
       ],
       password: ['', Validators.required],
       birthday: ['', Validators.required],
@@ -49,10 +49,10 @@ export class RegisterPage implements OnInit {
   }
 
   signUp() {
-    const res = this.registerForm.value
-    if(res.password == res.confirmPassword) {
-      if(this.allLetterOrNumber(res.name)) {
-        if(res.password.length >= 8) {
+    const res = this.registerForm.value;
+    if (res.password === res.confirmPassword) {
+      if (this.allLetterOrNumber(res.name)) {
+        if (res.password.length >= 8) {
           this.firebase.signUp(res);
         } else {
           this.toast('Le mot de passe doit contenir au moins 8 caractères.');
@@ -65,8 +65,8 @@ export class RegisterPage implements OnInit {
     }
   }
 
-  allLetterOrNumber(string): boolean { 
-    if(/^[A-zÀ-ú0-9]+$/.test(string)) {
+  allLetterOrNumber(str: string): boolean {
+    if (/^[A-zÀ-ú0-9]+$/.test(str)) {
       return true;
       } else {
       return false;

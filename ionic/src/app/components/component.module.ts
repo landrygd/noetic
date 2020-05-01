@@ -11,7 +11,7 @@ import { LogComponent } from './log/log.component';
 
 @NgModule({
   declarations: [
-    CardBookComponent, 
+    CardBookComponent,
     AvatarComponent,
     LogComponent
   ],
@@ -22,7 +22,7 @@ import { LogComponent } from './log/log.component';
     ModalModule
   ],
   exports: [
-    CardBookComponent, 
+    CardBookComponent,
     AvatarComponent,
     LogComponent
   ]

@@ -14,6 +14,6 @@ export class PresentationPage implements OnInit {
   }
 
   start() {
-    this.navCtrl.navigateRoot("/tabs");
+    this.navCtrl.navigateRoot('/tabs');
   }
 }

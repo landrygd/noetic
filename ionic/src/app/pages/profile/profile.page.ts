@@ -200,4 +200,6 @@ export class ProfilePage implements OnInit {
   notif() {
     this.navCtrl.navigateForward("notifs");
   }
+
+  onClick() {}
 }

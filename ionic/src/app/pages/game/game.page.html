@@ -9,10 +9,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding class="bg">
+<ion-content fullscreen padding class="bg">
   <div class="backdrop">
     <ion-grid fixed *ngFor="let log of chatLogs; index as i" class="ion-no-margin">
-      <app-log [log]="log" [edit]="false" [index]="i" button></app-log>
+      <app-log [log]="log" [edit]="false" [index]="i" [speed]="speed" typing="true"></app-log>
     </ion-grid>
   </div>
 </ion-content>

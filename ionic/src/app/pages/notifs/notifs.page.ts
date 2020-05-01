@@ -9,10 +9,10 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 export class NotifsPage implements OnInit {
 
   questions = [
-    "invBook"
-  ]
+    'invBook'
+  ];
 
-  constructor(private firebase: FirebaseService) { }
+  constructor(public firebase: FirebaseService) { }
 
   ngOnInit() {
   }
@@ -31,7 +31,7 @@ export class NotifsPage implements OnInit {
   }
 
   erase(notif) {
-    this.firebase.eraseNotif(notif.id)
+    this.firebase.eraseNotif(notif.id);
   }
 
 }

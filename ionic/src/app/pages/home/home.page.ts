@@ -9,22 +9,6 @@ import { ModalController, IonSlides, NavController } from '@ionic/angular';
 })
 export class HomePage implements OnInit {
 
-  search = "";
-
-  bookSearch: any[] = [];
-
-  curCategory = "undefined"
-
-  constructor(public firebase: FirebaseService, public modalCtrl: ModalController, public navCtrl: NavController) { }
-
-  ngOnInit() {
-    
-  }
-
-  onSearchChange(event) {
-    this.bookSearch = this.firebase.search(this.search);
-  }
-
   slideOpts = {
     slidesPerView: 3,
     coverflowEffect: {
@@ -37,10 +21,10 @@ export class HomePage implements OnInit {
     on: {
       beforeInit() {
         const swiper = this;
-  
+
         swiper.classNames.push(`${swiper.params.containerModifierClass}coverflow`);
         swiper.classNames.push(`${swiper.params.containerModifierClass}3d`);
-  
+
         swiper.params.watchSlidesProgress = true;
         swiper.originalParams.watchSlidesProgress = true;
       },
@@ -112,15 +96,29 @@ export class HomePage implements OnInit {
           .transition(duration);
       }
     }
+  };
+
+  search = '';
+
+  bookSearch: any[] = [];
+
+  curCategory = 'undefined';
+
+  constructor(public firebase: FirebaseService, public modalCtrl: ModalController, public navCtrl: NavController) { }
+
+  ngOnInit() {}
+
+  onSearchChange(event) {
+    this.bookSearch = this.firebase.search(this.search);
   }
+
   searchCategory(category) {
-    this.curCategory = category
+    this.curCategory = category;
     this.bookSearch = this.firebase.getCategory(category);
   }
 
   clearSearch() {
-    this.curCategory = "undefined";
+    this.curCategory = 'undefined';
     this.bookSearch = [];
   }
-
 }

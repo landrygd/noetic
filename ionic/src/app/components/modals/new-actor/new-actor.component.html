@@ -1,16 +1,16 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>New Actor</ion-title>
+    <ion-title>Nouvel acteur</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <ion-item>
-    <ion-label position="floating">Name</ion-label>
-    <ion-input [(ngModel)]="actor.name" type="text" placeholder="Actor name..."></ion-input>
+    <ion-label position="floating">Nom</ion-label>
+    <ion-input [(ngModel)]="actor.name" type="text"></ion-input>
   </ion-item>
   <ion-item>
     <ion-label position="floating">Description</ion-label>
-    <ion-input [(ngModel)]="actor.desc" type="text" placeholder="Actor description..."></ion-input>
+    <ion-input [(ngModel)]="actor.desc" type="text"></ion-input>
   </ion-item>
 </ion-content>
 <ion-footer>
@@ -18,11 +18,11 @@
     <ion-buttons slot="end">
       <ion-button (click)="cancel()" color="medium">
         <ion-icon slot="start" name="close"></ion-icon>
-        Cancel
+        Annuler
       </ion-button>
       <ion-button (click)="confirm()" color="success">
         <ion-icon slot="start" name="checkmark"></ion-icon>
-        Confirm
+        Créer
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

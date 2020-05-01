@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
-import { NavController, AlertController, ActionSheetController, IonContent } from '@ionic/angular';
+import { NavController, AlertController, ActionSheetController, IonContent, ToastController } from '@ionic/angular';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Subscription } from 'rxjs';
 import { Game } from 'src/app/classes/game';
@@ -16,81 +16,85 @@ export class GamePage implements OnInit {
 
   id: string;
   sub: Subscription;
-  line: number = -1;
-  chat: string = "main";
+  line = -1;
+  chat = 'main';
   chatLogs: any[] = [];
-  chatId: string = 'main';
-  curHost: string = '';
+  chatId = 'main';
+  curHost = '';
   game: Game;
   loopMinTime = 1000;
-  question: boolean = false;
+  question = false;
+
+  avatar = undefined;
+
+  speed = 1000; // CPS
 
   constructor(
-    public firebase: FirebaseService, 
-    public navCtrl: NavController, 
+    public firebase: FirebaseService,
+    public navCtrl: NavController,
     public database: AngularFireDatabase,
     public alertCtrl: AlertController,
     public actionSheetController: ActionSheetController
-    ) { 
-    }
+    ) {}
 
   ngOnInit() {
     this.game = new Game('New Game', this.firebase.userId, this.firebase.curBookId, 'main', this.firebase);
     this.firebase.newGame(this.game);
     this.id = this.firebase.curGame;
-    setTimeout(()=> {
-    this.sub = this.database.object("games/"+this.id).valueChanges().subscribe((value) => {
+    setTimeout(() => {
+    this.sub = this.database.object('games/' + this.id).valueChanges().subscribe((value) => {
       this.game.setFromJson(value);
       this.game.setChatId(this.chatId);
       this.curHost = this.game.getCurHost();
       const chatLogs = this.game.getChatLogs();
       const chat = this.game.getChat();
-      let logId = this.game.getLogId();
-      if(this.line !== logId && chatLogs.length > 0) {
+      const logId = this.game.getLogId();
+      if (this.line !== logId && chatLogs.length > 0) {
         this.line = logId;
         const log = this.game.getLog();
-        if(log['action'] !== 'goto' && log['action'] !== 'label' && log['action'] !== 'gochat') {
+        if (log.action !== 'goto' && log.action !== 'label' && log.action !== 'gochat') {
           this.chatLogs.push(log);
         }
-        if(this.game.isHost() && this.line < chatLogs.length) {
-          if(log['action'] == 'talk' ) {
+        if (this.game.isHost() && this.line < chatLogs.length) {
+          if (log.action === 'talk' ) {
             let time = 1000;
             if (log.hasOwnProperty('msg')) {
-              time = log['msg'].length * 100
+              time = (log.msg.length / this.speed * 60000) + 500;
             }
             setTimeout(() => this.nextLine(), time);
-          } else if(log['action'] == 'goto' ) {
-            const line = this.firebase.getLabelLine(log['number']);
-            if (line == -1) {
+          } else if (log.action === 'goto' ) {
+            const line = this.firebase.getLabelLine(log.number);
+            if (line === -1) {
               this.nextLine();
             } else {
               this.nextLine(line);
             }
-          } else if(log['action'] == 'gochat' ) {
-            if(this.firebase.haveChat(log['chat'])) {
-              let chatId: string = this.firebase.getChatIdByName(log['chat']);
+          } else if (log.action === 'gochat' ) {
+            if (this.firebase.haveChat(log.chat)) {
+              const chatId: string = this.firebase.getChatIdByName(log.chat);
               this.firebase.unsyncChat();
               this.firebase.syncChat(chatId);
-              setTimeout(()=>this.database.object("games/"+this.id+"/chat/"+this.game.chatId).update({name:log['chat'], log:0}), 100);
+              const obj = {name: log.chat, log: 0};
+              setTimeout(() => this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update(obj), 100);
             } else {
               this.nextLine();
             }
-          } else if(log['action'] == 'label' ) {
-            if(this.labelCheck(log['number'])) {
+          } else if (log.action === 'label' ) {
+            if (this.labelCheck(log.number)) {
               this.nextLine();
             } else {
               this.alertLoop();
             }
-          } else if(log['action'] == 'question' ) {
+          } else if (log.action === 'question' ) {
             this.question = true;
-            this.answerInit(log['answers'].length);
+            this.answerInit(log.answers.length);
           }
         }
       }
-      if(chat.hasOwnProperty('answers')) {
-        if(this.game.getAnswersCount() >= this.game.getPlayerCount()) {
-          let goto = this.game.getAnswerGoto();
-          this.database.object("games/"+this.id+"/chat/"+this.game.chatId).update({answers:[]});
+      if (chat.hasOwnProperty('answers')) {
+        if (this.game.getAnswersCount() >= this.game.getPlayerCount()) {
+          const goto = this.game.getAnswerGoto();
+          this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update({answers: []});
           const line = this.firebase.getLabelLine(goto);
           this.nextLine(line);
         }
@@ -104,26 +108,26 @@ export class GamePage implements OnInit {
     this.content.scrollToBottom(500);
   }
 
-  labelCheck(number): boolean {
-    let chat = this.game.chat[this.chatId];
-    if(chat.hasOwnProperty('time')) {
-      if(chat['time'].hasOwnProperty('label'+number)) {
-        const labelTime = new Date(chat['time']["label"+number]['time']).getTime();
+  labelCheck(nb): boolean {
+    const chat = this.game.chat[this.chatId];
+    if (chat.hasOwnProperty('time')) {
+      if (chat.time.hasOwnProperty('label' + nb)) {
+        const labelTime = new Date(chat.time['label' + nb].time).getTime();
         if ((new Date().getTime() - labelTime) < 1000) {
           return false;
         }
-      } 
-    } 
-    this.database.object("games/"+this.id+"/chat/"+this.chatId+"/time/label"+number).set({time:Date().toString()})
+      }
+    }
+    this.database.object('games/' + this.id + '/chat/' + this.chatId + '/time/label' + nb).set({time: Date().toString()});
     return true;
   }
 
   answerInit(count) {
-    let res = [];
-    for(let i = 0; i<count; i++) {
+    const res = [];
+    for (let i = 0; i < count; i++) {
       res.push(0);
     }
-    this.database.object("games/"+this.id+"/chat/"+this.game.chatId).update({answers:res});
+    this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update({answers: res});
   }
 
   send() {
@@ -134,10 +138,10 @@ export class GamePage implements OnInit {
 
   }
 
-  nextLine(line = this.line+1) {
+  nextLine(line = this.line + 1) {
     const chatLogs = this.game.getChatLogs();
-    if(line < chatLogs.length) {
-      this.database.object("games/"+this.id+"/chat/"+this.game.chatId).update({log:line});
+    if (line < chatLogs.length) {
+      this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update({log: line});
     }
   }
 
@@ -150,7 +154,8 @@ export class GamePage implements OnInit {
   async alertLoop() {
     const alert = await this.alertCtrl.create({
       header: 'Too fast!',
-      message: "For security reasons, we avoid infinity fast loops.<br><strong>Make sure that your labels and gotos aren't too near!</strong>",
+      message: 'For security reasons, we avoid infinity fast loops.<br>' +
+      '<strong>Make sure that your labels and gotos aren\'t too near!</strong>',
       buttons: [
         {
           text: 'Exit',
@@ -171,19 +176,19 @@ export class GamePage implements OnInit {
   }
 
   answer(index) {
-    let answers = this.game.getAnswersList();
-    answers.splice(index,1,answers[index]+1)
-    this.database.object("games/"+this.id+"/chat/"+this.game.chatId).update({answers:answers});
+    const answers = this.game.getAnswersList();
+    answers.splice(index, 1, answers[index] + 1);
+    this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update({answers});
     this.question = false;
   }
 
   async anwserList() {
-    let buttons = [];
-    let answers = this.game.getAnswers()
-    for(let i = 0; i < answers.length; i++) {
-      let answer = answers[i];
+    const buttons = [];
+    const answers = this.game.getAnswers();
+    for (let i = 0; i < answers.length; i++) {
+      const answer = answers[i];
       buttons.push({
-        text: answer['msg'],
+        text: answer.msg,
         handler: () => {
           this.answer(i);
         }
@@ -191,7 +196,7 @@ export class GamePage implements OnInit {
     }
     const actionSheet = await this.actionSheetController.create({
       header: 'Choose your answer',
-      buttons: buttons,
+      buttons,
     });
     await actionSheet.present();
   }

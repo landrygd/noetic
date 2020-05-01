@@ -9,9 +9,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  private loginForm : FormGroup;
+  loginForm: FormGroup;
 
-  constructor( 
+  constructor(
     public firebase: FirebaseService,
     public navCtrl: NavController,
     private formBuilder: FormBuilder
@@ -19,7 +19,7 @@ export class LoginPage implements OnInit {
       this.loginForm = this.formBuilder.group({
         email: ['', Validators.compose([
           Validators.required,
-          Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")])
+          Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')])
         ],
         password: ['', Validators.required]
       });

@@ -10,14 +10,14 @@ export class CardBookComponent implements OnInit {
 
   @Input() json: object;
 
-  name:string;
+  title:string;
   desc:string;
   cover:string = "../../../assets/cover/cover1.png";
 
   constructor(public firebase: FirebaseService) {}
 
   ngOnInit() {
-    this.name = this.json['name'];
+    this.title = this.json['title'];
     this.desc = this.json['desc'];
     this.cover = this.json['cover'];
   }

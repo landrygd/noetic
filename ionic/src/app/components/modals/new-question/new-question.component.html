@@ -1,20 +1,20 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>New Question</ion-title>
+    <ion-title>Nouvelle question</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <ion-item>
     <ion-label position="floating">Question</ion-label>
-    <ion-input [(ngModel)]="msg" type="text" placeholder="Your question..."></ion-input>
+    <ion-input [(ngModel)]="msg" type="text"></ion-input>
   </ion-item>
   <ion-list>
     <div *ngFor="let answer of answers; index as i">
       <ion-item lines="none">
-        <ion-input [(ngModel)]="answer.msg" type="text" [placeholder]="'Answer '+i"></ion-input>
+        <ion-input [(ngModel)]="answer.msg" type="text" [placeholder]="'Réponse '+i+1"></ion-input>
       </ion-item>
       <ion-item>
-      <ion-label slot="start">Goto label #</ion-label>
+      <ion-label slot="start">Aller au label #</ion-label>
       <ion-input slot="start" [(ngModel)]="answer.goto" type="number"></ion-input>
       <ion-button slot="end" (click)="removeAnswer(i)" expand="block" fill="clear" shape="round">
         <ion-icon slot="icon-only" name="close"></ion-icon>
@@ -25,7 +25,7 @@
   </ion-list>
   <ion-button (click)="addAnswer()" expand="block" fill="clear" shape="round">
     <ion-icon slot="start" name="add"></ion-icon>
-    Add an answer
+    Ajouter une réponse
   </ion-button>
 
 </ion-content>
@@ -34,11 +34,11 @@
     <ion-buttons slot="end">
       <ion-button (click)="cancel()" color="medium">
         <ion-icon slot="start" name="close"></ion-icon>
-        Cancel
+        Annuler
       </ion-button>
       <ion-button (click)="confirm()" color="success">
         <ion-icon slot="start" name="checkmark"></ion-icon>
-        Confirm
+        Confirmer
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

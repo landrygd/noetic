@@ -17,8 +17,8 @@ export class ChatPage implements OnInit {
   chat = [];
   curIndex = -1;
   avatar = 'assets/avatar/man.png';
-  actor: string = 'Narrator';
-  textarea: boolean = false;
+  actor = 'Narrator';
+  textarea = false;
 
   actions = [
     {
@@ -33,18 +33,18 @@ export class ChatPage implements OnInit {
       name: 'gochat',
       icon: 'chatbubbles'
     }
-  ]
+  ];
 
   constructor(
-    public firebase: FirebaseService, 
-    private navCtrl: NavController, 
+    public firebase: FirebaseService,
+    private navCtrl: NavController,
     public modalCtrl: ModalController,
     public actionSheetController: ActionSheetController,
     public alertController: AlertController
-    ) { 
+    ) {
     this.actor = 'Narrator';
-    if (this.firebase.bookActor == undefined) {
-      this.navCtrl.navigateRoot("/");
+    if (this.firebase.bookActor === undefined) {
+      this.navCtrl.navigateRoot('/');
     }
   }
 
@@ -61,8 +61,8 @@ export class ChatPage implements OnInit {
       action: 'talk',
       msg: this.text,
       actor: this.actor
-    }
-    if (this.curIndex == -1) {
+    };
+    if (this.curIndex === -1) {
       this.firebase.addChatLog(log);
     } else {
       this.firebase.editChatLog(log, this.curIndex);
@@ -73,8 +73,7 @@ export class ChatPage implements OnInit {
     this.textarea = false;
   }
 
-  doReorder(event)
-  {
+  doReorder(event) {
     this.curIndex = -1;
     this.chat = this.firebase.chatLogs;
     const itemMove = this.chat.splice(event.detail.from, 1)[0];
@@ -84,9 +83,9 @@ export class ChatPage implements OnInit {
   }
 
   select(index) {
-    if(index !== this.curIndex) {
+    if (index !== this.curIndex) {
       this.curIndex = index;
-      if (this.firebase.chatLogs[index].action == 'talk') {
+      if (this.firebase.chatLogs[index].action === 'talk') {
         this.text = this.firebase.chatLogs[index].msg;
         this.actor = this.firebase.chatLogs[index].actor;
       }
@@ -97,15 +96,15 @@ export class ChatPage implements OnInit {
   }
 
   getClass(index) {
-    if(index == this.curIndex) {
-      return "selected";
+    if (index === this.curIndex) {
+      return 'selected';
     } else {
-      return "notselected";
+      return 'notselected';
     }
   }
 
   enter(keyCode) {
-    if (keyCode == 13) {
+    if (keyCode === 13) {
       this.textarea = true;
       this.send();
     }
@@ -130,7 +129,7 @@ export class ChatPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: NewQuestionComponent,
       componentProps: {
-        actor: actor
+        actor
       }
     });
     return await modal.present();
@@ -138,10 +137,10 @@ export class ChatPage implements OnInit {
 
 
   getClassFabActor(actor) {
-    if(actor == this.actor) {
-      return "selectedfab";
+    if (actor === this.actor) {
+      return 'selectedfab';
     } else {
-      return "notselectedfab";
+      return 'notselectedfab';
     }
   }
 
@@ -150,7 +149,7 @@ export class ChatPage implements OnInit {
   }
 
   isLogSelected(index) {
-    if(index == this.curIndex) {
+    if (index === this.curIndex) {
       return true;
     } else {
       return false;
@@ -178,21 +177,22 @@ export class ChatPage implements OnInit {
   }
 
   newAction(name) {
-    if (name == 'goto') {
+    if (name === 'goto') {
       this.alertGoto();
-    } else if (name == 'gochat') {
+    } else if (name === 'gochat') {
       this.alertGochat();
     } else {
       const log = {
         action: name,
-      }
-      if (name == 'label') {
-        log['number'] = this.firebase.getNewLabel();
-      }
+      };
+      // TODO
+      // if (name === 'label') {
+      //   log.number = this.firebase.getNewLabel();
+      // }
       this.firebase.addChatLog(log);
       setTimeout(() => this.scrollToBottom(), 50);
     }
-    
+
   }
 
   async alertGoto() {
@@ -249,11 +249,11 @@ export class ChatPage implements OnInit {
     await alert.present();
   }
 
-  newGoto(number: number) {
+  newGoto(nb: number) {
     const log = {
       action: 'goto',
-      number: number
-    }
+      number: nb
+    };
     this.firebase.addChatLog(log);
     setTimeout(() => this.scrollToBottom(), 50);
   }
@@ -261,8 +261,8 @@ export class ChatPage implements OnInit {
   newGochat(chat: string) {
     const log = {
       action: 'gochat',
-      chat: chat
-    }
+      chat
+    };
     this.firebase.addChatLog(log);
     setTimeout(() => this.scrollToBottom(), 50);
   }

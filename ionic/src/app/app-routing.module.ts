@@ -5,7 +5,6 @@ import { AuthGuard } from './guards/auth.guard';
 const routes: Routes = [
   {
     path: '',
-    canActivate: [AuthGuard],
     loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsPageModule)
   },
   {
@@ -17,20 +16,12 @@ const routes: Routes = [
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
   },
   {
-    path: 'lib',
-    loadChildren: () => import('./pages/lib/lib.module').then( m => m.LibPageModule)
-  },
-  {
     path: 'story',
     loadChildren: () => import('./pages/story/story.module').then( m => m.StoryPageModule)
   },
   {
     path: 'map',
     loadChildren: () => import('./pages/map/map.module').then( m => m.MapPageModule)
-  },
-  {
-    path: 'search',
-    loadChildren: () => import('./pages/search/search.module').then( m => m.SearchPageModule)
   },
   {
     path: 'login',
@@ -49,7 +40,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/game/game.module').then( m => m.GamePageModule)
   },
   {
-    path: 'profile',
+    path: 'tabs/profile',
+    canActivate: [AuthGuard],
     loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule)
   },
   {
@@ -62,6 +54,7 @@ const routes: Routes = [
   },
   {
     path: 'new-book',
+    canActivate: [AuthGuard],
     loadChildren: () => import('./pages/new-book/new-book.module').then( m => m.NewBookPageModule)
   },
   {
@@ -75,6 +68,10 @@ const routes: Routes = [
   {
     path: 'notifs',
     loadChildren: () => import('./pages/notifs/notifs.module').then( m => m.NotifsPageModule)
+  },
+  {
+    path: 'book-end',
+    loadChildren: () => import('./pages/book-end/book-end.module').then( m => m.BookEndPageModule)
   }
 ];
 @NgModule({

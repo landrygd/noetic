@@ -10,10 +10,10 @@ import { SearchUserComponent } from 'src/app/components/modals/search-user/searc
 })
 export class SettingsBookPage implements OnInit {
 
-  constructor(public modalCtrl: ModalController, 
-    public alertController: AlertController, 
-    public firebase: FirebaseService, 
-    private toastController: ToastController) {}
+  constructor(public modalCtrl: ModalController,
+              public alertController: AlertController,
+              public firebase: FirebaseService,
+              private toastController: ToastController) {}
 
   ngOnInit() {
   }
@@ -97,10 +97,10 @@ export class SettingsBookPage implements OnInit {
     });
     modal.onDidDismiss()
       .then((data) => {
-        const userId = data["data"].userId;
-        if(userId !== "") {
+        const userId = data.data.userId;
+        if (userId !== '') {
           this.firebase.inviteBook(userId);
-          this.toast('Invitation envoyée.')
+          this.toast('Invitation envoyée.');
         }
     });
     return await modal.present();
