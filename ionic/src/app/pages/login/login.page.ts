@@ -35,4 +35,8 @@ export class LoginPage implements OnInit {
   signUp() {
     this.navCtrl.navigateRoot('register');
   }
+
+  return() {
+    this.navCtrl.navigateRoot('tabs');
+  }
 }

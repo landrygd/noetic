@@ -42,7 +42,7 @@
     En savoir plus
   </ion-button>
   <div class="subscribe">
-    <ion-badge color="primary" mode="ios" *ngFor="let tag of firebase.book.tags">
+    <ion-badge color="primary" mode="ios" *ngFor="let tag of firebase.book.tags" class="ion-margin-start">
       {{tag}}
     </ion-badge>
   </div>
@@ -69,7 +69,7 @@
       Retirer de la liste
     </ion-button>
   </div>
-  <ion-card>
+  <ion-card *ngIf="firebase.connected">
     <ion-item lines="none">
       <ion-avatar slot="start" style="width: 50px; height: 50px;">
         <ion-img [src]="firebase.userData.avatar" button ></ion-img>
@@ -88,17 +88,17 @@
     </ion-item>
   </ion-card>
   <ion-grid fixed>
-    <ion-row *ngFor="let comment of firebase.comments">
+    <ion-row *ngFor="let comment of firebase.comments; index as commentIndex">
       <ion-col>
-        <ion-avatar style="width: 50px; height: 50px;">
-          <ion-img [src]="firebase.userData.avatar" button ></ion-img>
+        <ion-avatar style="width: 50px; height: 50px;" *ngIf="comment.user | async as user">
+          <ion-img [src]="user.avatar" button ></ion-img>
         </ion-avatar>
       </ion-col>
       <ion-col size="10">
         <ion-card>
           <ion-item lines="none">
-            <ion-label color="primary" slot="start">
-                Pseudonyme<br>
+            <ion-label color="primary" slot="start" *ngIf="comment.user | async as user">
+                {{user.name}}<br>
                 <ion-icon name="star" *ngFor="let i of starToArray(comment.rate)" color="primary"></ion-icon>
             </ion-label>
             <ion-note slot="end" class="ion-text-end">
@@ -112,6 +112,24 @@
               </ion-text>
             </p>
           </ion-item>
+          <ion-button (click)="answer(comment.userId)" expand="block" fill="clear" shape="round" *ngIf="isAuthor()">
+            Répondre
+          </ion-button>
+          <ion-button (click)="showAnswer(commentIndex)" expand="block" fill="clear" shape="round" *ngIf="commentIndex !== selectedAnswer && comment.hasOwnProperty('answer')">
+            Voir la réponse du créateur
+          </ion-button>
+          <ion-button (click)="hideAnswer()" expand="block" fill="clear" shape="round" *ngIf="commentIndex === selectedAnswer">
+            Cacher la réponse du créateur
+          </ion-button>
+        </ion-card>
+        <ion-card *ngIf="commentIndex === selectedAnswer">
+          <ion-card-content>
+            <p>
+              <ion-text color="medium">
+                {{comment.answer}}
+              </ion-text>
+            </p>
+          </ion-card-content>
         </ion-card>
       </ion-col>
     </ion-row>

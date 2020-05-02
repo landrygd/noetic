@@ -68,10 +68,6 @@ const routes: Routes = [
   {
     path: 'notifs',
     loadChildren: () => import('./pages/notifs/notifs.module').then( m => m.NotifsPageModule)
-  },
-  {
-    path: 'book-end',
-    loadChildren: () => import('./pages/book-end/book-end.module').then( m => m.BookEndPageModule)
   }
 ];
 @NgModule({

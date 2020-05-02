@@ -15,9 +15,13 @@
   </ion-card>
   <ion-list *ngIf="firebase.userNotifs.length > 0">
     <ion-item *ngFor="let notif of firebase.userNotifs; index as i">
-      <ion-label *ngIf="notif.type == 'invBook'" slot="start">{{notif.user}} vous propose d'écrire {{notif.book}} avec lui!</ion-label>
+      <ion-text color="medium" *ngIf="notif.type == 'invBook'" slot="start">
+        {{notif.user}} vous propose d'écrire {{notif.book}} avec lui!
+      </ion-text>
 
-      <ion-label *ngIf="notif.type == 'acceptedInvBook'" slot="start">{{notif.user}} a accepté votre invitation sur le livre {{notif.book}}!</ion-label>
+      <ion-text color="medium" *ngIf="notif.type == 'acceptedInvBook'" slot="start">
+        {{notif.user}} a accepté votre invitation sur le livre {{notif.book}}!
+      </ion-text>
 
       <ion-buttons slot="end" *ngIf="isQuestion(notif.type)">
         <ion-button (click)="refuse(notif)" expand="block" fill="clear" shape="round" color="medium" slot="primary">

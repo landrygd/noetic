@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { ToastController, NavController } from '@ionic/angular';
+import { ToastController, NavController, AlertController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Subscription, Observable } from 'rxjs';
 import { Game } from '../classes/game';
@@ -22,8 +22,7 @@ export interface User {
 })
 
 export class FirebaseService {
-
-  userId: string;
+  userId = 'unknowed';
   mail: string;
   method: any;
   connected = false;
@@ -84,12 +83,12 @@ export class FirebaseService {
     public afAuth: AngularFireAuth,
     public firerealtime: AngularFireDatabase,
     public firestorage: AngularFireStorage,
-    public translator: TraductionService
+    public translator: TraductionService,
+    private alertController: AlertController
   ) {
     this.afAuth.authState.subscribe(auth => {
       if (!auth) {
         this.connected = false;
-        // console.log(this.translator.getCurLanguage());
         this.mostVueList = this.getMostVue(this.translator.getCurLanguage());
       } else {
         this.mostVueList = undefined;
@@ -558,6 +557,9 @@ export class FirebaseService {
   }
 
   play(id = this.curBookId) {
+    this.firestore.collection('books').doc(id).update({
+      view: this.book.view + 1,
+    });
     this.curBookId = id;
     this.navCtrl.navigateForward('/game');
   }
@@ -584,6 +586,10 @@ export class FirebaseService {
     this.firestore.collection('books').doc(bookId).collection('comments').doc(this.userId).set(comment);
   }
 
+  answerToComment(bookId, userId, answer) {
+    this.firestore.collection('books').doc(bookId).collection('comments').doc(userId).update({answer});
+  }
+
   deleteComment(bookId) {
     this.firestore.collection('books').doc(bookId).collection('comments').doc(this.userId).delete();
   }
@@ -591,6 +597,9 @@ export class FirebaseService {
   syncComments(bookId) {
     this.commentsSub = this.firestore.collection('books').doc(bookId).collection('comments').valueChanges().subscribe((value) => {
       this.comments = value;
+      this.comments.forEach((comment) => {
+        comment.user = this.getAsyncUser(comment.userId);
+      });
     });
   }
 
@@ -665,5 +674,24 @@ export class FirebaseService {
     return this.firestore.collection('users', ref => ref.where('name', '==', userName)).get();
   }
 
+  getAsyncAvatar(userId: string) {
+    const path = 'users/' + userId + '/avatar.png';
+    return this.firestorage.ref(path).getDownloadURL();
+  }
+
+  getAsyncUser(userId: string) {
+    return this.firestore.collection('users').doc(userId).valueChanges();
+  }
+
+  async bookEnd() {
+    const alert = await this.alertController.create({
+      header: 'Bravo!',
+      subHeader: 'Vous venez de terminer ce livre',
+      message: 'N\'hésitez pas à laisser un commentaire.',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
 }
 

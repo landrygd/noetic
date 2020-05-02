@@ -21,6 +21,8 @@ export class CoverPage implements OnInit {
   com: any[] = [];
   tags: any[] = [];
 
+  selectedAnswer = -1;
+
   inList = false;
 
   comment = {
@@ -50,18 +52,47 @@ export class CoverPage implements OnInit {
     this.id = this.firebase.book.id;
     this.url = this.firebase.book.cover;
     this.authorsId = this.firebase.book.authors;
-    this.inList = this.firebase.haveFromList(this.firebase.book.id);
     this.authorsId.forEach((author) => {
       this.firebase.getUserById(author).subscribe((value) => this.authors.push(value.data()));
     });
     this.firebase.syncComments(this.id);
-    this.firebase.haveCommented(this.id).subscribe((value) => {
-      if (value.docs.length !== 0) {
-        this.comment = value.docs[0].data();
-        this.commented = true;
-        this.lastRate = this.comment.rate;
-      }
+    if (this.firebase.connected) {
+      this.inList = this.firebase.haveFromList(this.firebase.book.id);
+      this.firebase.haveCommented(this.id).subscribe((value) => {
+        if (value.docs.length !== 0) {
+          this.comment = value.docs[0].data();
+          this.commented = true;
+          this.lastRate = this.comment.rate;
+        }
+      });
+    }
+  }
+
+  async answer(userId) {
+    const alert = await this.alertController.create({
+      header: 'Répondre',
+      inputs: [
+        {
+          name: 'answer',
+          id: 'answer',
+          type: 'textarea',
+          placeholder: 'Entrez votre réponse'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Envoyer',
+          handler: (data) => {
+            this.firebase.answerToComment(this.id, userId, data.answer);
+          }
+        }
+      ]
     });
+    await alert.present();
   }
 
   async more() {
@@ -144,4 +175,12 @@ export class CoverPage implements OnInit {
   }
 
   onClick() {}
+
+  showAnswer(index) {
+    this.selectedAnswer = index;
+  }
+
+  hideAnswer() {
+    this.selectedAnswer = -1;
+  }
 }

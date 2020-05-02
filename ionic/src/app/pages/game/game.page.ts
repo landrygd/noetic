@@ -90,6 +90,8 @@ export class GamePage implements OnInit {
             this.answerInit(log.answers.length);
           }
         }
+      } else {
+        this.end();
       }
       if (chat.hasOwnProperty('answers')) {
         if (this.game.getAnswersCount() >= this.game.getPlayerCount()) {
@@ -142,6 +144,8 @@ export class GamePage implements OnInit {
     const chatLogs = this.game.getChatLogs();
     if (line < chatLogs.length) {
       this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update({log: line});
+    } else {
+      this.end();
     }
   }
 
@@ -151,21 +155,26 @@ export class GamePage implements OnInit {
     this.navCtrl.back();
   }
 
+  end() {
+    this.firebase.bookEnd();
+    this.exit();
+  }
+
   async alertLoop() {
     const alert = await this.alertCtrl.create({
-      header: 'Too fast!',
-      message: 'For security reasons, we avoid infinity fast loops.<br>' +
-      '<strong>Make sure that your labels and gotos aren\'t too near!</strong>',
+      header: 'Trop rapide!',
+      message: 'Pour les raisons de sécurités, les boucles (label/goto) infinies et trop rapides sont interdites<br>' +
+      '<strong>Veuillez verifier que vos labels et gotos ne sont pas trop proches!</strong>',
       buttons: [
         {
-          text: 'Exit',
+          text: 'Sortir',
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
             this.exit();
           }
         }, {
-          text: 'Continue',
+          text: 'Continuer quand même',
           handler: () => {
             this.nextLine();
           }

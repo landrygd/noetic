@@ -182,13 +182,11 @@ export class ChatPage implements OnInit {
     } else if (name === 'gochat') {
       this.alertGochat();
     } else {
-      const log = {
-        action: name,
-      };
-      // TODO
-      // if (name === 'label') {
-      //   log.number = this.firebase.getNewLabel();
-      // }
+      const log: any = {};
+      log.action = name;
+      if (name === 'label') {
+        log.number = this.firebase.getNewLabel();
+      }
       this.firebase.addChatLog(log);
       setTimeout(() => this.scrollToBottom(), 50);
     }

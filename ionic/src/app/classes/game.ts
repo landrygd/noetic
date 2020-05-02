@@ -31,10 +31,10 @@ export class Game {
   chatId: string;
 
   constructor(
-    name: string = 'unknowed', 
-    host: string = 'unknowed', 
-    book: string = 'unknowed', 
-    chatName: string ='main', 
+    name: string = 'unknowed',
+    host: string = 'unknowed',
+    book: string = 'unknowed',
+    chatName: string = 'main',
     public firebase: FirebaseService) {
     this.name = name;
     this.book = book;
@@ -53,7 +53,7 @@ export class Game {
   }
 
   getJson(): object {
-    return { 
+    return {
       name: this.name,
       date: this.date,
       book: this.book,
@@ -63,7 +63,7 @@ export class Game {
   }
 
   setChatId(chatId) {
-    this.chatId = chatId
+    this.chatId = chatId;
   }
 
   getCurHost(): string {
@@ -91,7 +91,7 @@ export class Game {
   }
 
   isHost(): boolean {
-    return this.firebase.userId == this.getCurHost();
+    return this.firebase.userId === this.getCurHost();
   }
 
   getAnswerGoto(): number {
