@@ -1,8 +1,8 @@
 <ion-row lines="none" [ngClass]="getClass()" class="ion-no-margin">
-  <ion-col size="2" *ngIf="actor !== 'Narrator' && actor !== ''">
+  <ion-col size="2" *ngIf="actor !== undefined">
     <app-avatar [actorId]="actor" class="ion-no-margin"></app-avatar>
   </ion-col>
-  <ion-col size="8" *ngIf="actor !== 'Narrator' && actor !== ''">
+  <ion-col size="8" *ngIf="actor !== undefined">
     <ion-note>{{name}}</ion-note>
     <ion-item color="transparent" lines="none" class="ion-no-margin ion-no-padding">
       <ion-card color="primary" class="ion-no-margin">
@@ -12,53 +12,26 @@
         <ion-card-content *ngIf="typing">
           <ion-spinner name="dots" color="dark"></ion-spinner>
         </ion-card-content>
-        <ion-button (click)="editAnswers()" expand="block" fill="solid" shape="round" *ngIf="edit && action == 'question'">
-          Edit answers
-        </ion-button>
       </ion-card>
     </ion-item>
   </ion-col>
-  <ion-col size="10" *ngIf="actor == 'Narrator'">
-    <ion-card color="light">
-      <ion-card-content *ngIf="!typing">
-        {{msg}}
+
+  <ion-col size="10" *ngIf="actor === undefined">
+    <ion-card color="light" *ngIf="!button">
+      <ion-card-content *ngIf="!typing" [innerHTML]="msg | command">
       </ion-card-content>
       <ion-card-content *ngIf="typing" color="dark">
         <ion-spinner name="dots" color="dark"></ion-spinner>
       </ion-card-content>
-      <ion-button (click)="editAnswers()" expand="block" fill="clear" shape="round" *ngIf="edit && action == 'question'">
-        Edit answers
-      </ion-button>
     </ion-card>
-  </ion-col>
-
-  <ion-col size="10" *ngIf="action == 'label' && edit">
-    <ion-card color="light">
-      <ion-card-content>
-        <ion-icon name="bookmark" color="medium"></ion-icon>
-        <ion-label color="medium">  Label #{{number}}</ion-label>
+    <ion-card color="light" *ngIf="button" class="ion-no-padding">
+      <ion-card-content color="dark">
+        <ion-button (click)="actionEmit(actionName)" expand="block" fill="solid" shape="round">
+          {{button}}
+        </ion-button>
       </ion-card-content>
     </ion-card>
   </ion-col>
-
-  <ion-col size="10" *ngIf="action == 'goto' && edit">
-    <ion-card color="light">
-      <ion-card-content>
-        <ion-icon name="arrow-forward" color="medium"></ion-icon>
-        <ion-label color="medium">  Goto #{{number}}</ion-label>
-      </ion-card-content>
-    </ion-card>
-  </ion-col>
-
-  <ion-col size="10" *ngIf="action == 'gochat' && edit">
-    <ion-card color="light">
-      <ion-card-content>
-        <ion-icon name="chatbubbles" color="medium"></ion-icon>
-        <ion-label color="medium">  Goto chat {{chat}}</ion-label>
-      </ion-card-content>
-    </ion-card>
-  </ion-col>
-
   <ion-col size="1" *ngIf="edit">
     <ion-buttons *ngIf="selected">
       <ion-button (click)="delete()">

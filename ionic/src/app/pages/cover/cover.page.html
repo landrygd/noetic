@@ -31,9 +31,7 @@
     </p>
   </div>
   <div class="subscribe">
-    <ion-chip color="primary" mode="ios" outline="true" *ngFor="let author of authors">
-      <ion-label>{{author.name}}</ion-label>
-    </ion-chip>
+    <app-user-chip *ngFor="let author of authorsId" [userId]="author" ></app-user-chip>
   </div>
   <ion-text color="medium" class="ion-text-center">
   <p>{{firebase.book.desc}}</p>
@@ -53,9 +51,6 @@
     </ion-button>
   </div>
   <div class="subscribe">
-    <!-- <ion-button (click)="play()" expand="block" fill="solid" shape="round">
-      Continuer de lire
-    </ion-button> -->
     <ion-button (click)="edit()" expand="block" fill="clear" shape="round" *ngIf="isAuthor()" color="medium">
       <ion-icon name="create"></ion-icon>
       Editer

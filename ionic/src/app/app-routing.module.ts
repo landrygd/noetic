@@ -40,7 +40,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/game/game.module').then( m => m.GamePageModule)
   },
   {
-    path: 'tabs/profile',
+    path: 'profile',
     canActivate: [AuthGuard],
     loadChildren: () => import('./pages/profile/profile.module').then( m => m.ProfilePageModule)
   },

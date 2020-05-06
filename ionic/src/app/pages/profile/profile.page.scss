@@ -76,3 +76,25 @@ ion-avatar {
   display: flex;
   justify-content: center;
 }
+
+ion-row, ion-col, ion-button {
+  padding: 0;
+  margin: 0;
+}
+
+ion-skeleton-text {
+  margin: auto;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+h1, p {
+  margin: 0;
+}
+
+.avatarSpinner {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 45%;
+}

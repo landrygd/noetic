@@ -18,6 +18,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 import { HttpClient } from '@angular/common/http';
 import {TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { FirebaseService } from './services/firebase.service';
+import { UserService } from './services/user.service';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyDAZRFBAHjrS8Ww03U95mMhX1-AD9rPDGo",
@@ -52,6 +54,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   providers: [
     StatusBar,
     SplashScreen,
+    FirebaseService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],
   bootstrap: [AppComponent]

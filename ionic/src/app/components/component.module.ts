@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { AvatarComponent } from './avatar/avatar.component';
 import { ModalModule } from './modals/modal.module';
 import { LogComponent } from './log/log.component';
+import { UserChipComponent } from './user-chip/user-chip.component';
+import { PipesModule } from '../pipes/pipes.module';
 
 
 
@@ -13,18 +15,21 @@ import { LogComponent } from './log/log.component';
   declarations: [
     CardBookComponent,
     AvatarComponent,
-    LogComponent
+    LogComponent,
+    UserChipComponent
   ],
   imports: [
     CommonModule,
     IonicModule,
     FormsModule,
-    ModalModule
+    ModalModule,
+    PipesModule
   ],
   exports: [
     CardBookComponent,
     AvatarComponent,
-    LogComponent
+    LogComponent,
+    UserChipComponent
   ]
 })
 export class ComponentModule { }

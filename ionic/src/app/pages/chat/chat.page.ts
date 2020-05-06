@@ -3,6 +3,7 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 import { NavController, ModalController, IonContent, ActionSheetController, AlertController } from '@ionic/angular';
 import { NewActorComponent } from 'src/app/components/modals/new-actor/new-actor.component';
 import { NewQuestionComponent } from 'src/app/components/modals/new-question/new-question.component';
+import { ChatService } from 'src/app/services/chat.service';
 
 @Component({
   selector: 'app-chat',
@@ -17,32 +18,17 @@ export class ChatPage implements OnInit {
   chat = [];
   curIndex = -1;
   avatar = 'assets/avatar/man.png';
-  actor = 'Narrator';
+  actor: string;
   textarea = false;
-
-  actions = [
-    {
-      name: 'label',
-      icon: 'bookmark'
-    },
-    {
-      name: 'goto',
-      icon: 'arrow-forward'
-    },
-    {
-      name: 'gochat',
-      icon: 'chatbubbles'
-    }
-  ];
 
   constructor(
     public firebase: FirebaseService,
+    public chatService: ChatService,
     private navCtrl: NavController,
     public modalCtrl: ModalController,
     public actionSheetController: ActionSheetController,
     public alertController: AlertController
     ) {
-    this.actor = 'Narrator';
     if (this.firebase.bookActor === undefined) {
       this.navCtrl.navigateRoot('/');
     }
@@ -57,11 +43,12 @@ export class ChatPage implements OnInit {
   }
 
   send() {
-    const log = {
-      action: 'talk',
+    const log: any = {
       msg: this.text,
-      actor: this.actor
     };
+    if (this.actor && log.msg.charAt(0) !== '/') {
+      log.actor = this.actor;
+    }
     if (this.curIndex === -1) {
       this.firebase.addChatLog(log);
     } else {
@@ -85,8 +72,8 @@ export class ChatPage implements OnInit {
   select(index) {
     if (index !== this.curIndex) {
       this.curIndex = index;
-      if (this.firebase.chatLogs[index].action === 'talk') {
-        this.text = this.firebase.chatLogs[index].msg;
+      this.text = this.firebase.chatLogs[index].msg;
+      if (this.firebase.chatLogs[index].actor) {
         this.actor = this.firebase.chatLogs[index].actor;
       }
     } else {
@@ -111,7 +98,11 @@ export class ChatPage implements OnInit {
   }
 
   setActor(id) {
-    this.actor = id;
+    if (id === this.actor) {
+      this.actor = undefined;
+    } else {
+      this.actor = id;
+    }
   }
 
   deleteChat() {
@@ -125,27 +116,12 @@ export class ChatPage implements OnInit {
     return await modal.present();
   }
 
-  async newQuestion(actor: string) {
-    const modal = await this.modalCtrl.create({
-      component: NewQuestionComponent,
-      componentProps: {
-        actor
-      }
-    });
-    return await modal.present();
-  }
-
-
   getClassFabActor(actor) {
     if (actor === this.actor) {
       return 'selectedfab';
     } else {
       return 'notselectedfab';
     }
-  }
-
-  play() {
-    this.firebase.play();
   }
 
   isLogSelected(index) {
@@ -160,12 +136,6 @@ export class ChatPage implements OnInit {
     const actionSheet = await this.actionSheetController.create({
       header: 'More options',
       buttons: [{
-        text: 'Question',
-        icon: 'help',
-        handler: () => {
-          this.newQuestion(this.actor);
-        }
-      }, {
         text: 'Cancel',
         icon: 'close',
         role: 'cancel',
@@ -176,92 +146,11 @@ export class ChatPage implements OnInit {
     await actionSheet.present();
   }
 
-  newAction(name) {
-    if (name === 'goto') {
-      this.alertGoto();
-    } else if (name === 'gochat') {
-      this.alertGochat();
-    } else {
-      const log: any = {};
-      log.action = name;
-      if (name === 'label') {
-        log.number = this.firebase.getNewLabel();
-      }
-      this.firebase.addChatLog(log);
-      setTimeout(() => this.scrollToBottom(), 50);
-    }
-
+  debug() {
+    this.firebase.play(this.firebase.curBookId, this.firebase.curChat, true);
   }
 
-  async alertGoto() {
-    const alert = await this.alertController.create({
-      header: 'Goto label',
-      message: 'Choose a label number to go to.<br><strong>Be careful, if it does not exist, the jump will be ignored!</strong>',
-      inputs: [
-        {
-          placeholder: 'enter a label number',
-          name: 'label',
-          type: 'number'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-        }, {
-          text: 'Ok',
-          handler: (data) => {
-            this.newGoto(Number(data.label));
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-
-  async alertGochat() {
-    const alert = await this.alertController.create({
-      header: 'Goto chat',
-      message: 'Choose a chat name to go to.<br><strong>Be careful, if it does not exist, the jump will be ignored!</strong>',
-      inputs: [
-        {
-          placeholder: 'enter a chat name',
-          name: 'chat',
-          type: 'text'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-        }, {
-          text: 'Ok',
-          handler: (data) => {
-            this.newGochat(data.chat);
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-
-  newGoto(nb: number) {
-    const log = {
-      action: 'goto',
-      number: nb
-    };
-    this.firebase.addChatLog(log);
-    setTimeout(() => this.scrollToBottom(), 50);
-  }
-
-  newGochat(chat: string) {
-    const log = {
-      action: 'gochat',
-      chat
-    };
-    this.firebase.addChatLog(log);
-    setTimeout(() => this.scrollToBottom(), 50);
+  action(name) {
+    this.firebase.toast('impossible d\'executer les boutons ici');
   }
 }

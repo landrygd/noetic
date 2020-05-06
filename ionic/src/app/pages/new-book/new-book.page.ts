@@ -47,7 +47,6 @@ export class NewBookPage implements OnInit {
       title,
       titleLower: title.toLowerCase(),
       desc: form.desc,
-      first: 'main',
       star: 0,
       vote: 0,
       view: 0,

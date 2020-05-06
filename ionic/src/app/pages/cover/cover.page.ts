@@ -52,9 +52,9 @@ export class CoverPage implements OnInit {
     this.id = this.firebase.book.id;
     this.url = this.firebase.book.cover;
     this.authorsId = this.firebase.book.authors;
-    this.authorsId.forEach((author) => {
-      this.firebase.getUserById(author).subscribe((value) => this.authors.push(value.data()));
-    });
+    // this.authorsId.forEach((author) => {
+    //   this.firebase.getUserById(author).subscribe((value) => this.authors.push(value.data()));
+    // });
     this.firebase.syncComments(this.id);
     if (this.firebase.connected) {
       this.inList = this.firebase.haveFromList(this.firebase.book.id);
@@ -115,7 +115,7 @@ export class CoverPage implements OnInit {
 
   back() {
     this.firebase.unsyncComments();
-    this.navCtrl.back();
+    this.navCtrl.pop();
   }
 
   isAuthor() {

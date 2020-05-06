@@ -1,7 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
-import { NewQuestionComponent } from '../modals/new-question/new-question.component';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-log',
@@ -18,19 +18,23 @@ export class LogComponent implements OnInit {
   @Input() speed = 200; // CPS Carractères Par Seconde
   @Input() typing = false;
 
-  action = 'talk';
-  actor = '';
+  @Output() action = new EventEmitter<string>();
+
+  actor: string;
   color = 'primary';
   msg = '';
   name = '';
-  number = 0;
-  answers: any[] = [];
-  chat = '';
 
-  constructor(private firebase: FirebaseService, private modalCtrl: ModalController) {}
+  button = '';
+  actionName = '';
+
+  constructor(private firebase: FirebaseService, private modalCtrl: ModalController, private navCtrl: NavController) {}
+
+  actionEmit(name: string) {
+    this.action.emit(name);
+  }
 
   ngOnInit() {
-    this.action = this.log.action;
     if (this.log.hasOwnProperty('actor')) {
       this.actor = this.log.actor;
       if (this.actor !== 'Narrator') {
@@ -43,17 +47,12 @@ export class LogComponent implements OnInit {
     if (this.log.hasOwnProperty('msg')) {
       this.msg = this.log.msg;
       if (this.typing) {
-        setTimeout(() => this.typing = false, (this.msg.length / this.speed) * 60000);
+        setTimeout(() => this.typing = false, (this.msg.length / this.speed) * 30000);
       }
-    }
-    if (this.log.hasOwnProperty('number')) {
-      this.number = this.log.number;
-    }
-    if (this.log.hasOwnProperty('answers')) {
-      this.answers = this.log.answers;
-    }
-    if (this.log.hasOwnProperty('chat')) {
-      this.chat = this.log.chat;
+      if (this.msg === '/end') {
+        this.button = 'Quitter';
+        this.actionName = 'end';
+      }
     }
   }
 
@@ -69,16 +68,5 @@ export class LogComponent implements OnInit {
     this.firebase.deleteChatLog(this.index);
   }
 
-  async editAnswers() {
-    const modal = await this.modalCtrl.create({
-      component: NewQuestionComponent,
-      componentProps: {
-        actor: this.actor,
-        msg: this.msg,
-        answers: this.answers,
-        curIndex: this.index
-      }
-    });
-    return await modal.present();
-  }
+  
 }

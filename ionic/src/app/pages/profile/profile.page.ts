@@ -1,57 +1,62 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { ModalController, ActionSheetController, AlertController, NavController } from '@ionic/angular';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
+import { UserService } from 'src/app/services/user.service';
+import { BookService } from 'src/app/services/book.service';
+import { Router } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage implements OnInit, OnDestroy {
 
-  ownProfile:boolean;
+  userAsync: Observable<any>;
+  user: any;
+  userSub: Subscription;
+  loading: boolean;
+  ownProfile = false;
+  books: any;
+  followed = false;
+  followSub: Subscription;
 
   constructor(
     public firebase: FirebaseService,
     public modalController: ModalController,
     public actionSheetController: ActionSheetController,
     private alertController: AlertController,
-    public navCtrl: NavController
+    public navCtrl: NavController,
+    public userService: UserService,
+    public bookService: BookService,
+    public router: Router
     ) {
-      this.ownProfile = this.firebase.profileUserId == this.firebase.userId
-      if(this.ownProfile) {
+    this.loading = true;
+    if (router.url === '/tabs/profile') {
+      this.userAsync = userService.getOwnUser();
+    } else {
+      this.userAsync = userService.user;
+    }
+    this.userSub = this.userAsync.subscribe((val) => {
+      this.user = val;
+      this.ownProfile = this.user.id === this.userService.ownUserId;
+      this.books = this.bookService.getBooks(this.user.book);
+      if (!this.followSub) {
+        this.followSub = this.userService.usersCollection.doc(this.userService.ownUserId)
+        .collection('follows').snapshotChanges().subscribe((data) => {
+          this.followed = false;
+          data.forEach((doc) => {
+            const id = doc.payload.doc.id;
+            if (id === this.user.id) {
+              this.followed = true;
+            }
+          });
+        });
       }
-     }
-
-  ngOnInit() {
-  }
-
-  async changeAvatar() {
-    const modal = await this.modalController.create({
-      component: UploadComponent,
-      componentProps: {
-        type: 'userAvatar'
-      }
+      this.loading = false;
     });
-    return await modal.present();
-  }
-
-  async options() {
-    const actionSheet = await this.actionSheetController.create({
-      buttons: [{
-        text: 'Se déconnecter',
-        icon: 'exit',
-        handler: () => {
-          this.firebase.logout();
-        }
-      }, {
-        text: 'Annuler',
-        icon: 'close',
-        role: 'cancel'
-      }]
-    });
-    await actionSheet.present();
   }
 
   slideOpts = {
@@ -66,10 +71,10 @@ export class ProfilePage implements OnInit {
     on: {
       beforeInit() {
         const swiper = this;
-  
+
         swiper.classNames.push(`${swiper.params.containerModifierClass}coverflow`);
         swiper.classNames.push(`${swiper.params.containerModifierClass}3d`);
-  
+
         swiper.params.watchSlidesProgress = true;
         swiper.originalParams.watchSlidesProgress = true;
       },
@@ -143,6 +148,41 @@ export class ProfilePage implements OnInit {
     }
   }
 
+  ngOnInit() {
+  }
+
+  ngOnDestroy() {
+    this.followSub.unsubscribe();
+    this.userSub.unsubscribe();
+  }
+
+  async changeAvatar() {
+    const modal = await this.modalController.create({
+      component: UploadComponent,
+      componentProps: {
+        type: 'userAvatar'
+      }
+    });
+    return await modal.present();
+  }
+
+  async options() {
+    const actionSheet = await this.actionSheetController.create({
+      buttons: [{
+        text: 'Se déconnecter',
+        icon: 'exit',
+        handler: () => {
+          this.firebase.logout();
+        }
+      }, {
+        text: 'Annuler',
+        icon: 'close',
+        role: 'cancel'
+      }]
+    });
+    await actionSheet.present();
+  }
+
   async changeUsername() {
     const alert = await this.alertController.create({
       header: 'Changer de pseudo',
@@ -162,7 +202,7 @@ export class ProfilePage implements OnInit {
         }, {
           text: 'Ok',
           handler: (data) => {
-            this.firebase.updateUserData({name:data.name});
+            this.userService.updateUserData({name: data.name});
           }
         }
       ]
@@ -189,7 +229,7 @@ export class ProfilePage implements OnInit {
         }, {
           text: 'Ok',
           handler: (data) => {
-            this.firebase.updateUserData({bio:data.bio});
+            this.userService.updateUserData({bio: data.bio});
           }
         }
       ]
@@ -198,8 +238,16 @@ export class ProfilePage implements OnInit {
   }
 
   notif() {
-    this.navCtrl.navigateForward("notifs");
+    this.navCtrl.navigateForward('notifs');
   }
 
   onClick() {}
+
+  follow() {
+    this.userService.followUser();
+  }
+
+  unfollow() {
+    this.userService.unfollowUser();
+  }
 }

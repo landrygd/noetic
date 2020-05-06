@@ -1,0 +1,10 @@
+<ion-chip color="primary" mode="ios" outline="true" *ngIf='(userObservable | async) as user' (click)="openProfile()">
+  <ion-avatar>
+    <img [src]="user.avatar" />
+  </ion-avatar>
+  <ion-label>{{user.name}}</ion-label>
+</ion-chip>
+
+<ion-chip color="medium" mode="ios" outline="true" *ngIf='!(userObservable | async)'>
+  <ion-spinner color="medium" name="dots"></ion-spinner>
+</ion-chip>

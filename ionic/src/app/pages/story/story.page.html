@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="tabs"></ion-back-button>
+      <ion-back-button defaultHref="cover"></ion-back-button>
     </ion-buttons>
     <ion-title>{{firebase.book.name}}</ion-title>
     <ion-buttons slot="end">
@@ -16,6 +16,7 @@
 <ion-item *ngFor="let chat of firebase.bookStory" button details (click)="openChat(chat.id)">
   <ion-icon slot="start" name="chatbox"></ion-icon>
   <ion-label>{{chat.name}}</ion-label>
+  <ion-icon slot="end" name="flag" *ngIf="chat.id === 'main'"></ion-icon>
 </ion-item>
 </ion-content>
 

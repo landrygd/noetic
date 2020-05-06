@@ -8,6 +8,7 @@ import { CoverPageRoutingModule } from './cover-routing.module';
 
 import { CoverPage } from './cover.page';
 import { PipesModule } from 'src/app/pipes/pipes.module';
+import { ComponentModule } from 'src/app/components/component.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { PipesModule } from 'src/app/pipes/pipes.module';
     FormsModule,
     IonicModule,
     CoverPageRoutingModule,
-    PipesModule
+    PipesModule,
+    ComponentModule
   ],
   declarations: [CoverPage]
 })

@@ -19,15 +19,26 @@ export class GamePage implements OnInit {
   line = -1;
   chat = 'main';
   chatLogs: any[] = [];
+  logs: any[] = [];
   chatId = 'main';
   curHost = '';
   game: Game;
   loopMinTime = 1000;
   question = false;
+  labels: any;
+  exited = false;
+  ended = false;
+  waitTime = 500;
 
   avatar = undefined;
 
   speed = 1000; // CPS
+
+  curLog: any;
+  msg: string;
+  command: string;
+  opts: any[] = [];
+  arg: string;
 
   constructor(
     public firebase: FirebaseService,
@@ -38,91 +49,136 @@ export class GamePage implements OnInit {
     ) {}
 
   ngOnInit() {
-    this.game = new Game('New Game', this.firebase.userId, this.firebase.curBookId, 'main', this.firebase);
-    this.firebase.newGame(this.game);
-    this.id = this.firebase.curGame;
-    setTimeout(() => {
-    this.sub = this.database.object('games/' + this.id).valueChanges().subscribe((value) => {
-      this.game.setFromJson(value);
-      this.game.setChatId(this.chatId);
-      this.curHost = this.game.getCurHost();
-      const chatLogs = this.game.getChatLogs();
-      const chat = this.game.getChat();
-      const logId = this.game.getLogId();
-      if (this.line !== logId && chatLogs.length > 0) {
-        this.line = logId;
-        const log = this.game.getLog();
-        if (log.action !== 'goto' && log.action !== 'label' && log.action !== 'gochat') {
-          this.chatLogs.push(log);
-        }
-        if (this.game.isHost() && this.line < chatLogs.length) {
-          if (log.action === 'talk' ) {
-            let time = 1000;
-            if (log.hasOwnProperty('msg')) {
-              time = (log.msg.length / this.speed * 60000) + 500;
+    this.id = this.firebase.curBookId;
+    this.playChat(this.firebase.curChat);
+  }
+
+  async playChat(chatId = 'main') {
+    this.line = 0;
+    this.firebase.getChat(chatId);
+    const chatAsync = await this.firebase.getChat(chatId);
+    this.chatLogs = chatAsync.data().logs;
+    this.labels = this.getLabels();
+    this.playLog();
+  }
+
+  playLog() {
+    if (!this.exited) {
+      if (this.line < this.chatLogs.length) {
+        let gochat = '';
+        let line = this.line + 1;
+        let time = 1000;
+        this.curLog = this.chatLogs[this.line];
+        this.msg = this.curLog.msg;
+        if (this.msg.charAt(0) === '/') {
+          time = -this.waitTime;
+          if (this.msg.charAt(1) !== '/') {
+            this.getCommandValues(this.msg);
+            switch (this.command) {
+              case 'g':
+              case 'go':
+                if (this.opts.includes('chat')) {
+                  if (this.firebase.haveChat(this.arg)) {
+                    gochat = this.firebase.getChatIdByName(this.arg);
+                  }
+                } else {
+                  if (this.labels[this.arg]) {
+                    line = this.labels[this.arg];
+                  }
+                }
+                break;
+              case 'sound':
+                // TO DO
+                break;
+              case 'end':
+                line = this.chatLogs.length;
+                this.ended = true;
+                this.logs.push({msg: '/end'});
+                break;
+              case 'alert':
+                // TO DO
+                break;
+              case 'music':
+                // TO DO
+                break;
+              default:
             }
-            setTimeout(() => this.nextLine(), time);
-          } else if (log.action === 'goto' ) {
-            const line = this.firebase.getLabelLine(log.number);
-            if (line === -1) {
-              this.nextLine();
-            } else {
-              this.nextLine(line);
-            }
-          } else if (log.action === 'gochat' ) {
-            if (this.firebase.haveChat(log.chat)) {
-              const chatId: string = this.firebase.getChatIdByName(log.chat);
-              this.firebase.unsyncChat();
-              this.firebase.syncChat(chatId);
-              const obj = {name: log.chat, log: 0};
-              setTimeout(() => this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update(obj), 100);
-            } else {
-              this.nextLine();
-            }
-          } else if (log.action === 'label' ) {
-            if (this.labelCheck(log.number)) {
-              this.nextLine();
-            } else {
-              this.alertLoop();
-            }
-          } else if (log.action === 'question' ) {
-            this.question = true;
-            this.answerInit(log.answers.length);
           }
+        } else {
+          this.logs.push(this.curLog);
+          this.scrollToBottom();
+          time = this.curLog.msg.length * 50;
         }
-      } else {
-        this.end();
-      }
-      if (chat.hasOwnProperty('answers')) {
-        if (this.game.getAnswersCount() >= this.game.getPlayerCount()) {
-          const goto = this.game.getAnswerGoto();
-          this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update({answers: []});
-          const line = this.firebase.getLabelLine(goto);
-          this.nextLine(line);
+        if (gochat === '') {
+          setTimeout(() => {
+            this.line = line;
+            this.playLog();
+          }, time + this.waitTime);
+        } else {
+          setTimeout(() => {
+            this.playChat(gochat);
+          }, time + this.waitTime);
         }
+      } else if(!this.ended) {
+        setTimeout(() => {
+          this.end();
+        }, this.waitTime);
       }
-      this.scrollToBottom();
-    });
-  }, 1000);
+    }
   }
 
   scrollToBottom() {
-    this.content.scrollToBottom(500);
+    this.content.scrollToBottom(100);
   }
 
-  labelCheck(nb): boolean {
-    const chat = this.game.chat[this.chatId];
-    if (chat.hasOwnProperty('time')) {
-      if (chat.time.hasOwnProperty('label' + nb)) {
-        const labelTime = new Date(chat.time['label' + nb].time).getTime();
-        if ((new Date().getTime() - labelTime) < 1000) {
-          return false;
+  getCommandValues(str: string) {
+    const words: string[] = str.split(' ');
+    const firstWord = words.shift();
+    this.command = firstWord.slice(1);
+    let opt = true;
+    this.arg = '';
+    for (const word of words) {
+      if (word.charAt(0) === '-' && opt) {
+        this.opts.push(word.slice(1));
+      } else {
+        if (opt) {
+          opt = false;
+          this.arg = word;
+        } else {
+          this.arg += ' ' + word;
         }
       }
     }
-    this.database.object('games/' + this.id + '/chat/' + this.chatId + '/time/label' + nb).set({time: Date().toString()});
-    return true;
+    return;
   }
+
+  getLabels() {
+    const res = {};
+    for (let i = 0; i < this.chatLogs.length; i++) {
+      const log = this.chatLogs[i];
+      const command: any[] = log.msg.split(' ');
+      const labelCommand = command.shift();
+      if (labelCommand === '/label' || labelCommand === '/l') {
+        const labelName = command.join(' ');
+        res[labelName] = i;
+      }
+    }
+    return res;
+  }
+
+  // labelCheck(nb): boolean {
+  //   const chat = this.game.chat[this.chatId];
+  //   if (chat.hasOwnProperty('time')) {
+  //     if (chat.time.hasOwnProperty('label' + nb)) {
+  //       const labelTime = new Date(chat.time['label' + nb].time).getTime();
+  //       if ((new Date().getTime() - labelTime) < 1000) {
+  //         return false;
+  //       }
+  //     }
+  //   }
+  //   this.database.object('games/' + this.id + '/chat/' + this.chatId + '/time/label' + nb).set({time: Date().toString()});
+  //   return true;
+  // }
 
   answerInit(count) {
     const res = [];
@@ -140,49 +196,60 @@ export class GamePage implements OnInit {
 
   }
 
-  nextLine(line = this.line + 1) {
-    const chatLogs = this.game.getChatLogs();
-    if (line < chatLogs.length) {
-      this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update({log: line});
-    } else {
-      this.end();
+  action(name) {
+    switch (name) {
+      case 'end':
+        this.exit();
     }
   }
 
+  end() {
+    this.logs.push(
+      {msg: 'Cette histoire est à présent terminée.'}
+    );
+    setTimeout(() => {
+      this.logs.push(
+        {msg: 'N\'hésitez pas à laisser un commentaire pour soutenir son/ses créateur(s)!'}
+      );
+      setTimeout(() => {
+        this.logs.push(
+          {msg: '/end'}
+        );
+      }, 3000);
+    }, 2000);
+  }
+
   exit() {
-    this.sub.unsubscribe();
-    this.firebase.leaveGame();
+    this.exited = true;
+    if (!this.firebase.debug) {
+      this.firebase.unsyncBook();
+    }
     this.navCtrl.back();
   }
 
-  end() {
-    this.firebase.bookEnd();
-    this.exit();
-  }
-
-  async alertLoop() {
-    const alert = await this.alertCtrl.create({
-      header: 'Trop rapide!',
-      message: 'Pour les raisons de sécurités, les boucles (label/goto) infinies et trop rapides sont interdites<br>' +
-      '<strong>Veuillez verifier que vos labels et gotos ne sont pas trop proches!</strong>',
-      buttons: [
-        {
-          text: 'Sortir',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            this.exit();
-          }
-        }, {
-          text: 'Continuer quand même',
-          handler: () => {
-            this.nextLine();
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
+  // async alertLoop() {
+  //   const alert = await this.alertCtrl.create({
+  //     header: 'Trop rapide!',
+  //     message: 'Pour les raisons de sécurités, les boucles (label/go) infinies et trop rapides sont interdites<br>' +
+  //     '<strong>Veuillez verifier que vos labels et go vers labels ne sont pas trop proches!</strong>',
+  //     buttons: [
+  //       {
+  //         text: 'Sortir',
+  //         role: 'cancel',
+  //         cssClass: 'secondary',
+  //         handler: () => {
+  //           this.exit();
+  //         }
+  //       }, {
+  //         text: 'Continuer quand même',
+  //         handler: () => {
+  //           this.line
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   await alert.present();
+  // }
 
   answer(index) {
     const answers = this.game.getAnswersList();

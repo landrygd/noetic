@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ToastController, NavController, AlertController } from '@ionic/angular';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Subscription, Observable } from 'rxjs';
 import { Game } from '../classes/game';
 import { AngularFireDatabase } from '@angular/fire/database';
@@ -54,8 +54,12 @@ export class FirebaseService {
   chatLogsSub: Subscription;
   commentsSub: Subscription;
 
+  debug = false;
+
   gotUser = '';
   profileUserId = '';
+
+  users = this.firestore.collection('users');
 
   category = [
     'action',
@@ -103,6 +107,9 @@ export class FirebaseService {
       }
     });
   }
+
+
+
 
   async syncUserData() {
     this.firestore.collection('users').doc(this.userId).valueChanges().subscribe((value) => {
@@ -190,10 +197,7 @@ export class FirebaseService {
       this.navCtrl.pop().then( () => {
         this.openBook(book.id);
         setTimeout(() => {
-          this.firestore.collection('/books').doc(this.curBookId).collection('actors').doc('Narrator').set({id: 'Narrator', name: 'Narrator'}).then(() => {
-            this.addChat({name: 'main', desc: '', logs: []}, true);
-          });
-
+          this.addChat({name: 'main', desc: '', logs: []}, true);
         }, 100);
       }
       );
@@ -223,7 +227,7 @@ export class FirebaseService {
   openBook(bookId) {
     this.curBookId = bookId;
     this.syncBook();
-    this.navCtrl.navigateRoot(['/tabs-book']);
+    this.navCtrl.navigateForward('/tabs-book');
   }
 
   addChat(chat, main = false) {
@@ -276,6 +280,10 @@ export class FirebaseService {
     });
   }
 
+  getChat(chatId = this.curChat): Promise<any> {
+    return this.firestore.collection('books').doc(this.curBookId).collection('story').doc(chatId).get().toPromise();
+  }
+
   unsyncChat() {
     this.chatLogsSub.unsubscribe();
   }
@@ -304,9 +312,13 @@ export class FirebaseService {
   }
 
   deleteChat(chatId = this.curChat) {
-    this.unsyncChat();
-    this.firestore.collection('books').doc(this.curBookId).collection('story').doc(chatId).delete();
-    this.navCtrl.navigateRoot('/tabs-book');
+    if (chatId !== 'main' ) {
+      this.unsyncChat();
+      this.firestore.collection('books').doc(this.curBookId).collection('story').doc(chatId).delete();
+      this.navCtrl.navigateRoot('/tabs-book');
+    } else {
+      this.toast('Le premier chat ne peut pas être supprimé')
+    }
   }
 
   setChatLogs(logs) {
@@ -366,27 +378,6 @@ export class FirebaseService {
     });
   }
 
-  newGame(game: Game, curBookId = this.curBookId) {
-    const id = this.firerealtime.createPushId();
-    this.curGame = id;
-    this.curBookId = curBookId;
-    this.syncBook();
-    this.curChat = this.getFirstChat();
-    this.syncChat();
-    const itemRef = this.firerealtime.object('games/' + id);
-    itemRef.set(game.getJson());
-  }
-
-  getFirstChat() {
-    return this.book.first;
-  }
-
-  leaveGame() {
-    this.unsyncBook();
-    this.unsyncChat();
-    this.firerealtime.object('games/' + this.curGame).remove();
-  }
-
   async error(text) {
     const toast = await this.toastController.create({
       message: text,
@@ -441,7 +432,7 @@ export class FirebaseService {
   getLabelLine(nb) {
     for (let i = 0; i < this.chatLogs.length; i++) {
       const log = this.chatLogs[i];
-      if (log.action === 'label') {
+      if (log.msg === 'label') {
         if (log.number === nb) {
           return i;
         }
@@ -556,11 +547,14 @@ export class FirebaseService {
     this.navCtrl.navigateForward('cover');
   }
 
-  play(id = this.curBookId) {
+  play(id = this.curBookId, chatId = 'main', debug = false) {
+    this.debug = debug;
+    this.curChat = chatId;
     this.firestore.collection('books').doc(id).update({
       view: this.book.view + 1,
     });
     this.curBookId = id;
+    this.syncBook();
     this.navCtrl.navigateForward('/game');
   }
 
@@ -611,9 +605,9 @@ export class FirebaseService {
     return this.firestore.collection('books').doc(bookId).collection('comments', ref => ref.where('userId', '==', this.userId )).get();
   }
 
-  updateUserData(data: {}) {
-    this.firestore.collection('users').doc(this.userId).update(data);
-  }
+  // updateUserData(data: {}) {
+  //   this.firestore.collection('users').doc(this.userId).update(data);
+  // }
 
   addToList(bookId) {
     const list = this.userData.list;
