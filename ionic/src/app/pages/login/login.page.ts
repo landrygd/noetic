@@ -33,10 +33,10 @@ export class LoginPage implements OnInit {
   }
 
   signUp() {
-    this.navCtrl.navigateRoot('register');
+    this.navCtrl.navigateForward('register');
   }
 
   return() {
-    this.navCtrl.navigateRoot('tabs');
+    this.navCtrl.navigateBack('tabs/home');
   }
 }

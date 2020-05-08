@@ -9,10 +9,11 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen padding class="bg">
-  <div class="backdrop">
+<ion-content padding class="bg">
+  <div style="height: 100vh;"></div>
+  <div>
     <ion-grid fixed *ngFor="let log of logs; index as i" class="ion-no-margin">
-      <app-log [log]="log" [edit]="false" [index]="i" [speed]="speed" typing="true" (action)="action($event)"></app-log>
+      <app-log [log]="log" [edit]="false" [index]="i" [speed]="speed" typing="true" (action)="action($event)" (scroll)="scrollToBottom()"></app-log>
     </ion-grid>
   </div>
 </ion-content>

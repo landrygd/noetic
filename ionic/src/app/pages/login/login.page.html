@@ -1,68 +1,77 @@
-<ion-content >
-  <div class="bg ion-padding">
-    <div class="padding ion-padding">
-      <div class="logo ion-margin ion-padding">
-        <img src="../../assets/logo.png">
-      </div>
+<ion-header translucent="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/home"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen>
+  <div class="bg">
+    <div class="backdrop">
+      <div class="padding">
+        <div class="logo ion-margin ion-padding">
+          <img src="../../assets/logo.png">
+        </div>
 
-      <ion-grid fixed>
-        <ion-row>
-          <ion-col class="ion-text-center">
-            <form [formGroup]="loginForm" (ngSubmit)="login()" class="ion-align-items-center">
-              <ion-item class="glass" lines="none">
-                <ion-icon name="mail" slot="start"></ion-icon>
-                <ion-input required formControlName="email" type="mail" placeholder="Adresse email"></ion-input>
-              </ion-item>
-        
-              <ion-item class="glass" lines="none">
-                <ion-icon name="key" slot="start"></ion-icon>
-                <ion-input required formControlName="password" type="password" placeholder="Mot de passe"></ion-input>
-              </ion-item>
-        
-              <!-- <ion-text color="medium" class="ion-text-center">
-                <p>Mot de passe oublié ?</p>
-              </ion-text> -->
-        
-              <ion-button  expand="block" shape="round" fill="solid" (click)="login()" [disabled]="loginForm.invalid">
-                Se connecter
+        <ion-grid fixed>
+          <ion-row>
+            <ion-col class="ion-text-center">
+              <form [formGroup]="loginForm" (ngSubmit)="login()" class="ion-align-items-center">
+                <ion-item class="input" lines="none">
+                  <ion-icon name="mail" slot="start" color="primary"></ion-icon>
+                  <ion-input required formControlName="email" type="mail" placeholder="Adresse email"></ion-input>
+                </ion-item>
+          
+                <ion-item class="input" lines="none">
+                  <ion-icon name="key" slot="start" color="primary"></ion-icon>
+                  <ion-input required formControlName="password" type="password" placeholder="Mot de passe"></ion-input>
+                </ion-item>
+          
+                <!-- <ion-text color="medium" class="ion-text-center">
+                  <p>Mot de passe oublié ?</p>
+                </ion-text> -->
+          
+                <ion-button  block shape="round" fill="solid" (click)="login()" [disabled]="loginForm.invalid">
+                  Se connecter
+                </ion-button>
+              </form>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="ion-text-center">
+              <ion-text color="medium">
+                <p>Pas de compte?</p>
+              </ion-text>
+              <ion-button (click)="signUp()" block fill="solid" shape="round">
+                Créer un compte
               </ion-button>
-            </form>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col class="ion-text-center">
-            <ion-text color="medium">
-              <p>Pas de compte?</p>
-            </ion-text>
-            <ion-button (click)="signUp()" expand="block" fill="solid" shape="round">
-              Créer un compte
-            </ion-button>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col class="ion-text-center">
-            <ion-button (click)="return()" expand="block" fill="clear" shape="round" color="medium">
-              Retourner sur le site
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-      
-      
-      <!-- <ion-text color="medium" class="ion-text-center">
-        <p text-center>Ou connectez-vous avec</p>
-      </ion-text>
-      
-      <div class="flex">
-        <ion-button color="facebook" shape="round" style="width: 40%;">
-          <ion-icon slot="start" name="logo-facebook"></ion-icon>
-          Facebook
-        </ion-button>
-        <ion-button color="google" shape="round" style="width: 40%;">
-          <ion-icon slot="start" name="logo-google"></ion-icon>
-          Google
-        </ion-button>
-      </div> -->
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="ion-text-center">
+              <ion-button (click)="return()" expand="block" fill="clear" shape="round" color="medium">
+                Retourner sur le site
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        
+        
+        <!-- <ion-text color="medium" class="ion-text-center">
+          <p text-center>Ou connectez-vous avec</p>
+        </ion-text>
+        
+        <div class="flex">
+          <ion-button color="facebook" shape="round" style="width: 40%;">
+            <ion-icon slot="start" name="logo-facebook"></ion-icon>
+            Facebook
+          </ion-button>
+          <ion-button color="google" shape="round" style="width: 40%;">
+            <ion-icon slot="start" name="logo-google"></ion-icon>
+            Google
+          </ion-button>
+        </div> -->
+      </div>
     </div>
   </div>
 </ion-content>

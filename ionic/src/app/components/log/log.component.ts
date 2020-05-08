@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, ElementRef, ViewChild, OnChanges } from '@angular/core';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { ModalController, NavController } from '@ionic/angular';
 import { EventEmitter } from '@angular/core';
+import { AnimationService } from 'src/app/services/animation.service';
 
 @Component({
   selector: 'app-log',
@@ -18,7 +19,10 @@ export class LogComponent implements OnInit {
   @Input() speed = 200; // CPS Carractères Par Seconde
   @Input() typing = false;
 
+  @ViewChild('ref', { read: ElementRef, static: true}) ref: ElementRef;
+
   @Output() action = new EventEmitter<string>();
+  @Output() scroll = new EventEmitter<void>();
 
   actor: string;
   color = 'primary';
@@ -28,7 +32,12 @@ export class LogComponent implements OnInit {
   button = '';
   actionName = '';
 
-  constructor(private firebase: FirebaseService, private modalCtrl: ModalController, private navCtrl: NavController) {}
+  constructor(
+    private firebase: FirebaseService,
+    private modalCtrl: ModalController,
+    private navCtrl: NavController,
+    public animation: AnimationService
+    ) {}
 
   actionEmit(name: string) {
     this.action.emit(name);
@@ -47,13 +56,20 @@ export class LogComponent implements OnInit {
     if (this.log.hasOwnProperty('msg')) {
       this.msg = this.log.msg;
       if (this.typing) {
-        setTimeout(() => this.typing = false, (this.msg.length / this.speed) * 30000);
+        setTimeout(() => this.endTyping(), (this.msg.length / this.speed) * 30000);
       }
       if (this.msg === '/end') {
         this.button = 'Quitter';
         this.actionName = 'end';
       }
     }
+    this.animation.fadeIn(this.ref);
+    this.scroll.emit();
+  }
+
+  endTyping() {
+    this.typing = false;
+    this.scroll.emit();
   }
 
   getClass() {

@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { ToastController, NavController, AlertController } from '@ionic/angular';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { Subscription, Observable } from 'rxjs';
+import { ToastController, NavController, AlertController, LoadingController } from '@ionic/angular';
+import { AngularFirestore, AngularFirestoreDocument  } from '@angular/fire/firestore';
+import { Subscription, Observable, concat } from 'rxjs';
 import { Game } from '../classes/game';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { TraductionService } from './traductionService.service';
 import { auth } from 'firebase/app';
-
 export interface User {
   book: any [];
   credit: number;
@@ -76,9 +75,9 @@ export class FirebaseService {
     'thriller'
   ];
 
-  mostVueList: any[];
-
   usersList: any[] = [];
+
+  lang = 'fr';
 
   constructor(
     private toastController: ToastController,
@@ -88,14 +87,14 @@ export class FirebaseService {
     public firerealtime: AngularFireDatabase,
     public firestorage: AngularFireStorage,
     public translator: TraductionService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private loadingController: LoadingController
   ) {
+    this.lang = this.translator.getCurLanguage();
     this.afAuth.authState.subscribe(auth => {
       if (!auth) {
         this.connected = false;
-        this.mostVueList = this.getMostVue(this.translator.getCurLanguage());
       } else {
-        this.mostVueList = undefined;
         // this.presentToast('connecté: ' + auth.uid);
         this.userId = auth.uid;
         this.mail = auth.email;
@@ -103,7 +102,7 @@ export class FirebaseService {
         this.connected = true;
         this.syncUserData();
         this.profileUserId = this.userId;
-        this.navCtrl.navigateRoot(['/']);
+        this.navCtrl.navigateBack(['/']);
       }
     });
   }
@@ -114,12 +113,7 @@ export class FirebaseService {
   async syncUserData() {
     this.firestore.collection('users').doc(this.userId).valueChanges().subscribe((value) => {
       this.userData = value;
-      this.syncBooks();
-      this.syncList();
       this.syncNotifs();
-      if (this.mostVueList === undefined) {
-        this.mostVueList = this.getMostVue();
-      }
       if (this.userData.first === true) {
         this.navCtrl.navigateRoot('presentation');
         this.firestore.collection('/users').doc(this.userId).update({first: false});
@@ -127,14 +121,8 @@ export class FirebaseService {
     });
   }
 
-  syncBooks() {
-    this.userBooks = [];
-    for (let i = 0; i < this.userData.book.length; i++) {
-      const bookId = this.userData.book[i];
-      this.userBooksSub = this.firestore.collection('books', ref => ref.where('id', '==', bookId)).valueChanges().subscribe((value) => {
-        this.userBooks[i] = value[0];
-      });
-    }
+  getBook(bookId) {
+    return this.firestore.collection('books').doc(bookId).valueChanges();
   }
 
   syncNotifs() {
@@ -155,36 +143,7 @@ export class FirebaseService {
     return false;
   }
 
-  unsyncBooks() {
-    this.userBooksSub.unsubscribe();
-  }
-
-  refreshBooks() {
-    this.unsyncBooks();
-    setTimeout(() => this.syncBooks(), 500);
-  }
-
-
-  syncList() {
-    this.userList = [];
-    for (let i = 0; i < this.userData.list.length; i++) {
-      const bookId = this.userData.list[i];
-      this.userListSub = this.firestore.collection('books', ref => ref.where('id', '==', bookId)).valueChanges().subscribe((value) => {
-        this.userList[i] = value[0];
-      });
-    }
-  }
-
-  unsyncList() {
-    this.userListSub.unsubscribe();
-  }
-
-  refreshList() {
-    this.unsyncList();
-    setTimeout(() => this.syncList(), 500);
-  }
-
-  addBook(book, cover='') {
+  addBook(book, cover = '') {
     book.id = this.firestore.createId();
     this.curBookId = book.id;
     const bookList = this.userData.book;
@@ -210,7 +169,7 @@ export class FirebaseService {
     const bookList: any [] = this.userData.book;
     bookList.splice(bookList.indexOf(bookId), 1);
     this.firestore.collection('/users').doc(this.userId).update({book: bookList});
-    const subCollections = ['story','actors','map','comments'];
+    const subCollections = ['story', 'actors', 'map', 'comments'];
     this.unsyncBook();
     subCollections.forEach((subCollection) => {
       this.firestore.collection('books').doc(bookId).collection(subCollection).get().subscribe((data) => {
@@ -218,10 +177,9 @@ export class FirebaseService {
       });
     });
     this.book.ref.forEach(ref => {
-      this.firestorage.ref('books/'+ bookId +'/'+ ref).delete();
+      this.firestorage.ref('books/' + bookId + '/' + ref).delete();
     });
     this.firestore.collection('/books').doc(bookId).delete();
-    this.refreshBooks();
   }
 
   openBook(bookId) {
@@ -333,27 +291,42 @@ export class FirebaseService {
     toast.present();
   }
 
-  login(loginData) {
+  async login(loginData) {
+    const loading = await this.loadingController.create({
+      message: 'Connexion en cours...',
+      spinner: 'bubbles'
+    });
+    await loading.present();
     this.afAuth.signInWithEmailAndPassword(loginData.email, loginData.password)
     .then(auth => {
+      loading.dismiss();
     })
     .catch(err => {
+      loading.dismiss();
       this.error('Email ou mot de passe incorrect');
     });
   }
 
-  signUp(registerData, mode = 'email') {
+  async signUp(registerData, mode = 'email') {
+    const loading = await this.loadingController.create({
+      message: 'Inscription en cours...',
+      spinner: 'bubbles'
+    });
+    await loading.present();
     if (mode === 'email') {
       this.afAuth.createUserWithEmailAndPassword(registerData.email, registerData.password)
       .then(auth => {
+        loading.dismiss();
         this.newUser(auth, registerData);
       })
       .catch(err => {
+        loading.dismiss();
         this.error('Email déjà utilisé');
       });
     }
     if (mode === 'google') {
       this.afAuth.signInWithPopup(new auth.GoogleAuthProvider()).then( auth => {
+          loading.dismiss();
           this.newUser(auth);
         }
       )
@@ -442,7 +415,7 @@ export class FirebaseService {
   }
 
   logout() {
-    this.afAuth.signOut().then(() => this.navCtrl.navigateRoot(['/login']));
+    this.afAuth.signOut().then(() => this.navCtrl.navigateForward(['/login']));
   }
 
   haveChat(chatName: string): boolean {
@@ -501,20 +474,25 @@ export class FirebaseService {
     this.firestore.collection('/books').doc(this.curBookId).update({public: false});
   }
 
-  search(filter: string): any[] {
-    const res = [];
-    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', this.userData.lang).orderBy('titleLower').startAt(filter.toLowerCase()).endAt(filter.toLowerCase()+'\uf8ff')).get().subscribe((data) => {
-      data.docs.forEach((doc) => {
-        res.push(doc.data());
-      });
-    });
+  searchByName(filter: string): Observable<any> {
+    const queryByName = this.firestore.collection(
+       'books', ref => ref.where('public', '==', true)
+                          .where('lang', '==', this.lang)
+                          .orderBy('titleLower')
+                          .startAt(filter.toLowerCase())
+                          .endAt(filter.toLowerCase() + '\uf8ff')
+      ).valueChanges();
+    return queryByName;
+  }
+
+  searchByTag(filter: string): Observable<any> {
     const filterArray = filter.split(' ');
-    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', this.userData.lang).where('tags', 'array-contains-any', filterArray)).get().subscribe((data) => {
-      data.docs.forEach((doc) => {
-        res.push(doc.data());
-      });
-    });
-    return res;
+    const queryByTag = this.firestore.collection(
+       'books', ref => ref.where('public', '==', true)
+                          .where('lang', '==', this.lang)
+                          .where('tags', 'array-contains-any', filterArray)
+      ).valueChanges();
+    return queryByTag;
   }
 
   getCategory(category) {
@@ -530,14 +508,8 @@ export class FirebaseService {
     return res;
   }
 
-  getMostVue(lang = this.userData.lang) {
-    const res = [];
-    this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', lang).orderBy('view', 'desc')).get().subscribe((data) => {
-      data.docs.forEach((doc) => {
-        res.push(doc.data());
-      });
-    });
-    return res;
+  getMostVue(lang = this.lang): Observable<any> {
+    return this.firestore.collection('books', ref => ref.where('public', '==', true).where('lang', '==', lang).orderBy('view', 'desc')).valueChanges();
   }
 
   openCover(bookJSON) {
@@ -621,9 +593,7 @@ export class FirebaseService {
     if (index > -1) {
       list.splice(index, 1);
     }
-    this.firestore.collection('users').doc(this.userId).update({list}).then(
-      () => this.refreshList()
-    );
+    this.firestore.collection('users').doc(this.userId).update({list});
   }
 
   haveFromList(bookId) {

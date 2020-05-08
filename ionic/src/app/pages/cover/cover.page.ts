@@ -115,7 +115,7 @@ export class CoverPage implements OnInit {
 
   back() {
     this.firebase.unsyncComments();
-    this.navCtrl.pop();
+    this.navCtrl.navigateBack('/');
   }
 
   isAuthor() {

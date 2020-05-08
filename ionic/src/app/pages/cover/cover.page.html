@@ -18,7 +18,7 @@
       <ion-img [src]="url" style="height: 320px;width: 180px;"></ion-img>
     </ion-card>
   </div>
-  <h1 class="ion-text-center ion-no-margin">{{firebase.book.name}}</h1>
+  <h1 class="ion-text-center ion-no-margin">{{firebase.book.title}}</h1>
   <div class="subscribe ion-no-margin">
     <p>
       {{firebase.book.view}}<ion-icon name="eye"></ion-icon>
@@ -31,7 +31,30 @@
     </p>
   </div>
   <div class="subscribe">
+    <ion-button (click)="play()" expand="block" fill="solid" shape="round">
+      <ion-icon name="play"></ion-icon>
+      Lire
+    </ion-button>
+    <ion-button (click)="edit()" expand="block" fill="clear" shape="round" *ngIf="isAuthor()" color="medium">
+      <ion-icon name="create"></ion-icon>
+      Editer
+    </ion-button>
+    <ion-button (click)="addToList()" expand="block" fill="clear" shape="round" *ngIf="!isAuthor() && !inList && firebase.connected" color="medium">
+      <ion-icon name="list"></ion-icon>
+      Ajouter à la liste
+    </ion-button>
+    <ion-button (click)="removeFromList()" expand="block" fill="clear" shape="round" *ngIf="!isAuthor() && inList && firebase.connected" color="medium">
+      <ion-icon name="list"></ion-icon>
+      Retirer de la liste
+    </ion-button>
+  </div>
+  <div class="subscribe">
     <app-user-chip *ngFor="let author of authorsId" [userId]="author" ></app-user-chip>
+  </div>
+  <div class="subscribe">
+    <ion-badge color="primary" mode="ios" *ngFor="let tag of firebase.book.tags" class="ion-margin-start">
+      {{tag}}
+    </ion-badge>
   </div>
   <ion-text color="medium" class="ion-text-center">
   <p>{{firebase.book.desc}}</p>
@@ -39,31 +62,6 @@
   <ion-button (click)="more()" expand="block" fill="clear" shape="round">
     En savoir plus
   </ion-button>
-  <div class="subscribe">
-    <ion-badge color="primary" mode="ios" *ngFor="let tag of firebase.book.tags" class="ion-margin-start">
-      {{tag}}
-    </ion-badge>
-  </div>
-  <div class="subscribe">
-    <ion-button (click)="play()" expand="block" fill="solid" shape="round">
-      <ion-icon name="play"></ion-icon>
-      Lire
-    </ion-button>
-  </div>
-  <div class="subscribe">
-    <ion-button (click)="edit()" expand="block" fill="clear" shape="round" *ngIf="isAuthor()" color="medium">
-      <ion-icon name="create"></ion-icon>
-      Editer
-    </ion-button>
-    <ion-button (click)="addToList()" expand="block" fill="clear" shape="round" *ngIf="!isAuthor() && !inList" color="medium">
-      <ion-icon name="list"></ion-icon>
-      Ajouter à la liste
-    </ion-button>
-    <ion-button (click)="removeFromList()" expand="block" fill="clear" shape="round" *ngIf="!isAuthor() && inList" color="medium">
-      <ion-icon name="list"></ion-icon>
-      Retirer de la liste
-    </ion-button>
-  </div>
   <ion-card *ngIf="firebase.connected">
     <ion-item lines="none">
       <ion-avatar slot="start" style="width: 50px; height: 50px;">

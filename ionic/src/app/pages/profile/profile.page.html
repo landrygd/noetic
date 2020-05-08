@@ -59,13 +59,13 @@
         Arrêter de suivre
       </ion-button>
     </div>
-    <h1 class="ion-text-center" *ngIf="ownProfile">Mes histoires</h1>
-    <h1 class="ion-text-center" *ngIf="!ownProfile">Ses histoires</h1>
-    <ion-slides class="slides" [options]="slideOpts">
+    <h1 class="ion-text-center" *ngIf="ownProfile && userBooks.length !== 0">Mes histoires</h1>
+    <h1 class="ion-text-center" *ngIf="!ownProfile && userBooks.length !== 0">Ses histoires</h1>
+    <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userBooks.length !== 0">
       <ion-slide>
       </ion-slide>
-      <ion-slide *ngFor="let book of books | async">
-        <app-card-book [json]="book"></app-card-book>
+      <ion-slide *ngFor="let bookId of userBooks">
+        <app-card-book [bookId]="bookId"></app-card-book>
       </ion-slide>
       <ion-slide>
       </ion-slide>

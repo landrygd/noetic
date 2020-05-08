@@ -266,6 +266,37 @@
   color: #111;
 }
 
+.bg {
+  background-size: cover;
+  padding: 0;
+  height: 100%;
+  background-image: url('../assets/login.png');
+}
+
+.backdrop {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  backdrop-filter: blur(5px);
+  height: 100%;
+  width: 100%;
+}
+
+.input {
+  --background: transparent;
+  border-radius: 2em !important;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  box-shadow: 0 0 1rem 0 rgba(0, 0, 0, .2);   
+  border-radius: 5px;
+  background-color: rgb(255, 255, 255);
+  color: #333;
+}
+
 ion-button {
   text-transform: none;
 }

@@ -21,7 +21,7 @@ import { NewQuestionComponent } from 'src/app/components/modals/new-question/new
   ],
   declarations: [ChatPage],
   entryComponents: [
-    NewActorComponent, 
+    NewActorComponent,
     NewQuestionComponent
   ]
 })

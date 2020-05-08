@@ -2,64 +2,47 @@
   <ion-toolbar>
     <ion-img src="/assets/logo.png" style="width: 4em;" slot="start" class="ion-margin-start"></ion-img>
     <ion-searchbar
-      [(ngModel)]="search" 
       placeholder="Chercher une histoire" 
-      inputmode="text" 
-      type="text" 
-      (ionChange)="onSearchChange($event)" 
       [debounce]="250" 
       showCancelButton="never"
       searchIcon="search"
+      (click)="search()"
       ></ion-searchbar>
-      
-    <!-- <ion-buttons slot="end">
-      <ion-button (click)="more()">
-        <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
-      </ion-button>
-    </ion-buttons> -->
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="bookSearch.length > 0">
-<ion-item *ngIf="curCategory !== 'undefined'">
-  <ion-button (click)="clearSearch()" expand="block" fill="clear" shape="round" slot="start">
-    <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
-  </ion-button>
-  <ion-label>Catégorie {{curCategory}}</ion-label>
-</ion-item>
-<ion-grid fixed>
-  <ion-row>
-    <ion-col size="3" *ngFor="let book of bookSearch" class="ion-text-center">
-      <app-card-book [json]="book" ></app-card-book>
-    </ion-col>
-  </ion-row>
-</ion-grid>
-</ion-content>
 
-<ion-content *ngIf="bookSearch.length == 0">
-  <h1 class="ion-text-center" *ngIf="firebase.userList.length !== 0">Ma liste</h1>
-  <ion-slides class="slides" [options]="slideOpts" *ngIf="firebase.userList.length !== 0">
+
+<ion-content>
+  <h1 class="ion-text-center" *ngIf="userBookList.length !== 0">Ma liste</h1>
+
+  <ion-slides class="slides" [options]="slideOpts" *ngIf="userBookList.length !== 0">
     <ion-slide>
     </ion-slide>
-    <ion-slide *ngFor="let book of firebase.userList">
-      <app-card-book [json]="book"></app-card-book>
+    <ion-slide *ngFor="let bookId of userBookList">
+      <app-card-book [bookId]="bookId"></app-card-book>
     </ion-slide>
     <ion-slide>
     </ion-slide>
   </ion-slides>
 
   <h1 class="ion-text-center ion-no-margin">Les plus vues</h1>
-  <ion-slides class="slides" [options]="slideOpts" class="ion-no-margin">
+
+  <div *ngIf="!(mostVueList | async)" style="height: 360px; display: flex; align-content: center!important; align-items: center!important; justify-content: center;">
+    <ion-spinner name="bubbles"></ion-spinner>
+  </div>
+
+  <ion-slides class="slides" [options]="slides.coverFlowOpts" class="ion-no-margin" *ngIf="mostVueList | async as mostVue">
     <ion-slide>
     </ion-slide>
-    <ion-slide *ngFor="let book of firebase.mostVueList">
-      <app-card-book [json]="book" ></app-card-book>
+    <ion-slide *ngFor="let book of mostVue">
+      <app-card-book [bookId]="book.id"></app-card-book>
     </ion-slide>
     <ion-slide>
     </ion-slide>
   </ion-slides>
-
-  <h1 class="ion-text-center ion-no-margin">Par catégorie</h1>
+  
+  <!-- <h1 class="ion-text-center ion-no-margin">Par catégorie</h1>
   <ion-slides class="slides" [options]="{slidesPerView: 4}" class="ion-no-margin">
     <ion-slide *ngFor="let cat of firebase.category">
       <ion-col class="ion-text-center">
@@ -71,5 +54,5 @@
         </ion-text>
       </ion-col>
     </ion-slide>
-  </ion-slides>
+  </ion-slides> -->
 </ion-content>

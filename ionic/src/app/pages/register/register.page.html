@@ -1,57 +1,62 @@
-<ion-content >
-  <div class="bg ion-padding">
-    <div class="padding ion-padding">
-      <div class="logo ion-margin ion-padding">
-        <img src="../../assets/logo.png">
-      </div>
+<ion-header translucent="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="login"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen>
+  <div class="bg">
+    <div class="backdrop">
+      <div class="padding">
+        <div class="logo ion-margin ion-padding">
+          <img src="../../assets/logo.png">
+        </div>
 
-      <ion-grid fixed>
-        <ion-row>
-          <ion-col class="ion-text-center">
-            <form [formGroup]="registerForm" (ngSubmit)="signUp()" class="ion-align-items-center">
-              <ion-item class="glass" lines="none">
-                <ion-icon name="person" slot="start"></ion-icon>
-                <ion-input required formControlName="name" type="text" placeholder="Pseudo"></ion-input>
-              </ion-item>
+        <ion-grid fixed>
+          <ion-row>
+            <ion-col class="ion-text-center">
+              <form [formGroup]="registerForm" (ngSubmit)="signUp()" class="ion-align-items-center" >
+                <ion-item class="input" lines="none">
+                  <ion-icon name="person" slot="start" color="primary"></ion-icon>
+                  <ion-input required formControlName="name" type="text" placeholder="Pseudo" #name (keyup.enter)="next('date')"></ion-input>
+                </ion-item>
+          
+                <ion-item class="input" lines="none">
+                  <ion-icon name="calendar" slot="start" color="primary"></ion-icon>
+                  <ion-datetime required formControlName="birthday" placeholder="Date de naissance" #date (ionChange)="next('email')" displayFormat="DD MMMM YYYY"></ion-datetime>
+                </ion-item>
+          
+                <ion-item class="input" lines="none">
+                  <ion-icon name="mail" slot="start" color="primary"></ion-icon>
+                  <ion-input required formControlName="email" type="email" placeholder="Adresse mail" #email (keyup.enter)="next('password')"></ion-input>
+                </ion-item>
+          
+                <ion-item class="input" lines="none">
+                  <ion-icon name="key" slot="start" color="primary"></ion-icon>
+                  <ion-input required formControlName="password" type="password" placeholder="Mot de passe" #password (keyup.enter)="next('confirmPassword')"></ion-input>
+                </ion-item>
+          
+                <ion-item class="input" lines="none">
+                  <ion-icon name="key" slot="start" color="primary"></ion-icon>
+                  <ion-input required formControlName="confirmPassword" type="password" placeholder="Répétez le mot de passe" #confirmPassword (keyup.enter)="next('confirm')"></ion-input>
+                </ion-item>
         
-              <ion-item class="glass" lines="none">
-                <ion-icon name="calendar" slot="start"></ion-icon>
-                <ion-datetime required formControlName="birthday" displayFormat="MM/DD/YYYY" placeholder="Date de naissance"></ion-datetime>
-              </ion-item>
-        
-              <ion-item class="glass" lines="none">
-                <ion-icon name="mail" slot="start"></ion-icon>
-                <ion-input required formControlName="email" type="mail" placeholder="Adresse mail"></ion-input>
-              </ion-item>
-        
-              <ion-item class="glass" lines="none">
-                <ion-icon name="key" slot="start"></ion-icon>
-                <ion-input required formControlName="password" type="password" placeholder="Mot de passe"></ion-input>
-              </ion-item>
-        
-              <ion-item class="glass" lines="none">
-                <ion-icon name="key" slot="start"></ion-icon>
-                <ion-input required formControlName="confirmPassword" type="password" placeholder="Répétez le mot de passe"></ion-input>
-              </ion-item>
-      
-              <ion-button block shape="round" color="primary" type="submit" fill="solid" [disabled]="registerForm.invalid">
-                S'incrire
+                <ion-button block shape="round" color="primary" type="submit" fill="solid" [disabled]="registerForm.invalid">
+                  S'incrire
+                </ion-button>
+              </form>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-button (click)="login()" expand="block" fill="clear" shape="round" color="medium">
+                Retour
               </ion-button>
-            </form>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-button (click)="login()" expand="block" fill="clear" shape="round" color="medium">
-              Retour
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-
-      
-
-      
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
     </div>
   </div>
 </ion-content>

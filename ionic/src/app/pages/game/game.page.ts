@@ -4,6 +4,7 @@ import { NavController, AlertController, ActionSheetController, IonContent, Toas
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Subscription } from 'rxjs';
 import { Game } from 'src/app/classes/game';
+import { Animation, AnimationController } from '@ionic/angular';
 
 @Component({
   selector: 'app-game',
@@ -45,8 +46,9 @@ export class GamePage implements OnInit {
     public navCtrl: NavController,
     public database: AngularFireDatabase,
     public alertCtrl: AlertController,
-    public actionSheetController: ActionSheetController
-    ) {}
+    public actionSheetController: ActionSheetController,
+    ) {
+    }
 
   ngOnInit() {
     this.id = this.firebase.curBookId;
@@ -106,7 +108,6 @@ export class GamePage implements OnInit {
           }
         } else {
           this.logs.push(this.curLog);
-          this.scrollToBottom();
           time = this.curLog.msg.length * 50;
         }
         if (gochat === '') {
@@ -128,7 +129,9 @@ export class GamePage implements OnInit {
   }
 
   scrollToBottom() {
-    this.content.scrollToBottom(100);
+    setTimeout(() => {
+    this.content.scrollToBottom(400);
+    }, 100);
   }
 
   getCommandValues(str: string) {

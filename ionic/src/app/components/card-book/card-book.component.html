@@ -1,16 +1,20 @@
-<ion-col class="ion-text-center">
-  <ion-card (click)="open()" style="height: 400px;width: 180px;" button>
-    <ion-img [src]="cover" style="height: 320px;width: 180px;" (ionImgDidLoad)="loading = false"></ion-img>
-    <div style="height: 320px;width: 180px;" *ngIf="loading">
-      <ion-spinner name="bubbles" style="top: 50%"></ion-spinner>
-    </div>
-    <ion-card-header>
-      <ion-card-title>
-        {{title}}
-      </ion-card-title>
-      <ion-card-subtitle>
-        {{desc}}
-      </ion-card-subtitle>
+<div #ref>
+  <ion-card (click)="open(book)" style="height: 360px;width: 180px;" button  *ngIf="bookAsync | async as book; else load">
+    <ion-img [src]="book.cover" style="height: 320px;width: 180px;" #image></ion-img>
+    <ion-card-header class="ion-no-padding" >
+      <div class="center">
+        <ion-text color="dark">
+          <p>{{book.title}}</p>
+        </ion-text>
+      </div>
     </ion-card-header>
   </ion-card>
-</ion-col>
+  
+  <ng-template #load>
+    <ion-card style="height: 360px;width: 180px;">
+      <ion-skeleton-text animated style="width: 100%; height: 100%;" class="ion-no-margin"></ion-skeleton-text>
+    </ion-card>
+  </ng-template>
+</div>
+
+

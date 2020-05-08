@@ -20,6 +20,7 @@ import {TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { FirebaseService } from './services/firebase.service';
 import { UserService } from './services/user.service';
+import { SlidesService } from './services/slides.service';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyDAZRFBAHjrS8Ww03U95mMhX1-AD9rPDGo",
@@ -55,6 +56,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     StatusBar,
     SplashScreen,
     FirebaseService,
+    SlidesService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],
   bootstrap: [AppComponent]

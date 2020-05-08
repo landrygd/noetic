@@ -1,4 +1,4 @@
-<ion-row lines="none" [ngClass]="getClass()" class="ion-no-margin">
+<ion-row lines="none" [ngClass]="getClass()" class="ion-no-margin" #ref>
   <ion-col size="2" *ngIf="actor !== undefined">
     <app-avatar [actorId]="actor" class="ion-no-margin"></app-avatar>
   </ion-col>
@@ -9,7 +9,7 @@
         <ion-card-content *ngIf="!typing">
           {{msg}}
         </ion-card-content>
-        <ion-card-content *ngIf="typing">
+        <ion-card-content *ngIf="typing" #ref>
           <ion-spinner name="dots" color="dark"></ion-spinner>
         </ion-card-content>
       </ion-card>

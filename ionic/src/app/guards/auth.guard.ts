@@ -15,7 +15,7 @@ export class AuthGuard implements CanActivate {
     if (this.firebase.connected) {
       return true;
     } else {
-      this.navCtrl.navigateRoot(['/login']);
+      this.navCtrl.navigateForward(['/login']);
     }
   }
 }
