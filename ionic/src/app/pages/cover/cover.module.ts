@@ -9,6 +9,7 @@ import { CoverPageRoutingModule } from './cover-routing.module';
 import { CoverPage } from './cover.page';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { ComponentModule } from 'src/app/components/component.module';
+import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { ComponentModule } from 'src/app/components/component.module';
     PipesModule,
     ComponentModule
   ],
-  declarations: [CoverPage]
+  declarations: [CoverPage],
+  entryComponents: [UploadComponent]
 })
 export class CoverPageModule {}

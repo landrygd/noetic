@@ -1,12 +1,12 @@
-<ion-header>
+<ion-header *ngIf="loaded">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>chat</ion-title>
+    <ion-title>{{chatService.chat.name}}</ion-title>
     <ion-buttons slot="end">
-      <ion-button *ngIf="firebase.curChat !== 'main'" (click)="deleteChat()">
-        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      <ion-button *ngIf="chatService.curChatId !== 'main'" (click)="settings()">
+        <ion-icon slot="icon-only" name="settings"></ion-icon>
       </ion-button>
       <ion-button (click)="debug()">
         <ion-icon slot="icon-only" name="play"></ion-icon>
@@ -15,33 +15,33 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="loaded">
   <ion-reorder-group (ionItemReorder)="doReorder($event)" disabled="false">
-    <ion-grid fixed class="ion-no-padding ion-no-margin" *ngFor="let log of firebase.chatLogs; index as i">
+    <ion-grid fixed class="ion-no-padding ion-no-margin" *ngFor="let log of chatService.chatLogs; index as i">
       <app-log  class="ion-no-margin" [log]="log" [index]="i" [edit]="true" [selected]="isLogSelected(i)" (click)="select(i)" button ></app-log>
     </ion-grid>
   </ion-reorder-group>
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="loaded">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-fab-button size="small" (click)="newActor()" class="avatarButton">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
-      <app-avatar slot="start" *ngFor="let actor of firebase.bookActor" (click)="setActor(actor.id)" [actorId]="actor.id" [ngClass]="getClassFabActor(actor.id)"></app-avatar>
+      <app-avatar slot="start" *ngFor="let actor of bookService.actors" (click)="setActor(actor.id)" [actorId]="actor.id" [ngClass]="getClassFabActor(actor.id)"></app-avatar>
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>
     <app-avatar slot="start" [actorId]="actor" *ngIf="actor"></app-avatar>
-      <ion-textarea [disabled]='textarea' rows="1" [(ngModel)]='text' placeholder="Entrez une commande ou un message..." (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
-      <ion-buttons slot="end">
-        <!-- <ion-button (click)="plus()" expand="block" fill="clear" shape="round" color="medium">
-          <ion-icon slot="icon-only" name="add" ></ion-icon>
-        </ion-button> -->
-        <ion-button (click)="send()" expand="block" fill="clear" shape="round" color="primary">
-          <ion-icon slot="icon-only" name="send" ></ion-icon>
-        </ion-button>
-      </ion-buttons>
+    <ion-textarea [disabled]='textarea' rows="1" [(ngModel)]='text' placeholder="Entrez une commande ou un message..." (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
+    <ion-buttons slot="end">
+      <!-- <ion-button (click)="plus()" expand="block" fill="clear" shape="round" color="medium">
+        <ion-icon slot="icon-only" name="add" ></ion-icon>
+      </ion-button> -->
+      <ion-button (click)="send()" expand="block" fill="clear" shape="round" color="primary">
+        <ion-icon slot="icon-only" name="send" ></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-footer>

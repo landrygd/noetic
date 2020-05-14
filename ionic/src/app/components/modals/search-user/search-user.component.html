@@ -5,9 +5,9 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let user of users" details button (click)="confirm(user.id)">
-      <ion-avatar>
+  <ion-list *ngIf="users | async as userList">
+    <ion-item *ngFor="let user of userList" details button (click)="confirm(user.id)">
+      <ion-avatar class="ion-margin-end">
         <img [src]="user.avatar" />
       </ion-avatar>
       <ion-label>{{user.name}}</ion-label>

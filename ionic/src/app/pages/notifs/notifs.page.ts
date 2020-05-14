@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FirebaseService } from 'src/app/services/firebase.service';
+import { NotifService } from 'src/app/services/user/notif.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-notifs',
@@ -12,7 +13,10 @@ export class NotifsPage implements OnInit {
     'invBook'
   ];
 
-  constructor(public firebase: FirebaseService) { }
+  constructor(
+    public notifService: NotifService,
+    public userService: UserService
+    ) { }
 
   ngOnInit() {
   }
@@ -22,16 +26,16 @@ export class NotifsPage implements OnInit {
   }
 
   accept(notif) {
-    this.firebase.acceptInvitation(notif.user, notif.book);
-    this.erase(notif);
+    this.notifService.acceptInvitation(notif.user, notif.book);
+    this.erase(notif.id);
   }
 
   refuse(notif) {
-    this.erase(notif);
+    this.erase(notif.id);
   }
 
-  erase(notif) {
-    this.firebase.eraseNotif(notif.id);
+  erase(notifId) {
+    this.notifService.eraseNotif(notifId);
   }
 
 }

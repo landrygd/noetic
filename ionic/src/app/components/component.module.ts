@@ -8,6 +8,8 @@ import { ModalModule } from './modals/modal.module';
 import { LogComponent } from './log/log.component';
 import { UserChipComponent } from './user-chip/user-chip.component';
 import { PipesModule } from '../pipes/pipes.module';
+import { UserAvatarComponent } from './user-avatar/user-avatar.component';
+import { BookChipComponent } from './book-chip/book-chip.component';
 
 
 
@@ -16,7 +18,9 @@ import { PipesModule } from '../pipes/pipes.module';
     CardBookComponent,
     AvatarComponent,
     LogComponent,
-    UserChipComponent
+    UserChipComponent,
+    UserAvatarComponent,
+    BookChipComponent
   ],
   imports: [
     CommonModule,
@@ -29,7 +33,9 @@ import { PipesModule } from '../pipes/pipes.module';
     CardBookComponent,
     AvatarComponent,
     LogComponent,
-    UserChipComponent
+    UserChipComponent,
+    UserAvatarComponent,
+    BookChipComponent
   ]
 })
 export class ComponentModule { }

@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FirebaseService } from 'src/app/services/firebase.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavController, ToastController, IonInput, IonDatetime } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { TraductionService } from 'src/app/services/traductionService.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -20,11 +19,10 @@ export class RegisterPage implements OnInit {
   @ViewChild('confirmPassword', { static: true }) confirmPasswordView: IonInput;
 
   constructor(
-    public firebase: FirebaseService,
+    public authService: AuthService,
     public navCtrl: NavController,
     private toastController: ToastController,
-    private formBuilder: FormBuilder,
-    private translator: TraductionService
+    private formBuilder: FormBuilder
   ) {
     this.registerForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -96,7 +94,7 @@ export class RegisterPage implements OnInit {
       error = 'Le pseudo ne doit contenir pas contenir plus de 30 caractères.';
     }
     if (error === '') {
-      this.firebase.signUp(res);
+      this.authService.signUp(res);
     } else {
       this.toast(error);
     }

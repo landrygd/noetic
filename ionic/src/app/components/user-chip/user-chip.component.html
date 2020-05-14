@@ -1,10 +1,13 @@
-<ion-chip color="primary" mode="ios" outline="true" *ngIf='(userObservable | async) as user' (click)="openProfile()">
+<ion-chip color="primary" mode="ios" outline="true" *ngIf='(userObservable | async) as user; else loading' (click)="openProfile()">
   <ion-avatar>
-    <img [src]="user.avatar" />
+    <ion-img [src]="user.avatar" *ngIf="user.avatar" button (click)="openProfile()"></ion-img>
+    <ion-img src="../../../assets/avatar/default.png" *ngIf="!user.avatar"></ion-img>
   </ion-avatar>
   <ion-label>{{user.name}}</ion-label>
 </ion-chip>
 
-<ion-chip color="medium" mode="ios" outline="true" *ngIf='!(userObservable | async)'>
-  <ion-spinner color="medium" name="dots"></ion-spinner>
-</ion-chip>
+<ng-template #loading>
+  <ion-chip color="medium" mode="ios" outline="true" *ngIf='!(userObservable | async)'>
+    <ion-spinner color="medium" name="dots"></ion-spinner>
+  </ion-chip>
+</ng-template>

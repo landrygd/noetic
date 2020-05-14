@@ -1,4 +1,4 @@
-<ion-content>
+<ion-content *ngIf="curBookId">
   <div class="header">
     <ion-toolbar style="--background: transparent; opacity: 0.7;">
       <ion-buttons slot="start">
@@ -14,20 +14,28 @@
     </ion-toolbar>
   </div>
   <div class="flex">
-    <ion-card style="height: 320px;width: 180px;" class="ion-no-margin">
-      <ion-img [src]="url" style="height: 320px;width: 180px;"></ion-img>
+    <ion-card style="height: 320px;width: 180px;" class="ion-no-margin" (click)="changeCover()" button>
+      <ion-img [src]="bookService.book.cover" style="height: 320px;width: 180px;"></ion-img>
     </ion-card>
   </div>
-  <h1 class="ion-text-center ion-no-margin">{{firebase.book.title}}</h1>
+  <div>
+    <ion-button (click)="changeTitle()" expand="block" color="medium" fill="clear" shape="round" *ngIf="bookService.isAuthor">
+      <h1 class="ion-text-center ion-no-margin">{{bookService.book.title}}</h1>
+      <ion-icon name="pencil" slot="end"></ion-icon>
+    </ion-button>
+    <ion-text color="medium" *ngIf="!bookService.isAuthor">
+      <h1 class="ion-text-center ion-no-margin">{{bookService.book.title}}</h1>
+    </ion-text>
+  </div>
   <div class="subscribe ion-no-margin">
     <p>
-      {{firebase.book.view}}<ion-icon name="eye"></ion-icon>
+      {{bookService.book.views}}<ion-icon name="eye"></ion-icon>
     </p>
     <div class="ion-margin">
-      <ion-icon name="star" *ngFor="let i of firebase.book.starsArray" color="primary"></ion-icon>
+      <ion-icon name="star" *ngFor="let i of bookService.book.starsArray" color="primary"></ion-icon>
     </div>
     <p color="light" mode="ios">
-      {{firebase.book.vote}}<ion-icon name="chatbubble"></ion-icon>
+      {{bookService.book.votes}}<ion-icon name="chatbubble"></ion-icon>
     </p>
   </div>
   <div class="subscribe">
@@ -35,15 +43,15 @@
       <ion-icon name="play"></ion-icon>
       Lire
     </ion-button>
-    <ion-button (click)="edit()" expand="block" fill="clear" shape="round" *ngIf="isAuthor()" color="medium">
+    <ion-button (click)="edit()" expand="block" fill="clear" shape="round" *ngIf="bookService.isAuthor" color="medium">
       <ion-icon name="create"></ion-icon>
       Editer
     </ion-button>
-    <ion-button (click)="addToList()" expand="block" fill="clear" shape="round" *ngIf="!isAuthor() && !inList && firebase.connected" color="medium">
+    <ion-button (click)="addToList()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor && !inList" color="medium">
       <ion-icon name="list"></ion-icon>
       Ajouter à la liste
     </ion-button>
-    <ion-button (click)="removeFromList()" expand="block" fill="clear" shape="round" *ngIf="!isAuthor() && inList && firebase.connected" color="medium">
+    <ion-button (click)="removeFromList()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor && inList" color="medium">
       <ion-icon name="list"></ion-icon>
       Retirer de la liste
     </ion-button>
@@ -52,21 +60,32 @@
     <app-user-chip *ngFor="let author of authorsId" [userId]="author" ></app-user-chip>
   </div>
   <div class="subscribe">
-    <ion-badge color="primary" mode="ios" *ngFor="let tag of firebase.book.tags" class="ion-margin-start">
+    <ion-badge color="primary" mode="ios" *ngFor="let tag of bookService.book.tags" class="ion-margin-start">
       {{tag}}
     </ion-badge>
   </div>
-  <ion-text color="medium" class="ion-text-center">
-  <p>{{firebase.book.desc}}</p>
-  </ion-text>
-  <ion-button (click)="more()" expand="block" fill="clear" shape="round">
+  <div>
+    <ion-button (click)="changeDesc()" expand="block" color="medium" fill="clear" shape="round" *ngIf="bookService.isAuthor">
+      <ion-text color="medium" class="ion-text-center">
+        <p>{{bookService.book.desc}}</p>
+      </ion-text>
+      <ion-icon name="pencil" slot="end"></ion-icon>
+    </ion-button>
+    <ion-text color="medium" *ngIf="!bookService.isAuthor">
+      <ion-text color="medium" class="ion-text-center">
+        <p>{{bookService.book.desc}}</p>
+      </ion-text>
+    </ion-text>
+  </div>
+  <ion-button (click)="more()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor">
     En savoir plus
   </ion-button>
-  <ion-card *ngIf="firebase.connected">
+  <ion-button (click)="changeVerso()" expand="block" fill="clear" shape="round" *ngIf="bookService.isAuthor">
+    Changer le verso
+  </ion-button>
+  <ion-card *ngIf="userService.connected">
     <ion-item lines="none">
-      <ion-avatar slot="start" style="width: 50px; height: 50px;">
-        <ion-img [src]="firebase.userData.avatar" button ></ion-img>
-      </ion-avatar>
+      <app-user-avatar [userId]="userService.userId"></app-user-avatar>
       <ion-buttons>
         <ion-button *ngFor="let star of [0,0,0,0,0]; index as i" [color]="getStarColor(i)" (click)="setRate(i)">
           <ion-icon slot="icon-only" name="star"></ion-icon>
@@ -81,11 +100,9 @@
     </ion-item>
   </ion-card>
   <ion-grid fixed>
-    <ion-row *ngFor="let comment of firebase.comments; index as commentIndex">
+    <ion-row *ngFor="let comment of commentService.comments; index as commentIndex">
       <ion-col>
-        <ion-avatar style="width: 50px; height: 50px;" *ngIf="comment.user | async as user">
-          <ion-img [src]="user.avatar" button ></ion-img>
-        </ion-avatar>
+        <app-user-avatar [userId]="comment.userId"></app-user-avatar>
       </ion-col>
       <ion-col size="10">
         <ion-card>
@@ -105,7 +122,7 @@
               </ion-text>
             </p>
           </ion-item>
-          <ion-button (click)="answer(comment.userId)" expand="block" fill="clear" shape="round" *ngIf="isAuthor()">
+          <ion-button (click)="answer(comment.userId)" expand="block" fill="clear" shape="round" *ngIf="bookService.isAuthor">
             Répondre
           </ion-button>
           <ion-button (click)="showAnswer(commentIndex)" expand="block" fill="clear" shape="round" *ngIf="commentIndex !== selectedAnswer && comment.hasOwnProperty('answer')">

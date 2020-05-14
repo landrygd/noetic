@@ -1,6 +1,10 @@
-import { Component, OnInit, ComponentFactoryResolver } from '@angular/core';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import { NavController, ToastController, AlertController } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { NavController, ToastController, AlertController, ModalController } from '@ionic/angular';
+import { UserService } from 'src/app/services/user.service';
+import { BookService } from 'src/app/services/book.service';
+import { CommentService } from 'src/app/services/book/comment.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 
 @Component({
   selector: 'app-cover',
@@ -9,13 +13,6 @@ import { NavController, ToastController, AlertController } from '@ionic/angular'
 })
 export class CoverPage implements OnInit {
 
-  name: string;
-  desc: string;
-  star: number;
-  view: number;
-  vote: number;
-  id: string; // book id
-  url: string;
   authorsId: any[] = [];
   authors: any[] = [];
   com: any[] = [];
@@ -24,9 +21,10 @@ export class CoverPage implements OnInit {
   selectedAnswer = -1;
 
   inList = false;
+  curBookId: string;
 
   comment = {
-    userId: this.firebase.userId,
+    userId: this.userService.userId,
     text: '',
     rate: 0,
     date: 0
@@ -36,35 +34,38 @@ export class CoverPage implements OnInit {
   lastRate = 0;
 
   constructor(
-    public firebase: FirebaseService,
     public navCtrl: NavController,
     private toastController: ToastController,
-    private alertController: AlertController
-    ) { }
+    private alertController: AlertController,
+    public authService: AuthService,
+    public userService: UserService,
+    public bookService: BookService,
+    public commentService: CommentService,
+    private modalController: ModalController
+    ) {
+      if (!this.bookService.curBookId) {
+        this.navCtrl.pop();
+      } else {
+        this.curBookId = this.bookService.curBookId;
+      }
+    }
 
   ngOnInit() {
-    this.name = this.firebase.book.name;
-    this.tags = this.firebase.book.tags;
-    this.desc = this.firebase.book.desc;
-    this.star = this.firebase.book.star;
-    this.view = this.firebase.book.view;
-    this.vote = this.firebase.book.vote;
-    this.id = this.firebase.book.id;
-    this.url = this.firebase.book.cover;
-    this.authorsId = this.firebase.book.authors;
-    // this.authorsId.forEach((author) => {
-    //   this.firebase.getUserById(author).subscribe((value) => this.authors.push(value.data()));
-    // });
-    this.firebase.syncComments(this.id);
-    if (this.firebase.connected) {
-      this.inList = this.firebase.haveFromList(this.firebase.book.id);
-      this.firebase.haveCommented(this.id).subscribe((value) => {
-        if (value.docs.length !== 0) {
-          this.comment = value.docs[0].data();
-          this.commented = true;
-          this.lastRate = this.comment.rate;
-        }
-      });
+    if (this.bookService.curBookId) {
+      // this.authorsId.forEach((author) => {
+      //   this.bookService.getUserById(author).subscribe((value) => this.authors.push(value.data()));
+      // });
+      this.commentService.syncComments(this.bookService.book.id);
+      if (this.authService.connected) {
+        this.inList = this.userService.haveFromList(this.bookService.book.id);
+        this.commentService.haveCommented(this.bookService.book.id).subscribe((value) => {
+          if (value.length !== 0) {
+            this.comment = value[0];
+            this.commented = true;
+            this.lastRate = this.comment.rate;
+          }
+        });
+      }
     }
   }
 
@@ -87,7 +88,7 @@ export class CoverPage implements OnInit {
         }, {
           text: 'Envoyer',
           handler: (data) => {
-            this.firebase.answerToComment(this.id, userId, data.answer);
+            this.commentService.answerToComment(this.bookService.book.id, userId, data.answer);
           }
         }
       ]
@@ -98,7 +99,7 @@ export class CoverPage implements OnInit {
   async more() {
     const alert = await this.alertController.create({
       header: 'Verso',
-      message: this.firebase.book.verso,
+      message: this.bookService.book.verso,
       buttons: ['OK']
     });
 
@@ -106,20 +107,17 @@ export class CoverPage implements OnInit {
   }
 
   play() {
-    this.firebase.play(this.id);
+    this.bookService.play(this.bookService.book.id);
   }
 
   edit() {
-    this.firebase.openBook(this.id);
+    this.bookService.openBook(this.bookService.book.id);
   }
 
   back() {
-    this.firebase.unsyncComments();
-    this.navCtrl.navigateBack('/');
-  }
-
-  isAuthor() {
-    return this.authorsId.includes(this.firebase.userId);
+    this.commentService.unsyncComments();
+    this.bookService.unsyncBook(true);
+    this.navCtrl.pop();
   }
 
   getStarColor(index) {
@@ -137,7 +135,7 @@ export class CoverPage implements OnInit {
     const date = Date.now();
     this.comment.date = date;
     if (this.comment.rate !== 0 ) {
-      this.firebase.addComment(this.comment, this.id, this.commented, this.lastRate);
+      this.commentService.addComment(this.comment, this.bookService.book.id, this.commented, this.lastRate);
       this.toast('Avis envoyé');
     } else {
       this.toast('Veuillez noter avant d\'envoyer votre avis');
@@ -145,13 +143,13 @@ export class CoverPage implements OnInit {
   }
 
   addToList() {
-    this.firebase.addToList(this.firebase.book.id);
+    this.userService.addBookListRef(this.bookService.book.id);
     this.toast('Ajouté à la liste');
     this.inList = true;
   }
 
   removeFromList() {
-    this.firebase.removeFromList(this.firebase.book.id);
+    this.userService.deleteBookListRef(this.bookService.book.id);
     this.toast('Retiré de la liste');
     this.inList = false;
   }
@@ -168,6 +166,12 @@ export class CoverPage implements OnInit {
     return new Array(star);
   }
 
+  starAverageToArray() {
+    const size = Math.round(this.bookService.book.stars / Math.max(this.bookService.book.votes, 1));
+    console.log(size);
+    return new Array(size);
+  }
+
   enter(keyCode) {
     if (keyCode === 13) {
       this.send();
@@ -182,5 +186,104 @@ export class CoverPage implements OnInit {
 
   hideAnswer() {
     this.selectedAnswer = -1;
+  }
+
+  async changeTitle() {
+    const alert = await this.alertController.create({
+      header: 'Changer de titre',
+      inputs: [
+        {
+          name: 'title',
+          type: 'text',
+          placeholder: 'Votre titre',
+          value: this.bookService.book.title,
+        }
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: 'Confirmer',
+          handler: (data) => {
+            this.bookService.updateBookData({title: data.title});
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async changeDesc() {
+    const alert = await this.alertController.create({
+      header: 'Changer de description (courte)',
+      inputs: [
+        {
+          name: 'desc',
+          type: 'text',
+          placeholder: 'Votre description',
+          value: this.bookService.book.desc,
+        }
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: 'Confirmer',
+          handler: (data) => {
+            this.bookService.updateBookData({desc: data.desc});
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async changeVerso() {
+    const alert = await this.alertController.create({
+      header: 'Changer de verso',
+      inputs: [
+        {
+          name: 'verso',
+          type: 'textarea',
+          placeholder: 'Votre verso',
+          value: this.bookService.book.verso,
+        }
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: 'Confirmer',
+          handler: (data) => {
+            this.bookService.updateBookData({verso: data.verso});
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async changeCover() {
+    if (this.bookService.isAuthor) {
+      const modal = await this.modalController.create({
+        component: UploadComponent,
+        componentProps: {
+          type: 'cover',
+        }
+      });
+      modal.onDidDismiss()
+        .then((data) => {
+          if (data.data) {
+            this.bookService.uploadCover(data.data);
+          }
+      });
+      return await modal.present();
+    }
   }
 }

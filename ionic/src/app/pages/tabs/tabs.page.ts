@@ -19,6 +19,6 @@ export class TabsPage {
   }
 
   openProfile() {
-    this.userService.setUser();
+    this.userService.setCurUser();
   }
 }

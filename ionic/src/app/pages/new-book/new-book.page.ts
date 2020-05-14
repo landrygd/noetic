@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
-import { FirebaseService } from 'src/app/services/firebase.service';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TraductionService } from 'src/app/services/traductionService.service';
+import { BookService } from 'src/app/services/book.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-new-book',
@@ -17,14 +18,17 @@ export class NewBookPage implements OnInit {
   tags = [];
 
   bookForm: FormGroup;
+  bookId: string;
 
   constructor(
-    public firebase: FirebaseService,
+    public bookService: BookService,
+    public userService: UserService,
     public modalCtrl: ModalController,
     public nacCtrl: NavController,
     private formBuilder: FormBuilder,
     private translator: TraductionService
     ) {
+    this.bookId = this.bookService.generateBookId();
     const max = 3;
     const min = 1;
     const coverNumber = Math.floor(Math.random() * (max - min + 1) + min);
@@ -43,29 +47,34 @@ export class NewBookPage implements OnInit {
   confirm() {
     const form = this.bookForm.value;
     const title: string = form.name;
+    const authors = [this.userService.userId];
+
     const book = {
+      id: this.bookId,
       title,
       titleLower: title.toLowerCase(),
       desc: form.desc,
-      star: 0,
-      vote: 0,
-      view: 0,
+      stars: 0,
+      starsAvg: 0,
+      votes: 0,
+      views: 0,
       tags: this.tags,
       cover: this.cover,
       cat: form.cat,
-      authors: [this.firebase.userId],
       verso: form.verso,
       lang: this.translator.getCurLanguage(),
-      ref: [],
+      authors,
+      date: Date.now()
     };
-    this.firebase.addBook(book, this.cover);
+    this.bookService.newBook(book, this.cover, this.bookId);
   }
 
   async changeCover() {
     const modal = await this.modalCtrl.create({
       component: UploadComponent,
       componentProps: {
-        type: 'cover'
+        type: 'cover',
+        fileId: this.bookId
       }
     });
     modal.onDidDismiss()

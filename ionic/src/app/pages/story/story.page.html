@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="cover"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{firebase.book.name}}</ion-title>
+    <ion-title>{{bookService.book.title}}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="settings()" expand="block" fill="clear" shape="round">
         <ion-icon slot="icon-only" name="settings"></ion-icon>
@@ -13,10 +13,10 @@
 </ion-header>
 
 <ion-content>
-<ion-item *ngFor="let chat of firebase.bookStory" button details (click)="openChat(chat.id)">
-  <ion-icon slot="start" name="chatbox"></ion-icon>
+<ion-item *ngFor="let chat of bookService.chats" button details (click)="openChat(chat.id)">
+  <ion-icon slot="start" name="chatbox" *ngIf="chat.id !== 'main'"></ion-icon>
+  <ion-icon slot="start" name="flag" *ngIf="chat.id === 'main'"></ion-icon>
   <ion-label>{{chat.name}}</ion-label>
-  <ion-icon slot="end" name="flag" *ngIf="chat.id === 'main'"></ion-icon>
 </ion-item>
 </ion-content>
 

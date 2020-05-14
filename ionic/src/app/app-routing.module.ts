@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
+import { BookEditorGuard } from './guards/book-editor.guard';
 
 const routes: Routes = [
   {
@@ -9,6 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'tabs-book',
+    canActivate: [BookEditorGuard],
     loadChildren: () => import('./pages/tabs-book/tabs-book.module').then( m => m.TabsBookPageModule)
   },
   {
@@ -16,27 +18,12 @@ const routes: Routes = [
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
   },
   {
-    path: 'story',
-    loadChildren: () => import('./pages/story/story.module').then( m => m.StoryPageModule)
-  },
-  {
-    path: 'map',
-    loadChildren: () => import('./pages/map/map.module').then( m => m.MapPageModule)
-  },
-  {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
   },
   {
-    path: 'chat',
-    loadChildren: () => import('./pages/chat/chat.module').then( m => m.ChatPageModule)
-  },
-  {
-    path: 'settings-book',
-    loadChildren: () => import('./pages/settings-book/settings-book.module').then( m => m.SettingsBookPageModule)
-  },
-  {
     path: 'game',
+    canActivate: [BookEditorGuard],
     loadChildren: () => import('./pages/game/game.module').then( m => m.GamePageModule)
   },
   {
@@ -50,7 +37,13 @@ const routes: Routes = [
   },
   {
     path: 'cover',
+    canActivate: [BookEditorGuard],
     loadChildren: () => import('./pages/cover/cover.module').then( m => m.CoverPageModule)
+  },
+  {
+    path: 'chat',
+    canActivate: [BookEditorGuard],
+    loadChildren: () => import('./pages/chat/chat.module').then( m => m.ChatPageModule)
   },
   {
     path: 'new-book',
@@ -67,11 +60,22 @@ const routes: Routes = [
   },
   {
     path: 'notifs',
+    canActivate: [AuthGuard],
     loadChildren: () => import('./pages/notifs/notifs.module').then( m => m.NotifsPageModule)
   },
   {
     path: 'book-search',
     loadChildren: () => import('./pages/book-search/book-search.module').then( m => m.BookSearchPageModule)
+  },
+  {
+    path: 'user-settings',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./pages/user-settings/user-settings.module').then( m => m.UserSettingsPageModule)
+  },
+  {
+    path: 'settings-book',
+    canActivate: [BookEditorGuard],
+    loadChildren: () => import('./pages/settings-book/settings-book.module').then( m => m.SettingsBookPageModule)
   }
 ];
 @NgModule({

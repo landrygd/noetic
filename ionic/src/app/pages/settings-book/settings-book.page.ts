@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
-import { FirebaseService } from 'src/app/services/firebase.service';
 import { SearchUserComponent } from 'src/app/components/modals/search-user/search-user.component';
+import { BookService } from 'src/app/services/book.service';
+import { NotifService } from 'src/app/services/user/notif.service';
 
 @Component({
   selector: 'app-settings-book',
@@ -12,25 +13,27 @@ export class SettingsBookPage implements OnInit {
 
   constructor(public modalCtrl: ModalController,
               public alertController: AlertController,
-              public firebase: FirebaseService,
-              private toastController: ToastController) {}
+              public bookService: BookService,
+              private toastController: ToastController,
+              public notifService: NotifService) {}
 
   ngOnInit() {
   }
 
   async alertDelete() {
     const alert = await this.alertController.create({
-      header: 'Delete the book',
-      message: 'Are you sure to delete the book?',
+      header: 'Supprimer le livre',
+      message: 'Etes vous sûr de vouloir supprimer ce livre?',
       buttons: [
         {
-          text: 'Cancel',
+          text: 'Annuler',
           role: 'cancel',
           cssClass: 'secondary'
         }, {
-          text: 'Confirm',
+          text: 'Supprimer ce livre',
+          cssClass: 'danger',
           handler: () => {
-            this.firebase.deleteBook();
+            this.bookService.deleteBook();
           }
         }
       ]
@@ -50,7 +53,7 @@ export class SettingsBookPage implements OnInit {
         }, {
           text: 'Oui',
           handler: () => {
-            this.firebase.publishBook();
+            this.bookService.publishBook();
           }
         }
       ]
@@ -70,7 +73,7 @@ export class SettingsBookPage implements OnInit {
         }, {
           text: 'Oui',
           handler: () => {
-            this.firebase.unpublishBook();
+            this.bookService.unpublishBook();
           }
         }
       ]
@@ -99,7 +102,7 @@ export class SettingsBookPage implements OnInit {
       .then((data) => {
         const userId = data.data.userId;
         if (userId !== '') {
-          this.firebase.inviteBook(userId);
+          this.notifService.inviteBook(userId, this.bookService.curBookId);
           this.toast('Invitation envoyée.');
         }
     });

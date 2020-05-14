@@ -1,18 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FirebaseService } from 'src/app/services/firebase.service';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { NavController, ModalController, IonContent, ActionSheetController, AlertController } from '@ionic/angular';
-import { NewActorComponent } from 'src/app/components/modals/new-actor/new-actor.component';
-import { NewQuestionComponent } from 'src/app/components/modals/new-question/new-question.component';
-import { ChatService } from 'src/app/services/chat.service';
+import { ChatService } from 'src/app/services/book/chat.service';
+import { PopupService } from 'src/app/services/popup.service';
+import { BookService } from 'src/app/services/book.service';
+import { ActorService } from 'src/app/services/book/actor.service';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.page.html',
   styleUrls: ['./chat.page.scss'],
 })
-export class ChatPage implements OnInit {
+export class ChatPage implements OnInit, AfterViewInit {
 
-  @ViewChild(IonContent, { static: true }) content: IonContent;
+  @ViewChild(IonContent, { static: false }) content: IonContent;
 
   text: string;
   chat = [];
@@ -21,20 +21,29 @@ export class ChatPage implements OnInit {
   actor: string;
   textarea = false;
 
+  loaded = false;
+
   constructor(
-    public firebase: FirebaseService,
     public chatService: ChatService,
+    public bookService: BookService,
+    public actorService: ActorService,
     private navCtrl: NavController,
     public modalCtrl: ModalController,
     public actionSheetController: ActionSheetController,
-    public alertController: AlertController
-    ) {
-    if (this.firebase.bookActor === undefined) {
+    public alertController: AlertController,
+    public popup: PopupService
+    ) {}
+
+  ngOnInit() {
+    if (this.bookService.curChatId === undefined) {
       this.navCtrl.navigateRoot('/');
+    } else {
+      this.chatService.syncChat(this.bookService.curChatId);
+      this.loaded = true;
     }
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.scrollToBottom();
   }
 
@@ -49,32 +58,36 @@ export class ChatPage implements OnInit {
     if (this.actor && log.msg.charAt(0) !== '/') {
       log.actor = this.actor;
     }
-    if (this.curIndex === -1) {
-      this.firebase.addChatLog(log);
+    if ((log.msg.substring(0, 7).toLowerCase() === '/l main' || log.msg.substring(0, 11).toLowerCase() === '/label main')) {
+      this.popup.alert('Impossible de créer de label avec ce nom.');
     } else {
-      this.firebase.editChatLog(log, this.curIndex);
+      if (this.curIndex === -1) {
+        this.chatService.addChatLog(log);
+      } else {
+        this.chatService.editChatLog(log, this.curIndex);
+      }
     }
-    this.curIndex = -1;
     setTimeout(() => this.scrollToBottom(), 50);
     setTimeout(() => this.text = '', 1);
+    this.curIndex = -1;
     this.textarea = false;
   }
 
   doReorder(event) {
     this.curIndex = -1;
-    this.chat = this.firebase.chatLogs;
+    this.chat = this.chatService.chatLogs;
     const itemMove = this.chat.splice(event.detail.from, 1)[0];
     this.chat.splice(event.detail.to, 0, itemMove);
-    this.firebase.setChatLogs(this.chat);
+    this.chatService.setChatLogs(this.chat);
     event.detail.complete();
   }
 
   select(index) {
     if (index !== this.curIndex) {
       this.curIndex = index;
-      this.text = this.firebase.chatLogs[index].msg;
-      if (this.firebase.chatLogs[index].actor) {
-        this.actor = this.firebase.chatLogs[index].actor;
+      this.text = this.chatService.chatLogs[index].msg;
+      if (this.chatService.chatLogs[index].actor) {
+        this.actor = this.chatService.chatLogs[index].actor;
       }
     } else {
       this.curIndex = -1;
@@ -106,14 +119,11 @@ export class ChatPage implements OnInit {
   }
 
   deleteChat() {
-    this.firebase.deleteChat();
+    this.chatService.deleteChat();
   }
 
-  async newActor() {
-    const modal = await this.modalCtrl.create({
-      component: NewActorComponent
-    });
-    return await modal.present();
+  newActor() {
+    this.actorService.newActor();
   }
 
   getClassFabActor(actor) {
@@ -147,10 +157,39 @@ export class ChatPage implements OnInit {
   }
 
   debug() {
-    this.firebase.play(this.firebase.curBookId, this.firebase.curChat, true);
+    this.bookService.play(this.bookService.curBookId, this.chatService.chat.name, true);
   }
 
   action(name) {
-    this.firebase.toast('impossible d\'executer les boutons ici');
+    this.popup.toast('impossible d\'executer les boutons ici');
+  }
+
+  renameChat() {
+    this.chatService.renameChat();
+  }
+
+  async settings() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Paramètres',
+      buttons: [{
+        text: 'Supprimer',
+        role: 'destructive',
+        icon: 'trash',
+        handler: () => {
+          this.deleteChat();
+        }
+      }, {
+        text: 'Renommer',
+        icon: 'create',
+        handler: () => {
+          this.renameChat();
+        }
+      }, {
+        text: 'Annuler',
+        icon: 'close',
+        role: 'cancel'
+      }]
+    });
+    await actionSheet.present();
   }
 }

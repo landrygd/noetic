@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Output, ElementRef, ViewChild, OnChanges } from '@angular/core';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import { ModalController, NavController } from '@ionic/angular';
+import { Component, OnInit, Input, Output, ElementRef, ViewChild } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { AnimationService } from 'src/app/services/animation.service';
+import { ActorService } from 'src/app/services/book/actor.service';
+import { ChatService } from 'src/app/services/book/chat.service';
 
 @Component({
   selector: 'app-log',
@@ -24,7 +24,9 @@ export class LogComponent implements OnInit {
   @Output() action = new EventEmitter<string>();
   @Output() scroll = new EventEmitter<void>();
 
-  actor: string;
+  actorId: string;
+  actor: any;
+
   color = 'primary';
   msg = '';
   name = '';
@@ -33,10 +35,9 @@ export class LogComponent implements OnInit {
   actionName = '';
 
   constructor(
-    private firebase: FirebaseService,
-    private modalCtrl: ModalController,
-    private navCtrl: NavController,
-    public animation: AnimationService
+    private actorService: ActorService,
+    public animation: AnimationService,
+    private chatService: ChatService
     ) {}
 
   actionEmit(name: string) {
@@ -45,10 +46,8 @@ export class LogComponent implements OnInit {
 
   ngOnInit() {
     if (this.log.hasOwnProperty('actor')) {
-      this.actor = this.log.actor;
-      if (this.actor !== 'Narrator') {
-        this.name = this.firebase.getActorById(this.actor).name;
-      }
+      this.actorId = this.log.actor;
+      this.actor = this.actorService.getActor(this.actorId);
     }
     if (this.log.hasOwnProperty('color')) {
       this.color = this.log.color;
@@ -63,7 +62,9 @@ export class LogComponent implements OnInit {
         this.actionName = 'end';
       }
     }
-    this.animation.fadeIn(this.ref);
+    if (!this.edit) {
+      this.animation.fadeIn(this.ref);
+    }
     this.scroll.emit();
   }
 
@@ -81,8 +82,6 @@ export class LogComponent implements OnInit {
   }
 
   delete() {
-    this.firebase.deleteChatLog(this.index);
+    this.chatService.deleteChatLog(this.index);
   }
-
-  
 }

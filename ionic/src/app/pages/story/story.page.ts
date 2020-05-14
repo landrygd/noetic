@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, NavController } from '@ionic/angular';
-import { NewChatComponent } from 'src/app/components/modals/new-chat/new-chat.component';
-import { FirebaseService } from 'src/app/services/firebase.service';
+import { NavController } from '@ionic/angular';
+import { BookService } from 'src/app/services/book.service';
 
 @Component({
   selector: 'app-story',
@@ -10,24 +9,30 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 })
 export class StoryPage implements OnInit {
 
-  constructor( private modalCtrl: ModalController, public firebase: FirebaseService, public navCtrl: NavController) { }
+  chats: any[];
+
+  constructor(
+    public navCtrl: NavController,
+    public bookService: BookService
+    ) {
+      if (this.bookService.curBookId === undefined) {
+        this.navCtrl.navigateRoot('/');
+      }
+      this.chats = this.bookService.chats;
+    }
 
   ngOnInit() {
   }
 
-  async addChat() {
-    const modal = await this.modalCtrl.create({
-      component: NewChatComponent
-    });
-    return await modal.present();
+  addChat() {
+    this.bookService.newChat();
   }
 
   openChat(chatId) {
-    this.firebase.openChat(chatId);
+    this.bookService.openChat(chatId);
   }
 
   settings() {
-    this.navCtrl.navigateForward("settings-book");
+    this.navCtrl.navigateForward('settings-book');
   }
-
 }

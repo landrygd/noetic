@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { FirebaseService } from 'src/app/services/firebase.service';
 import { NavController, IonSearchbar } from '@ionic/angular';
 import { SlidesService } from 'src/app/services/slides.service';
 import { AnimationService } from 'src/app/services/animation.service';
+import { BookService } from 'src/app/services/book.service';
 
 @Component({
   selector: 'app-book-search',
@@ -23,13 +23,13 @@ export class BookSearchPage implements OnInit {
   resultsByTagSub: Subscription;
 
 
-  books: any[];
+  books: any[] = [];
 
   loadingByName = true;
   loadingByTag = true;
-  
+
   constructor(
-    public firebase: FirebaseService,
+    public bookService: BookService,
     private navCtrl: NavController,
     public slides: SlidesService,
     private animation: AnimationService
@@ -47,7 +47,7 @@ export class BookSearchPage implements OnInit {
     if (this.resultsByNameSub) {
       this.resultsByNameSub.unsubscribe();
     }
-    this.resultsByName = this.firebase.searchByName(this.filter);
+    this.resultsByName = this.bookService.searchByName(this.filter);
     this.resultsByNameSub = this.resultsByName.subscribe((val) => {
       console.log(val);
       if (JSON.stringify(this.books) !== JSON.stringify(val)) {
@@ -66,7 +66,7 @@ export class BookSearchPage implements OnInit {
     if (this.resultsByNameSub) {
       this.resultsByNameSub.unsubscribe();
     }
-    this.resultsByTag = this.firebase.searchByTag(this.filter);
+    this.resultsByTag = this.bookService.searchByTag(this.filter);
     this.resultsByTagSub = this.resultsByTag.subscribe((val) => {
       console.log(val);
       if (JSON.stringify(this.books) !== JSON.stringify(val)) {

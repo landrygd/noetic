@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, Directive } from '@angular/core';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import { Animation, AnimationController } from '@ionic/angular';
 import { AnimationService } from 'src/app/services/animation.service';
 import { Observable } from 'rxjs';
+import { BookService } from 'src/app/services/book.service';
 
 @Component({
   selector: 'app-card-book',
@@ -12,6 +11,10 @@ import { Observable } from 'rxjs';
 export class CardBookComponent implements OnInit, AfterViewInit {
 
   @Input() bookId: string;
+  @Input() bookJSON: any;
+
+  @Input() height = 300;
+  width: number;
 
   bookAsync: Observable<any>;
 
@@ -23,14 +26,19 @@ export class CardBookComponent implements OnInit, AfterViewInit {
   title: string;
   desc: string;
   cover = '../../../assets/cover/cover1.png';
+  async = false;
 
   constructor(
-    public firebase: FirebaseService,
+    public bookService: BookService,
     public animation: AnimationService
     ) {}
 
   ngOnInit() {
-    this.bookAsync = this.firebase.getBook(this.bookId);
+    if (!this.bookJSON) {
+      this.bookAsync = this.bookService.getBook(this.bookId);
+      this.async = true;
+    }
+    this.width = this.height * 9 / 16 - 20;
   }
 
   ngAfterViewInit() {
@@ -38,6 +46,6 @@ export class CardBookComponent implements OnInit, AfterViewInit {
   }
 
   open(json) {
-    this.firebase.openCover(json);
+    this.bookService.openCover(json.id);
   }
 }

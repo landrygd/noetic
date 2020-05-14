@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FirebaseService } from 'src/app/services/firebase.service';
-import { ModalController, IonSlides, NavController } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { ModalController, NavController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { SlidesService } from 'src/app/services/slides.service';
+import { UserService } from 'src/app/services/user.service';
+import { BookService } from 'src/app/services/book.service';
 
 @Component({
   selector: 'app-home',
@@ -13,18 +14,21 @@ export class HomePage implements OnInit {
   curCategory = 'undefined';
 
   mostVueList: Observable<any>;
+  mostRecentList: Observable<any>;
+  topRatedList: Observable<any>;
+
   userBookList: string[] = [];
 
   constructor(
-    public firebase: FirebaseService,
+    public userService: UserService,
+    public books: BookService,
     public modalCtrl: ModalController,
     public navCtrl: NavController,
     public slides: SlidesService
     ) {
-    this.mostVueList = this.firebase.getMostVue();
-    if (this.firebase.connected) {
-      this.userBookList = this.firebase.userData.list;
-    }
+    this.mostVueList = this.books.getMostVue();
+    this.mostRecentList = this.books.getMostRecent();
+    this.topRatedList = this.books.getTopRated();
    }
 
   ngOnInit() {}

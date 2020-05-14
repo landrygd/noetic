@@ -20,23 +20,19 @@
     <ion-label>Catégorie {{curCategory}}</ion-label>
   </ion-item> -->
   <ion-list>
-    <div *ngIf="!loading && books.length !== 0">
+    <div *ngIf="!loadingByName && books.length !== 0">
       <h1 class="ion-text-center ion-no-margin">Livres</h1>
-      <ion-slides [options]="slides.coverFlowOpts" class="slides" class="ion-no-margin" *ngIf="books.length !== 0">
-        <ion-slide>
-        </ion-slide>
+      <ion-slides [options]="slides.basicOpts" class="slides" class="ion-no-margin" *ngIf="books.length !== 0">
         <ion-slide *ngFor="let book of books">
-          <app-card-book [bookId]="book.id"></app-card-book>
-        </ion-slide>
-        <ion-slide>
+          <app-card-book [bookJSON]="book"></app-card-book>
         </ion-slide>
       </ion-slides>
     </div>
-    <div *ngIf="loadingCardByName" style="width: 100%; height: 100%;" #loadingCardByNameView>
+    <div *ngIf="loadingByName" style="width: 100%; height: 100%;" #loadingCardByNameView>
       <h1 class="ion-text-center ion-no-margin">Livres</h1>
-      <ion-slides [options]="slides.coverFlowOpts" class="ion-no-margin">
+      <ion-slides [options]="slides.basicOpts" class="ion-no-margin">
         <ion-slide *ngFor="let i of [0,0,0]">
-          <ion-card style="height: 360px;width: 180px;" class="ion-no-margin">
+          <ion-card style="height: 300px;width: 180px;" class="ion-no-margin">
             <ion-skeleton-text animated style="height: 100%;width: 100%;" class="ion-no-margin"></ion-skeleton-text>
           </ion-card>
         </ion-slide>

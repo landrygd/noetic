@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { FirebaseService } from 'src/app/services/firebase.service';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
+import { UserService } from 'src/app/services/user.service';
+import { BookService } from 'src/app/services/book.service';
 
 @Component({
   selector: 'app-upload',
@@ -10,28 +11,32 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 })
 export class UploadComponent implements OnInit {
 
-  @Input() type: string = '';
+  @Input() type = '';
 
-  path: string = "unknowed";
+  path = 'unknowed';
   userId: string;
   file: any;
-  ratio:number = 1;
-  width:number = 200;
+  ratio = 1;
+  width = 200;
 
-  constructor(private modalController: ModalController, public firebase: FirebaseService) {
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+  imported = false;
+
+  constructor(
+    private modalController: ModalController,
+    public userService: UserService,
+    public bookService: BookService
+    ) {
   }
 
   ngOnInit() {
-    if(this.type == 'cover') {
-      this.ratio = 9/16;
+    if (this.type === 'cover') {
+      this.ratio = 9 / 16;
       this.width = 180;
     }
   }
 
-  imageChangedEvent: any = '';
-  croppedImage: any = '';
-  imported: boolean = false;
-  
   fileChangeEvent(event: any): void {
       this.imageChangedEvent = event;
       this.imported = true;
@@ -49,15 +54,13 @@ export class UploadComponent implements OnInit {
       // show message
   }
 
-  
-
   cancel() {
     this.modalController.dismiss();
   }
 
   confirm() {
-    if(this.type!=="cover") {
-      this.firebase.uploadFile(this.type, this.file);
+    if (this.type === 'userAvatar') {
+      this.userService.uploadAvatar(this.file);
     }
     this.modalController.dismiss(this.file);
   }

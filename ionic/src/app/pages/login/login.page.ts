@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { FirebaseService } from 'src/app/services/firebase.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +12,7 @@ export class LoginPage implements OnInit {
   loginForm: FormGroup;
 
   constructor(
-    public firebase: FirebaseService,
+    public authService: AuthService,
     public navCtrl: NavController,
     private formBuilder: FormBuilder
     ) {
@@ -29,7 +29,7 @@ export class LoginPage implements OnInit {
   }
 
   login() {
-    this.firebase.login(this.loginForm.value);
+    this.authService.login(this.loginForm.value);
   }
 
   signUp() {

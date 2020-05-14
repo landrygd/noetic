@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FirebaseService } from 'src/app/services/firebase.service';
+import { UserService } from 'src/app/services/user.service';
+import { BookService } from 'src/app/services/book.service';
+import { ActorService } from 'src/app/services/book/actor.service';
 
 @Component({
   selector: 'app-avatar',
@@ -10,10 +12,7 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 export class AvatarComponent implements OnInit {
 
   @Input() set actorId(actorId: string) {
-    if (actorId === undefined) {
-      actorId = 'Narrator';
-    }
-    this.actor = this.firebase.getActorById(actorId);
+    this.actor = this.actorService.getActor(actorId);
     if (this.actor.hasOwnProperty('name')) {
       this.name = this.actor.name;
     }
@@ -30,7 +29,7 @@ export class AvatarComponent implements OnInit {
   color = 'rgb(56, 128, 255)';
   avatar = 'assets/avatar/man.png';
 
-  constructor(public firebase: FirebaseService) {
+  constructor(public actorService: ActorService) {
   }
 
   ngOnInit() {}

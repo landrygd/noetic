@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { FirebaseService } from 'src/app/services/firebase.service';
+import { UserService } from 'src/app/services/user.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-search-user',
@@ -9,11 +10,11 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 })
 export class SearchUserComponent implements OnInit {
 
-  userId:string = "";
+  userId = '';
 
-  users: any[] = [];
+  users: Observable<any>;
 
-  constructor(private modalCtrl: ModalController, public firebase: FirebaseService) { }
+  constructor(private modalCtrl: ModalController, public userService: UserService) { }
 
   ngOnInit() {}
 
@@ -33,13 +34,11 @@ export class SearchUserComponent implements OnInit {
   }
 
   onSearchChange(text) {
-    this.users = [];
-    this.firebase.getUsersByName(text).subscribe((value)=>{
-      value.docs.forEach(user => {
-        if(user.id !== this.firebase.userId) {
-          this.users.push(user.data());
-        }
-      });
-    });
+    if (text !== '') {
+      const users = this.userService.searchUser(text);
+      if (users !== this.users) {
+        this.users = users;
+      }
+    }
   }
 }

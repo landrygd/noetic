@@ -8,7 +8,6 @@ import { StoryPageRoutingModule } from './story-routing.module';
 
 import { StoryPage } from './story.page';
 import { ComponentModule } from 'src/app/components/component.module';
-import { NewChatComponent } from 'src/app/components/modals/new-chat/new-chat.component';
 
 @NgModule({
   imports: [
@@ -18,7 +17,6 @@ import { NewChatComponent } from 'src/app/components/modals/new-chat/new-chat.co
     StoryPageRoutingModule,
     ComponentModule
   ],
-  declarations: [StoryPage],
-  entryComponents: [NewChatComponent]
+  declarations: [StoryPage]
 })
 export class StoryPageModule {}

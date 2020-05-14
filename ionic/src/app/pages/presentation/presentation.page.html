@@ -1,10 +1,13 @@
 <ion-content fullscreen>
-<ion-slides mode="ios" pager="ios" scrollbar="ios" style="height: 100%;">
+<ion-slides mode="ios" pager="ios" scrollbar="ios" style="height: 100%;" #slides>
   <ion-slide>
     <div>
       <img src="../../../assets/slides/slide1.png" alt="slide 1"/>
       <h1>Créez</h1>
       <p>des histoires à travers des chats interactifs,</p>
+      <ion-button (click)="next()" expand="block" fill="solid" shape="round">
+        Suivant
+      </ion-button>
     </div>
   </ion-slide>
   <ion-slide>
@@ -12,6 +15,9 @@
       <img src="../../../assets/slides/slide2.png" alt="slide 2"/>
       <h1>Invitez</h1>
       <p>vos amis à créez et/ou jouer une histoire ensemble,</p>
+      <ion-button (click)="next()" expand="block" fill="solid" shape="round">
+        Suivant
+      </ion-button>
     </div>
   </ion-slide>
   <ion-slide>

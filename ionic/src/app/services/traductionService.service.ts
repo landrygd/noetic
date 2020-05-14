@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class TraductionService {
 
-  curLanguage:string = 'en';
+  curLanguage = 'en';
 
   constructor(private translator: TranslateService) { 
     this.curLanguage = this.translator.getBrowserLang();

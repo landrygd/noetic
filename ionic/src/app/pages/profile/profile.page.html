@@ -3,7 +3,7 @@
     <div class="header">
       <ion-toolbar style="--background: transparent; opacity: 0.7;">
         <ion-buttons slot="start">
-          <ion-back-button defaultHref="home" *ngIf="!ownProfile"></ion-back-button>
+          <ion-back-button (click)="back()" defaultHref="home" *ngIf="!ownProfile"></ion-back-button>
           <ion-button (click)="notif()" fill="clear" shape="round" color="dark" *ngIf="ownProfile">
             <ion-icon slot="icon-only" name="notifications"></ion-icon>
           </ion-button>   
@@ -16,10 +16,11 @@
       </ion-toolbar>
     </div>
     <div class="flex">
-      <ion-avatar style="background-color: #333">
+      <!-- <ion-avatar style="background-color: #333">
         <ion-img [src]="user.avatar" (click)="changeAvatar()" *ngIf="user.avatar" button></ion-img>
         <ion-spinner name="bubbles" class="avatarSpinner" *ngIf="!user.avatar"></ion-spinner>
-      </ion-avatar>
+      </ion-avatar> -->
+      <app-user-avatar [page]="true" [userId]="user.id" [width]="'150px'" (click)="changeAvatar(user.id)"></app-user-avatar>
     </div>
     <ion-grid fixed class="ion-text-center">
       <ion-row>
@@ -39,13 +40,14 @@
         <ion-col>
           <ion-button (click)="changeBio()" expand="block" color="medium" fill="clear" shape="round" *ngIf="ownProfile">
             <ion-label>
-              <p>{{user.bio}}</p>
-              
+              <p *ngIf="user.bio">{{user.bio}}</p>
+              <p *ngIf="!user.bio">Rien à dire pour le moment</p>
             </ion-label>
             <ion-icon name="pencil" slot="end"></ion-icon>
           </ion-button>
           <ion-text color="medium" *ngIf="!ownProfile">
-            <p>{{user.bio}}</p>
+            <p *ngIf="user.bio">{{user.bio}}</p>
+            <p *ngIf="!user.bio">Rien à dire pour le moment</p>
           </ion-text>
         </ion-col>
       </ion-row>
@@ -59,17 +61,35 @@
         Arrêter de suivre
       </ion-button>
     </div>
-    <h1 class="ion-text-center" *ngIf="ownProfile && userBooks.length !== 0">Mes histoires</h1>
-    <h1 class="ion-text-center" *ngIf="!ownProfile && userBooks.length !== 0">Ses histoires</h1>
-    <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userBooks.length !== 0">
-      <ion-slide>
-      </ion-slide>
-      <ion-slide *ngFor="let bookId of userBooks">
-        <app-card-book [bookId]="bookId"></app-card-book>
-      </ion-slide>
-      <ion-slide>
-      </ion-slide>
-    </ion-slides>
+    <div *ngIf="ownProfile">
+      <div *ngIf="userService.books.length !== 0; else nothing">
+        <h1 class="ion-text-center">Mes histoires</h1>
+        <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userService.books.length !== 0">
+          <ion-slide>
+          </ion-slide>
+          <ion-slide *ngFor="let bookId of userService.books">
+            <app-card-book [bookId]="bookId"></app-card-book>
+          </ion-slide>
+          <ion-slide>
+          </ion-slide>
+        </ion-slides>
+      </div>
+    </div>
+    <div *ngIf="!ownProfile">
+      <div *ngIf="userService.curUserBooks.length !== 0; else nothing">
+        <h1 class="ion-text-center">Ses histoires</h1>
+        <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userService.curUserBooks.length !== 0">
+          <ion-slide>
+          </ion-slide>
+          <ion-slide *ngFor="let bookId of userService.curUserBooks">
+            <app-card-book [bookId]="bookId"></app-card-book>
+          </ion-slide>
+          <ion-slide>
+          </ion-slide>
+        </ion-slides>
+      </div>
+    </div>
+    
   </div>
   
 

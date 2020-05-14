@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NavController, IonSlides } from '@ionic/angular';
 
 @Component({
   selector: 'app-presentation',
@@ -8,6 +8,8 @@ import { NavController } from '@ionic/angular';
 })
 export class PresentationPage implements OnInit {
 
+  @ViewChild('slides', {static: true}) slides: IonSlides;
+
   constructor(public navCtrl: NavController) { }
 
   ngOnInit() {
@@ -15,5 +17,9 @@ export class PresentationPage implements OnInit {
 
   start() {
     this.navCtrl.navigateRoot('/tabs');
+  }
+
+  next() {
+    this.slides.slideNext();
   }
 }

@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FirebaseService } from 'src/app/services/firebase.service';
 import { NavController, AlertController, ActionSheetController, IonContent, ToastController } from '@ionic/angular';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Subscription } from 'rxjs';
-import { Game } from 'src/app/classes/game';
 import { Animation, AnimationController } from '@ionic/angular';
+import { BookService } from 'src/app/services/book.service';
+import { ChatService } from 'src/app/services/book/chat.service';
+import { PopupService } from 'src/app/services/popup.service';
 
 @Component({
   selector: 'app-game',
@@ -18,12 +19,11 @@ export class GamePage implements OnInit {
   id: string;
   sub: Subscription;
   line = -1;
-  chat = 'main';
+  chat: any;
   chatLogs: any[] = [];
   logs: any[] = [];
   chatId = 'main';
   curHost = '';
-  game: Game;
   loopMinTime = 1000;
   question = false;
   labels: any;
@@ -41,25 +41,29 @@ export class GamePage implements OnInit {
   opts: any[] = [];
   arg: string;
 
+  cptChatLabel: any = {};
+
   constructor(
-    public firebase: FirebaseService,
+    public bookService: BookService,
+    public chatService: ChatService,
     public navCtrl: NavController,
     public database: AngularFireDatabase,
     public alertCtrl: AlertController,
     public actionSheetController: ActionSheetController,
+    private popupService: PopupService
     ) {
     }
 
   ngOnInit() {
-    this.id = this.firebase.curBookId;
-    this.playChat(this.firebase.curChat);
+    this.id = this.bookService.curBookId;
+    this.playChat(this.bookService.curChatId);
   }
 
-  async playChat(chatId = 'main') {
+  playChat(chatName = 'main') {
     this.line = 0;
-    this.firebase.getChat(chatId);
-    const chatAsync = await this.firebase.getChat(chatId);
-    this.chatLogs = chatAsync.data().logs;
+    this.chatService.getChat(chatName);
+    this.chat = this.chatService.getChat(chatName);
+    this.chatLogs = this.chat.logs;
     this.labels = this.getLabels();
     this.playLog();
   }
@@ -80,12 +84,16 @@ export class GamePage implements OnInit {
               case 'g':
               case 'go':
                 if (this.opts.includes('chat')) {
-                  if (this.firebase.haveChat(this.arg)) {
-                    gochat = this.firebase.getChatIdByName(this.arg);
+                  if (this.chatService.haveChat(this.arg)) {
+                    if (this.checkCptLabel(this.arg)) {
+                      gochat = this.arg;
+                    }
                   }
                 } else {
-                  if (this.labels[this.arg]) {
-                    line = this.labels[this.arg];
+                  if (this.labels.hasOwnProperty(this.arg)) {
+                    if (this.checkCptLabel(this.chat.name, this.arg)) {
+                      line = this.labels[this.arg];
+                    }
                   }
                 }
                 break;
@@ -120,12 +128,43 @@ export class GamePage implements OnInit {
             this.playChat(gochat);
           }, time + this.waitTime);
         }
-      } else if(!this.ended) {
+      } else if (!this.ended) {
         setTimeout(() => {
           this.end();
         }, this.waitTime);
       }
     }
+  }
+
+  checkCptLabel(chatName = this.chat.name, labelName = 'main') {
+    if (this.cptChatLabel.hasOwnProperty(chatName)) {
+      if (this.cptChatLabel[chatName].hasOwnProperty(labelName)) {
+        this.cptChatLabel[chatName][labelName] += 1;
+        const cpt = this.cptChatLabel[chatName][labelName];
+        if (cpt >= 9) {
+          if (labelName === 'main') {
+            if (this.bookService.debug) {
+              this.popupService.alert(
+                'Un chat ne peut être utilisé que 10 fois maximum! Il sera ignoré pendant la lecture ce quotas dépassé.'
+                );
+            }
+            return false;
+          } else {
+            if (this.bookService.debug) {
+              this.popupService.alert(
+                'Un label ne peut être utilisé que 10 fois maximum! Il sera ignoré pendant la lecture ce quotas dépassé.'
+                );
+            }
+            return false;
+          }
+        }
+      } else {
+        this.cptChatLabel[chatName] = {[labelName]: 1};
+      }
+    } else {
+      this.cptChatLabel[chatName] = {main: 1};
+    }
+    return true;
   }
 
   scrollToBottom() {
@@ -188,7 +227,7 @@ export class GamePage implements OnInit {
     for (let i = 0; i < count; i++) {
       res.push(0);
     }
-    this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update({answers: res});
+    this.database.object('games/' + this.id + '/chat/' + this.bookService.curChatId).update({answers: res});
   }
 
   send() {
@@ -224,8 +263,8 @@ export class GamePage implements OnInit {
 
   exit() {
     this.exited = true;
-    if (!this.firebase.debug) {
-      this.firebase.unsyncBook();
+    if (!this.bookService.debug) {
+      this.bookService.unsyncBook();
     }
     this.navCtrl.back();
   }
@@ -254,29 +293,29 @@ export class GamePage implements OnInit {
   //   await alert.present();
   // }
 
-  answer(index) {
-    const answers = this.game.getAnswersList();
-    answers.splice(index, 1, answers[index] + 1);
-    this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update({answers});
-    this.question = false;
-  }
+  // answer(index) {
+  //   const answers = this.game.getAnswersList();
+  //   answers.splice(index, 1, answers[index] + 1);
+  //   this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update({answers});
+  //   this.question = false;
+  // }
 
-  async anwserList() {
-    const buttons = [];
-    const answers = this.game.getAnswers();
-    for (let i = 0; i < answers.length; i++) {
-      const answer = answers[i];
-      buttons.push({
-        text: answer.msg,
-        handler: () => {
-          this.answer(i);
-        }
-      });
-    }
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Choose your answer',
-      buttons,
-    });
-    await actionSheet.present();
-  }
+  // async anwserList() {
+  //   const buttons = [];
+  //   const answers = this.game.getAnswers();
+  //   for (let i = 0; i < answers.length; i++) {
+  //     const answer = answers[i];
+  //     buttons.push({
+  //       text: answer.msg,
+  //       handler: () => {
+  //         this.answer(i);
+  //       }
+  //     });
+  //   }
+  //   const actionSheet = await this.actionSheetController.create({
+  //     header: 'Choose your answer',
+  //     buttons,
+  //   });
+  //   await actionSheet.present();
+  // }
 }

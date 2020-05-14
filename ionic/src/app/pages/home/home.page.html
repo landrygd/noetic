@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="search">
     <ion-img src="/assets/logo.png" style="width: 4em;" slot="start" class="ion-margin-start"></ion-img>
     <ion-searchbar
       placeholder="Chercher une histoire" 
@@ -14,45 +14,55 @@
 
 
 <ion-content>
-  <h1 class="ion-text-center" *ngIf="userBookList.length !== 0">Ma liste</h1>
+  <h1 class="ion-text-center" *ngIf="userService.list.length !== 0">Ma liste</h1>
 
-  <ion-slides class="slides" [options]="slideOpts" *ngIf="userBookList.length !== 0">
-    <ion-slide>
-    </ion-slide>
-    <ion-slide *ngFor="let bookId of userBookList">
+  <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.list.length !== 0">
+    <ion-slide *ngFor="let bookId of userService.list">
       <app-card-book [bookId]="bookId"></app-card-book>
     </ion-slide>
-    <ion-slide>
+  </ion-slides>
+
+  <h1 class="ion-text-center ion-no-margin">Les mieux notés</h1>
+
+  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="topRatedList | async as topRated; else loadingTopRated">
+    <ion-slide *ngFor="let book of topRated">
+      <app-card-book [bookJSON]="book"></app-card-book>
     </ion-slide>
   </ion-slides>
+
+  <ng-template #loadingTopRated>
+    <div style="height: 300px; display: flex; align-content: center!important; align-items: center!important; justify-content: center;">
+      <ion-spinner name="bubbles"></ion-spinner>
+    </div>
+  </ng-template>
 
   <h1 class="ion-text-center ion-no-margin">Les plus vues</h1>
 
-  <div *ngIf="!(mostVueList | async)" style="height: 360px; display: flex; align-content: center!important; align-items: center!important; justify-content: center;">
-    <ion-spinner name="bubbles"></ion-spinner>
-  </div>
+  
 
-  <ion-slides class="slides" [options]="slides.coverFlowOpts" class="ion-no-margin" *ngIf="mostVueList | async as mostVue">
-    <ion-slide>
-    </ion-slide>
+  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostVueList | async as mostVue; else loadingMostVue">
     <ion-slide *ngFor="let book of mostVue">
-      <app-card-book [bookId]="book.id"></app-card-book>
-    </ion-slide>
-    <ion-slide>
+      <app-card-book [bookJSON]="book"></app-card-book>
     </ion-slide>
   </ion-slides>
-  
-  <!-- <h1 class="ion-text-center ion-no-margin">Par catégorie</h1>
-  <ion-slides class="slides" [options]="{slidesPerView: 4}" class="ion-no-margin">
-    <ion-slide *ngFor="let cat of firebase.category">
-      <ion-col class="ion-text-center">
-        <ion-fab-button style="display: inline-block" (click)="searchCategory(cat)">
-          <ion-icon name="add" [src]="'../../../assets/icon/category/'+cat+'.svg'"></ion-icon>
-        </ion-fab-button>
-        <ion-text color="medium">
-          <p class="ion-no-margin">{{cat}}</p>
-        </ion-text>
-      </ion-col>
+
+  <ng-template #loadingMostVue>
+    <div style="height: 300px; display: flex; align-content: center!important; align-items: center!important; justify-content: center;">
+      <ion-spinner name="bubbles"></ion-spinner>
+    </div>
+  </ng-template>
+
+  <h1 class="ion-text-center ion-no-margin">Les plus récents</h1>
+
+  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostRecentList | async as mostRecent; else loadingMostRecent">
+    <ion-slide *ngFor="let book of mostRecent">
+      <app-card-book [bookJSON]="book"></app-card-book>
     </ion-slide>
-  </ion-slides> -->
+  </ion-slides>
+
+  <ng-template #loadingMostRecent>
+    <div style="height: 300px; display: flex; align-content: center!important; align-items: center!important; justify-content: center;">
+      <ion-spinner name="bubbles"></ion-spinner>
+    </div>
+  </ng-template>
 </ion-content>
