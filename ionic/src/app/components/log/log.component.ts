@@ -3,6 +3,7 @@ import { EventEmitter } from '@angular/core';
 import { AnimationService } from 'src/app/services/animation.service';
 import { ActorService } from 'src/app/services/book/actor.service';
 import { ChatService } from 'src/app/services/book/chat.service';
+import { BookService } from 'src/app/services/book.service';
 
 @Component({
   selector: 'app-log',
@@ -25,7 +26,6 @@ export class LogComponent implements OnInit {
   @Output() scroll = new EventEmitter<void>();
 
   actorId: string;
-  actor: any;
 
   color = 'primary';
   msg = '';
@@ -37,7 +37,8 @@ export class LogComponent implements OnInit {
   constructor(
     private actorService: ActorService,
     public animation: AnimationService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    public bookService: BookService
     ) {}
 
   actionEmit(name: string) {
@@ -47,7 +48,6 @@ export class LogComponent implements OnInit {
   ngOnInit() {
     if (this.log.hasOwnProperty('actor')) {
       this.actorId = this.log.actor;
-      this.actor = this.actorService.getActor(this.actorId);
     }
     if (this.log.hasOwnProperty('color')) {
       this.color = this.log.color;
@@ -83,5 +83,13 @@ export class LogComponent implements OnInit {
 
   delete() {
     this.chatService.deleteChatLog(this.index);
+  }
+
+  getColor(actor) {
+    if (actor.color) {
+      return actor.color;
+    } else {
+      return 'light';
+    }
   }
 }

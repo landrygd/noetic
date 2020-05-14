@@ -8,6 +8,8 @@ import { ChatPageRoutingModule } from './chat-routing.module';
 
 import { ChatPage } from './chat.page';
 import { ComponentModule } from 'src/app/components/component.module';
+import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
+import { ActorProfileComponent } from 'src/app/components/modals/actor-profile/actor-profile.component';
 
 @NgModule({
   imports: [
@@ -17,6 +19,10 @@ import { ComponentModule } from 'src/app/components/component.module';
     ChatPageRoutingModule,
     ComponentModule
   ],
-  declarations: [ChatPage]
+  declarations: [ChatPage],
+  entryComponents: [
+    UploadComponent,
+    ActorProfileComponent
+  ]
 })
 export class ChatPageModule {}

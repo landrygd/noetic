@@ -8,6 +8,8 @@ import { GamePageRoutingModule } from './game-routing.module';
 
 import { GamePage } from './game.page';
 import { ComponentModule } from 'src/app/components/component.module';
+import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
+import { ActorProfileComponent } from 'src/app/components/modals/actor-profile/actor-profile.component';
 
 @NgModule({
   imports: [
@@ -17,6 +19,10 @@ import { ComponentModule } from 'src/app/components/component.module';
     GamePageRoutingModule,
     ComponentModule
   ],
-  declarations: [GamePage]
+  declarations: [GamePage],
+  entryComponents: [
+    UploadComponent,
+    ActorProfileComponent
+  ]
 })
 export class GamePageModule {}

@@ -1,11 +1,11 @@
 <ion-row lines="none" [ngClass]="getClass()" class="ion-no-margin" #ref>
-  <ion-col size="2" *ngIf="actor !== undefined">
-    <app-avatar [actorId]="actor.id" class="ion-no-margin"></app-avatar>
+  <ion-col size="2" *ngIf="bookService.actorsById[actorId] as actor">
+    <app-avatar [enabled]="true" [actorId]="actor.id" class="ion-no-margin"></app-avatar>
   </ion-col>
-  <ion-col size="8" *ngIf="actor !== undefined">
-    <ion-note>{{actor.name}}</ion-note>
+  <ion-col size="8" *ngIf="bookService.actorsById[actorId] as actor">
+    <ion-note color="dark">{{actor.name}}</ion-note>
     <ion-item color="transparent" lines="none" class="ion-no-margin ion-no-padding">
-      <ion-card color="primary" class="ion-no-margin">
+      <ion-card [color]="getColor(actor)" class="ion-no-margin">
         <ion-card-content *ngIf="!typing">
           {{msg}}
         </ion-card-content>
@@ -16,7 +16,7 @@
     </ion-item>
   </ion-col>
 
-  <ion-col size="10" *ngIf="actor === undefined">
+  <ion-col size="10" *ngIf="!bookService.actorsById[actorId]">
     <ion-card color="light" *ngIf="!button">
       <ion-card-content *ngIf="!typing" [innerHTML]="msg | command">
       </ion-card-content>

@@ -1,6 +1,6 @@
-<div #ref [style.height.px]="height" [style.width.px]="width">
+<div #ref [style.height.px]="height" [style.width.px]="width" class="card">
   <div *ngIf="!async; else asyncBook">
-    <ion-card (click)="open(book)" button *ngIf="bookJSON as book">
+    <ion-card (click)="open(book)" button *ngIf="bookJSON as book" class="ion-no-margin">
       <img alt="cover" [src]="book.cover" style="width: 100%"/>
       <ion-card-header class="ion-no-padding" >
         <div class="center">
@@ -12,7 +12,7 @@
     </ion-card>
   </div>
   <ng-template #asyncBook>
-    <ion-card (click)="open(book)" button  *ngIf="bookAsync | async as book; else load">
+    <ion-card (click)="open(book)" button  *ngIf="bookAsync | async as book; else load" class="ion-no-margin">
       <img alt="cover" [src]="book.cover" style="width: 100%;" #image/>
       <ion-card-header class="ion-no-padding" >
         <div class="center">

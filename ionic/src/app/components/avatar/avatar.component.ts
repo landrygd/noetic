@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UserService } from 'src/app/services/user.service';
-import { BookService } from 'src/app/services/book.service';
 import { ActorService } from 'src/app/services/book/actor.service';
+import { ActorProfileComponent } from '../modals/actor-profile/actor-profile.component';
+import { ModalController } from '@ionic/angular';
+import { BookService } from 'src/app/services/book.service';
 
 @Component({
   selector: 'app-avatar',
@@ -11,39 +12,36 @@ import { ActorService } from 'src/app/services/book/actor.service';
 
 export class AvatarComponent implements OnInit {
 
-  @Input() set actorId(actorId: string) {
-    this.actor = this.actorService.getActor(actorId);
-    if (this.actor.hasOwnProperty('name')) {
-      this.name = this.actor.name;
-    }
-    if (this.actor.hasOwnProperty('color')) {
-      this.color = this.actor.color;
-    }
-    if (this.actor.hasOwnProperty('avatar')) {
-      this.avatar = this.actor.avatar;
-    }
-  } // identifiant de l'acteur
+  @Input() actorId: string;
+  @Input() enabled = false;
+  @Input() height = 40;
 
-  actor: any;
-  name = 'unknown';
-  color = 'rgb(56, 128, 255)';
-  avatar = 'assets/avatar/man.png';
+  actor: string;
 
-  constructor(public actorService: ActorService) {
+  constructor(
+    public actorService: ActorService,
+    public bookService: BookService,
+    private modalController: ModalController
+    ) {
   }
 
   ngOnInit() {}
 
 
-
-  haveAvatar() {
-    return this.actor.hasOwnProperty('avatar');
+  async viewProfile(actorId: string = this.actorId) {
+    if (this.enabled) {
+      const modal = await this.modalController.create({
+      component: ActorProfileComponent,
+      componentProps: { actorId }
+      });
+      await modal.present();
+    }
   }
 
-  getInitial() {
+  getInitial(name) {
     let res = '';
-    if (this.name !== '') {
-      const tab = this.name.split(' ');
+    if (name !== '') {
+      const tab = name.split(' ');
       let i = 0;
       while (i < Math.min(tab.length, 2)) {
         res += tab[i][0];

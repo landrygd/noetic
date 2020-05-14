@@ -1,6 +1,6 @@
-<ion-fab-button size="small">
-  <ion-avatar *ngIf="haveAvatar()">
-    <ion-img [src]="avatar"></ion-img>
+<ion-fab-button size="small" (click)="viewProfile()" *ngIf="bookService.actorsById[actorId] as actor" [style.width.px]="height" [style.height.px]="height" [style.font-size.px]="height/2">
+  <ion-avatar *ngIf="actor.avatar" style="width: 100%; height: 100%;">
+    <img [alt]="getInitial(actor.name)" [src]="actor.avatar" style="width: 100%; height: 100%;"/>
   </ion-avatar>
-  <ion-label *ngIf="!haveAvatar()">{{getInitial()}}</ion-label>
+  <ion-label *ngIf="!actor.avatar">{{getInitial(actor.name)}}</ion-label>
 </ion-fab-button>

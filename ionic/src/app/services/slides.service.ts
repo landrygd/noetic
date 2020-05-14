@@ -5,9 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class SlidesService {
 
-  constructor() { }
-
-  coverFlowOpts = {
+  coverFlowOpts: any = {
     slidesPerView: 3,
     coverflowEffect: {
       rotate: 50,
@@ -97,7 +95,7 @@ export class SlidesService {
     }
   };
 
-  flipOpts = {
+  flipOpts: any = {
     on: {
       beforeInit() {
         const swiper = this;
@@ -187,12 +185,51 @@ export class SlidesService {
     }
   };
 
-  basicOpts = {
-    initialSlide: 0,
-    slidesPerView: 3,
+  basicOpts: any = {
+    slidesPerView: 5,
+    spaceBetween: 50,
     loop: true,
-    // autoplay: {
-    //   delay: 1000,
-    // },
+    centeredSlides: true,
+    loopedSlides: 10,
+    breakpoints: {
+      300: {
+        slidesPerView: 2,
+      },
+      600: {
+        slidesPerView: 3,
+      },
+      900: {
+        slidesPerView: 4,
+      },
+      1200: {
+        slidesPerView: 5,
+      },
+      5000: {
+        slidesPerView: 6,
+      }
+    }
   };
+
+  avatarOpts: any = {
+    slidesPerView: 10,
+    breakpoints: {
+      350: {
+        slidesPerView: 5,
+      },
+      400: {
+        slidesPerView: 6,
+      },
+      600: {
+        slidesPerView: 7,
+      },
+      800: {
+        slidesPerView: 8,
+      },
+      5000: {
+        slidesPerView: 10,
+      }
+    },
+  };
+
+  constructor() { }
 }

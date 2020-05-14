@@ -13,7 +13,7 @@ export class CardBookComponent implements OnInit, AfterViewInit {
   @Input() bookId: string;
   @Input() bookJSON: any;
 
-  @Input() height = 300;
+  @Input() height = 250;
   width: number;
 
   bookAsync: Observable<any>;

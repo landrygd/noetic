@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { UploadComponent } from './upload/upload.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { SearchUserComponent } from './search-user/search-user.component';
+import { ActorProfileComponent } from './actor-profile/actor-profile.component';
 
 
 

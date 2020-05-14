@@ -4,6 +4,7 @@ import { ChatService } from 'src/app/services/book/chat.service';
 import { PopupService } from 'src/app/services/popup.service';
 import { BookService } from 'src/app/services/book.service';
 import { ActorService } from 'src/app/services/book/actor.service';
+import { SlidesService } from 'src/app/services/slides.service';
 
 @Component({
   selector: 'app-chat',
@@ -31,7 +32,8 @@ export class ChatPage implements OnInit, AfterViewInit {
     public modalCtrl: ModalController,
     public actionSheetController: ActionSheetController,
     public alertController: AlertController,
-    public popup: PopupService
+    public popup: PopupService,
+    public slides: SlidesService
     ) {}
 
   ngOnInit() {

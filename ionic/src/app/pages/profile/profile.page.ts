@@ -120,7 +120,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       ],
       buttons: [
         {
-          text: 'Cancel',
+          text: 'Annuler',
           role: 'cancel',
           cssClass: 'secondary'
         }, {
@@ -151,7 +151,7 @@ export class ProfilePage implements OnInit, OnDestroy {
       ],
       buttons: [
         {
-          text: 'Cancel',
+          text: 'Annuler',
           role: 'cancel',
           cssClass: 'secondary'
         }, {

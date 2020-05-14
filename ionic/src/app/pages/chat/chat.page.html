@@ -29,11 +29,15 @@
       <ion-fab-button size="small" (click)="newActor()" class="avatarButton">
         <ion-icon name="add"></ion-icon>
       </ion-fab-button>
-      <app-avatar slot="start" *ngFor="let actor of bookService.actors" (click)="setActor(actor.id)" [actorId]="actor.id" [ngClass]="getClassFabActor(actor.id)"></app-avatar>
     </ion-buttons>
+    <ion-slides [options]="slides.avatarOpts">
+      <ion-slide *ngFor="let actor of bookService.actors">
+        <app-avatar (click)="setActor(actor.id)" [actorId]="actor.id" [ngClass]="getClassFabActor(actor.id)"></app-avatar>
+      </ion-slide>
+    </ion-slides>
   </ion-toolbar>
   <ion-toolbar>
-    <app-avatar slot="start" [actorId]="actor" *ngIf="actor"></app-avatar>
+    <app-avatar slot="start" [actorId]="actor" *ngIf="actor" [enabled]="true"></app-avatar>
     <ion-textarea [disabled]='textarea' rows="1" [(ngModel)]='text' placeholder="Entrez une commande ou un message..." (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
     <ion-buttons slot="end">
       <!-- <ion-button (click)="plus()" expand="block" fill="clear" shape="round" color="medium">

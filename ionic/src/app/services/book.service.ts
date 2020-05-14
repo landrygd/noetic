@@ -32,6 +32,7 @@ export class BookService {
   actors: any[] = [];
   places: any[] = [];
 
+  actorsById: any = {};
   category = [
     'action',
     'adventure',
@@ -243,20 +244,43 @@ export class BookService {
       if (lenAutors === 0) {
         this.unsyncBook();
         // On supprime les sous-collections
-        const subCollections = ['chats', 'actors', 'comments', 'medias'];
+        const subCollections = ['chats', 'actors', 'comments'];
         subCollections.forEach((subCollection) => {
           this.firestore.collection('books').doc(bookId).collection(subCollection).get().subscribe((data) => {
-            data.docs.forEach((doc) => this.firestore.collection('/books').doc(bookId).collection(subCollection).doc(doc.id).delete());
+            data.docs.forEach((doc) => doc.ref.delete());
           });
         });
         // On supprime les médias
         if (this.haveCover()) {
           this.firestorage.ref('books/' + bookId + '/cover.png').delete();
         }
+        this.firestore.collection('books').doc(bookId).collection('medias').get().subscribe((data) => {
+          data.docs.forEach((doc) => {
+            // On supprime le média associé à la référence
+            const ref = doc.data().ref;
+            this.firestorage.ref(ref).delete();
+            doc.ref.delete();
+          });
+        });
         // On supprime le document du livre
         bookRef.delete();
         this.popupService.loadingDismiss();
       }
+    });
+  }
+
+  addMediaRef(url: string, ref: string) {
+    this.firestore.collection('books').doc(this.curBookId).collection('medias').add({url, ref});
+  }
+
+  deleteMedia(url: string) {
+    this.firestore.collection('books').doc(this.curBookId)
+                  .collection('medias', ref => ref.where('url', '==', url)).get().subscribe((val) => {
+      val.docs.forEach(doc => {
+        const ref = doc.data().ref;
+        this.firestorage.ref(ref).delete();
+        doc.ref.delete();
+      });
     });
   }
 
@@ -265,8 +289,14 @@ export class BookService {
     const bookSub = bookRef.get().subscribe((val) => {
       const authors: string[] = val.data().authors;
       if (!authors.includes(userId)) {
-        authors.push(userId);
-        bookRef.update({authors});
+        if (authors.length >= 10) {
+          authors.push(userId);
+          bookRef.update({authors});
+        } else {
+          this.popupService.alert('Il ne peut pas y avoir plus de 10 auteurs par livre.');
+        }
+      } else {
+        this.popupService.alert('Vous êtes déjà auteur de ce livre.');
       }
       bookSub.unsubscribe();
     });
@@ -328,7 +358,11 @@ export class BookService {
       });
       bookActorPromise = new Promise(res => {
         this.bookActorSub = this.firestore.collection('books').doc(curBookId).collection('actors').valueChanges().subscribe((value) => {
+          this.actorsById = {};
           this.actors = value;
+          value.forEach(actor => {
+            this.actorsById[actor.id] = actor;
+          });
           res();
         });
       });

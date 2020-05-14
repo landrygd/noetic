@@ -10,6 +10,7 @@ import { UserChipComponent } from './user-chip/user-chip.component';
 import { PipesModule } from '../pipes/pipes.module';
 import { UserAvatarComponent } from './user-avatar/user-avatar.component';
 import { BookChipComponent } from './book-chip/book-chip.component';
+import { ActorProfileComponent } from './modals/actor-profile/actor-profile.component';
 
 
 
@@ -20,7 +21,8 @@ import { BookChipComponent } from './book-chip/book-chip.component';
     LogComponent,
     UserChipComponent,
     UserAvatarComponent,
-    BookChipComponent
+    BookChipComponent,
+    ActorProfileComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +37,8 @@ import { BookChipComponent } from './book-chip/book-chip.component';
     LogComponent,
     UserChipComponent,
     UserAvatarComponent,
-    BookChipComponent
+    BookChipComponent,
+    ActorProfileComponent
   ]
 })
 export class ComponentModule { }
