@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/profile"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Paramètres d'utilisateur</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-button (click)="deleteAccount()" expand="block" fill="solid" shape="round" color="danger">
+    Supprimer ce compte
+  </ion-button>
+</ion-content>

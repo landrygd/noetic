@@ -1,0 +1,9 @@
+<ion-chip color="primary" mode="ios" outline="true" *ngIf='(bookObservable | async) as book; else loading' (click)="openBook()">
+  <ion-label>{{book.title}}</ion-label>
+</ion-chip>
+
+<ng-template #loading>
+  <ion-chip color="medium" mode="ios" outline="true" *ngIf='!(bookObservable | async)'>
+    <ion-spinner color="medium" name="dots"></ion-spinner>
+  </ion-chip>
+</ng-template>
