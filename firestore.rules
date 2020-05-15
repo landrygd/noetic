@@ -2,7 +2,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function isAuthor(bookId) {
-      return request.auth.uid in get(/databases/$(database)/documents/books/$(bookId)).data.authors;
+      return request.auth != null && request.auth.uid in get(/databases/$(database)/documents/books/$(bookId)).data.authors;
     }
 
 		function isPublic(bookId) {
@@ -47,6 +47,11 @@ service cloud.firestore {
       allow write, delete, create: if isAuthor(bookId);
     }
     
+    match /books/{bookId}/medias/{document=**} {
+      allow read;
+      allow write, delete, create: if isAuthor(bookId);
+    }
+    
     match /books/{bookId}/actors/{document=**} {
       allow read;
       allow write, delete, create: if isAuthor(bookId);
@@ -55,14 +60,7 @@ service cloud.firestore {
     match /books/{bookId}/comments/{commentId} {
     	allow read;
     	allow write, create: if request.auth.uid == commentId;
-    }
-    
-    match /books/{bookId}/{document=**} {
-      allow create: if request.auth != null;
-    }
-    
-    match /books/{bookId}/{document=**} {
-      allow create: if request.auth != null;
+      allow delete: if isAuthor(bookId);
     }
   }
 }

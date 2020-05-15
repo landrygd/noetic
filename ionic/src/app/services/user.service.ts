@@ -158,7 +158,6 @@ export class UserService {
       const listTen = []; // Listes de liste de 10 user Id max;
       let subList = [];
       let cpt = 0;
-      console.log(follows);
       // création de liste Ten
       for (const userId of follows) {
         subList.push(userId);
@@ -172,7 +171,6 @@ export class UserService {
       if (subList.length !== 0) {
         listTen.push(subList);
       }
-      console.log(listTen);
       // On fusionne les observables
       let res = [];
       for (const sub of listTen) {
@@ -202,7 +200,6 @@ export class UserService {
 
 
   searchUser(filter: string): Observable<any> {
-    console.log(filter);
     const queryByName = this.firestore.collection(
        'users', ref => ref.orderBy('nameLower')
                           .startAt(filter.toLowerCase())
