@@ -14,7 +14,7 @@
 
 
 <ion-content>
-  <h1 class="ion-text-center" *ngIf="userService.list.length !== 0">Ma liste</h1>
+  <h2 class="section" *ngIf="userService.list.length !== 0">Ma liste</h2>
 
   <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.list.length !== 0">
     <ion-slide *ngFor="let bookId of userService.list">
@@ -22,7 +22,15 @@
     </ion-slide>
   </ion-slides>
 
-  <h1 class="ion-text-center ion-no-margin">Les mieux notés</h1>
+  <h2 class="section" *ngIf="userService.followList.length !== 0">Mes suivies</h2>
+
+  <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.followList.length !== 0">
+    <ion-slide *ngFor="let book of userService.followList">
+      <app-card-book [bookJSON]="book"></app-card-book>
+    </ion-slide>
+  </ion-slides>
+
+  <h2 class="section">Les mieux notés</h2>
 
   <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="topRatedList | async as topRated; else loadingTopRated">
     <ion-slide *ngFor="let book of topRated">
@@ -36,7 +44,7 @@
     </div>
   </ng-template>
 
-  <h1 class="ion-text-center ion-no-margin">Les plus vues</h1>
+  <h2 class="section">Les plus vues</h2>
 
   
 
@@ -52,7 +60,7 @@
     </div>
   </ng-template>
 
-  <h1 class="ion-text-center ion-no-margin">Les plus récents</h1>
+  <h2 class="section">Les plus récents</h2>
 
   <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostRecentList | async as mostRecent; else loadingMostRecent">
     <ion-slide *ngFor="let book of mostRecent">

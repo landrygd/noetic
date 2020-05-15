@@ -76,6 +76,10 @@ const routes: Routes = [
     path: 'settings-book',
     canActivate: [BookEditorGuard],
     loadChildren: () => import('./pages/settings-book/settings-book.module').then( m => m.SettingsBookPageModule)
+  },
+  {
+    path: 'forgot-password',
+    loadChildren: () => import('./pages/forgot-password/forgot-password.module').then( m => m.ForgotPasswordPageModule)
   }
 ];
 @NgModule({

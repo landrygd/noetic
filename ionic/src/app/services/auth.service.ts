@@ -70,7 +70,7 @@ export class AuthService {
           handler: (data) => {
             const credential = firebase.auth.EmailAuthProvider.credential(this.auth.email, data.password);
             this.auth.reauthenticateWithCredential(credential).then(() => this.deleteAccountProcess())
-                                                              .catch((err) => this.popupService.alert('Mot de passe incorrect'));
+                                                              .catch((err) => this.popupService.error(err));
           }
         }
       ]
@@ -115,11 +115,9 @@ export class AuthService {
   }
 
   async signUp(registerData, mode = 'email') {
-    this.popupService.loading('Inscription...');
     if (mode === 'email') {
       this.fireauth.createUserWithEmailAndPassword(registerData.email, registerData.password)
       .then(auth => {
-        this.popupService.loadingDismiss();
         this.newUser(auth, registerData);
       })
       .catch(err => {
@@ -127,35 +125,141 @@ export class AuthService {
         this.popupService.toast('Email déjà utilisé');
       });
     }
-    if (mode === 'google') {
-      this.fireauth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then( auth => {
-          this.popupService.loadingDismiss();
-          this.newUser(auth);
-        }
-      );
-    }
   }
 
-  newUser(auth, registerData = {name: 'unknowed', birthday: 'unknowed'}) {
+  newUser(auth: firebase.auth.UserCredential, registerData = null) {
     const user = this.firestore.collection('/users').doc(auth.user.uid);
-    user.set({
-      id: auth.user.uid,
-      name: registerData.name,
-      nameLower: registerData.name.toLowerCase(),
-      first: true,
-      lang: this.traductionService.getCurLanguage(),
-    });
-    this.firestore.collection('/users').doc(auth.user.uid).collection('secured').doc('personnal').set({
-      birthday: registerData.birthday,
-    });
-    this.firestore.collection('/users').doc(auth.user.uid).collection('secured').doc('credit').set({
-      value: 0,
-    });
+    if (registerData == null) {
+      user.set({
+        id: auth.user.uid,
+        name: auth.user.displayName,
+        nameLower: auth.user.displayName.toLowerCase(),
+        first: true,
+        lang: this.traductionService.getCurLanguage(),
+        avatar: auth.user.photoURL
+      });
+    } else {
+      user.set({
+        id: auth.user.uid,
+        name: registerData.name,
+        nameLower: registerData.name.toLowerCase(),
+        first: true,
+        lang: this.traductionService.getCurLanguage(),
+      });
+    }
+    // this.firestore.collection('/users').doc(auth.user.uid).collection('secured').doc('personnal').set({
+    //   birthday: registerData.birthday,
+    // });
+    // this.firestore.collection('/users').doc(auth.user.uid).collection('secured').doc('credit').set({
+    //   value: 0,
+    // });
   }
 
   logout() {
-    this.userService.connected = false;
-    this.userService.bookSub.unsubscribe();
-    this.fireauth.signOut().then(() => this.navCtrl.navigateForward(['/login']));
+    this.userService.logout();
+  }
+
+  resetPassword(email: string) {
+    this.fireauth.sendPasswordResetEmail(email).then(() => this.navCtrl.navigateBack('login').then(
+      () => this.popupService.alert(
+        'Un lien de réinitialisation de votre mot de passe vient d\'être envoyé dans votre adresse mail: ' + email)
+        ),
+      ).catch(() => this.popupService.alert(
+        'Une erreur est survenu lors de votre demande')
+        );
+  }
+
+  googleAuth() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    this.fireauth.signInWithPopup(provider).then(auth => {
+      this.authConnexion(auth);
+    }).catch(() => {
+      this.popupService.alert('Erreur d\'authentification');
+    });
+  }
+
+  facebookAuth() {
+    const provider = new firebase.auth.FacebookAuthProvider();
+    this.fireauth.signInWithPopup(provider).then(auth => {
+      this.authConnexion(auth);
+    }).catch(() => {
+      this.popupService.alert('Erreur d\'authentification');
+    });
+  }
+
+  authConnexion(auth: firebase.auth.UserCredential) {
+    const user = this.firestore.doc(`users/${auth.user.uid}`).get();
+    user.subscribe(data => {
+      if (!data.exists) {
+        this.newUser(auth);
+      }
+    });
+  }
+
+  async changeEmail(email: string) {
+    const alert = await this.popupService.alertObj({
+      message: 'Pour des raisons de sécurité, veuillez entrer votre mot de passe.',
+      inputs: [
+        {
+          name: 'password',
+          type: 'password',
+          placeholder: 'Mot de passe'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel'
+        }, {
+          text: 'Confirmer',
+          handler: (data) => {
+            const oldEmail = this.auth.email;
+            const credential = firebase.auth.EmailAuthProvider.credential(oldEmail, data.password);
+            this.auth.reauthenticateWithCredential(credential).then(() => {
+              this.auth.updateEmail(email).then(
+                () => this.popupService.alert(
+                  'Votre adresse mail est maintenant: ' +
+                  this.auth.email
+                  )
+                ).catch((err) => this.popupService.error(err));
+            }).catch((err) => this.popupService.alert('Mot de passe incorrect'));
+          }
+        }
+      ]
+    });
+  }
+
+  async changePassword() {
+    const alert = await this.popupService.alertObj({
+      message: 'Pour des raisons de sécurité, veuillez entrer votre mot de passe actuel.',
+      inputs: [
+        {
+          name: 'password',
+          type: 'password',
+          placeholder: 'Mot de passe'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel'
+        }, {
+          text: 'Confirmer',
+          handler: (data) => {
+            const oldEmail = this.auth.email;
+            const credential = firebase.auth.EmailAuthProvider.credential(oldEmail, data.password);
+            this.auth.reauthenticateWithCredential(credential).then(() => {
+              this.fireauth.sendPasswordResetEmail(oldEmail).then(() => this.navCtrl.navigateBack('login').then(
+                () => this.popupService.alert(
+                  'Un lien de réinitialisation de votre mot de passe vient d\'être envoyé dans votre adresse mail: ' + oldEmail)
+                  ),
+                ).catch(() => this.popupService.alert(
+                  'Une erreur est survenu lors de votre demande')
+                  );
+            }).catch((err) => this.popupService.alert('Mot de passe incorrect'));
+          }
+        }
+      ]
+    });
   }
 }

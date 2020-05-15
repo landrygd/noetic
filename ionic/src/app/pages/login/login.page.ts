@@ -39,4 +39,16 @@ export class LoginPage implements OnInit {
   return() {
     this.navCtrl.navigateBack('tabs/home');
   }
+
+  resetPassword() {
+    this.navCtrl.navigateForward('forgot-password');
+  }
+
+  googleLogin() {
+    this.authService.googleAuth();
+  }
+
+  facebookLogin() {
+    this.authService.facebookAuth();
+  }
 }

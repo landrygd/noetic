@@ -187,10 +187,6 @@ export class SlidesService {
 
   basicOpts: any = {
     slidesPerView: 5,
-    spaceBetween: 50,
-    loop: true,
-    centeredSlides: true,
-    loopedSlides: 10,
     breakpoints: {
       300: {
         slidesPerView: 2,

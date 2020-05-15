@@ -33,3 +33,8 @@ ion-item {
   display: flex;
   justify-content: space-between;
 }
+
+ion-toolbar {
+  --background: transparent;
+  --ion-color-base: transparent !important;
+}

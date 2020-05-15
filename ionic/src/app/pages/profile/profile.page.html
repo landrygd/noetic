@@ -1,15 +1,16 @@
 <ion-content>
   <div *ngIf="!loading; else loader">
     <div class="header">
-      <ion-toolbar style="--background: transparent; opacity: 0.7;">
+      <ion-toolbar style="--background: transparent;">
         <ion-buttons slot="start">
-          <ion-back-button (click)="back()" defaultHref="home" *ngIf="!ownProfile"></ion-back-button>
+          <ion-back-button (click)="back()" defaultHref="tabs/home" *ngIf="!ownProfile"></ion-back-button>
           <ion-button (click)="notif()" fill="clear" shape="round" color="dark" *ngIf="ownProfile">
-            <ion-icon slot="icon-only" name="notifications"></ion-icon>
+            <ion-icon slot="icon-only" name="notifications" style="opacity: 0.7;"></ion-icon>
+            <ion-badge color="danger" mode="ios" *ngIf="userService.userNotifs.length > 0">{{userService.userNotifs.length}}</ion-badge>
           </ion-button>   
         </ion-buttons>
         <ion-buttons slot="end">
-          <ion-button (click)="options()" fill="clear" shape="round" color="dark" *ngIf="ownProfile">
+          <ion-button (click)="options()" fill="clear" shape="round" color="dark" *ngIf="ownProfile"  style="opacity: 0.7;">
             <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
           </ion-button>
         </ion-buttons>

@@ -92,20 +92,20 @@ export class BookService {
     this.curBookId = bookId;
     // Ajouter l'id référant dans user
     this.userService.addBookRef(bookId);
-    // Upload le cover si une image est chargée
-    if (cover.charAt(0) !== '.') {
-      this.uploadCover(cover, this.curBookId);
-    }
     // Créer le livre, l'ouvir et y ajouter un chat
     this.firestore.collection('/books').doc(bookId).set(book).then(() => {
+      // Upload le cover si une image est chargée
+      if (cover.charAt(0) !== '.') {
+        this.uploadCover(cover, this.curBookId);
+      }
       this.navCtrl.pop().then( async () => {
         await this.openCover(bookId);
         await this.openBook(bookId);
         this.popupService.loadingDismiss('creation');
         this.addChat('main', true);
-      });
+      }).catch((err) => this.popupService.error(err));
       }
-    );
+    ).catch((err) => this.popupService.error(err));
   }
 
   async newChat() {
@@ -169,7 +169,7 @@ export class BookService {
     if (!this.chats.includes(chatName)) {
       this.firestore.collection('/books').doc(this.curBookId).collection('chats').doc(id).set({id, name: chatName, logs: []}).then(
         () => this.openChat(id)
-      );
+      ).catch((err) => this.popupService.error(err));
     }
   }
 
@@ -188,7 +188,7 @@ export class BookService {
       this.firestorage.ref(path).getDownloadURL().subscribe((ref) => {
         this.firestore.collection('books').doc(bookId).update({cover: ref});
       });
-    });
+    }).catch((err) => this.popupService.error(err));
   }
 
   getMostVue(lang = this.lang): Observable<any> {
@@ -199,7 +199,7 @@ export class BookService {
 
   getTopRated(lang = this.lang): Observable<any> {
     return this.firestore.collection(
-      'books', ref => ref.where('public', '==', true).where('lang', '==', lang).orderBy('starsAvg', 'desc').limit(10)
+      'books', ref => ref.where('public', '==', true).where('lang', '==', lang).orderBy('stars', 'desc').limit(10)
       ).valueChanges();
   }
 
@@ -240,33 +240,36 @@ export class BookService {
     // supprimer book
     const bookRef = this.firestore.collection('/books').doc(bookId);
     // S'il n'y a plus d'autheur, le livre est supprimé
-    this.removeAuthor(bookId).then(lenAutors => {
-      if (lenAutors === 0) {
-        this.unsyncBook();
-        // On supprime les sous-collections
-        const subCollections = ['chats', 'actors', 'comments'];
-        subCollections.forEach((subCollection) => {
-          this.firestore.collection('books').doc(bookId).collection(subCollection).get().subscribe((data) => {
-            data.docs.forEach((doc) => doc.ref.delete());
-          });
-        });
-        // On supprime les médias
-        if (this.haveCover()) {
-          this.firestorage.ref('books/' + bookId + '/cover.png').delete();
+    if (this.book.authors.length === 1) {
+      this.unsyncBook();
+      // On supprime les sous-collections
+      const subCollections = ['chats', 'actors', 'comments'];
+      for (const subCollection of subCollections) {
+        const data = await this.firestore.collection('books').doc(bookId).collection(subCollection).get().toPromise();
+        for (const doc of data.docs) {
+          if (doc.exists) {
+            await doc.ref.delete();
+          }
         }
-        this.firestore.collection('books').doc(bookId).collection('medias').get().subscribe((data) => {
-          data.docs.forEach((doc) => {
-            // On supprime le média associé à la référence
-            const ref = doc.data().ref;
-            this.firestorage.ref(ref).delete();
-            doc.ref.delete();
-          });
-        });
-        // On supprime le document du livre
-        bookRef.delete();
-        this.popupService.loadingDismiss();
       }
-    });
+      // On supprime les médias
+      if (this.haveCover()) {
+        this.firestorage.ref('books/' + bookId + '/cover.png').delete();
+      }
+      this.firestore.collection('books').doc(bookId).collection('medias').get().subscribe((data) => {
+        data.docs.forEach((doc) => {
+          // On supprime le média associé à la référence
+          const ref = doc.data().ref;
+          this.firestorage.ref(ref).delete();
+          doc.ref.delete();
+        });
+      });
+      // On supprime le document du livre
+      bookRef.delete();
+    } else {
+      this.removeAuthor(bookId);
+    }
+    this.popupService.loadingDismiss();
   }
 
   addMediaRef(url: string, ref: string) {
@@ -437,7 +440,7 @@ export class BookService {
     this.syncBook(this.curBookId, true).then(() => {
       this.popupService.loadingDismiss('opening');
       this.navCtrl.navigateForward('cover');
-    });
+    }).catch((err) => this.popupService.error(err));
   }
 
   async play(id = this.curBookId, chatId = 'main', debug = false) {

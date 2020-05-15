@@ -5,6 +5,7 @@ import { BookService } from 'src/app/services/book.service';
 import { CommentService } from 'src/app/services/book/comment.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
+import { PopupService } from 'src/app/services/popup.service';
 
 @Component({
   selector: 'app-cover',
@@ -12,9 +13,6 @@ import { UploadComponent } from 'src/app/components/modals/upload/upload.compone
   styleUrls: ['./cover.page.scss'],
 })
 export class CoverPage implements OnInit {
-
-  authorsId: any[] = [];
-  authors: any[] = [];
   com: any[] = [];
   tags: any[] = [];
 
@@ -41,7 +39,8 @@ export class CoverPage implements OnInit {
     public userService: UserService,
     public bookService: BookService,
     public commentService: CommentService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private popupService: PopupService
     ) {
       if (!this.bookService.curBookId) {
         this.navCtrl.pop();
@@ -106,6 +105,10 @@ export class CoverPage implements OnInit {
     await alert.present();
   }
 
+  changeCat(cat) {
+    this.bookService.updateBookData({cat});
+  }
+
   play() {
     this.bookService.play(this.bookService.book.id);
   }
@@ -118,6 +121,48 @@ export class CoverPage implements OnInit {
     this.commentService.unsyncComments();
     this.bookService.unsyncBook(true);
     this.navCtrl.pop();
+  }
+
+  async addTag() {
+    if (this.bookService.book.tags.length < 5) {
+      const alert = await this.alertController.create({
+        header: 'Ajouter un tag',
+        inputs: [
+          {
+            name: 'tag',
+            type: 'text',
+            placeholder: 'Nom du tag',
+          }
+        ],
+        buttons: [
+          {
+            text: 'Annuler',
+            role: 'cancel',
+            cssClass: 'secondary'
+          }, {
+            text: 'Confirmer',
+            handler: (data) => {
+              const tags = this.bookService.book.tags;
+              tags.push(data.tag);
+              this.bookService.updateBookData({tags});
+            }
+          }
+        ]
+      });
+      await alert.present();
+    } else {
+      const alert = await this.alertController.create({
+        message: 'Impossible d\'avoir plus de 5 tags pour un même livre.',
+        buttons: ['OK']
+      });
+      await alert.present();
+    }
+  }
+
+  removeTag(index) {
+    const tags = this.bookService.book.tags;
+    tags.splice(index, 1);
+    this.bookService.updateBookData({tags});
   }
 
   getStarColor(index) {
@@ -207,7 +252,15 @@ export class CoverPage implements OnInit {
         }, {
           text: 'Confirmer',
           handler: (data) => {
-            this.bookService.updateBookData({title: data.title});
+            const title = data.title;
+            if (title.length < 3) {
+              this.popupService.alert('Le titre doit faire au moins plus de 3 caractères');
+              return;
+            } else if (title.length > 40) {
+              this.popupService.alert('Le titre doit faire moins 40 caractères');
+              return;
+            }
+            this.bookService.updateBookData({title});
           }
         }
       ]

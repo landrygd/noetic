@@ -20,7 +20,7 @@ export class ActorProfileComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private actorService: ActorService,
-    private bookService: BookService,
+    public bookService: BookService,
     private alertController: AlertController
     ) {
       this.isAuthor = this.bookService.isAuthor;

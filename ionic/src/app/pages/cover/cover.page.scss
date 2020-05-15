@@ -59,3 +59,16 @@ ion-avatar {
   display: flex;
   justify-content: center;
 }
+
+p {
+  margin: 0;
+}
+
+ion-select {
+  max-width: 100% !important;
+}
+
+.stars {
+  margin-left: 5px;
+  margin-right: 5px;
+}

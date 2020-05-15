@@ -31,7 +31,6 @@ export class RegisterPage implements OnInit {
         Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$')
       ]),
       password: ['', Validators.required],
-      birthday: ['', Validators.required],
       confirmPassword: ['', Validators.required]
     });
    }
@@ -78,9 +77,9 @@ export class RegisterPage implements OnInit {
     if (!this.allLetterOrNumber(res.name)) {
       error = 'Le pseudo ne contenir que des chiffres et des lettres.';
     }
-    if (new Date(Date.now() - new Date(res.birthday).getTime()).getFullYear() - 1970 < 12) {
-      error = 'L\'âge minimum requis est de 12 ans';
-    }
+    // if (new Date(Date.now() - new Date(res.birthday).getTime()).getFullYear() - 1970 < 12) {
+    //   error = 'L\'âge minimum requis est de 12 ans';
+    // }
     if (res.password.length < 8) {
       error = 'Le mot de passe doit contenir au moins 8 caractères.';
     }

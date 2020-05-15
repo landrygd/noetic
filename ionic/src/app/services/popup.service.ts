@@ -42,6 +42,7 @@ export class PopupService {
     });
     await alert.present();
   }
+
   async alertObj(obj: any) {
     const alert = await this.alertController.create(obj);
     await alert.present();
@@ -60,4 +61,12 @@ export class PopupService {
     this.loadingController.dismiss(null, null, id);
   }
 
+  async error(err: string) {
+    const alert = await this.alertController.create({
+      header: 'Erreur',
+      message: err,
+      buttons: ['Mince...']
+    });
+    await alert.present();
+  }
 }

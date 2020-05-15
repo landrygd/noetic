@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, merge } from 'rxjs';
 import { NavController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore/public_api';
+import { AngularFirestoreCollection, AngularFirestoreDocument, DocumentChangeAction } from '@angular/fire/firestore/public_api';
 import { PopupService } from './popup.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import * as firebase from 'firebase/app';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,11 @@ export class UserService {
   userNotifsSub: Subscription;
   unreadNotif = false;
 
+  followListSub: Subscription;
+  followList: any[] = [];
+
+  userSub: Subscription;
+
   curUserBooksSub: Subscription;
   curUserBooks: any[] = [];
 
@@ -40,6 +46,7 @@ export class UserService {
 
     private navCtrl: NavController,
     private popupService: PopupService,
+    private fireauth: AngularFireAuth,
     ) {
     this.usersCollection = this.firestore.collection('users');
   }
@@ -48,26 +55,44 @@ export class UserService {
     this.userId = userId;
     this.user = this.getUser();
     this.userDoc = this.usersCollection.doc(this.userId);
-    this.getBooks();
-    this.getList();
-    this.syncNotifs();
-    await this.popupService.loading('Synchronisation...');
-    this.firestore.collection('users').doc(this.userId).valueChanges().subscribe((value) => {
-      this.userData = value;
-      if (!this.connected) {
-        this.connected = true;
-        this.navCtrl.navigateBack(['/']);
-        this.popupService.toast('Bonjour ' + this.userData.name, 'middle');
-        this.popupService.loadingDismiss();
-      }
-      if (this.userData.first) {
-        this.navCtrl.navigateRoot('presentation');
-        this.firestore.collection('/users').doc(this.userId).update({first: firebase.firestore.FieldValue.delete()});
+    await this.popupService.loading('Synchronisation...', 'sync');
+    this.userSub = this.firestore.collection('users').doc(this.userId).valueChanges().subscribe((value) => {
+      if (value) {
+        this.userData = value;
+        if (!this.connected) {
+          this.connected = true;
+          this.navCtrl.navigateBack(['/']);
+          this.popupService.toast('Bonjour ' + this.userData.name, 'middle');
+          this.popupService.loadingDismiss('sync');
+          this.getBooks();
+          this.getList();
+          this.syncNotifs();
+          this.getFollowList();
+        }
+        if (this.userData.first) {
+          this.navCtrl.navigateRoot('presentation');
+          this.firestore.collection('/users').doc(this.userId).update({first: firebase.firestore.FieldValue.delete()});
+        }
+      } else {
+        setTimeout(() => {
+          if (!this.userData && !this.userSub.closed) {
+            this.popupService.loadingDismiss('sync');
+            this.popupService.alert('Erreur de synchronisation');
+            this.logout();
+          }
+        }, 3000);
       }
     });
-    // this.firestore.collection('users').doc(this.userId).collection('books').valueChanges().subscribe((value) => {
-    //   this.books = value;
-    // });
+  }
+
+  logout() {
+    this.userSub.unsubscribe();
+    this.bookSub.unsubscribe();
+    this.listSub.unsubscribe();
+    this.followListSub.unsubscribe();
+    this.userNotifsSub.unsubscribe();
+    this.connected = false;
+    this.fireauth.signOut().then(() => this.navCtrl.navigateForward(['/login'])).catch((err) => this.popupService.error(err));
   }
 
   setCurUser(curUserId: string = this.userId): void {
@@ -126,6 +151,47 @@ export class UserService {
     });
   }
 
+  async getFollowList() {
+    this.followListSub = this.getFollows(this.userId).subscribe((value) => {
+      const follows = [];
+      value.forEach(user => follows.push(user.payload.doc.id));
+      const listTen = []; // Listes de liste de 10 user Id max;
+      let subList = [];
+      let cpt = 0;
+      console.log(follows);
+      // création de liste Ten
+      for (const userId of follows) {
+        subList.push(userId);
+        cpt ++;
+        if (cpt >= 10) {
+          listTen.push(subList);
+          subList = [];
+          cpt = 0;
+        }
+      }
+      if (subList.length !== 0) {
+        listTen.push(subList);
+      }
+      console.log(listTen);
+      // On fusionne les observables
+      let res = [];
+      for (const sub of listTen) {
+        const orb = this.firestore.collection('books',
+          ref => ref.where('authors', 'array-contains-any', sub).where('public', '==', true)
+                    .where('lang', '==', this.userData.lang).orderBy('date', 'desc').limit(10)
+        ).valueChanges().subscribe((books) => {
+          books.forEach((book) => res.push(book));
+        });
+      }
+      // Trie des livre par date
+      res.sort((a, b) => parseFloat(b.date) - parseFloat(a.date));
+      if (res.length > 10) {
+        res = res.slice(0, 10);
+      }
+      this.followList = res;
+    });
+  }
+
   getBookList(): Observable<any> {
     return this.userDoc.collection('list').valueChanges();
   }
@@ -148,6 +214,19 @@ export class UserService {
   isOwnProfile(curUserId = this.curUserId) {
     return curUserId === this.userId;
   }
+
+  // syncFollowBooks() {
+  //   this.followSub = this.userDoc.collection('list').snapshotChanges().subscribe((val) => {
+  //     const res = [];
+  //     val.forEach(doc => {
+  //       res.push(doc.payload.doc.id);
+  //     });
+  //     this.list = res;
+  //   });
+  //   return this.firestore.collection(
+  //     'books', ref => {ref.where('public', '==', true); ref.where('public', '==', true).where('lang', '==', lang).orderBy('views', 'desc').limit(10)}
+  //     ).valueChanges();
+  // }
 
   openUser(curUserId: string) {
     if (curUserId  !== this.userId) {
@@ -174,12 +253,12 @@ export class UserService {
     this.usersCollection.doc(curUserId).collection('followers').doc(this.userId).delete();
   }
 
-  getFollows(curUserId: string = this.curUserId): Observable<any> {
-    return this.usersCollection.doc(curUserId).collection('follows').get();
+  getFollows(curUserId: string = this.curUserId): Observable<DocumentChangeAction<firebase.firestore.DocumentData>[]> {
+    return this.usersCollection.doc(curUserId).collection('follows').snapshotChanges();
   }
 
-  getFollowers(curUserId: string = this.curUserId): Observable<any> {
-    return this.usersCollection.doc(curUserId).collection('followers').get();
+  getFollowers(curUserId: string = this.curUserId): Observable<DocumentChangeAction<firebase.firestore.DocumentData>[]> {
+    return this.usersCollection.doc(curUserId).collection('followers').snapshotChanges();
   }
 
   isFollow(curUserId: string): Promise<boolean> {
@@ -217,7 +296,7 @@ export class UserService {
       this.firestorage.ref(path).getDownloadURL().subscribe((ref) => {
         this.firestore.collection('users').doc(this.userId).update({avatar: ref});
       });
-    });
+    }).catch((err) => this.popupService.error(err));
   }
 
   // addToList(bookId) {

@@ -13,7 +13,7 @@ export class CardBookComponent implements OnInit, AfterViewInit {
   @Input() bookId: string;
   @Input() bookJSON: any;
 
-  @Input() height = 250;
+  @Input() height = 200;
   width: number;
 
   bookAsync: Observable<any>;
@@ -38,7 +38,7 @@ export class CardBookComponent implements OnInit, AfterViewInit {
       this.bookAsync = this.bookService.getBook(this.bookId);
       this.async = true;
     }
-    this.width = this.height * 9 / 16 - 20;
+    this.width = this.height * 9 / 16;
   }
 
   ngAfterViewInit() {

@@ -49,7 +49,6 @@ export class BookSearchPage implements OnInit {
     }
     this.resultsByName = this.bookService.searchByName(this.filter);
     this.resultsByNameSub = this.resultsByName.subscribe((val) => {
-      console.log(val);
       if (JSON.stringify(this.books) !== JSON.stringify(val)) {
         this.books = val;
       }
@@ -68,7 +67,6 @@ export class BookSearchPage implements OnInit {
     }
     this.resultsByTag = this.bookService.searchByTag(this.filter);
     this.resultsByTagSub = this.resultsByTag.subscribe((val) => {
-      console.log(val);
       if (JSON.stringify(this.books) !== JSON.stringify(val)) {
         this.books = val;
       }

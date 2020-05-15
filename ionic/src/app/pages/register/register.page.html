@@ -19,13 +19,13 @@
               <form [formGroup]="registerForm" (ngSubmit)="signUp()" class="ion-align-items-center" >
                 <ion-item class="input" lines="none">
                   <ion-icon name="person" slot="start" color="primary"></ion-icon>
-                  <ion-input required formControlName="name" type="text" placeholder="Pseudo" #name (keyup.enter)="next('date')"></ion-input>
+                  <ion-input required formControlName="name" type="text" placeholder="Pseudo" #name (keyup.enter)="next('email')"></ion-input>
                 </ion-item>
           
-                <ion-item class="input" lines="none">
+                <!-- <ion-item class="input" lines="none">
                   <ion-icon name="calendar" slot="start" color="primary"></ion-icon>
                   <ion-datetime required formControlName="birthday" placeholder="Date de naissance" #date (ionChange)="next('email')" displayFormat="DD MMMM YYYY"></ion-datetime>
-                </ion-item>
+                </ion-item> -->
           
                 <ion-item class="input" lines="none">
                   <ion-icon name="mail" slot="start" color="primary"></ion-icon>

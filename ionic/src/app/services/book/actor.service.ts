@@ -198,7 +198,7 @@ export class ActorService {
         this.bookService.addMediaRef(ref, path);
         this.firestore.collection('books').doc(this.bookService.curBookId).collection('actors').doc(actorId).update({avatar: ref});
       });
-    });
+    }).catch((err) => this.popupService.error(err));
   }
 
   // getActor(actorId: string) {

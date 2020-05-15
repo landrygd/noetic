@@ -35,13 +35,29 @@ export class ProfilePage implements OnInit, OnDestroy {
     public slides: SlidesService,
     private authService: AuthService
     ) {
-    this.loading = true;
-    if (router.url === '/tabs/profile') {
-      this.userAsync = userService.user;
-    } else {
-      console.log('not my profile');
-      this.userAsync = userService.curUser;
+      this.loading = true;
     }
+
+  ngOnInit() {
+  }
+
+  ionViewWillEnter() {
+    if (this.router.url === '/tabs/profile') {
+      if (this.userAsync !== this.userService.user) {
+        this.loading = true;
+        this.userAsync = this.userService.user;
+        this.syncData();
+      }
+    } else {
+      if (this.userAsync !== this.userService.curUser) {
+        this.loading = true;
+        this.userAsync = this.userService.curUser;
+        this.syncData();
+      }
+    }
+  }
+
+  syncData() {
     this.userSub = this.userAsync.subscribe((val) => {
       this.user = val;
       this.ownProfile = this.user.id === this.userService.userId;
@@ -61,10 +77,6 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.loading = false;
     });
   }
-
-  ngOnInit() {
-  }
-
   ngOnDestroy() {
     this.followSub.unsubscribe();
     this.userSub.unsubscribe();

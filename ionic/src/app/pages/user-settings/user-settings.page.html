@@ -8,7 +8,12 @@
 </ion-header>
 
 <ion-content>
-  <ion-button (click)="deleteAccount()" expand="block" fill="solid" shape="round" color="danger">
-    Supprimer ce compte
-  </ion-button>
+  <ion-list>
+    <ion-item (click)="changeEmail()" button details>
+      <ion-label>Changer d'adresse email</ion-label>
+    </ion-item>
+    <ion-item (click)="changePassword()" button details>
+      <ion-label>Réinitialiser le mot de passe</ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

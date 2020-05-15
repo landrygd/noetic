@@ -1,7 +1,7 @@
 <ion-header translucent="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="tabs/home"></ion-back-button>
+      <ion-back-button (click)="return()" defaultHref="tabs/home"></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -26,13 +26,12 @@
                   <ion-icon name="key" slot="start" color="primary"></ion-icon>
                   <ion-input required formControlName="password" type="password" placeholder="Mot de passe"></ion-input>
                 </ion-item>
-          
-                <!-- <ion-text color="medium" class="ion-text-center">
-                  <p>Mot de passe oublié ?</p>
-                </ion-text> -->
-          
+                
                 <ion-button  block shape="round" fill="solid" (click)="login()" [disabled]="loginForm.invalid">
                   Se connecter
+                </ion-button>
+                <ion-button (click)="resetPassword()" expand="block" fill="clear" shape="round" color="medium">
+                  Mot de passe oublié
                 </ion-button>
               </form>
             </ion-col>
@@ -57,20 +56,20 @@
         </ion-grid>
         
         
-        <!-- <ion-text color="medium" class="ion-text-center">
+        <ion-text color="medium" class="ion-text-center">
           <p text-center>Ou connectez-vous avec</p>
         </ion-text>
         
         <div class="flex">
-          <ion-button color="facebook" shape="round" style="width: 40%;">
+          <ion-button color="facebook" shape="round" style="width: 40%;" (click)="facebookLogin()">
             <ion-icon slot="start" name="logo-facebook"></ion-icon>
             Facebook
           </ion-button>
-          <ion-button color="google" shape="round" style="width: 40%;">
+          <ion-button color="google" shape="round" style="width: 40%;" (click)="googleLogin()">
             <ion-icon slot="start" name="logo-google"></ion-icon>
             Google
           </ion-button>
-        </div> -->
+        </div>
       </div>
     </div>
   </div>

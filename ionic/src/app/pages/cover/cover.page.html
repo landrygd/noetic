@@ -19,19 +19,45 @@
     </ion-card>
   </div>
   <div>
-    <ion-button (click)="changeTitle()" expand="block" color="medium" fill="clear" shape="round" *ngIf="bookService.isAuthor">
+    <ion-button (click)="changeTitle()" expand="block" color="dark" fill="clear" shape="round" *ngIf="bookService.isAuthor">
       <h1 class="ion-text-center ion-no-margin">{{bookService.book.title}}</h1>
       <ion-icon name="pencil" slot="end"></ion-icon>
     </ion-button>
-    <ion-text color="medium" *ngIf="!bookService.isAuthor">
+    <ion-text color="dark" *ngIf="!bookService.isAuthor">
       <h1 class="ion-text-center ion-no-margin">{{bookService.book.title}}</h1>
     </ion-text>
+  </div>
+  <div class="subscribe">
+    <ion-item style="--background: transparent; width: 200px;" *ngIf="bookService.isAuthor" lines="none">
+      <ion-icon class="ion-no-margin" color="primary" slot="start" *ngIf="bookService.book.cat !== 'undefined'" [src]="'assets/icon/svg/' + bookService.book.cat + '.svg'"></ion-icon>
+      <ion-select color="primary" class="ion-no-margin ion-no-padding" slot="end" [value]="bookService.book.cat" (ionChange)="changeCat($event.target.value)" okText="Choisir" cancelText="Annuler">
+        <ion-select-option value="action">Action</ion-select-option>
+        <ion-select-option value="adventure">Aventure</ion-select-option>
+        <ion-select-option value="fanfiction">Fanfiction</ion-select-option>
+        <ion-select-option value="fantastic">Fantastique</ion-select-option>
+        <ion-select-option value="fiction">Fiction générale</ion-select-option>
+        <ion-select-option value="horror">Horreur</ion-select-option>
+        <ion-select-option value="humor">Humour</ion-select-option>
+        <ion-select-option value="mystery">Mystère</ion-select-option>
+        <ion-select-option value="nonfiction">Non-fiction</ion-select-option>
+        <ion-select-option value="romance">Romance</ion-select-option>
+        <ion-select-option value="scifi">Science-fiction</ion-select-option>
+        <ion-select-option value="thriller">Thriller</ion-select-option>
+        <ion-select-option value="undefined">Non catégorisé</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <div class="subscribe ion-no-margin" *ngIf="!bookService.isAuthor">
+      <ion-icon color="primary" *ngIf="bookService.book.cat !== 'undefined'" class="ion-margin-end" [src]="'assets/icon/svg/' + bookService.book.cat + '.svg'"></ion-icon>
+      <ion-text color="primary">
+        <p class="ion-no-margin">{{bookService.book.cat | category}}</p>
+      </ion-text>
+    </div>
   </div>
   <div class="subscribe ion-no-margin">
     <p>
       {{bookService.book.views}}<ion-icon name="eye"></ion-icon>
     </p>
-    <div class="ion-margin">
+    <div class="stars">
       <ion-icon name="star" *ngFor="let i of bookService.book.starsArray" color="primary"></ion-icon>
     </div>
     <p color="light" mode="ios">
@@ -43,25 +69,31 @@
       <ion-icon name="play"></ion-icon>
       Lire
     </ion-button>
-    <ion-button (click)="edit()" expand="block" fill="clear" shape="round" *ngIf="bookService.isAuthor" color="medium">
+    <ion-fab-button (click)="edit()" *ngIf="bookService.isAuthor" color="light" style="height: 45px; width: 45px;">
       <ion-icon name="create"></ion-icon>
-      Editer
-    </ion-button>
-    <ion-button (click)="addToList()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor && !inList" color="medium">
-      <ion-icon name="list"></ion-icon>
-      Ajouter à la liste
-    </ion-button>
-    <ion-button (click)="removeFromList()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor && inList" color="medium">
-      <ion-icon name="list"></ion-icon>
-      Retirer de la liste
+    </ion-fab-button>
+    <div *ngIf="!bookService.isAuthor">
+      <ion-fab-button (click)="addToList()" *ngIf="!inList" color="light" style="height: 45px; width: 45px;">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="removeFromList()" *ngIf="inList" color="light" style="height: 45px; width: 45px;">
+        <ion-icon name="remove"></ion-icon>
+      </ion-fab-button>
+    </div>
+  </div>
+  <div class="subscribe">
+    <app-user-chip *ngFor="let author of bookService.book.authors" [userId]="author" ></app-user-chip>
+  </div>
+  <div class="subscribe" *ngIf="bookService.isAuthor">
+    <ion-button (click)="addTag()" expand="block" fill="clear" shape="round" color="medium">
+      <ion-icon name="add"></ion-icon>
+      Ajouter un tag
     </ion-button>
   </div>
   <div class="subscribe">
-    <app-user-chip *ngFor="let author of authorsId" [userId]="author" ></app-user-chip>
-  </div>
-  <div class="subscribe">
-    <ion-badge color="primary" mode="ios" *ngFor="let tag of bookService.book.tags" class="ion-margin-start">
+    <ion-badge color="primary" mode="ios" *ngFor="let tag of bookService.book.tags; index as i" class="ion-margin-start">
       {{tag}}
+      <ion-icon name="close-circle" (click)="removeTag(i)" *ngIf="bookService.isAuthor"></ion-icon>
     </ion-badge>
   </div>
   <div>
@@ -77,7 +109,7 @@
       </ion-text>
     </ion-text>
   </div>
-  <ion-button (click)="more()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor">
+  <ion-button (click)="more()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor && this.bookService.book.verso.length > 0">
     En savoir plus
   </ion-button>
   <ion-button (click)="changeVerso()" expand="block" fill="clear" shape="round" *ngIf="bookService.isAuthor">
