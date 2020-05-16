@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { AlertController } from '@ionic/angular';
+import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -11,8 +12,11 @@ export class UserSettingsPage implements OnInit {
 
   constructor(
     public authService: AuthService,
-    private alertController: AlertController
-    ) { }
+    private alertController: AlertController,
+    public themeService: ThemeService
+    ) {
+      console.log(this.themeService.darkMode);
+     }
 
   ngOnInit() {
   }
@@ -46,5 +50,9 @@ export class UserSettingsPage implements OnInit {
 
   async changePassword() {
     this.authService.changePassword();
+  }
+
+  toggleDarkMode() {
+    this.themeService.toggleAppTheme();
   }
 }

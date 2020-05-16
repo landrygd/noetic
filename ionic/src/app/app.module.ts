@@ -22,6 +22,8 @@ import { UserService } from './services/user.service';
 import { SlidesService } from './services/slides.service';
 import { BookService } from './services/book.service';
 import { AuthService } from './services/auth.service';
+import { IonicStorageModule } from '@ionic/storage';
+import { ThemeService } from './services/theme.service';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyDAZRFBAHjrS8Ww03U95mMhX1-AD9rPDGo',
@@ -44,6 +46,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
+    IonicStorageModule.forRoot(),
     AppRoutingModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
@@ -60,6 +63,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     UserService,
     BookService,
     SlidesService,
+    ThemeService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],
   bootstrap: [AppComponent]

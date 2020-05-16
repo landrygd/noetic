@@ -98,7 +98,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     const actionSheet = await this.actionSheetController.create({
       buttons: [
         {
-          text: 'Paramètres du compte',
+          text: 'Paramètres',
           icon: 'settings',
           handler: () => {
             this.navCtrl.navigateForward('user-settings');

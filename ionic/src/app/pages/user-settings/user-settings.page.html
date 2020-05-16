@@ -9,6 +9,10 @@
 
 <ion-content>
   <ion-list>
+    <ion-item>
+      <ion-label>Mode nuit</ion-label>
+      <ion-toggle [checked]="themeService.darkMode" (ionChange)="toggleDarkMode()"></ion-toggle>
+    </ion-item>
     <ion-item (click)="changeEmail()" button details>
       <ion-label>Changer d'adresse email</ion-label>
     </ion-item>

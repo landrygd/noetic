@@ -164,17 +164,15 @@ export class AuthService {
       () => this.popupService.alert(
         'Un lien de réinitialisation de votre mot de passe vient d\'être envoyé dans votre adresse mail: ' + email)
         ),
-      ).catch(() => this.popupService.alert(
-        'Une erreur est survenu lors de votre demande')
-        );
+      ).catch((err) => this.popupService.error(err));
   }
 
   googleAuth() {
     const provider = new firebase.auth.GoogleAuthProvider();
     this.fireauth.signInWithPopup(provider).then(auth => {
       this.authConnexion(auth);
-    }).catch(() => {
-      this.popupService.alert('Erreur d\'authentification');
+    }).catch((err) => {
+      this.popupService.error(err);
     });
   }
 
@@ -182,8 +180,8 @@ export class AuthService {
     const provider = new firebase.auth.FacebookAuthProvider();
     this.fireauth.signInWithPopup(provider).then(auth => {
       this.authConnexion(auth);
-    }).catch(() => {
-      this.popupService.alert('Erreur d\'authentification');
+    }).catch((err) => {
+      this.popupService.error(err);
     });
   }
 
@@ -253,9 +251,7 @@ export class AuthService {
                 () => this.popupService.alert(
                   'Un lien de réinitialisation de votre mot de passe vient d\'être envoyé dans votre adresse mail: ' + oldEmail)
                   ),
-                ).catch(() => this.popupService.alert(
-                  'Une erreur est survenu lors de votre demande')
-                  );
+                ).catch((err) => this.popupService.error(err));
             }).catch((err) => this.popupService.alert('Mot de passe incorrect'));
           }
         }
