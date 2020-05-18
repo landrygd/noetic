@@ -100,12 +100,11 @@ export class RegisterPage implements OnInit {
     if (!this.privacy) {
       error = 'Vous devez accepter la politique de confidentialité pour vous inscrire.';
     }
-    // if (error === '') {
-    //   this.authService.signUp(res);
-    // } else {
-    //   this.toast(error);
-    // }
-    this.toast(error);
+    if (error === '') {
+      this.authService.signUp(res);
+    } else {
+      this.toast(error);
+    }
   }
 
   allLetterOrNumber(str: string): boolean {
