@@ -186,43 +186,53 @@ export class SlidesService {
   };
 
   basicOpts: any = {
-    slidesPerView: 5,
+    slidesPerView: 1.5,
+    spaceBetween: 5,
     breakpoints: {
       300: {
-        slidesPerView: 2,
+        slidesPerView: 2.5,
       },
-      600: {
-        slidesPerView: 3,
+      500: {
+        slidesPerView: 3.5,
+      },
+      700: {
+        slidesPerView: 4.5,
       },
       900: {
-        slidesPerView: 4,
+        slidesPerView: 5.5,
       },
-      1200: {
-        slidesPerView: 5,
+      1100: {
+        slidesPerView: 6.5,
       },
-      5000: {
-        slidesPerView: 6,
+      1300: {
+        slidesPerView: 7.5,
+      },
+      1500: {
+        slidesPerView: 8.5,
+      },
+      1700: {
+        slidesPerView: 9.5,
       }
     }
   };
 
   avatarOpts: any = {
-    slidesPerView: 10,
+    slidesPerView: 10.5,
     breakpoints: {
       350: {
-        slidesPerView: 5,
+        slidesPerView: 5.5,
       },
       400: {
-        slidesPerView: 6,
+        slidesPerView: 6.5,
       },
       600: {
-        slidesPerView: 7,
+        slidesPerView: 7.5,
       },
       800: {
-        slidesPerView: 8,
+        slidesPerView: 8.5,
       },
       5000: {
-        slidesPerView: 10,
+        slidesPerView: 10.5,
       }
     },
   };

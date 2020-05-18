@@ -3,10 +3,11 @@ import { ModalController, ActionSheetController, AlertController, NavController 
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { UserService } from 'src/app/services/user.service';
 import { BookService } from 'src/app/services/book.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { SlidesService } from 'src/app/services/slides.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { PopupService } from 'src/app/services/popup.service';
 
 @Component({
   selector: 'app-profile',
@@ -18,11 +19,13 @@ export class ProfilePage implements OnInit, OnDestroy {
   userAsync: Observable<any>;
   user: any;
   userSub: Subscription;
-  loading: boolean;
+  loading = true;
   ownProfile = false;
   followed = false;
   followSub: Subscription;
   books: any[] = [];
+  userId: string;
+  tabs = false;
 
   constructor(
     public modalController: ModalController,
@@ -33,26 +36,52 @@ export class ProfilePage implements OnInit, OnDestroy {
     public bookService: BookService,
     public router: Router,
     public slides: SlidesService,
-    private authService: AuthService
-    ) {
-      this.loading = true;
-    }
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    ) {}
 
   ngOnInit() {
   }
 
-  ionViewWillEnter() {
-    if (this.router.url === '/tabs/profile') {
-      if (this.userAsync !== this.userService.user) {
-        this.loading = true;
-        this.userAsync = this.userService.user;
-        this.syncData();
+  async ionViewDidEnter() {
+    if (this.router.url.charAt(1) === 't') {
+      this.tabs = true;
+    }
+    this.loading = true;
+    const userId = this.route.snapshot.paramMap.get('id');
+    // Utilisateur courant
+    if (userId === this.userService.userId || userId == null) {
+      this.userId = this.userService.userId;
+      if (this.userService.connected) {
+        // Utilisateur connecté
+        if (this.userAsync !== this.userService.user) {
+          // Utilisateur pas encare chargé
+          this.userAsync = this.userService.user;
+          this.syncData();
+        } else {
+          this.loading = false;
+        }
+      } else {
+        // Utilisateur non connecté
+        this.navCtrl.navigateRoot('/');
       }
     } else {
-      if (this.userAsync !== this.userService.curUser) {
-        this.loading = true;
-        this.userAsync = this.userService.curUser;
-        this.syncData();
+      // Utilisateur différent
+      this.userId = userId;
+      if (this.userService.curUserId === userId) {
+        // Utilisateur déjà chargé
+        if (this.userAsync !== this.userService.curUser) {
+          this.userAsync = this.userService.curUser;
+          this.syncData();
+        }
+      } else {
+        // Utilisateur pas encore chargé
+        await this.userService.openUser(userId).then(() => {
+          this.userAsync = this.userService.curUser;
+          this.syncData();
+        }).catch(() => {
+          this.navCtrl.navigateRoot('/');
+      });
       }
     }
   }
@@ -62,13 +91,13 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.user = val;
       this.ownProfile = this.user.id === this.userService.userId;
       // this.userBooks = this.userService.getBooks();
-      if (!this.followSub) {
-        this.followSub = this.userService.usersCollection.doc(this.userService.userId)
-        .collection('follows').snapshotChanges().subscribe((data) => {
+      if (!this.followSub && this.userService.connected) {
+        this.followSub = this.userService.usersCollection.doc(this.userId)
+        .collection('followers').snapshotChanges().subscribe((data) => {
           this.followed = false;
           data.forEach((doc) => {
             const id = doc.payload.doc.id;
-            if (id === this.user.id) {
+            if (id === this.userService.userId) {
               this.followed = true;
             }
           });
@@ -78,8 +107,10 @@ export class ProfilePage implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy() {
-    this.followSub.unsubscribe();
-    this.userSub.unsubscribe();
+    if (this.followSub) {
+      this.followSub.unsubscribe();
+      this.userSub.unsubscribe();
+    }
   }
 
   async changeAvatar(userId) {
@@ -98,10 +129,25 @@ export class ProfilePage implements OnInit, OnDestroy {
     const actionSheet = await this.actionSheetController.create({
       buttons: [
         {
+          text: 'Partager le profil',
+          icon: 'share-social',
+          handler: () => {
+            actionSheet.dismiss().then(() => this.share());
+          }
+        },
+        {
           text: 'Paramètres',
           icon: 'settings',
           handler: () => {
             this.navCtrl.navigateForward('user-settings');
+          }
+        },
+        {
+          text: 'A propos',
+          icon: 'information',
+          handler: () => {
+            actionSheet.dismiss();
+            this.about();
           }
         },
         {
@@ -114,6 +160,38 @@ export class ProfilePage implements OnInit, OnDestroy {
         text: 'Annuler',
         icon: 'close',
         role: 'cancel'
+      }]
+    });
+    await actionSheet.present();
+  }
+
+  async about() {
+    const actionSheet = await this.actionSheetController.create({
+      buttons: [
+        {
+          text: 'Politique de confidentialité',
+          icon: 'document-text',
+          handler: () => {
+            this.navCtrl.navigateForward('privacy');
+          }
+        },
+        {
+          text: 'A propos de l\'application',
+          icon: 'logo-google-playstore',
+          handler: () => {
+            window.open('https://play.google.com/store/apps/details?id=com.blockup.noetic', '_blank');
+          }
+        },
+        {
+          text: 'A propos de Blockup',
+          icon: 'business',
+          handler: () => {
+            window.open('https://blockup.net', '_blank');
+          }
+        }, {
+          text: 'Annuler',
+          icon: 'close',
+          role: 'cancel'
       }]
     });
     await actionSheet.present();
@@ -184,7 +262,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   onClick() {}
 
   follow() {
-    this.userService.followUser();
+    this.userService.followUser(this.userId);
   }
 
   unfollow() {
@@ -193,5 +271,9 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   back() {
     this.userService.curUserBooksSub.unsubscribe();
+  }
+
+  share() {
+    this.userService.shareUser(this.userId);
   }
 }

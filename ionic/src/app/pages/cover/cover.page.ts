@@ -6,6 +6,7 @@ import { CommentService } from 'src/app/services/book/comment.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { PopupService } from 'src/app/services/popup.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-cover',
@@ -30,6 +31,7 @@ export class CoverPage implements OnInit {
 
   commented = false;
   lastRate = 0;
+  loading = true;
 
   constructor(
     public navCtrl: NavController,
@@ -40,31 +42,42 @@ export class CoverPage implements OnInit {
     public bookService: BookService,
     public commentService: CommentService,
     private modalController: ModalController,
-    private popupService: PopupService
+    private popupService: PopupService,
+    private route: ActivatedRoute,
     ) {
-      if (!this.bookService.curBookId) {
-        this.navCtrl.pop();
-      } else {
-        this.curBookId = this.bookService.curBookId;
-      }
+      // if (!this.bookService.curBookId) {
+      //   this.navCtrl.pop();
+      // } else {
+      //   this.curBookId = this.bookService.curBookId;
+      // }
     }
 
   ngOnInit() {
-    if (this.bookService.curBookId) {
-      // this.authorsId.forEach((author) => {
-      //   this.bookService.getUserById(author).subscribe((value) => this.authors.push(value.data()));
-      // });
-      this.commentService.syncComments(this.bookService.book.id);
-      if (this.authService.connected) {
-        this.inList = this.userService.haveFromList(this.bookService.book.id);
-        this.commentService.haveCommented(this.bookService.book.id).subscribe((value) => {
-          if (value.length !== 0) {
-            this.comment = value[0];
-            this.commented = true;
-            this.lastRate = this.comment.rate;
-          }
-        });
-      }
+    const bookId = this.route.snapshot.paramMap.get('id');
+    this.curBookId = bookId;
+    if (this.bookService.curBookId !== bookId) {
+      this.bookService.curBookId = this.curBookId;
+      this.bookService.syncBook(this.curBookId, true)
+      .then(() => {
+        this.loading = false;
+        this.commentService.syncComments(this.bookService.book.id);
+        if (this.authService.connected) {
+          this.inList = this.userService.haveFromList(this.bookService.book.id);
+          this.commentService.haveCommented(this.bookService.book.id).subscribe((value) => {
+            if (value.length !== 0) {
+              this.comment = value[0];
+              this.commented = true;
+              this.lastRate = this.comment.rate;
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        this.navCtrl.navigateBack('tabs/home');
+        this.popupService.error(err);
+      });
+    } else {
+      this.loading = false;
     }
   }
 
@@ -120,7 +133,11 @@ export class CoverPage implements OnInit {
   back() {
     this.commentService.unsyncComments();
     this.bookService.unsyncBook(true);
-    this.navCtrl.pop();
+    this.navCtrl.navigateBack('/tabs/home');
+  }
+
+  share() {
+    this.bookService.shareBook(this.curBookId);
   }
 
   async addTag() {

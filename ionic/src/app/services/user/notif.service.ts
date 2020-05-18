@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { BookService } from '../book.service';
+import { LocalNotifications, ELocalNotificationTriggerUnit } from '@ionic-native/local-notifications/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,8 @@ export class NotifService {
 
   constructor(
     private firestore: AngularFirestore,
-    private bookService: BookService
+    private bookService: BookService,
+    private localNotifications: LocalNotifications
   ) {
     // this.userNotifs = this.firestore.collection('users').doc(this.userId).collection('notifs');
     // this.userId = this.authService.userId;

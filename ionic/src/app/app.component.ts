@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TraductionService } from './services/traductionService.service';
 import { AuthService } from './services/auth.service';
 import { ThemeService } from './services/theme.service';
+import { NetworkService } from './services/network.service';
 
 @Component({
   selector: 'app-root',
@@ -15,11 +16,12 @@ import { ThemeService } from './services/theme.service';
 export class AppComponent {
   constructor(
     private platform: Platform,
+    public network: NetworkService,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private translator: TraductionService,
     private authService: AuthService,
-    public themeService: ThemeService
+    public themeService: ThemeService,
   ) {
     this.initializeApp();
   }

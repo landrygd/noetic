@@ -339,7 +339,7 @@ export class BookService {
 
   async syncBook(curBookId = this.curBookId, cover: boolean = false): Promise<any> {
     let bookPromise: Promise<any>;
-    bookPromise = new Promise(res => {
+    bookPromise = new Promise((res, reject) => {
       this.bookSub = this.firestore.collection('books').doc(curBookId).valueChanges().subscribe((value: any) => {
         if (value) {
           this.book = value;
@@ -347,6 +347,8 @@ export class BookService {
           this.book.starsArray = new Array(this.book.stars);
           this.isAuthor = this.book.authors.includes(this.userService.userId) && this.userService.connected;
           res();
+        } else {
+          reject('Livre inexistant');
         }
       });
     });
@@ -370,12 +372,15 @@ export class BookService {
         });
       });
     }
-    await bookPromise;
-    if (!cover) {
-      await bookChatPromise;
-      await bookActorPromise;
-    }
-    return new Promise(res => res());
+    return new Promise((res, reject) => {
+      bookPromise.then(async () => {
+        if (!cover) {
+          await bookChatPromise;
+          await bookActorPromise;
+        }
+        res();
+      }).catch(err => reject(err));
+    });
   }
 
   unsyncBook(cover = false) {
@@ -434,13 +439,8 @@ export class BookService {
     return res;
   }
 
-  async openCover(bookId: string) {
-    await this.popupService.loading('Ouverture...', 'opening');
-    this.curBookId = bookId;
-    this.syncBook(this.curBookId, true).then(() => {
-      this.popupService.loadingDismiss('opening');
-      this.navCtrl.navigateForward('cover');
-    }).catch((err) => this.popupService.error(err));
+  openCover(bookId: string) {
+    this.navCtrl.navigateForward('book/' + bookId);
   }
 
   async play(id = this.curBookId, chatId = 'main', debug = false) {
@@ -462,5 +462,10 @@ export class BookService {
 
   getBookById(bookId): Observable<any> {
     return this.firestore.collection('books').doc(bookId).get();
+  }
+
+  shareBook(bookId: string) {
+    const bookUrl = 'https://noetic.site/book/' + bookId;
+    this.userService.share('Voici un livre sur Noetic', 'Partage de livre', bookUrl);
   }
 }

@@ -1,10 +1,3 @@
-<ion-header translucent="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button (click)="return()" defaultHref="tabs/home"></ion-back-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
 <ion-content fullscreen>
   <div class="bg">
     <div class="backdrop">
@@ -26,12 +19,13 @@
                   <ion-icon name="key" slot="start" color="primary"></ion-icon>
                   <ion-input required formControlName="password" type="password" placeholder="Mot de passe"></ion-input>
                 </ion-item>
-                
-                <ion-button  block shape="round" fill="solid" (click)="login()" [disabled]="loginForm.invalid">
-                  Se connecter
-                </ion-button>
+
                 <ion-button (click)="resetPassword()" expand="block" fill="clear" shape="round" color="medium">
                   Mot de passe oublié
+                </ion-button>
+
+                <ion-button  block shape="round" fill="solid" (click)="login()" [disabled]="loginForm.invalid">
+                  Se connecter
                 </ion-button>
               </form>
             </ion-col>

@@ -57,8 +57,10 @@ export class PopupService {
     this.loader.present();
   }
 
-  loadingDismiss(id = 'unknowed') {
-    this.loadingController.dismiss(null, null, id);
+  loadingDismiss(id = 'unknowed'): Promise<unknown> {
+    return new Promise((resolve, reject) => {
+      this.loadingController.dismiss(null, null, id).then(() => resolve()).catch((err) => reject(err));
+    });
   }
 
   async error(err: string) {

@@ -4,6 +4,7 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { UserService } from 'src/app/services/user.service';
 import { BookService } from 'src/app/services/book.service';
 import { ActorService } from 'src/app/services/book/actor.service';
+import { PopupService } from 'src/app/services/popup.service';
 
 @Component({
   selector: 'app-upload',
@@ -29,7 +30,8 @@ export class UploadComponent implements OnInit {
     private modalController: ModalController,
     public userService: UserService,
     public bookService: BookService,
-    public actorService: ActorService
+    public actorService: ActorService,
+    private popupService: PopupService
     ) {
   }
 
@@ -54,7 +56,7 @@ export class UploadComponent implements OnInit {
       // cropper ready
   }
   loadImageFailed() {
-      // show message
+      this.popupService.alert('Erreur de chargement de l\'image. Veuillez vérifier si elle est bien au format .jpeg ou .png.');
   }
 
   cancel() {

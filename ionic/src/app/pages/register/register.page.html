@@ -1,10 +1,3 @@
-<ion-header translucent="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="login"></ion-back-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
 <ion-content fullscreen>
   <div class="bg">
     <div class="backdrop">
@@ -41,6 +34,17 @@
                   <ion-icon name="key" slot="start" color="primary"></ion-icon>
                   <ion-input required formControlName="confirmPassword" type="password" placeholder="Répétez le mot de passe" #confirmPassword (keyup.enter)="next('confirm')"></ion-input>
                 </ion-item>
+
+                <div style="color: white;">
+                  <ion-checkbox [(ngModel)]="privacy" [ngModelOptions]="{standalone: true}" slot="start" class="ion-margin-end"></ion-checkbox>
+                  <ion-label slot="start">J'accepte la </ion-label>
+                  <ion-chip slot="start" color="primary" mode="ios" (click)="showPrivacy()">
+                    <ion-icon name="document-text"></ion-icon>
+                    <ion-label>politique de confidentialité</ion-label>
+                  </ion-chip>
+                </div>
+
+                
         
                 <ion-button block shape="round" color="primary" type="submit" fill="solid" [disabled]="registerForm.invalid">
                   S'incrire

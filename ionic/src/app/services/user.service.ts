@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subscription, merge } from 'rxjs';
-import { NavController } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFirestoreCollection, AngularFirestoreDocument, DocumentChangeAction } from '@angular/fire/firestore/public_api';
 import { PopupService } from './popup.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import * as firebase from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +41,9 @@ export class UserService {
   usersCollection: AngularFirestoreCollection<any>;
   userDoc: AngularFirestoreDocument;
 
+  defaultAvatarURL = 'https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Favatars%2Fdefault.png' +
+                     '?alt=media&token=49f967d6-cedb-4b22-9b14-9a2539606c38';
+
   constructor(
     private firestore: AngularFirestore,
     private firestorage: AngularFireStorage,
@@ -47,6 +51,8 @@ export class UserService {
     private navCtrl: NavController,
     private popupService: PopupService,
     private fireauth: AngularFireAuth,
+    private socialSharing: SocialSharing,
+    private plt: Platform,
     ) {
     this.usersCollection = this.firestore.collection('users');
   }
@@ -61,8 +67,6 @@ export class UserService {
         this.userData = value;
         if (!this.connected) {
           this.connected = true;
-          this.navCtrl.navigateBack(['/']);
-          this.popupService.toast('Bonjour ' + this.userData.name, 'middle');
           this.popupService.loadingDismiss('sync');
           this.getBooks();
           this.getList();
@@ -95,13 +99,32 @@ export class UserService {
     this.fireauth.signOut().then(() => this.navCtrl.navigateForward(['/login'])).catch((err) => this.popupService.error(err));
   }
 
-  setCurUser(curUserId: string = this.userId): void {
-    this.curUserId = curUserId;
-    if (this.isOwnProfile()) {
-      this.curUser = this.user;
-    } else {
-      this.curUser = this.getUser(curUserId);
-    }
+  setCurUser(curUserId: string = this.userId): Promise<unknown> {
+    return new Promise<unknown>((resolve, reject) => {
+      this.curUserId = curUserId;
+      if (this.isOwnProfile()) {
+        this.curUser = this.user;
+        resolve();
+      } else {
+        this.checkUserExist(curUserId).then(() => {
+          this.curUser = this.getUser(curUserId);
+          resolve();
+        }).catch(() => reject());
+      }
+    });
+  }
+
+  checkUserExist(userId: string): Promise<unknown> {
+    return new Promise<unknown>((resolve, reject) => {
+      const userSub = this.firestore.collection('users', ref => ref.where('id', '==', userId)).get().subscribe(docs => {
+        userSub.unsubscribe();
+        if (docs.size === 0) {
+          reject();
+        } else {
+          resolve();
+        }
+      });
+    });
   }
 
   syncNotifs() {
@@ -121,13 +144,16 @@ export class UserService {
     return false;
   }
 
-  getUserBooks(userId) {
-    this.curUserBooksSub = this.usersCollection.doc(userId).collection('books').snapshotChanges().subscribe((val) => {
-      const res = [];
-      val.forEach(doc => {
-        res.push(doc.payload.doc.id);
+  getUserBooks(userId): Promise<unknown> {
+    return new Promise<unknown>(resolve => {
+      this.curUserBooksSub = this.usersCollection.doc(userId).collection('books').snapshotChanges().subscribe((val) => {
+        const res = [];
+        val.forEach(doc => {
+          res.push(doc.payload.doc.id);
+        });
+        this.curUserBooks = res;
+        resolve();
       });
-      this.curUserBooks = res;
     });
   }
 
@@ -212,28 +238,21 @@ export class UserService {
     return curUserId === this.userId;
   }
 
-  // syncFollowBooks() {
-  //   this.followSub = this.userDoc.collection('list').snapshotChanges().subscribe((val) => {
-  //     const res = [];
-  //     val.forEach(doc => {
-  //       res.push(doc.payload.doc.id);
-  //     });
-  //     this.list = res;
-  //   });
-  //   return this.firestore.collection(
-  //     'books', ref => {ref.where('public', '==', true); ref.where('public', '==', true).where('lang', '==', lang).orderBy('views', 'desc').limit(10)}
-  //     ).valueChanges();
-  // }
-
-  openUser(curUserId: string) {
-    if (curUserId  !== this.userId) {
-      this.setCurUser(curUserId);
-      this.getUserBooks(curUserId);
-      this.navCtrl.navigateForward('profile');
-
-    } else {
-      this.popupService.toast('c\'est votre propre profil!');
-    }
+  async openUser(curUserId: string): Promise<unknown> {
+    return new Promise(async (resolve, reject) => {
+      if (curUserId  !== this.userId) {
+        this.setCurUser(curUserId).then(async () => {
+          await this.getUserBooks(curUserId);
+          resolve();
+        }).catch(() => {
+          this.popupService.alert('Utilisateur inexistant');
+          reject();
+        });
+      } else {
+        await this.popupService.toast('c\'est votre propre profil!');
+        return resolve();
+      }
+    });
   }
 
   updateUserData(data, curUserId: string = this.userId) {
@@ -241,8 +260,16 @@ export class UserService {
   }
 
   followUser(curUserId: string = this.curUserId) {
-    this.usersCollection.doc(this.userId).collection('follows').doc(curUserId).set({});
-    this.usersCollection.doc(curUserId).collection('followers').doc(this.userId).set({});
+    if (this.connected) {
+      if (curUserId !== this.userId) {
+        this.usersCollection.doc(this.userId).collection('follows').doc(curUserId).set({});
+        this.usersCollection.doc(curUserId).collection('followers').doc(this.userId).set({});
+      } else {
+        this.popupService.toast('Vous ne pouvez pas vous suivre vous-même');
+      }
+    } else {
+      this.navCtrl.navigateForward('login');
+    }
   }
 
   unfollowUser(curUserId: string = this.curUserId) {
@@ -328,5 +355,32 @@ export class UserService {
   getAvatar(userId: string) {
     const path = 'users/' + userId + '/avatar.png';
     return this.firestorage.ref(path).getDownloadURL();
+  }
+
+  shareUser(userId: string) {
+    const userURL = 'https://noetic.site/profile/' + userId;
+    this.share('Voici mon profil sur Noetic: ', 'Partage de profil', userURL);
+  }
+
+  share(msg: string, subject: string, url: string, ) {
+    if (!this.plt.is('cordova')) {
+      const selBox = document.createElement('textarea');
+      selBox.style.position = 'fixed';
+      selBox.style.left = '0';
+      selBox.style.top = '0';
+      selBox.style.opacity = '0';
+      selBox.value = url;
+      document.body.appendChild(selBox);
+      selBox.focus();
+      selBox.select();
+      document.execCommand('copy');
+      document.body.removeChild(selBox);
+      this.popupService.toast('Lien copié dans le presse papier');
+    } else {
+      this.popupService.loading();
+      this.socialSharing.share(msg, subject, [], url)
+        .catch((err) => this.popupService.error(err))
+        .finally(() => this.popupService.loadingDismiss());
+    }
   }
 }

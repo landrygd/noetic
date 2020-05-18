@@ -12,6 +12,7 @@ export class RegisterPage implements OnInit {
 
   confirmPassword = '';
   registerForm: FormGroup;
+  privacy = false;
 
   @ViewChild('date', { static: true }) dateView: IonDatetime;
   @ViewChild('email', { static: true }) emailView: IonInput;
@@ -56,6 +57,10 @@ export class RegisterPage implements OnInit {
   ngOnInit() {
   }
 
+  showPrivacy() {
+    this.navCtrl.navigateForward('privacy');
+  }
+
   login() {
     this.navCtrl.navigateBack('login');
   }
@@ -92,11 +97,15 @@ export class RegisterPage implements OnInit {
     if (res.name.length > 30) {
       error = 'Le pseudo ne doit contenir pas contenir plus de 30 caractères.';
     }
-    if (error === '') {
-      this.authService.signUp(res);
-    } else {
-      this.toast(error);
+    if (!this.privacy) {
+      error = 'Vous devez accepter la politique de confidentialité pour vous inscrire.';
     }
+    // if (error === '') {
+    //   this.authService.signUp(res);
+    // } else {
+    //   this.toast(error);
+    // }
+    this.toast(error);
   }
 
   allLetterOrNumber(str: string): boolean {

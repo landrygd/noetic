@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-user-chip',
@@ -14,7 +15,8 @@ export class UserChipComponent implements OnInit {
   userObservable: Observable<unknown>;
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private navCtrl: NavController
     ) {}
 
   ngOnInit() {
@@ -22,7 +24,7 @@ export class UserChipComponent implements OnInit {
   }
 
   openProfile() {
-    this.userService.openUser(this.userId);
+    this.navCtrl.navigateForward('user/' + this.userId);
   }
 
 }

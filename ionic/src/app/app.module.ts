@@ -24,6 +24,11 @@ import { BookService } from './services/book.service';
 import { AuthService } from './services/auth.service';
 import { IonicStorageModule } from '@ionic/storage';
 import { ThemeService } from './services/theme.service';
+import { Network } from '@ionic-native/network/ngx';
+import { NetworkService } from './services/network.service';
+import { ComponentModule } from './components/component.module';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyDAZRFBAHjrS8Ww03U95mMhX1-AD9rPDGo',
@@ -54,9 +59,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     AngularFireStorageModule,
     AngularFirestoreModule,
     ImageCropperModule,
+    ComponentModule,
     TranslateModule.forRoot(),
   ],
   providers: [
+    LocalNotifications,
+    SocialSharing,
+    Network,
     AuthService,
     StatusBar,
     SplashScreen,
@@ -64,6 +73,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BookService,
     SlidesService,
     ThemeService,
+    NetworkService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],
   bootstrap: [AppComponent]

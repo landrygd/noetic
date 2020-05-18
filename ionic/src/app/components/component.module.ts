@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardBookComponent } from './card-book/card-book.component';
 import { IonicModule } from '@ionic/angular';
@@ -41,4 +41,11 @@ import { ActorProfileComponent } from './modals/actor-profile/actor-profile.comp
     ActorProfileComponent
   ]
 })
-export class ComponentModule { }
+
+export class ComponentModule {
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: ComponentModule,
+    };
+  }
+}

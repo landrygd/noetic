@@ -9,6 +9,7 @@ import { AngularFirestoreDocument } from '@angular/fire/firestore/public_api';
 import { AngularFireStorage } from '@angular/fire/storage';
 import * as firebase from 'firebase/app';
 import { UserService } from './user.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,8 @@ export class AuthService {
     private popupService: PopupService,
     private traductionService: TraductionService,
     private navCtrl: NavController,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {
     // Définir la langue courante
     this.lang = this.traductionService.getCurLanguage();
@@ -44,6 +46,9 @@ export class AuthService {
         this.auth = auth;
         this.userId = auth.uid;
         this.userService.syncUserData(this.userId);
+        if (this.router.url === '/login') {
+          this.navCtrl.navigateBack('/');
+        }
       }
     });
    }
@@ -106,7 +111,7 @@ export class AuthService {
     this.popupService.loading('Connexion...');
     this.fireauth.signInWithEmailAndPassword(loginData.email, loginData.password)
     .then(auth => {
-      this.popupService.loadingDismiss();
+      this.popupService.loadingDismiss().catch((err) => this.popupService.error(err));
     })
     .catch(err => {
       this.popupService.loadingDismiss();

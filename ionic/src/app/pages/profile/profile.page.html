@@ -3,15 +3,18 @@
     <div class="header">
       <ion-toolbar style="--background: transparent;">
         <ion-buttons slot="start">
-          <ion-back-button (click)="back()" defaultHref="tabs/home" *ngIf="!ownProfile"></ion-back-button>
-          <ion-button (click)="notif()" fill="clear" shape="round" color="dark" *ngIf="ownProfile">
-            <ion-icon slot="icon-only" name="notifications" style="opacity: 0.7;"></ion-icon>
+          <ion-back-button (click)="back()" defaultHref="tabs/home" *ngIf="!tabs" class="headerButton"></ion-back-button>
+          <ion-button (click)="notif()" fill="clear" shape="round" *ngIf="ownProfile && tabs">
+            <ion-icon slot="icon-only" name="notifications" class="headerButton"></ion-icon>
             <ion-badge color="danger" mode="ios" *ngIf="userService.userNotifs.length > 0">{{userService.userNotifs.length}}</ion-badge>
           </ion-button>   
         </ion-buttons>
         <ion-buttons slot="end">
-          <ion-button (click)="options()" fill="clear" shape="round" color="dark" *ngIf="ownProfile"  style="opacity: 0.7;">
-            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+          <ion-button (click)="options()" fill="clear" shape="round" *ngIf="ownProfile && tabs">
+            <ion-icon slot="icon-only" name="ellipsis-vertical" class="headerButton"></ion-icon>
+          </ion-button>
+          <ion-button (click)="share()" fill="clear" shape="round" *ngIf="!ownProfile || !tabs" >
+            <ion-icon slot="icon-only" name="share-social" class="headerButton"></ion-icon>
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
@@ -51,16 +54,21 @@
     </ion-grid>
     <div class="subscribe" *ngIf="!ownProfile">
       <ion-button (click)="follow()" expand="block" fill="solid" shape="round" style="width: 50vw;" *ngIf="!followed">
+        <ion-icon name="person-add" slot="start"></ion-icon>
         Suivre
       </ion-button>
 
       <ion-button (click)="unfollow()" expand="block" fill="solid" shape="round" style="width: 50vw;" *ngIf="followed">
+        <ion-icon name="person-remove" slot="start"></ion-icon>
         Arrêter de suivre
       </ion-button>
     </div>
     <div *ngIf="ownProfile">
       <div *ngIf="userService.books.length !== 0">
-        <h1 class="ion-text-center">Mes histoires</h1>
+        <h1 class="ion-text-center">
+          <ion-icon name="library"></ion-icon>
+          Mes histoires
+        </h1>
         <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userService.books.length !== 0">
           <ion-slide>
           </ion-slide>
@@ -74,7 +82,10 @@
     </div>
     <div *ngIf="!ownProfile">
       <div *ngIf="userService.curUserBooks.length !== 0">
-        <h1 class="ion-text-center">Ses histoires</h1>
+        <h1 class="ion-text-center">
+          <ion-icon name="library"></ion-icon>
+          Ses histoires
+        </h1>
         <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userService.curUserBooks.length !== 0">
           <ion-slide>
           </ion-slide>
