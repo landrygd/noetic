@@ -24,6 +24,9 @@ service cloud.firestore {
     match /users/{userId}/list/{document=**} {
       allow read, write, delete: if request.auth != null && request.auth.uid == userId;
     }
+    match /users/{userId}/saves/{document=**} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
     match /users/{userId}/notifs/{document=**} {
       allow read, write, delete: if request.auth != null && request.auth.uid == userId;
     }

@@ -38,6 +38,10 @@ export class UserService {
   curUserBooksSub: Subscription;
   curUserBooks: any[] = [];
 
+  saves: DocumentChangeAction<firebase.firestore.DocumentData>[] = [];
+  savesId: string[] = [];
+  savesSub: Subscription;
+
   usersCollection: AngularFirestoreCollection<any>;
   userDoc: AngularFirestoreDocument;
 
@@ -70,6 +74,7 @@ export class UserService {
           this.popupService.loadingDismiss('sync');
           this.getBooks();
           this.getList();
+          this.getSaves();
           this.syncNotifs();
           this.getFollowList();
         }
@@ -91,6 +96,7 @@ export class UserService {
 
   logout() {
     this.userSub.unsubscribe();
+    this.savesSub.unsubscribe();
     this.bookSub.unsubscribe();
     this.listSub.unsubscribe();
     this.followListSub.unsubscribe();
@@ -158,7 +164,7 @@ export class UserService {
   }
 
   getBooks() {
-    this.bookSub = this.userDoc.collection('books').snapshotChanges().subscribe((val) => {
+    this.bookSub = this.userDoc.collection('books', ref => ref.orderBy('lastChanges', 'desc')).snapshotChanges().subscribe((val) => {
       const res = [];
       val.forEach(doc => {
         res.push(doc.payload.doc.id);
@@ -168,12 +174,23 @@ export class UserService {
   }
 
   getList() {
-    this.listSub = this.userDoc.collection('list').snapshotChanges().subscribe((val) => {
+    this.listSub = this.userDoc.collection('list', ref => ref.orderBy('lastChanges', 'desc')).snapshotChanges().subscribe((val) => {
       const res = [];
       val.forEach(doc => {
         res.push(doc.payload.doc.id);
       });
       this.list = res;
+    });
+  }
+
+  getSaves() {
+    this.savesSub = this.userDoc.collection('saves', ref => ref.orderBy('lastChanges', 'desc')).snapshotChanges().subscribe((val) => {
+      const res = [];
+      val.forEach(doc => {
+        res.push(doc.payload.doc.id);
+      });
+      this.savesId = res;
+      this.saves = val;
     });
   }
 
@@ -299,7 +316,7 @@ export class UserService {
   }
 
   addBookRef(bookId) {
-    this.userDoc.collection('books').doc(bookId).set({});
+    this.userDoc.collection('books').doc(bookId).set({lastChanges: Date.now()});
   }
 
   deleteBookRef(bookId) {
@@ -307,11 +324,36 @@ export class UserService {
   }
 
   addBookListRef(bookId) {
-    this.userDoc.collection('list').doc(bookId).set({});
+    this.userDoc.collection('list').doc(bookId).set({lastChanges: Date.now()});
   }
 
   deleteBookListRef(bookId) {
     this.userDoc.collection('list').doc(bookId).delete();
+  }
+
+  async addSave(bookId: string, data: any) {
+    await this.userDoc.collection('saves').doc(bookId).set(data);
+    this.popupService.toast('Lecture sauvegardée');
+  }
+
+  loadSave(bookId: string): Promise<any> {
+    return new Promise(res => {
+      this.saves.forEach(save => {
+        const doc = save.payload.doc;
+        if (doc.id === bookId) {
+          res(doc.data());
+        }
+      });
+    });
+  }
+
+  async deleteSave(bookId): Promise<any> {
+    await this.userDoc.collection('saves').doc(bookId).delete();
+    return new Promise((res) => res());
+  }
+
+  haveSave(bookId) {
+    return this.savesId.includes(bookId);
   }
 
   uploadAvatar(file) {
@@ -358,7 +400,7 @@ export class UserService {
   }
 
   shareUser(userId: string) {
-    const userURL = 'https://noetic.site/profile/' + userId;
+    const userURL = 'https://noetic.site/user/' + userId;
     this.share('Voici mon profil sur Noetic: ', 'Partage de profil', userURL);
   }
 

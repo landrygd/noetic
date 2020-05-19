@@ -34,8 +34,7 @@ export class HomePage implements OnInit {
   ngOnInit() {}
 
   search() {
-    this.navCtrl.navigateForward('profile', {queryParams: {id: 'testId'}});
-    // this.navCtrl.navigateForward('book-search');
+    this.navCtrl.navigateForward('book-search');
   }
   // searchCategory(category) {
   //   this.curCategory = category;

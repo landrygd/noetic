@@ -27,6 +27,13 @@ export class AvatarComponent implements OnInit {
 
   ngOnInit() {}
 
+  getColor(actorId: string) {
+    if (this.bookService.actorsById[actorId].color) {
+      return this.bookService.actorsById[actorId].color;
+    } else {
+      return 'medium';
+    }
+  }
 
   async viewProfile(actorId: string = this.actorId) {
     if (this.enabled) {

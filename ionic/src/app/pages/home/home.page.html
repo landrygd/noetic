@@ -1,7 +1,9 @@
 <ion-header>
   <ion-toolbar class="search">
-    <ion-img src="/assets/logo.png" style="width: 4em;" slot="start" class="ion-margin-start"></ion-img>
+    <ion-img src="/assets/logo.png" style="width: 4em;" slot="start" class="ion-margin"></ion-img>
     <ion-searchbar
+      style="padding: 0;"
+      mode="ios"
       placeholder="Chercher une histoire" 
       [debounce]="250" 
       showCancelButton="never"
@@ -14,6 +16,17 @@
 
 
 <ion-content>
+  <h2 class="section" *ngIf="userService.savesId.length !== 0">
+    <ion-icon name="save"></ion-icon>
+    Mes sauvegardes
+  </h2>
+
+  <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.savesId.length !== 0">
+    <ion-slide *ngFor="let bookId of userService.savesId">
+      <app-card-book [bookId]="bookId"></app-card-book>
+    </ion-slide>
+  </ion-slides>
+
   <h2 class="section" *ngIf="userService.list.length !== 0">
     <ion-icon name="list"></ion-icon>
     Ma liste

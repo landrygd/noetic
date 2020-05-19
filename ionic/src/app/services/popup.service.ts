@@ -8,6 +8,7 @@ import { AlertController, ToastController, LoadingController } from '@ionic/angu
 export class PopupService {
 
   loader: HTMLIonLoadingElement;
+  alerter: HTMLIonAlertElement;
 
   constructor(
     private alertController: AlertController,
@@ -36,16 +37,16 @@ export class PopupService {
   }
 
   async alert(msg: string) {
-    const alert = await this.alertController.create({
+    this.alerter = await this.alertController.create({
       message: msg,
       buttons: ['OK']
     });
-    await alert.present();
+    await this.alerter.present();
   }
 
   async alertObj(obj: any) {
-    const alert = await this.alertController.create(obj);
-    await alert.present();
+    this.alerter = await this.alertController.create(obj);
+    await this.alerter.present();
   }
 
   async loading(msg = 'Chargement...', id = 'unknowed') {

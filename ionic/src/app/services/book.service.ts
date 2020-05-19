@@ -439,8 +439,8 @@ export class BookService {
     return res;
   }
 
-  openCover(bookId: string) {
-    this.navCtrl.navigateForward('book/' + bookId);
+  async openCover(bookId: string) {
+    await this.navCtrl.navigateForward('book/' + bookId);
   }
 
   async play(id = this.curBookId, chatId = 'main', debug = false) {

@@ -9,18 +9,21 @@
 
 <ion-content>
   <ion-list>
-    <ion-button (click)="publish()" expand="block" fill="clear" shape="round" *ngIf="!bookService.book.public">
-      Publier le livre
-    </ion-button>
-    <ion-button (click)="unpublish()" expand="block" fill="clear" shape="round" color="warning" *ngIf="bookService.book.public">
-      Arrêter de publier le livre
-    </ion-button>
-    <ion-button (click)="invite()" expand="block" fill="clear" shape="round">
-      Inviter un ami
-    </ion-button>
+    <ion-item button (click)="publish()" *ngIf="!bookService.book.public">
+      <ion-icon slot="start" name="share" color="primary"></ion-icon>
+      <ion-label color="primary">Publier ce livre</ion-label>
+    </ion-item>
+    <ion-item button (click)="unpublish()" *ngIf="bookService.book.public">
+      <ion-icon slot="start" name="share"></ion-icon>
+      <ion-label>Arrêter de publier ce livre</ion-label>
+    </ion-item>
+    <ion-item button (click)="invite()">
+      <ion-icon slot="start" name="person-add"></ion-icon>
+      <ion-label>Inviter un ami</ion-label>
+    </ion-item>
+    <ion-item button (click)="delete()">
+      <ion-icon slot="start" name="trash" color="danger"></ion-icon>
+      <ion-label color="danger">Supprimer ce livre</ion-label>
+    </ion-item>
   </ion-list>
 </ion-content>
-
-<ion-button (click)="delete()" expand="block" fill="solid" shape="round" color="danger">
-  Supprimer ce livre
-</ion-button>

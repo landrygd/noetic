@@ -10,13 +10,13 @@ import { ThemeService } from 'src/app/services/theme.service';
 })
 export class UserSettingsPage implements OnInit {
 
+  emailLogged: false;
+
   constructor(
     public authService: AuthService,
     private alertController: AlertController,
     public themeService: ThemeService
-    ) {
-      console.log(this.themeService.darkMode);
-     }
+    ) {}
 
   ngOnInit() {
   }

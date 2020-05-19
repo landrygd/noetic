@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BookService } from '../book.service';
 import { Subscription } from 'rxjs';
-import { AlertController, PickerController } from '@ionic/angular';
+import { AlertController, ActionSheetController } from '@ionic/angular';
 import { PopupService } from '../popup.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 
@@ -21,7 +21,7 @@ export class ActorService {
     private bookService: BookService,
     private alertController: AlertController,
     private popupService: PopupService,
-    private pickerController: PickerController
+    private actionSheetController: ActionSheetController
   ) { }
 
   addActor(actorName) {
@@ -128,63 +128,31 @@ export class ActorService {
   }
 
   async changeActorColor(actorId: string) {
-    const picker = await this.pickerController.create({
-    animated: true,
-    buttons: [{
+    const colors =
+    ['red', 'pink', 'purple', 'deep-purple', 'indigo',
+    'blue', 'light-blue', 'cyan', 'teal', 'green',
+    'light-green', 'lime', 'yellow', 'amber', 'orange',
+    'deep-orange', 'brown', 'grey', 'blue-grey', 'white', 'black'];
+    const buttons = [];
+    for (const color of colors) {
+      buttons.push({
+        text: color,
+        cssClass: color,
+        handler: () => {
+          this.updateActorData(actorId, {color});
+        }
+      });
+    }
+    buttons.push({
       text: 'Annuler',
-    }, {
-      text: 'Confirmer',
-      handler: (val) => {
-        this.updateActorData(actorId, {color: val.color.value});
-      }
-    }],
-    columns: [
-      {
-        name: 'color',
-        options: [
-          {
-            text: 'gris',
-            value: 'light'
-          },
-          {
-            text: 'rouge',
-            value: 'red'
-          },
-          {
-            text: 'orange',
-            value: 'orange'
-          },
-          {
-            text: 'jaune',
-            value: 'yellow'
-          },
-          {
-            text: 'vert',
-            value: 'green'
-          },
-          {
-            text: 'cyan',
-            value: 'cyan'
-          },
-          {
-            text: 'bleu',
-            value: 'blue'
-          },
-          {
-            text: 'violet',
-            value: 'purple'
-          },
-          {
-            text: 'rose',
-            value: 'pink'
-          },
-        ]
-      }
-    ],
-    cssClass: 'picker-hours',
-    mode: 'ios',
+      icon: 'close',
+      role: 'cancel',
+      handler: () => {}
     });
-    picker.present();
+    const actionSheet = await this.actionSheetController.create({
+      buttons
+    });
+    await actionSheet.present();
   }
 
   updateActorData(actorId: string, data: any) {

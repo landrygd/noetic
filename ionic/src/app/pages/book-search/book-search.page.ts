@@ -13,20 +13,18 @@ import { BookService } from 'src/app/services/book.service';
 export class BookSearchPage implements OnInit {
 
   @ViewChild('searchBar', { read: IonSearchbar, static: true}) searchBar: IonSearchbar;
-  @ViewChild('loadingCardByNameView', { read: ElementRef, static: true}) loadingCardByNameView: ElementRef;
 
   filter = '';
 
   resultsByName: Observable<any>;
   resultsByTag: Observable<any>;
-  resultsByNameSub: Subscription;
-  resultsByTagSub: Subscription;
+  resultsByNameSub: Subscription = new Subscription();
+  resultsByTagSub: Subscription = new Subscription();
 
 
   books: any[] = [];
 
-  loadingByName = true;
-  loadingByTag = true;
+  loading = true;
 
   constructor(
     public bookService: BookService,
@@ -39,44 +37,38 @@ export class BookSearchPage implements OnInit {
     setTimeout(() => this.searchBar.setFocus(), 200);
   }
 
-  search() {
-    this.searchByName();
+  async search() {
+    let books = [];
+    await this.searchByName().then((val) => books = books.concat(val));
+    await this.searchByTag().then((val) => books = books.concat(val));
+    if (JSON.stringify(this.books) !== JSON.stringify(books)) {
+      this.books = books;
+    }
+    this.loading = false;
   }
 
-  searchByName() {
-    if (this.resultsByNameSub) {
-      this.resultsByNameSub.unsubscribe();
-    }
-    this.resultsByName = this.bookService.searchByName(this.filter);
-    this.resultsByNameSub = this.resultsByName.subscribe((val) => {
-      if (JSON.stringify(this.books) !== JSON.stringify(val)) {
-        this.books = val;
+  searchByName(): Promise<any> {
+    return new Promise(res => {
+      if (!this.resultsByNameSub.closed) {
+        this.resultsByNameSub.unsubscribe();
       }
-      this.loadingByName = false;
+      this.resultsByName = this.bookService.searchByName(this.filter);
+      this.resultsByNameSub = this.resultsByName.subscribe((val) => {
+          res(val);
+      });
     });
-    setTimeout(() => {
-      if (this.loadingByName) {
-        this.animation.fadeIn(this.loadingCardByNameView);
-      }
-    }, 500);
   }
 
-  searchByTag() {
-    if (this.resultsByNameSub) {
-      this.resultsByNameSub.unsubscribe();
-    }
-    this.resultsByTag = this.bookService.searchByTag(this.filter);
-    this.resultsByTagSub = this.resultsByTag.subscribe((val) => {
-      if (JSON.stringify(this.books) !== JSON.stringify(val)) {
-        this.books = val;
+  searchByTag(): Promise<any> {
+    return new Promise(res => {
+      if (!this.resultsByTagSub.closed) {
+        this.resultsByTagSub.unsubscribe();
       }
-      this.loadingByTag = false;
+      this.resultsByTag = this.bookService.searchByTag(this.filter);
+      this.resultsByTagSub = this.resultsByTag.subscribe((val) => {
+          res(val);
+      });
     });
-    setTimeout(() => {
-      if (this.loadingByTag) {
-        // this.animation.fadeIn(this.loadingCard);
-      }
-    }, 500);
   }
 
   cancel() {

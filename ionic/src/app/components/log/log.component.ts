@@ -19,6 +19,7 @@ export class LogComponent implements OnInit {
   @Input() edit = false;
   @Input() speed = 200; // CPS Carractères Par Seconde
   @Input() typing = false;
+  @Input() variables = {};
 
   @ViewChild('ref', { read: ElementRef, static: true}) ref: ElementRef;
 
@@ -26,6 +27,7 @@ export class LogComponent implements OnInit {
   @Output() scroll = new EventEmitter<void>();
 
   actorId: string;
+  variablesJSON: any;
 
   color = 'primary';
   msg = '';
@@ -46,6 +48,7 @@ export class LogComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.variablesJSON = this.variables;
     if (this.log.hasOwnProperty('actor')) {
       this.actorId = this.log.actor;
     }

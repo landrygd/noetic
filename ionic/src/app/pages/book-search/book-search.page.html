@@ -1,54 +1,46 @@
 <ion-header>
   <ion-searchbar
-      [(ngModel)]="filter" 
-      placeholder="Chercher une histoire" 
-      (ionChange)="search()" 
-      [debounce]="250"
-      showCancelButton="always"
-      searchIcon="search"
-      (ionCancel)="cancel()"
-      #searchBar
-      ></ion-searchbar>
+    mode="ios"
+    [(ngModel)]="filter" 
+    placeholder="Chercher une histoire" 
+    (ionChange)="search()" 
+    [debounce]="250"
+    showCancelButton="always"
+    searchIcon="search"
+    (ionCancel)="cancel()"
+    #searchBar
+    ></ion-searchbar>
 </ion-header>
 
 <ion-content fullscreen>
   <div *ngIf="filter.length !== 0; else nothing">
-  <!-- <ion-item *ngIf="curCategory !== 'undefined'">
-    <ion-button (click)="clearSearch()" expand="block" fill="clear" shape="round" slot="start">
-      <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
-    </ion-button>
-    <ion-label>Catégorie {{curCategory}}</ion-label>
-  </ion-item> -->
-  <ion-list>
-    <div *ngIf="!loadingByName && books.length !== 0">
-      <h1 class="ion-text-center ion-no-margin">Livres</h1>
-      <ion-slides [options]="slides.basicOpts" class="slides" class="ion-no-margin" *ngIf="books.length !== 0">
-        <ion-slide *ngFor="let book of books">
-          <app-card-book [bookJSON]="book"></app-card-book>
-        </ion-slide>
-      </ion-slides>
+    <div *ngIf="!loading && books.length !== 0; else noresult">
+      <ion-list style="height: 100vh" >
+        <div>
+          <ion-grid fixed>
+            <ion-row>
+              <ion-col *ngFor="let book of books" size="auto">
+                <app-card-book [bookJSON]="book"></app-card-book>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+      </ion-list>
     </div>
-    <div *ngIf="loadingByName" style="width: 100%; height: 100%;" #loadingCardByNameView>
-      <h1 class="ion-text-center ion-no-margin">Livres</h1>
-      <ion-slides [options]="slides.basicOpts" class="ion-no-margin">
-        <ion-slide *ngFor="let i of [0,0,0]">
-          <ion-card style="height: 300px;width: 180px;" class="ion-no-margin">
-            <ion-skeleton-text animated style="height: 100%;width: 100%;" class="ion-no-margin"></ion-skeleton-text>
-          </ion-card>
-        </ion-slide>
-      </ion-slides>
-    </div>
-    <div style="width: 100%; height: 100vh;" class="center" *ngIf="books.length === 0">
-      <ion-text color="medium">
-        <h2>Pas de résultat =(</h2>
-      </ion-text>
-    </div>
-  </ion-list>
   </div>
+  
   <ng-template #nothing>
     <div style="width: 100%; height: 100%;" class="center">
       <ion-text color="medium">
         <h2><ion-icon name="search"></ion-icon>  Recherche vide</h2>
+      </ion-text>
+    </div>
+  </ng-template>
+
+  <ng-template #noresult>
+    <div style="width: 100%; height: 100%;" class="center">
+      <ion-text color="medium">
+        <h2><ion-icon name="search"></ion-icon>  Pas de résultat</h2>
       </ion-text>
     </div>
   </ng-template>

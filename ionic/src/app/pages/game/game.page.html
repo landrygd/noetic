@@ -2,8 +2,15 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button (click)="exit()">
-        <ion-icon slot="start" name="exit"></ion-icon>
-        Quitter
+        <ion-icon slot="icon-only" name="exit"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="save()">
+        <ion-icon slot="icon-only" name="save"></ion-icon>
+      </ion-button>
+      <ion-button (click)="options()">
+        <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -13,27 +20,18 @@
   <div style="height: 100vh;"></div>
   <div>
     <ion-grid fixed *ngFor="let log of logs; index as i" class="ion-no-margin">
-      <app-log [log]="log" [edit]="false" [index]="i" [speed]="speed" typing="true" (action)="action($event)" (scroll)="scrollToBottom()"></app-log>
+      <app-log [variables]="variables" [log]="log" [edit]="false" [index]="i" [speed]="speed" typing="true" (action)="action($event)" (scroll)="scrollToBottom()"></app-log>
     </ion-grid>
   </div>
 </ion-content>
 
 <ion-footer>
-  <!-- <ion-toolbar>
-    <ion-button (click)="anwserList()" expand="block" fill="solid" shape="round" *ngIf="question">
-      Répondre
+  <ion-toolbar>
+    <ion-button (click)="askQuestion()" expand="block" fill="solid" shape="round" *ngIf="question">
+      Choisir une réponse
     </ion-button>
-  </ion-toolbar> -->
-  
-  <!-- <ion-toolbar>
-    <ion-textarea [disabled]='textarea' rows="1" [(ngModel)]='text' placeholder="Enter a message..." (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
-    <ion-buttons slot="end">
-      <ion-button (click)="plus()" expand="block" fill="clear" shape="round" color="medium">
-        <ion-icon slot="icon-only" name="add" ></ion-icon>
-      </ion-button>
-      <ion-button (click)="send()" expand="block" fill="clear" shape="round" color="primary">
-        <ion-icon slot="icon-only" name="send" ></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar> -->
+    <ion-button (click)="askInput()" expand="block" fill="solid" shape="round" *ngIf="input">
+      Entrer du texte
+    </ion-button>
+  </ion-toolbar>
 </ion-footer>

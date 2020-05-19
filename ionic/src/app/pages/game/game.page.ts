@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NavController, AlertController, ActionSheetController, IonContent, ToastController } from '@ionic/angular';
+import { NavController, AlertController, ActionSheetController, IonContent } from '@ionic/angular';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Subscription } from 'rxjs';
-import { Animation, AnimationController } from '@ionic/angular';
 import { BookService } from 'src/app/services/book.service';
 import { ChatService } from 'src/app/services/book/chat.service';
 import { PopupService } from 'src/app/services/popup.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-game',
@@ -16,7 +16,7 @@ export class GamePage implements OnInit {
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
 
-  id: string;
+  bookId: string;
   sub: Subscription;
   line = -1;
   chat: any;
@@ -29,7 +29,9 @@ export class GamePage implements OnInit {
   labels: any;
   exited = false;
   ended = false;
+  paused = false;
   waitTime = 500;
+  input = false;
 
   avatar = undefined;
 
@@ -39,9 +41,21 @@ export class GamePage implements OnInit {
   msg: string;
   command: string;
   opts: any[] = [];
-  arg: string;
+  arg: any;
+  args: any[];
+
+  answers: string[];
+
+  variables: any = {};
 
   cptChatLabel: any = {};
+
+  nomVar: any;
+  nomVar1: any;
+  nomVar2: any;
+  varValue: any;
+  varValue1: any;
+  varValue2: any;
 
   constructor(
     public bookService: BookService,
@@ -50,17 +64,36 @@ export class GamePage implements OnInit {
     public database: AngularFireDatabase,
     public alertCtrl: AlertController,
     public actionSheetController: ActionSheetController,
-    private popupService: PopupService
+    private popupService: PopupService,
+    private userService: UserService,
+    private alertController: AlertController
     ) {
     }
 
   ngOnInit() {
-    this.id = this.bookService.curBookId;
-    this.playChat(this.bookService.curChatId);
+    this.play();
   }
 
-  playChat(chatName = 'main') {
-    this.line = 0;
+  async play() {
+    this.input = false;
+    this.question = false;
+    this.paused = false;
+    this.exited = false;
+    this.chatLogs = [];
+    this.bookId = this.bookService.curBookId;
+    if (this.userService.haveSave(this.bookId)) {
+      await this.load();
+      console.log(this.chatId, this.line, this.variables);
+      this.playChat(this.chatId, this.line);
+    } else {
+      this.line = 0;
+      this.variables = {};
+      this.playChat();
+    }
+  }
+
+  async playChat(chatName = 'main', line = 0) {
+    this.line = line;
     this.chatService.getChat(chatName);
     this.chat = this.chatService.getChat(chatName);
     this.chatLogs = this.chat.logs;
@@ -68,7 +101,7 @@ export class GamePage implements OnInit {
     this.playLog();
   }
 
-  playLog() {
+  async playLog() {
     if (!this.exited) {
       if (this.line < this.chatLogs.length) {
         let gochat = '';
@@ -80,8 +113,13 @@ export class GamePage implements OnInit {
           time = -this.waitTime;
           if (this.msg.charAt(1) !== '/') {
             this.getCommandValues(this.msg);
+            this.nomVar = this.getVariableName(this.args[0]);
+            this.nomVar1 = this.getVariableName(this.args[1]);
+            this.nomVar2 = this.getVariableName(this.args[2]);
+            this.varValue = this.toVariable(this.args[0]);
+            this.varValue1 = this.toVariable(this.args[1]);
+            this.varValue2 = this.toVariable(this.args[2]);
             switch (this.command) {
-              case 'g':
               case 'go':
                 if (this.opts.includes('chat')) {
                   if (this.chatService.haveChat(this.arg)) {
@@ -106,10 +144,88 @@ export class GamePage implements OnInit {
                 this.logs.push({msg: '/end'});
                 break;
               case 'alert':
-                // TO DO
+                await this.popupService.alert(this.arg);
+                await this.popupService.alerter.onDidDismiss();
+                break;
+              case 'wait':
+                await this.wait(Number(this.arg));
                 break;
               case 'music':
                 // TO DO
+                break;
+              case 'input':
+                this.paused = true;
+                this.input = true;
+                break;
+              case 'question':
+                this.paused = true;
+                this.answers = this.arg.split(';');
+                this.question = true;
+                break;
+              case 'if':
+                const endVal = this.args.slice(2, this.args.length).join(' ');
+                if (['=', '==', '==='].includes(this.varValue1)) {
+                  if (this.varValue !== endVal) {
+                    line = this.getNextElse();
+                  }
+                } else if (this.varValue1 === '<') {
+                  if (this.varValue >= endVal) {
+                    line = this.getNextElse();
+                  }
+                } else if (this.varValue1 === '<=') {
+                  if (this.varValue > endVal) {
+                    line = this.getNextElse();
+                  }
+                } else if (this.varValue1 === '>') {
+                  if (this.varValue <= endVal) {
+                    line = this.getNextElse();
+                  }
+                } else if (this.varValue1 === '>=') {
+                  if (this.varValue < endVal) {
+                    line = this.getNextElse();
+                  }
+                } else if (this.varValue1 === ['!=', '!==']) {
+                  if (this.varValue === endVal) {
+                    line = this.getNextElse();
+                  }
+                } else {
+                  line = this.getNextElse();
+                }
+                break;
+              case 'set':
+                this.variables[this.nomVar] = this.varValue1;
+                break;
+              case 'add':
+                if (this.haveVariable(this.nomVar)) {
+                  this.variables[this.nomVar] = Number(this.variables[this.nomVar]) + Number(this.varValue1);
+              }
+                break;
+              case 'sub':
+                if (this.haveVariable(this.nomVar)) {
+                    this.variables[this.nomVar] = Number(this.variables[this.nomVar]) - Number(this.varValue1);
+                }
+                break;
+              case 'div':
+                if (this.haveVariable(this.nomVar)) {
+                  this.variables[this.nomVar] = Number(this.variables[this.nomVar]) / Number(this.varValue1);
+              }
+                break;
+              case 'mul':
+                if (this.haveVariable(this.nomVar)) {
+                  this.variables[this.nomVar] = Number(this.variables[this.nomVar]) * Number(this.varValue1);
+              }
+                break;
+              case 'random':
+                let min: number;
+                let max: number;
+                if (this.varValue2) {
+                  min = Math.floor(Number(this.varValue1));
+                  max = Math.floor(Number(this.varValue2)) + 1;
+                } else {
+                  min = 0;
+                  max = Math.floor(Number(this.varValue1)) + 1;
+                }
+                this.variables[this.nomVar] = Math.floor(Math.random() * max) + min;
                 break;
               default:
             }
@@ -118,21 +234,36 @@ export class GamePage implements OnInit {
           this.logs.push(this.curLog);
           time = this.curLog.msg.length * 50;
         }
-        if (gochat === '') {
-          setTimeout(() => {
-            this.line = line;
-            this.playLog();
-          }, time + this.waitTime);
-        } else {
-          setTimeout(() => {
-            this.playChat(gochat);
-          }, time + this.waitTime);
+        if (!this.paused) {
+          if (gochat === '') {
+            setTimeout(() => {
+              this.line = line;
+              this.playLog();
+            }, time + this.waitTime);
+          } else {
+            setTimeout(() => {
+              this.playChat(gochat);
+            }, time + this.waitTime);
+          }
         }
       } else if (!this.ended) {
         setTimeout(() => {
           this.end();
         }, this.waitTime);
       }
+    }
+  }
+
+  haveVariable(varValue) {
+    return this.variables.hasOwnProperty(varValue);
+  }
+
+  getVariableName(val) {
+    if (val) {
+      if (val.charAt(0) === '$') {
+        return val.substring(1, val.length);
+      }
+      return val;
     }
   }
 
@@ -179,19 +310,30 @@ export class GamePage implements OnInit {
     this.command = firstWord.slice(1);
     let opt = true;
     this.arg = '';
-    for (const word of words) {
-      if (word.charAt(0) === '-' && opt) {
-        this.opts.push(word.slice(1));
-      } else {
-        if (opt) {
-          opt = false;
-          this.arg = word;
+    this.args = [];
+    for (let word of words) {
+      word = word.trim();
+      if (word !== '') {
+        if (word.charAt(0) === '-' && opt) {
+          this.opts.push(word.slice(1));
         } else {
-          this.arg += ' ' + word;
+          if (opt) {
+            opt = false;
+            this.args.push(word);
+          } else {
+            this.args.push(word);
+          }
         }
       }
     }
+    this.arg = this.args.join(' ');
     return;
+  }
+
+  resume() {
+    this.paused = false;
+    this.line += 1;
+    this.playLog();
   }
 
   getLabels() {
@@ -200,7 +342,7 @@ export class GamePage implements OnInit {
       const log = this.chatLogs[i];
       const command: any[] = log.msg.split(' ');
       const labelCommand = command.shift();
-      if (labelCommand === '/label' || labelCommand === '/l') {
+      if (labelCommand === '/label') {
         const labelName = command.join(' ');
         res[labelName] = i;
       }
@@ -208,26 +350,12 @@ export class GamePage implements OnInit {
     return res;
   }
 
-  // labelCheck(nb): boolean {
-  //   const chat = this.game.chat[this.chatId];
-  //   if (chat.hasOwnProperty('time')) {
-  //     if (chat.time.hasOwnProperty('label' + nb)) {
-  //       const labelTime = new Date(chat.time['label' + nb].time).getTime();
-  //       if ((new Date().getTime() - labelTime) < 1000) {
-  //         return false;
-  //       }
-  //     }
-  //   }
-  //   this.database.object('games/' + this.id + '/chat/' + this.chatId + '/time/label' + nb).set({time: Date().toString()});
-  //   return true;
-  // }
-
   answerInit(count) {
     const res = [];
     for (let i = 0; i < count; i++) {
       res.push(0);
     }
-    this.database.object('games/' + this.id + '/chat/' + this.bookService.curChatId).update({answers: res});
+    this.database.object('games/' + this.bookId + '/chat/' + this.bookService.curChatId).update({answers: res});
   }
 
   send() {
@@ -236,6 +364,23 @@ export class GamePage implements OnInit {
 
   plus() {
 
+  }
+
+  save() {
+    const save = {
+      line: this.line,
+      chatId: this.chatId,
+      variables: this.variables,
+      lastChanges: Date.now()
+    };
+    this.userService.addSave(this.bookId, save);
+  }
+
+  async load() {
+    const save = await this.userService.loadSave(this.bookId);
+    this.line = save.line;
+    this.chatId = save.chatId;
+    this.variables = save.variables;
   }
 
   action(name) {
@@ -269,53 +414,128 @@ export class GamePage implements OnInit {
     this.navCtrl.back();
   }
 
-  // async alertLoop() {
-  //   const alert = await this.alertCtrl.create({
-  //     header: 'Trop rapide!',
-  //     message: 'Pour les raisons de sécurités, les boucles (label/go) infinies et trop rapides sont interdites<br>' +
-  //     '<strong>Veuillez verifier que vos labels et go vers labels ne sont pas trop proches!</strong>',
-  //     buttons: [
-  //       {
-  //         text: 'Sortir',
-  //         role: 'cancel',
-  //         cssClass: 'secondary',
-  //         handler: () => {
-  //           this.exit();
-  //         }
-  //       }, {
-  //         text: 'Continuer quand même',
-  //         handler: () => {
-  //           this.line
-  //         }
-  //       }
-  //     ]
-  //   });
-  //   await alert.present();
-  // }
+  answer(answer: string) {
+    this.variables.answer = answer.trim();
+    this.question = false;
+    this.resume();
+  }
 
-  // answer(index) {
-  //   const answers = this.game.getAnswersList();
-  //   answers.splice(index, 1, answers[index] + 1);
-  //   this.database.object('games/' + this.id + '/chat/' + this.game.chatId).update({answers});
-  //   this.question = false;
-  // }
+  toVariable(val: string) {
+    if (val !== undefined) {
+      if (val.charAt(0) === '$') {
+        val = this.getVariableName(val);
+        if (this.haveVariable(val)) {
+          return this.variables[val];
+        }
+      }
+    }
+    return val;
+  }
 
-  // async anwserList() {
-  //   const buttons = [];
-  //   const answers = this.game.getAnswers();
-  //   for (let i = 0; i < answers.length; i++) {
-  //     const answer = answers[i];
-  //     buttons.push({
-  //       text: answer.msg,
-  //       handler: () => {
-  //         this.answer(i);
-  //       }
-  //     });
-  //   }
-  //   const actionSheet = await this.actionSheetController.create({
-  //     header: 'Choose your answer',
-  //     buttons,
-  //   });
-  //   await actionSheet.present();
-  // }
+  async askQuestion() {
+    const buttons = [];
+    for (const answer of this.answers) {
+      buttons.push({
+        text: this.toVariable(answer),
+        handler: () => {
+          this.answer(this.toVariable(answer));
+        }
+      });
+    }
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Choisissez votre réponse',
+      buttons,
+    });
+    await actionSheet.present();
+  }
+
+  wait(second: number) {
+    return new Promise(res => setTimeout(() => res(), second * 1000));
+  }
+
+  getNextElse() {
+    for (let i = this.line; i < this.chatLogs.length; i++) {
+      const log = this.chatLogs[i];
+      if (log.msg === '/else') {
+        return i;
+      }
+    }
+    return this.chatLogs.length;
+  }
+
+  async askInput(): Promise<any> {
+    let answered = false;
+    let type = 'text';
+    if (this.opts.includes('type')) {
+      type = this.nomVar1;
+    }
+    await this.popupService.alertObj({
+      inputs: [{
+        name: 'res',
+        placeholder: this.nomVar,
+        type,
+      }],
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Ok',
+          handler: (data) => {
+            this.variables[this.nomVar] = data.res;
+            answered = true;
+          }
+        }
+      ]
+    });
+    await this.popupService.alerter.onDidDismiss();
+    if (answered) {
+      this.input = false;
+      this.resume();
+    }
+  }
+
+  async options() {
+    const actionSheet = await this.actionSheetController.create({
+      buttons: [{
+        text: 'Recommencer le livre',
+        role: 'destructive',
+        icon: 'refresh',
+        handler: () => {
+          this.alertRestart();
+        }
+      }, {
+        text: 'Annuler',
+        icon: 'close',
+        role: 'cancel',
+      }]
+    });
+    await actionSheet.present();
+  }
+
+  async alertRestart() {
+    const alert = await this.alertController.create({
+      header: 'Attention!',
+      message: 'En recommençant ce livre, toutes vos sauvegardes seront perdues définitivement!',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Confirmer',
+          handler: () => {
+            this.restart();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async restart() {
+    await this.userService.deleteSave(this.bookId);
+    this.play();
+  }
 }
