@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      Choisir un arrière plan
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="auto" *ngFor="let wallpaper of wallpapers">
+        <div [style.height.px]="200" [style.width.px]="112.5" class="card">
+          <ion-card button (click)="choose(wallpaper.name)" class="card">
+            <img height="200px" [src]="wallpaper.url" [alt]="wallpaper.name" *ngIf="wallpaper.name !== 'nothing'">
+            <ion-card class="ion-no-margin header">
+              <div class="center">
+                <p>{{wallpaper.name}}</p><br>
+              </div>
+            </ion-card>
+          </ion-card>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+

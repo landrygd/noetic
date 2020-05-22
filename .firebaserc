@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "noetic-app"
+  },
+  "targets": {
+    "noetic-app": {
+      "hosting": {
+        "app": [
+          "noetic-app"
+        ],
+        "www": [
+          "noetic-home"
+        ]
+      }
+    }
   }
 }

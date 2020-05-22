@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Network } from '@ionic-native/network/ngx';
-import { Platform, NavController, ModalController } from '@ionic/angular';
-import { BehaviorSubject, fromEvent } from 'rxjs';
+import { Platform, NavController } from '@ionic/angular';
+import { BehaviorSubject } from 'rxjs';
 import { PopupService } from './popup.service';
 
 export enum ConnectionStatus {
@@ -24,7 +24,6 @@ export class NetworkService {
     private plt: Platform,
     private network: Network,
     private navCtrl: NavController,
-    private modalController: ModalController,
     private popupService: PopupService
     ) {
     this.plt.ready().then((p) => {
@@ -49,16 +48,17 @@ export class NetworkService {
           this.online();
         }
       });
-    } else {
-      const status = navigator.onLine ? ConnectionStatus.Online : ConnectionStatus.Offline;
-      this.status.next(status);
-      fromEvent(window, 'offline').subscribe(() => {
-        this.updateOnlineStatus();
-      });
-      fromEvent(window, 'online').subscribe(() => {
-        this.updateOnlineStatus();
-      });
     }
+    // } else {
+    //   const status = navigator.onLine ? ConnectionStatus.Online : ConnectionStatus.Offline;
+    //   this.status.next(status);
+    //   fromEvent(window, 'offline').subscribe(() => {
+    //     this.updateOnlineStatus();
+    //   });
+    //   fromEvent(window, 'online').subscribe(() => {
+    //     this.updateOnlineStatus();
+    //   });
+    // }
   }
 
   updateNetworkStatus(status: ConnectionStatus) {

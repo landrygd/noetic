@@ -14,7 +14,12 @@ export class PopupService {
     private alertController: AlertController,
     private toastController: ToastController,
     private loadingController: LoadingController
-    ) { }
+    ) {}
+
+  async init() {
+    this.loader = await this.loadingController.create({});
+    this.alerter = await this.alertController.create({});
+  }
 
   async toast(msg: string, pos = 'bottom') {
     if (pos === 'bottom') {
@@ -71,5 +76,6 @@ export class PopupService {
       buttons: ['Mince...']
     });
     await alert.present();
+    this.loader.dismiss();
   }
 }

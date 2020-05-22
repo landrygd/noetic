@@ -89,6 +89,10 @@ const routes: Routes = [
   {
     path: 'privacy',
     loadChildren: () => import('./pages/privacy/privacy.module').then( m => m.PrivacyPageModule)
+  },
+  {
+    path: 'chart',
+    loadChildren: () => import('./pages/chart/chart.module').then( m => m.ChartPageModule)
   }
 ];
 @NgModule({

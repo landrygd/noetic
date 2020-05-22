@@ -1,4 +1,4 @@
-<ion-header *ngIf="loaded">
+<ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
@@ -15,7 +15,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="loaded">
+<ion-content fullscreen #bg>
   <ion-reorder-group (ionItemReorder)="doReorder($event)" disabled="false">
     <ion-grid fixed class="ion-no-padding ion-no-margin" *ngFor="let log of chatService.chatLogs; index as i">
       <app-log  class="ion-no-margin" [log]="log" [index]="i" [edit]="true" [selected]="isLogSelected(i)" (click)="select(i)" button ></app-log>
@@ -23,7 +23,7 @@
   </ion-reorder-group>
 </ion-content>
 
-<ion-footer *ngIf="loaded">
+<ion-footer>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-fab-button size="small" (click)="newActor()" class="avatarButton">

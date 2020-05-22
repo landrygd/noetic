@@ -128,15 +128,41 @@ export class CommandPipe implements PipeTransform {
             break;
           case 'sound':
             icon = 'volume-medium';
-            res = 'Jouer le son ' + argChip;
+            res = 'Jouer le son ' + this.toChip(this.arg, 'volume-medium');
+            break;
+          case 'ambiance':
+            if (this.opts.includes('stop')) {
+              icon = 'volume-mute';
+              if (this.args.length !== 0) {
+                res = 'Arêter l\'ambiance' + this.toChip(this.args[0], 'ear');
+              } else {
+                res = 'Arêter toutes les ambiances';
+              }
+            } else {
+              icon = 'ear';
+              res = 'Jouer l\'ambiance ' + this.toChip(this.arg, 'ear');
+            }
             break;
           case 'alert':
             icon = 'alert';
             res = 'Monter une alerte avec le message: "' + this.arg + '"';
             break;
           case 'music':
-            icon = 'musical-notes';
-            res = 'Jouer la musique ' + argChip;
+            if (this.opts.includes('stop')) {
+              icon = 'volume-mute';
+              res = 'Arêter la musique';
+            } else {
+              icon = 'musical-notes';
+              res = 'Jouer la musique ' + this.toChip(this.arg, 'musical-notes');
+            }
+            break;
+          case 'control':
+            icon = 'people';
+            res = 'Contrôler le personnage ' + this.arg;
+            break;
+          case 'end':
+            icon = 'flag';
+            res = 'Fin de l\'histoire';
             break;
           default:
             res = 'commande inconnue';
@@ -147,7 +173,7 @@ export class CommandPipe implements PipeTransform {
     return res;
   }
 
-  toChip(text: string, icon: string) {
+  toChip(text: string, icon: string = '') {
     return '<ion-chip><ion-icon name="' + icon + '"></ion-icon><ion-label>' + text + '</ion-label></ion-chip>';
   }
 

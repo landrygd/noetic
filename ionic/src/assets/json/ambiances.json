@@ -1,0 +1,32 @@
+{
+  "nothing": {
+    "url": "",
+    "category": "",
+    "attribution": ""
+  },
+  "fire": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Ffire.wav?alt=media&token=34e18c51-c79f-4401-82f7-25cd19c7da19",
+    "category": "nature",
+    "attribution": "BBC Sound Effect Library"
+  },
+  "jungle": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Fjungle.wav?alt=media&token=5c74eca1-7966-4fa8-8a3d-de2b9c987a6f",
+    "category": "nature",
+    "attribution": "BBC Sound Effect Library"
+  },
+  "sea": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Fsea.wav?alt=media&token=316563c9-40ab-473c-95a7-df48c557d9d9",
+    "category": "nature",
+    "attribution": "BBC Sound Effect Library"
+  },
+  "streat": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fcity%2Fstreet.wav?alt=media&token=27bcb61c-64a9-429f-b4ff-dcb1dac66a2e",
+    "category": "city",
+    "attribution": "BBC Sound Effect Library"
+  },
+  "rain": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fweather%2Frain.wav?alt=media&token=df10c9e7-8cf3-42bb-b898-4dc6ed5b72d0",
+    "category": "weather",
+    "attribution": "BBC Sound Effect Library"
+  }
+}

@@ -5,13 +5,16 @@
         <ion-buttons slot="start">
           <ion-back-button (click)="back()" defaultHref="tabs/home" *ngIf="!tabs" class="headerButton"></ion-back-button>
           <ion-button (click)="notif()" fill="clear" shape="round" *ngIf="ownProfile && tabs">
-            <ion-icon slot="icon-only" name="notifications" class="headerButton"></ion-icon>
+            <ion-icon slot="start" name="notifications" class="headerButton"></ion-icon>
             <ion-badge color="danger" mode="ios" *ngIf="userService.userNotifs.length > 0">{{userService.userNotifs.length}}</ion-badge>
           </ion-button>   
         </ion-buttons>
         <ion-buttons slot="end">
           <ion-button (click)="options()" fill="clear" shape="round" *ngIf="ownProfile && tabs">
             <ion-icon slot="icon-only" name="ellipsis-vertical" class="headerButton"></ion-icon>
+          </ion-button>
+          <ion-button (click)="report()" fill="clear" shape="round" *ngIf="!ownProfile || !tabs">
+            <ion-icon slot="icon-only" name="flag" class="headerButton"></ion-icon>
           </ion-button>
           <ion-button (click)="share()" fill="clear" shape="round" *ngIf="!ownProfile || !tabs" >
             <ion-icon slot="icon-only" name="share-social" class="headerButton"></ion-icon>
@@ -79,6 +82,28 @@
           </ion-slide>
         </ion-slides>
       </div>
+    
+      <h2 class="section" *ngIf="userService.list.length !== 0">
+        <ion-icon name="list"></ion-icon>
+        Ma liste
+      </h2>
+    
+      <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.list.length !== 0">
+        <ion-slide *ngFor="let bookId of userService.list">
+          <app-card-book [bookId]="bookId"></app-card-book>
+        </ion-slide>
+      </ion-slides>
+    
+      <h2 class="section" *ngIf="userService.followList.length !== 0">
+        <ion-icon name="people"></ion-icon>
+        Mes suivies
+      </h2>
+
+      <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.followList.length !== 0">
+        <ion-slide *ngFor="let book of userService.followList">
+          <app-card-book [bookJSON]="book"></app-card-book>
+        </ion-slide>
+      </ion-slides>
     </div>
     <div *ngIf="!ownProfile">
       <div *ngIf="userService.curUserBooks.length !== 0">

@@ -20,6 +20,7 @@ export class LogComponent implements OnInit {
   @Input() speed = 200; // CPS Carractères Par Seconde
   @Input() typing = false;
   @Input() variables = {};
+  @Input() actors = {};
 
   @ViewChild('ref', { read: ElementRef, static: true}) ref: ElementRef;
 
@@ -28,6 +29,7 @@ export class LogComponent implements OnInit {
 
   actorId: string;
   variablesJSON: any;
+  actorsJSON: any;
 
   color = 'primary';
   msg = '';
@@ -49,6 +51,7 @@ export class LogComponent implements OnInit {
 
   ngOnInit() {
     this.variablesJSON = this.variables;
+    this.actorsJSON = this.actors;
     if (this.log.hasOwnProperty('actor')) {
       this.actorId = this.log.actor;
     }
@@ -94,5 +97,16 @@ export class LogComponent implements OnInit {
     } else {
       return 'light';
     }
+  }
+
+  isOwnPlayer(actor): boolean {
+    return this.actorService.isOwnActor(actor.id);
+  }
+
+  getSlot(actor) {
+    if (this.isOwnPlayer(actor)) {
+      return 'end';
+    }
+    return 'start';
   }
 }

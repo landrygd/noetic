@@ -1,0 +1,57 @@
+{
+  "nothing": {
+    "url": "",
+    "category": "",
+    "attribution": ""
+  },
+  "bird": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fanimals%2Fbird.wav?alt=media&token=9a8d7a5b-cfdb-4a3f-9066-315a21d9c13b",
+    "category": "animals",
+    "attribution": "By Imphenzi"
+  },
+  "cow": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fanimals%2Fcow.wav?alt=media&token=7dd57cb5-5371-4c7b-99ee-6d54f8ddfd01",
+    "category": "animals",
+    "attribution": "By Imphenzi"
+  },
+  "crickets": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fanimals%2Fcrickets.wav?alt=media&token=5d7ef84d-52ae-4905-9b04-e21d8fe4b2cc",
+    "category": "animals",
+    "attribution": "By Imphenzi"
+  },
+  "dog": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fanimals%2Fdog.wav?alt=media&token=cdf4910b-234f-49c2-899e-750c9ff2fd1f",
+    "category": "animals",
+    "attribution": "By Imphenzi"
+  },
+  "duck": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fanimals%2Fduck.wav?alt=media&token=67c1efc9-0821-47cf-9b01-0c26180ccb92",
+    "category": "animals",
+    "attribution": "By Imphenzi"
+  },
+  "horse": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fanimals%2Fhorse.wav?alt=media&token=606b7344-e953-4284-9330-c0f956787e43",
+    "category": "animals",
+    "attribution": "By Imphenzi"
+  },
+  "pig": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fanimals%2Fpig.wav?alt=media&token=3ea608d4-6b55-452f-8c47-ba1c50971f1f",
+    "category": "animals",
+    "attribution": "By Imphenzi"
+  },
+  "pigeon": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fanimals%2Fpigeon.wav?alt=media&token=5abf413f-bba4-49e7-9b66-c828533ad6c5",
+    "category": "animals",
+    "attribution": "By Imphenzi"
+  },
+  "rooster": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fanimals%2Frooster.wav?alt=media&token=571604ec-4389-4b31-b59f-aa88ceafaea9",
+    "category": "animals",
+    "attribution": "By Imphenzi"
+  },
+  "tiger": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fanimals%2Ftiger.wav?alt=media&token=5d2f966f-9d44-4e36-ad34-cb7d1b363fbb",
+    "category": "animals",
+    "attribution": "By Imphenzi"
+  }
+}

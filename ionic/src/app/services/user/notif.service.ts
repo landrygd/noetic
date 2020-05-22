@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { BookService } from '../book.service';
 import { LocalNotifications, ELocalNotificationTriggerUnit } from '@ionic-native/local-notifications/ngx';
+import { UserService } from '../user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class NotifService {
   constructor(
     private firestore: AngularFirestore,
     private bookService: BookService,
+    private userService: UserService,
     private localNotifications: LocalNotifications
   ) {
     // this.userNotifs = this.firestore.collection('users').doc(this.userId).collection('notifs');
@@ -32,11 +34,11 @@ export class NotifService {
   }
 
   eraseNotif(index) {
-    this.firestore.collection('users').doc(this.bookService.userService.userId).collection('notifs').doc(index).delete();
+    this.firestore.collection('users').doc(this.userService.userId).collection('notifs').doc(index).delete();
   }
 
   getNotif() {
-    return this.firestore.collection('users').doc(this.bookService.userService.userId).collection('notifs').valueChanges();
+    return this.firestore.collection('users').doc(this.userService.userId).collection('notifs').valueChanges();
   }
 
   acceptInvitation(userId, bookId) {

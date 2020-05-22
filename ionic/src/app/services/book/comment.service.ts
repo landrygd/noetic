@@ -33,6 +33,8 @@ export class CommentService {
       starsAvg
     });
     this.firestore.collection('books').doc(bookId).collection('comments').doc(this.userService.userId).set(comment);
+    // Enregistrement de la référence dans l'utilisateur
+    this.firestore.collection('users').doc(this.userService.userId).collection('comments').doc(bookId).set({});
   }
 
   answerToComment(bookId, userId, answer) {

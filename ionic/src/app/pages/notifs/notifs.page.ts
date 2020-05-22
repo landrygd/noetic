@@ -34,8 +34,8 @@ export class NotifsPage implements OnInit {
     this.erase(notif.id);
   }
 
-  erase(notifId) {
-    this.notifService.eraseNotif(notifId);
+  erase(notif) {
+    this.notifService.eraseNotif(notif.id);
   }
 
 }

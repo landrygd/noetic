@@ -1,0 +1,29 @@
+.center
+{
+    height: 30px;
+    display: flex!important;
+    align-content: center!important;
+    align-items: center!important;
+    justify-content: center;
+}
+
+p {
+  margin: 0;
+  font-size: 80%;
+  color: white;
+}
+
+.header {
+  position: relative;
+  top: -30px;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.card {
+  margin: 0;
+  height: 200px;
+}
+
+ion-row {
+  justify-content: space-evenly;
+}

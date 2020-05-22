@@ -29,6 +29,7 @@ import { NetworkService } from './services/network.service';
 import { ComponentModule } from './components/component.module';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { MediaService } from './services/media.service';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyDAZRFBAHjrS8Ww03U95mMhX1-AD9rPDGo',
@@ -74,6 +75,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SlidesService,
     ThemeService,
     NetworkService,
+    MediaService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],
   bootstrap: [AppComponent]

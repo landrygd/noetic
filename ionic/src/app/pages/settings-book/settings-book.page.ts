@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, ModalController, ToastController, NavController } from '@ionic/angular';
 import { SearchUserComponent } from 'src/app/components/modals/search-user/search-user.component';
 import { BookService } from 'src/app/services/book.service';
 import { NotifService } from 'src/app/services/user/notif.service';
+import { WallpapersSearchComponent } from 'src/app/components/modals/wallpapers-search/wallpapers-search.component';
+import { PopupService } from 'src/app/services/popup.service';
 
 @Component({
   selector: 'app-settings-book',
@@ -11,11 +13,15 @@ import { NotifService } from 'src/app/services/user/notif.service';
 })
 export class SettingsBookPage implements OnInit {
 
-  constructor(public modalCtrl: ModalController,
-              public alertController: AlertController,
-              public bookService: BookService,
-              private toastController: ToastController,
-              public notifService: NotifService) {}
+  constructor(
+    public modalController: ModalController,
+    public alertController: AlertController,
+    public bookService: BookService,
+    private toastController: ToastController,
+    public notifService: NotifService,
+    public popupService: PopupService,
+    public navController: NavController
+    ) {}
 
   ngOnInit() {
   }
@@ -44,16 +50,34 @@ export class SettingsBookPage implements OnInit {
   async alertPublish() {
     const alert = await this.alertController.create({
       header: 'Publier le livre',
-      message: 'Etes vous sûr de rendre ce livre publique?',
+      message: 'Etes vous sûr de rendre ce livre publique? Son contenu doit respecter les règles de la charte de Noetic',
+      inputs: [
+        {
+          name: 'chart',
+          value: 'chart',
+          type: 'checkbox',
+          label: 'J\'ai respecté la charte',
+        },
+      ],
       buttons: [
         {
           text: 'Non',
           role: 'cancel',
           cssClass: 'secondary'
         }, {
-          text: 'Oui',
+          text: 'Voir la charte',
           handler: () => {
-            this.bookService.publishBook();
+            this.navController.navigateForward('chart');
+          }
+        },
+        {
+          text: 'Oui',
+          handler: (data) => {
+            if (data[0]) {
+              this.bookService.publishBook();
+            } else {
+              this.popupService.alert('Vous devez avoir pris conscience des règles de la charte de Noetic');
+            }
           }
         }
       ]
@@ -81,6 +105,20 @@ export class SettingsBookPage implements OnInit {
     await alert.present();
   }
 
+  async background() {
+    const modal = await this.modalController.create({
+    component: WallpapersSearchComponent,
+    });
+    await modal.present();
+    modal.onDidDismiss()
+    .then((data) => {
+      if (data.data) {
+      const wallpaper = data.data.name;
+      this.bookService.changeWallpaper(this.bookService.curBookId, wallpaper);
+      }
+    });
+  }
+
 
   delete() {
     this.alertDelete();
@@ -95,7 +133,7 @@ export class SettingsBookPage implements OnInit {
   }
 
   async invite() {
-    const modal = await this.modalCtrl.create({
+    const modal = await this.modalController.create({
       component: SearchUserComponent
     });
     modal.onDidDismiss()

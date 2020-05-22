@@ -12,7 +12,9 @@ import { AngularFireStorage } from '@angular/fire/storage';
 export class ActorService {
 
   actors: any[] = [];
+  actorsId: string[] = [];
 
+  ownActor: string;
   actorSub: Subscription;
 
   constructor(
@@ -70,6 +72,9 @@ export class ActorService {
     this.actorSub = this.firestore.collection('/books').doc(this.bookService.curBookId)
                                   .collection('actors').valueChanges().subscribe((val) => {
       this.actors = val;
+      val.forEach((actor) => {
+        this.actorsId.push(actor.id);
+      });
     });
   }
 
@@ -163,7 +168,7 @@ export class ActorService {
     const path = 'books/' + this.bookService.curBookId + '/actors/' + actorId + '/avatar.png';
     this.firestorage.ref(path).putString(file, 'data_url').then( () => {
       this.firestorage.ref(path).getDownloadURL().subscribe((ref) => {
-        this.bookService.addMediaRef(ref, path);
+        this.bookService.addMediaRef(ref, path, 'image', 'avatar');
         this.firestore.collection('books').doc(this.bookService.curBookId).collection('actors').doc(actorId).update({avatar: ref});
       });
     }).catch((err) => this.popupService.error(err));
@@ -205,5 +210,26 @@ export class ActorService {
       ]
     });
     await alert.present();
+  }
+
+  getActorId(actorName: string) {
+    actorName.replace('_', ' ');
+    for (const actor of this.bookService.actors) {
+      if (actor.name.toLowerCase() === actorName.toLowerCase()) {
+        return actor.id;
+      }
+    }
+  }
+
+  isOwnActor(actorId: string) {
+    return this.ownActor === actorId;
+  }
+
+  setOwnActor(actorName: string) {
+    this.ownActor = this.getActorId(actorName);
+  }
+
+  haveActor(actorId: string): boolean {
+    return this.bookService.actorsById.includes(actorId);
   }
 }

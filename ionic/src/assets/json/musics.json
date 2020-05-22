@@ -1,0 +1,13 @@
+{
+  "nothing": {
+    "url": "",
+    "category": "",
+    "attribution": ""
+  },
+  "lacrimosa": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fmusics%2Fclassical%2Flacrimosa.mp3?alt=media&token=42809789-0b21-490a-a6f5-4f6606c4afa2",
+    "category": "classical",
+    "attribution": "By Mozart"
+  }
+}
+

@@ -22,6 +22,9 @@ export class BookService {
 
   debug = false;
 
+  mostVueBooks: any[] = [];
+  topRatedBooks: any[] = [];
+  mostRecentBooks: any[] = [];
 
   bookSub: Subscription;
   bookChatSub: Subscription;
@@ -82,9 +85,11 @@ export class BookService {
     this.navCtrl.navigateForward('/tabs-book');
   }
 
-  openChat(chatId) {
+  async openChat(chatId) {
     this.curChatId = chatId;
-    this.navCtrl.navigateForward('chat');
+    await this.popupService.loading();
+    await this.navCtrl.navigateForward('chat');
+    this.popupService.loadingDismiss();
   }
 
   async newBook(book, cover = '', bookId = this.firestore.createId()) {
@@ -191,22 +196,42 @@ export class BookService {
     }).catch((err) => this.popupService.error(err));
   }
 
-  getMostVue(lang = this.lang): Observable<any> {
-    return this.firestore.collection(
+  async changeWallpaper(bookId, url: string) {
+    await this.firestore.collection('books').doc(bookId).update({wallpaper: url});
+    this.popupService.toast('Arrière plan changé');
+  }
+
+  getMostVue(lang = this.lang): Promise<any> {
+    return new Promise(res => {
+      this.firestore.collection(
       'books', ref => ref.where('public', '==', true).where('lang', '==', lang).orderBy('views', 'desc').limit(10)
-      ).valueChanges();
+      ).valueChanges().subscribe((val) => {
+        this.mostVueBooks = val;
+        res();
+      });
+    });
   }
 
-  getTopRated(lang = this.lang): Observable<any> {
-    return this.firestore.collection(
+  getTopRated(lang = this.lang): Promise<any> {
+    return new Promise(res => {
+      this.firestore.collection(
       'books', ref => ref.where('public', '==', true).where('lang', '==', lang).orderBy('stars', 'desc').limit(10)
-      ).valueChanges();
+      ).valueChanges().subscribe((val) => {
+        this.topRatedBooks = val;
+        res();
+      });
+    });
   }
 
-  getMostRecent(lang = this.lang): Observable<any> {
-    return this.firestore.collection(
+  getMostRecent(lang = this.lang): Promise<any> {
+    return new Promise(res => {
+    this.firestore.collection(
       'books', ref => ref.where('public', '==', true).where('lang', '==', lang).orderBy('date', 'desc').limit(10)
-      ).valueChanges();
+      ).valueChanges().subscribe((val) => {
+        this.mostRecentBooks = val;
+        res();
+      });
+    });
   }
 
   searchByName(filter: string, lang = this.lang): Observable<any> {
@@ -272,8 +297,8 @@ export class BookService {
     this.popupService.loadingDismiss();
   }
 
-  addMediaRef(url: string, ref: string) {
-    this.firestore.collection('books').doc(this.curBookId).collection('medias').add({url, ref});
+  addMediaRef(url: string, ref: string, type: string, tag: string) {
+    this.firestore.collection('books').doc(this.curBookId).collection('medias').add({url, ref, type, tag});
   }
 
   deleteMedia(url: string) {
@@ -343,8 +368,7 @@ export class BookService {
       this.bookSub = this.firestore.collection('books').doc(curBookId).valueChanges().subscribe((value: any) => {
         if (value) {
           this.book = value;
-          this.book.stars = this.book.starsAvg;
-          this.book.starsArray = new Array(this.book.stars);
+          this.book.starsArray = new Array(Math.round(this.book.starsAvg));
           this.isAuthor = this.book.authors.includes(this.userService.userId) && this.userService.connected;
           res();
         } else {
@@ -414,8 +438,9 @@ export class BookService {
   //   );
   // }
 
-  publishBook() {
-    this.firestore.collection('/books').doc(this.curBookId).update({public: true});
+  async publishBook() {
+    await this.firestore.collection('/books').doc(this.curBookId).update({public: true});
+    this.popupService.toast('Livre publié!');
   }
 
   unpublishBook() {
@@ -465,7 +490,7 @@ export class BookService {
   }
 
   shareBook(bookId: string) {
-    const bookUrl = 'https://noetic.site/book/' + bookId;
+    const bookUrl = 'https://app.noetic.site/book/' + bookId;
     this.userService.share('Voici un livre sur Noetic', 'Partage de livre', bookUrl);
   }
 }

@@ -143,14 +143,6 @@ export class ProfilePage implements OnInit, OnDestroy {
           }
         },
         {
-          text: 'A propos',
-          icon: 'information',
-          handler: () => {
-            actionSheet.dismiss();
-            this.about();
-          }
-        },
-        {
         text: 'Se déconnecter',
         icon: 'exit',
         handler: () => {
@@ -275,5 +267,9 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   share() {
     this.userService.shareUser(this.userId);
+  }
+
+  report() {
+    this.userService.report('user', this.userId);
   }
 }

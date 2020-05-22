@@ -269,7 +269,7 @@ export class CoverPage implements OnInit {
         }, {
           text: 'Confirmer',
           handler: (data) => {
-            const title = data.title;
+            const title: string = data.title;
             if (title.length < 3) {
               this.popupService.alert('Le titre doit faire au moins plus de 3 caractères');
               return;
@@ -277,7 +277,7 @@ export class CoverPage implements OnInit {
               this.popupService.alert('Le titre doit faire moins 40 caractères');
               return;
             }
-            this.bookService.updateBookData({title});
+            this.bookService.updateBookData({title, titleLower: title.toLowerCase()});
           }
         }
       ]
@@ -355,5 +355,9 @@ export class CoverPage implements OnInit {
       });
       return await modal.present();
     }
+  }
+
+  report() {
+    this.userService.report('book', this.curBookId);
   }
 }

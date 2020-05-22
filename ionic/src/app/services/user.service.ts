@@ -400,8 +400,19 @@ export class UserService {
   }
 
   shareUser(userId: string) {
-    const userURL = 'https://noetic.site/user/' + userId;
+    const userURL = 'https://app.noetic.site';
     this.share('Voici mon profil sur Noetic: ', 'Partage de profil', userURL);
+  }
+
+  shareApp() {
+    let userURL: string;
+    if (!this.plt.is('cordova')) {
+      userURL = 'https://app.noetic.site';
+    } else {
+      userURL = 'https://play.google.com/store/apps/details?id=com.blockup.noetic';
+    }
+    this.share(
+      'Voici Noetic, une appli pour créer ses propres histoires sous forme de chats ', 'Noetic, une app pour créer des histoires', userURL);
   }
 
   share(msg: string, subject: string, url: string, ) {
@@ -424,5 +435,45 @@ export class UserService {
         .catch((err) => this.popupService.error(err))
         .finally(() => this.popupService.loadingDismiss());
     }
+  }
+
+  async report(type: string, id: string = '') {
+    let header = 'Signaler un problème';
+    if (type === 'user') {
+      header = 'Signaler un utilisateur';
+    } else if (type === 'book') {
+      header = 'Signaler un livre';
+    }
+    const alert = await this.popupService.alertObj({
+      header,
+      message: 'Nous ferons de notre mieux pour le corriger dans les plus brefs délais. Tout spams est sanctionnable de bannissement.',
+      inputs: [
+        {
+          name: 'msg',
+          type: 'textarea',
+          placeholder: 'Votre problème'
+        }
+      ],
+      buttons: [
+        'Annuler',
+        {
+          text: 'Envoyer',
+          handler: (data) => {
+            if (this.connected) {
+              if (type === 'app') {
+                this.firestore.collection('reports').add({type: 'app', from: this.userId, msg: data.msg});
+              } else if (type === 'user') {
+                this.firestore.collection('reports').add({type: 'user', from: this.userId, msg: data.msg, toUser: id});
+              } else if (type === 'book') {
+                this.firestore.collection('reports').add({type: 'book', from: this.userId, msg: data.msg, toBook: id});
+              }
+              this.popupService.toast('Report envoyé');
+            } else {
+              this.popupService.error('Vous devez vous connecter pour signaler un problème.');
+            }
+          }
+        }
+      ],
+    });
   }
 }

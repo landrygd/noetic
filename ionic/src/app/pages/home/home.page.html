@@ -10,12 +10,22 @@
       searchIcon="search"
       (click)="search()"
       ></ion-searchbar>
+      <ion-buttons slot="end">
+        <ion-button (click)="options()" fill="clear">
+          <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+        </ion-button>
+      </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 
 
 <ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <h2 class="section" *ngIf="userService.savesId.length !== 0">
     <ion-icon name="save"></ion-icon>
     Mes sauvegardes
@@ -27,35 +37,13 @@
     </ion-slide>
   </ion-slides>
 
-  <h2 class="section" *ngIf="userService.list.length !== 0">
-    <ion-icon name="list"></ion-icon>
-    Ma liste
-  </h2>
-
-  <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.list.length !== 0">
-    <ion-slide *ngFor="let bookId of userService.list">
-      <app-card-book [bookId]="bookId"></app-card-book>
-    </ion-slide>
-  </ion-slides>
-
-  <h2 class="section" *ngIf="userService.followList.length !== 0">
-    <ion-icon name="people"></ion-icon>
-    Mes suivies
-  </h2>
-
-  <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.followList.length !== 0">
-    <ion-slide *ngFor="let book of userService.followList">
-      <app-card-book [bookJSON]="book"></app-card-book>
-    </ion-slide>
-  </ion-slides>
-
   <h2 class="section">
     <ion-icon name="star"></ion-icon>
     Les mieux notés
   </h2>
 
-  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="topRatedList | async as topRated; else loadingTopRated">
-    <ion-slide *ngFor="let book of topRated">
+  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="topRatedBooks; else loadingTopRated">
+    <ion-slide *ngFor="let book of topRatedBooks">
       <app-card-book [bookJSON]="book"></app-card-book>
     </ion-slide>
   </ion-slides>
@@ -71,10 +59,8 @@
     Les plus vues
   </h2>
 
-  
-
-  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostVueList | async as mostVue; else loadingMostVue">
-    <ion-slide *ngFor="let book of mostVue">
+  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostVueBooks; else loadingMostVue">
+    <ion-slide *ngFor="let book of mostVueBooks">
       <app-card-book [bookJSON]="book"></app-card-book>
     </ion-slide>
   </ion-slides>
@@ -90,8 +76,8 @@
     Les plus récents
   </h2>
 
-  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostRecentList | async as mostRecent; else loadingMostRecent">
-    <ion-slide *ngFor="let book of mostRecent">
+  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostRecentBooks; else loadingMostRecent">
+    <ion-slide *ngFor="let book of mostRecentBooks">
       <app-card-book [bookJSON]="book"></app-card-book>
     </ion-slide>
   </ion-slides>

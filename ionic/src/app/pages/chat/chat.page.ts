@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { NavController, ModalController, IonContent, ActionSheetController, AlertController } from '@ionic/angular';
 import { ChatService } from 'src/app/services/book/chat.service';
 import { PopupService } from 'src/app/services/popup.service';
 import { BookService } from 'src/app/services/book.service';
 import { ActorService } from 'src/app/services/book/actor.service';
 import { SlidesService } from 'src/app/services/slides.service';
+import { MediaService } from 'src/app/services/media.service';
 
 @Component({
   selector: 'app-chat',
@@ -24,6 +25,8 @@ export class ChatPage implements OnInit, AfterViewInit {
 
   loaded = false;
 
+  @ViewChild('bg', {static: true, read: ElementRef}) bg: ElementRef;
+
   constructor(
     public chatService: ChatService,
     public bookService: BookService,
@@ -33,15 +36,23 @@ export class ChatPage implements OnInit, AfterViewInit {
     public actionSheetController: ActionSheetController,
     public alertController: AlertController,
     public popup: PopupService,
-    public slides: SlidesService
+    public slides: SlidesService,
+    public mediaService: MediaService
     ) {}
 
   ngOnInit() {
-    if (this.bookService.curChatId === undefined) {
-      this.navCtrl.navigateRoot('/');
-    } else {
-      this.chatService.syncChat(this.bookService.curChatId);
-      this.loaded = true;
+    this.chatService.syncChat(this.bookService.curChatId);
+    this.loaded = true;
+    this.getWallpaper();
+  }
+
+  getWallpaper() {
+    if (this.bookService.book.wallpaper) {
+      const wallpaper = this.bookService.book.wallpaper;
+      if (wallpaper !== '' && wallpaper.substring(0, 4) !== 'http') {
+        const res = 'url(' + this.mediaService.getWallpaperURL(wallpaper) + ')';
+        this.bg.nativeElement.style.setProperty('--background', res + ' no-repeat center center / cover');
+      }
     }
   }
 

@@ -744,3 +744,9 @@ ion-action-sheet {
   .white * { color: #ffffff; background-color: gray;}
   .black * { color: #000000; background-color: gray;}
 }
+
+.white-silhouette {
+  -webkit-filter: contrast(0) brightness(200%);
+  filter: contrast(0) brightness(200%);
+  opacity: 1;
+}

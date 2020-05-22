@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { UploadComponent } from './upload/upload.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { SearchUserComponent } from './search-user/search-user.component';
+import { WallpapersSearchComponent } from './wallpapers-search/wallpapers-search.component';
 
 
 
@@ -12,6 +13,7 @@ import { SearchUserComponent } from './search-user/search-user.component';
   declarations: [
     UploadComponent,
     SearchUserComponent,
+    WallpapersSearchComponent
   ],
   imports: [
     CommonModule,
@@ -22,6 +24,7 @@ import { SearchUserComponent } from './search-user/search-user.component';
   exports: [
     UploadComponent,
     SearchUserComponent,
+    WallpapersSearchComponent
   ]
 })
 
