@@ -10,6 +10,9 @@ import { ChatPage } from './chat.page';
 import { ComponentModule } from 'src/app/components/component.module';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { ActorProfileComponent } from 'src/app/components/modals/actor-profile/actor-profile.component';
+import { ManualComponent } from 'src/app/components/modals/manual/manual.component';
+import { TutoPopoverComponent } from 'src/app/components/tuto-popover/tuto-popover.component';
+import { PopoverAudioPlayerComponent } from 'src/app/components/popover-audio-player/popover-audio-player.component';
 
 @NgModule({
   imports: [
@@ -22,7 +25,10 @@ import { ActorProfileComponent } from 'src/app/components/modals/actor-profile/a
   declarations: [ChatPage],
   entryComponents: [
     UploadComponent,
-    ActorProfileComponent
+    ActorProfileComponent,
+    ManualComponent,
+    TutoPopoverComponent,
+    PopoverAudioPlayerComponent
   ]
 })
 export class ChatPageModule {}

@@ -121,6 +121,13 @@ export class HomePage implements OnInit {
           }
         },
         {
+          text: 'Site de Noetic',
+          icon: 'globe',
+          handler: () => {
+            window.open('https://noetic.site', '_blank');
+          }
+        },
+        {
           text: 'A propos de Blockup',
           icon: 'business',
           handler: () => {

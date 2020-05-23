@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-header>
+    <ion-searchbar
+      mode="ios"
+      [(ngModel)]="filter" 
+      [placeholder]="placeholder" 
+      (ionChange)="search()" 
+      [debounce]="250"
+      showCancelButton="always"
+      searchIcon="search"
+      (ionCancel)="cancel()"
+      #searchBar
+      ></ion-searchbar>
+  </ion-header>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let command of results" button details (click)="showCommand(command)">
+      <ion-icon slot="start" [name]="command.icon"></ion-icon>
+      <ion-label>{{command.name}}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

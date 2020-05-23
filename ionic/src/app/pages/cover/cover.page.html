@@ -3,9 +3,7 @@
     <div class="header">
       <ion-toolbar style="--background: transparent;">
         <ion-buttons slot="start">
-          <ion-button (click)="back()" fill="clear" shape="round">
-            <ion-icon slot="icon-only" name="arrow-back" class="headerButton"></ion-icon>
-          </ion-button>
+          <ion-back-button (click)="back()" defaultHref="tabs/home" class="headerButton"></ion-back-button>
         </ion-buttons>
         <ion-buttons slot="end">
           <ion-button (click)="report()" fill="clear" shape="round" *ngIf="!bookService.isAuthor">
@@ -113,7 +111,7 @@
         </ion-text>
       </ion-text>
     </div>
-    <ion-button (click)="more()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor && this.bookService.book.verso.length > 0">
+    <ion-button (click)="more()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor && this.bookService.book.verso > 0">
       En savoir plus
     </ion-button>
     <ion-button (click)="changeVerso()" expand="block" fill="clear" shape="round" *ngIf="bookService.isAuthor">

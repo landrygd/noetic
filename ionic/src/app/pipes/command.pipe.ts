@@ -127,8 +127,17 @@ export class CommandPipe implements PipeTransform {
             res = 'Choisir un entier aléatoire entre ' + min + ' et ' + max + ' inclus pour ' + nomVar;
             break;
           case 'sound':
-            icon = 'volume-medium';
-            res = 'Jouer le son ' + this.toChip(this.arg, 'volume-medium');
+            if (this.opts.includes('stop')) {
+              icon = 'volume-mute';
+              if (this.args.length !== 0) {
+                res = 'Arêter le son ' + this.toChip(this.args[0], 'volume-medium');
+              } else {
+                res = 'Arêter tous les sons';
+              }
+            } else {
+              icon = 'volume-medium';
+              res = 'Jouer le son ' + this.toChip(this.arg, 'volume-medium');
+            }
             break;
           case 'ambiance':
             if (this.opts.includes('stop')) {
@@ -152,8 +161,12 @@ export class CommandPipe implements PipeTransform {
               icon = 'volume-mute';
               res = 'Arêter la musique';
             } else {
+              const once = this.opts.includes('once');
               icon = 'musical-notes';
               res = 'Jouer la musique ' + this.toChip(this.arg, 'musical-notes');
+              if (once) {
+                res += ' une seule fois';
+              }
             }
             break;
           case 'control':

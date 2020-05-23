@@ -17,7 +17,7 @@ export class BookService {
   curBookId: string;
   curChatId: string;
   lang: string;
-  book: any;
+  book: any = {};
   isAuthor: boolean;
 
   debug = false;
@@ -94,19 +94,18 @@ export class BookService {
 
   async newBook(book, cover = '', bookId = this.firestore.createId()) {
     await this.popupService.loading('Création...', 'creation');
-    this.curBookId = bookId;
     // Ajouter l'id référant dans user
     this.userService.addBookRef(bookId);
     // Créer le livre, l'ouvir et y ajouter un chat
-    this.firestore.collection('/books').doc(bookId).set(book).then(() => {
+    this.firestore.collection('/books').doc(bookId).set(book).then(async () => {
       // Upload le cover si une image est chargée
       if (cover.charAt(0) !== '.') {
         this.uploadCover(cover, this.curBookId);
       }
-      this.navCtrl.pop().then( async () => {
+      await this.navCtrl.pop().then( async () => {
         await this.openCover(bookId);
         await this.openBook(bookId);
-        this.popupService.loadingDismiss('creation');
+        await this.popupService.loadingDismiss('creation');
         this.addChat('main', true);
       }).catch((err) => this.popupService.error(err));
       }
@@ -114,7 +113,9 @@ export class BookService {
   }
 
   async newChat() {
+    await this.popupService.loading();
     const size = await this.getChatsSize();
+    await this.popupService.loadingDismiss();
     if (!(size > 10000000)) {
       const alert = await this.alertController.create({
         header: 'Ajouter un chat',

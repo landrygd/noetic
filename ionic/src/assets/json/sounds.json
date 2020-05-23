@@ -53,5 +53,475 @@
     "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fanimals%2Ftiger.wav?alt=media&token=5d2f966f-9d44-4e36-ad34-cb7d1b363fbb",
     "category": "animals",
     "attribution": "By Imphenzi"
+  },
+  "8bit-beep": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2F8bits%2F8bit-beep.wav?alt=media&token=68710396-b86d-4e76-a3e3-6fce097c7d8f",
+    "category": "8-bits",
+    "attribution": "By Imphenzi"
+  },
+  "8bit-climbing": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2F8bits%2F8bit-climbing.wav?alt=media&token=816ec61f-d320-4df5-a5aa-46b26d73b028",
+    "category": "8-bits",
+    "attribution": "By Imphenzi"
+  },
+  "8bit-coin": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2F8bits%2F8bit-coin.wav?alt=media&token=2b2cc611-2864-41a6-b493-9b38fc433d6f",
+    "category": "8-bits",
+    "attribution": "By Imphenzi"
+  },
+  "8bit-explosion": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2F8bits%2F8bit-explosion.wav?alt=media&token=41ff008d-025f-4622-9208-6902e8913655",
+    "category": "8-bits",
+    "attribution": "By Imphenzi"
+  },
+  "8bit-flash": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2F8bits%2F8bit-flash.wav?alt=media&token=46b8e7ea-f4a4-433f-8221-fd8f12e37c02",
+    "category": "8-bits",
+    "attribution": "By Imphenzi"
+  },
+  "8bit-hurt": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2F8bits%2F8bit-hurt.wav?alt=media&token=6bc3c84f-ce77-496b-aea5-b4bbbb57c7ab",
+    "category": "8-bits",
+    "attribution": "By Imphenzi"
+  },
+  "8bit-jump": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2F8bits%2F8bit-jump.wav?alt=media&token=6b53864c-ad73-4619-8985-5211e6b81250",
+    "category": "8-bits",
+    "attribution": "By Imphenzi"
+  },
+  "8bit-movement": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2F8bits%2F8bit-movement.wav?alt=media&token=cb740e1a-d7e0-4136-abd9-fd6d6e9c6e70",
+    "category": "8-bits",
+    "attribution": "By Imphenzi"
+  },
+  "8bit-powerup": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2F8bits%2F8bit-powerup.wav?alt=media&token=b8923da7-c2b5-45ae-a3b8-e3a360ad2cea",
+    "category": "8-bits",
+    "attribution": "By Imphenzi"
+  },
+  "8bit-rumble": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2F8bits%2F8bit-rumble.wav?alt=media&token=8f0ff31e-c2bf-495e-9b5e-68eeba9e563d",
+    "category": "8-bits",
+    "attribution": "By Imphenzi"
+  },
+  "8bit-shoot": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2F8bits%2F8bit-shoot.wav?alt=media&token=203abb82-015f-49ff-b9bf-f3899a241319",
+    "category": "8-bits",
+    "attribution": "By Imphenzi"
+  },
+  "8bit-swoosh": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2F8bits%2F8bit-swoosh.wav?alt=media&token=d6f83315-9ff8-4686-86ef-5e86c82eae6c",
+    "category": "8-bits",
+    "attribution": "By Imphenzi"
+  },
+  "explosion-long": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fexplosions%2Fexplosion-long.wav?alt=media&token=427cc7bf-1abc-44d7-a23e-f544054b0dc4",
+    "category": "explosions",
+    "attribution": "By Imphenzi"
+  },
+  "explosion-nuclear": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fexplosions%2Fexplosion-nuclear.wav?alt=media&token=a1804ef1-2288-4242-a52c-59f9f742edbc",
+    "category": "explosions",
+    "attribution": "By Imphenzi"
+  },
+  "explosion-short": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fexplosions%2Fexplosion-short.wav?alt=media&token=fa2bf1c2-bf92-47a3-bfb7-db37c2829a85",
+    "category": "explosions",
+    "attribution": "By Imphenzi"
+  },
+  "explosion": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fexplosions%2Fexplosion.wav?alt=media&token=d23d0dd1-49aa-46b9-a8e1-9634953879a3",
+    "category": "explosions",
+    "attribution": "By Imphenzi"
+  },
+  "shockwave": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fexplosions%2Fshockwave.wav?alt=media&token=29d7e8d2-f652-4895-a60d-5ae7dd352a58",
+    "category": "explosions",
+    "attribution": "By Imphenzi"
+  },
+  "impact-brick": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fimpacts%2Fimpact-brick.wav?alt=media&token=a2af8030-2366-4993-840f-9abfa40e1635",
+    "category": "impacts",
+    "attribution": "By Imphenzi"
+  },
+  "impact-bullet": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fimpacts%2Fimpact-bullet.wav?alt=media&token=9967b9f0-67b2-4993-b4b5-17f508bfc367",
+    "category": "impacts",
+    "attribution": "By Imphenzi"
+  },
+  "impact-concrete": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fimpacts%2Fimpact-concrete.wav?alt=media&token=00ddb6fe-18eb-41fc-b735-315dfbd6c1e3",
+    "category": "impacts",
+    "attribution": "By Imphenzi"
+  },
+  "impact-energy": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fimpacts%2Fimpact-energy.wav?alt=media&token=7213c4f6-1d2b-4f3f-bb60-71ca3d247580",
+    "category": "impacts",
+    "attribution": "By Imphenzi"
+  },
+  "impact-metal": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fimpacts%2Fimpact-metal.wav?alt=media&token=41b2840d-7498-4f9b-a568-72a041f8ec81",
+    "category": "impacts",
+    "attribution": "By Imphenzi"
+  },
+  "impact-stone": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fimpacts%2Fimpact-stone.wav?alt=media&token=9d91ae8e-6508-4557-9a60-0b1cd49f7b34",
+    "category": "impacts",
+    "attribution": "By Imphenzi"
+  },
+  "impact-wood": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fimpacts%2Fimpact-wood.wav?alt=media&token=cd469b8c-188c-4b78-884f-9f833c83555e",
+    "category": "impacts",
+    "attribution": "By Imphenzi"
+  },
+  "impact": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fimpacts%2Fimpact.wav?alt=media&token=beda692c-c4f7-4d5d-be99-980baa6dc946",
+    "category": "impacts",
+    "attribution": "By Imphenzi"
+  },
+  "creature": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmonsters%2Fcreature.wav?alt=media&token=c73821ef-2bbf-44f7-b0a2-29fcac5aac48",
+    "category": "monsters",
+    "attribution": "By Imphenzi"
+  },
+  "ghoul": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmonsters%2Fghoul.wav?alt=media&token=f56f079b-8249-4062-964e-dc2baaa7d545",
+    "category": "monsters",
+    "attribution": "By Imphenzi"
+  },
+  "gobelins": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmonsters%2Fgobelins.wav?alt=media&token=ff16bcae-dc8f-4ef2-825d-d917f9de2f8f",
+    "category": "monsters",
+    "attribution": "By Imphenzi"
+  },
+  "monster": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmonsters%2Fmonster.wav?alt=media&token=94e519c3-4037-4cb8-8af5-ecf122cf518a",
+    "category": "monsters",
+    "attribution": "By Imphenzi"
+  },
+  "orch": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmonsters%2Forch.wav?alt=media&token=f7b32390-9929-42d7-aee6-d51d014784e5",
+    "category": "monsters",
+    "attribution": "By Imphenzi"
+  },
+  "troll": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmonsters%2Ftroll.wav?alt=media&token=ecb234e7-865d-4885-ac95-3bb8dabbb5fd",
+    "category": "monsters",
+    "attribution": "By Imphenzi"
+  },
+  "zombie": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmonsters%2Fzombie.wav?alt=media&token=d7c694ba-1ae9-457e-a84c-1195f9ad30d9",
+    "category": "monsters",
+    "attribution": "By Imphenzi"
+  },
+  "dubstep-negative": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmusic-effects%2Fdubstep-negative.wav?alt=media&token=ac926cc5-86f4-40e2-83b3-5f9455ccf6a6",
+    "category": "music-effects",
+    "attribution": "By Imphenzi"
+  },
+  "dubstep-positive": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmusic-effects%2Fdubstep-positive.wav?alt=media&token=590f4416-acc7-4f57-aa63-1a92fc280f80",
+    "category": "music-effects",
+    "attribution": "By Imphenzi"
+  },
+  "game-negative": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmusic-effects%2Fgame-negative.wav?alt=media&token=0637b96e-ada1-487b-aedb-f86dcd1b2d3f",
+    "category": "music-effects",
+    "attribution": "By Imphenzi"
+  },
+  "game-positive": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmusic-effects%2Fgame-positive.wav?alt=media&token=c151dd3c-4aba-4737-a0bb-6f4f67c70054",
+    "category": "music-effects",
+    "attribution": "By Imphenzi"
+  },
+  "orchestral-negative": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmusic-effects%2Forchestral-negative.wav?alt=media&token=5fe5dacc-571a-4efd-86f7-2a479adbcd04",
+    "category": "music-effects",
+    "attribution": "By Imphenzi"
+  },
+  "orchestral-positive": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmusic-effects%2Forchestral-positive.wav?alt=media&token=d55a676a-31b0-4e0d-92e7-43a946fefa82",
+    "category": "music-effects",
+    "attribution": "By Imphenzi"
+  },
+  "space-negative": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmusic-effects%2Fspace-negative.wav?alt=media&token=3dec1171-4021-4bf1-95dd-cf56a6eb586f",
+    "category": "music-effects",
+    "attribution": "By Imphenzi"
+  },
+  "space-positive": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fmusic-effects%2Fspace-positive.wav?alt=media&token=046de0dd-8595-40f7-a54a-a5f082d99c09",
+    "category": "music-effects",
+    "attribution": "By Imphenzi"
+  },
+  "clapping": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspectacle%2Fclapping.wav?alt=media&token=088ee648-a031-473e-8c05-0ff09d2dd4c3",
+    "category": "spectacle",
+    "attribution": "By Imphenzi"
+  },
+  "rocket-explode": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspectacle%2Frocket-explode.wav?alt=media&token=1e7db28b-c104-4754-859a-ad4c9bf43971",
+    "category": "spectacle",
+    "attribution": "By Imphenzi"
+  },
+  "rocket-launched": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspectacle%2Frocket-launch.wav?alt=media&token=81efb2b6-74c9-4b03-a647-3bcca02bc475",
+    "category": "spectacle",
+    "attribution": "By Imphenzi"
+  },
+  "spell-bang": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-bang.wav?alt=media&token=dab0b653-70e7-4ae9-b39d-bce78477ba23",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-bell": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-bell.wav?alt=media&token=fe04e4e9-1b67-425e-a096-1750573049f6",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-bend": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-bend.wav?alt=media&token=2b56178c-dba7-491e-953e-f3abd4e9f62a",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-blast": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-blast.wav?alt=media&token=25cded6a-ec31-4071-b664-389fe5b4eaa3",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-bolt": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-bolt.wav?alt=media&token=10b0241b-d21f-4ac2-a9d6-6ae8e0b592e1",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-deep": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-deep.wav?alt=media&token=4ecb5bef-fcdf-49a6-a300-5f8dde814ea0",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-electric": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-electric.wav?alt=media&token=a26a99b0-c236-4088-9d30-826ef40ee2a4",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-flame": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-flame.wav?alt=media&token=a3a20ce1-4997-4769-b093-22f855704e65",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-flange": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-flanger.wav?alt=media&token=c13fa77e-b4f1-4198-a0c4-5995c05ac70b",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-flyby": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-flyby.wav?alt=media&token=6c555537-d7dd-4250-8858-225688607938",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-fusion": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-fusion.wav?alt=media&token=643499b0-e998-4098-a875-aae6e46fe013",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-ghost": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-ghost.wav?alt=media&token=b9ba9515-8777-459d-8c76-844578cb063d",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-metallic": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-metallic.wav?alt=media&token=997f60ba-2f26-42af-b4b9-d34d92e4f032",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-overdrive": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-overdrive.wav?alt=media&token=16521985-998b-490b-82e7-69c7d0d0ab6f",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-power": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-power.wav?alt=media&token=868b9bde-6ff0-4497-9161-4f6ec919d307",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-pulse": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-pulse.wav?alt=media&token=ac64283a-5c04-43cf-afcd-9e0303918376",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-raising": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-rain.wav?alt=media&token=918f49fb-148f-487d-8c1d-0d1cd86fbaf2",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-scifi": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-scifi.wav?alt=media&token=8f35d9d3-ac67-4391-8195-03c515ad61da",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-shield": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-shield.wav?alt=media&token=3563bbe5-66a5-4543-a886-6829422ae656",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-spawn": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-spawn.wav?alt=media&token=cad0976e-41cd-48b1-81f1-5baa83744be4",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-sweep": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-sweep.wav?alt=media&token=ac97dd23-ed48-48b0-bfbf-d64001d33db2",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-synth": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-synth.wav?alt=media&token=68a1fd86-e712-4ee2-93b8-35c237bb64f7",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-teleport": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-teleport.wav?alt=media&token=276a8645-0977-4262-8b67-58295183a7ed",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-tunnel": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-tunnel.wav?alt=media&token=e7451d5d-5a8d-45da-afca-b6ae8281b3ad",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-wobble": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-wobble.wav?alt=media&token=504a9a7c-6cef-4822-99be-e26b520da878",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "spell-woosh": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fspells%2Fspell-woosh.wav?alt=media&token=a8e91787-a0f2-4288-8eed-823acff0bfed",
+    "category": "spells",
+    "attribution": "By Imphenzi"
+  },
+  "chainsaw": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Ftools%2Fchainsaw.wav?alt=media&token=5098c468-a8b5-44a8-8d22-e73f134b62d7",
+    "category": "tools",
+    "attribution": "By Imphenzi"
+  },
+  "chisel": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Ftools%2Fchisel.wav?alt=media&token=8bf6d92d-93bf-4432-afda-40198e7e5e0e",
+    "category": "tools",
+    "attribution": "By Imphenzi"
+  },
+  "hammer": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Ftools%2Fhammer.wav?alt=media&token=91b7eb4c-90e9-42fd-b998-05563b3c791f",
+    "category": "tools",
+    "attribution": "By Imphenzi"
+  },
+  "nailgun": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Ftools%2Fnailgun.wav?alt=media&token=fab60ce3-c8b7-49cd-b438-4b04a479b512",
+    "category": "tools",
+    "attribution": "By Imphenzi"
+  },
+  "saw": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Ftools%2Fsaw.wav?alt=media&token=37b15e81-cc7d-4056-b886-ece36cde1a97",
+    "category": "tools",
+    "attribution": "By Imphenzi"
+  },
+  "toolbox": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Ftools%2Ftoolbox.wav?alt=media&token=4720b577-0c81-41ab-8e25-fdb4f45c5ec8",
+    "category": "tools",
+    "attribution": "By Imphenzi"
+  },
+  "wrench": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Ftools%2Fwrench.wav?alt=media&token=157819f7-552b-4bf5-b216-fee983afbe18",
+    "category": "tools",
+    "attribution": "By Imphenzi"
+  },
+  "ui-click": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fui%2Fui-click.wav?alt=media&token=1695dbf8-874b-453d-934b-eab0a589f347",
+    "category": "ui",
+    "attribution": "By Imphenzi"
+  },
+  "ui-compute": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fui%2Fui-compute.wav?alt=media&token=3b9fed40-22a7-4132-aba2-6644ee8fa074",
+    "category": "ui",
+    "attribution": "By Imphenzi"
+  },
+  "ui-confirm": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fui%2Fui-confirm.wav?alt=media&token=65b0c6e1-307b-4b8d-ba64-9c6e3927f211",
+    "category": "ui",
+    "attribution": "By Imphenzi"
+  },
+  "ui-error": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fui%2Fui-error.wav?alt=media&token=386a4b6b-1a83-411a-bfa1-53aa50e5af1d",
+    "category": "ui",
+    "attribution": "By Imphenzi"
+  },
+  "ui-switch": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fui%2Fui-switch.wav?alt=media&token=8aed00c1-aa72-4803-bb0e-3e672e8527d8",
+    "category": "ui",
+    "attribution": "By Imphenzi"
+  },
+  "ui-tone": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fui%2Fui-tone.wav?alt=media&token=a24abc8e-981b-438b-8aca-d39b41f484b0",
+    "category": "ui",
+    "attribution": "By Imphenzi"
+  },
+  "arrow": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fweapons%2Farrow.wav?alt=media&token=6bc2c349-78af-4840-be5e-9dec3a8fac79",
+    "category": "weapons",
+    "attribution": "By Imphenzi"
+  },
+  "assault-rifle": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fweapons%2Fassault-rifle.wav?alt=media&token=784c8753-befe-4821-a292-ea3bd14e326b",
+    "category": "weapons",
+    "attribution": "By Imphenzi"
+  },
+  "blaster": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fweapons%2Fblaster.wav?alt=media&token=9399b657-666b-494c-8ec7-d8725028ed1a",
+    "category": "weapons",
+    "attribution": "By Imphenzi"
+  },
+  "bow": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fweapons%2Fbow.wav?alt=media&token=fb111ba7-fe63-4b21-adc2-e8de37244b1f",
+    "category": "weapons",
+    "attribution": "By Imphenzi"
+  },
+  "gun-reload": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fweapons%2Fgun-reload.wav?alt=media&token=93ca15f5-2436-4ab5-9fb5-9cb84f0c787b",
+    "category": "weapons",
+    "attribution": "By Imphenzi"
+  },
+  "machine-gun": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fweapons%2Fmachine-gun.wav?alt=media&token=e50c6edb-4157-4f9e-af50-1ace3f8f19aa",
+    "category": "weapons",
+    "attribution": "By Imphenzi"
+  },
+  "plasma-cannon": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fweapons%2Fplasma-cannon.wav?alt=media&token=a9912c9c-8c57-4a35-94df-37cc00c34800",
+    "category": "weapons",
+    "attribution": "By Imphenzi"
+  },
+  "shock-rifle": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fweapons%2Fshock-rifle.wav?alt=media&token=67bce6be-7c0d-430f-9d9a-e166711bbdda",
+    "category": "weapons",
+    "attribution": "By Imphenzi"
+  },
+  "shotgun": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fweapons%2Fshotgun.wav?alt=media&token=8be9e114-7b82-45ba-b942-90fc108cfaa1",
+    "category": "weapons",
+    "attribution": "By Imphenzi"
+  },
+  "sniper": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fweapons%2Fsniper.wav?alt=media&token=5fc8d7e8-adae-44c9-9fda-b248b61afa57",
+    "category": "weapons",
+    "attribution": "By Imphenzi"
+  },
+  "sword": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fweapons%2Fsword.wav?alt=media&token=348f9902-8902-449d-a748-ebe00b8cffb8",
+    "category": "weapons",
+    "attribution": "By Imphenzi"
+  },
+  "thunder": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fsounds%2Fweather%2Fthunder.wav?alt=media&token=0e9188bc-1913-4dc1-9a17-6ada853420cd",
+    "category": "thunder",
+    "attribution": "By Imphenzi"
   }
 }

@@ -1,0 +1,30 @@
+<div class="ion-padding">
+  <ion-text color="medium">
+    <p>
+      {{info}}
+    </p>
+  </ion-text>
+</div>
+
+<ion-footer *ngIf="!end">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()" expand="block" fill="clear" shape="round">
+        Annuler
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="next()" expand="block" fill="clear" shape="round">
+        Suivant
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
+
+<ion-footer *ngIf="end">
+  <ion-toolbar>
+    <ion-button (click)="cancel()" expand="block" fill="clear" shape="round">
+      Terminer
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

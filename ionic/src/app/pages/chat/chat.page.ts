@@ -1,11 +1,14 @@
 import { Component, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
-import { NavController, ModalController, IonContent, ActionSheetController, AlertController } from '@ionic/angular';
+import { ModalController, IonContent, ActionSheetController, AlertController, IonTextarea, PopoverController } from '@ionic/angular';
 import { ChatService } from 'src/app/services/book/chat.service';
 import { PopupService } from 'src/app/services/popup.service';
 import { BookService } from 'src/app/services/book.service';
 import { ActorService } from 'src/app/services/book/actor.service';
 import { SlidesService } from 'src/app/services/slides.service';
 import { MediaService } from 'src/app/services/media.service';
+import { ManualComponent } from 'src/app/components/modals/manual/manual.component';
+import { TutoPopoverComponent } from 'src/app/components/tuto-popover/tuto-popover.component';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-chat',
@@ -15,29 +18,91 @@ import { MediaService } from 'src/app/services/media.service';
 export class ChatPage implements OnInit, AfterViewInit {
 
   @ViewChild(IonContent, { static: false }) content: IonContent;
+  @ViewChild('bg', {static: true, read: ElementRef}) bg: ElementRef;
+  @ViewChild('chatBar', {static: true, read: IonTextarea}) chatBar: IonTextarea;
 
-  text: string;
+  text = '';
   chat = [];
   curIndex = -1;
   avatar = 'assets/avatar/man.png';
   actor: string;
   textarea = false;
-
+  autoScroll = true;
   loaded = false;
 
-  @ViewChild('bg', {static: true, read: ElementRef}) bg: ElementRef;
+  sound = false;
+  music = false;
+  ambiance = false;
+
+  tuto = [
+    {
+      target: 'chatBar',
+      info: 'Bienvenue sur l\'éditeur de Noetic, pour passer ce tutoriel, appuyez sur annuler'
+    },
+    {
+      target: 'chatBar',
+      // tslint:disable-next-line: max-line-length
+      info: 'Pour ajouter un message, il faut entrer du texte sur la bar de chat puis appuyer sur le bouton "envoyer" en bas à droite de l\'écran'
+    },
+    {
+      target: 'chatBar',
+      // tslint:disable-next-line: max-line-length
+      info: 'Pour ajouter un personnage, il faut appuyer sur une bouton "+" en bas à gauche de l\'écran'
+    },
+    {
+      target: 'chatBar',
+      // tslint:disable-next-line: max-line-length
+      info: 'Pour faire parler un personnage, il faut appuyer sur son avatar pour le sélectionner dans la barre des personnages'
+    },
+    {
+      target: 'chatBar',
+      // tslint:disable-next-line: max-line-length
+      info: 'Vous pouvez déselectionner un personnage en rappuyant sur son avatar. Sans personnage selectionné, vous êtes en mode narrateur.'
+    },
+    {
+      target: 'chatBar',
+      // tslint:disable-next-line: max-line-length
+      info: 'Une fois les messages ajoutés, vous pouvez les réordonner en les faisant glisser avec les barres horizontales à leur droite'
+    },
+    {
+      target: 'chatBar',
+      // tslint:disable-next-line: max-line-length
+      info: 'Pour supprimer un message ou modifier, il faut le sélectionner en appuyant sur lui puis le réappuyer pour le déselectionner'
+    },
+    {
+      target: 'chatBar',
+      // tslint:disable-next-line: max-line-length
+      info: 'Vous pourrez tester votre histoire en appuyant sur le bouton "play" en haut à droite de l\'écran'
+    },
+    {
+      target: 'chatBar',
+      // tslint:disable-next-line: max-line-length
+      info: 'Pour éditer ou supprimer un acteur, il faut appuyer sur son avatar dans la barre de chat ou directement sur le chat'
+    },
+    {
+      target: 'chatBar',
+      // tslint:disable-next-line: max-line-length
+      info: 'Pour rendre votre histoire dynamique, vous pouvez également entrer une commande en vous référant au manuel en bas à gauche'
+    },
+    {
+      target: 'chatBar',
+      // tslint:disable-next-line: max-line-length
+      info: 'Ce tutoriel est terminé, bonne découverte!'
+    }
+  ];
 
   constructor(
     public chatService: ChatService,
     public bookService: BookService,
     public actorService: ActorService,
-    private navCtrl: NavController,
     public modalCtrl: ModalController,
     public actionSheetController: ActionSheetController,
     public alertController: AlertController,
     public popup: PopupService,
     public slides: SlidesService,
-    public mediaService: MediaService
+    public mediaService: MediaService,
+    private popoverController: PopoverController,
+    private userService: UserService
     ) {}
 
   ngOnInit() {
@@ -57,11 +122,29 @@ export class ChatPage implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    if (this.userService.haveTuto()) {
+      setTimeout(() => {this.showTuto(); }, 500);
+    }
     this.scrollToBottom();
   }
 
-  scrollToBottom() {
-    this.content.scrollToBottom(500);
+  scrollToBottom(autoScroll = false) {
+    if (autoScroll) {
+      this.autoScroll = true;
+    }
+    if (this.autoScroll) {
+      this.content.scrollToBottom(500);
+    }
+  }
+
+  async onScroll() {
+    this.content.getScrollElement().then((scroll) => {
+      if (scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight > 200) {
+        this.autoScroll = false;
+      } else {
+        this.autoScroll = true;
+      }
+    });
   }
 
   send() {
@@ -170,7 +253,7 @@ export class ChatPage implements OnInit, AfterViewInit {
   }
 
   debug() {
-    this.bookService.play(this.bookService.curBookId, this.chatService.chat.name, true);
+    this.bookService.play(this.bookService.curBookId, this.chatService.curChatId, true);
   }
 
   action(name) {
@@ -204,5 +287,80 @@ export class ChatPage implements OnInit, AfterViewInit {
       }]
     });
     await actionSheet.present();
+  }
+
+  async manual(type = '') {
+    const modal = await this.modalCtrl.create({
+    component: ManualComponent,
+    componentProps: {type}
+    });
+    await modal.present();
+    const data = await modal.onDidDismiss();
+    if (data.data) {
+      this.text = data.data.command;
+    }
+  }
+
+
+
+  async showTuto(index = 0) {
+    const tuto = this.tuto[index];
+    let event: CustomEvent<any>;
+    if (tuto.target === 'chatBar') {
+      const sub = this.chatBar.ionFocus.subscribe((ev) => {
+        event = ev;
+        sub.unsubscribe();
+        this.presentPopover(event, index);
+      });
+      setTimeout(() => {this.chatBar.setFocus(); }, 500);
+    }
+  }
+
+  async presentPopover(ev: CustomEvent<any>, index) {
+    const end = index >= this.tuto.length - 1;
+    const popover = await this.popoverController.create({
+      component: TutoPopoverComponent,
+      componentProps: {
+        info: this.tuto[index].info,
+        end
+      },
+      event: ev,
+      translucent: false
+    });
+    await popover.present();
+    const res = await popover.onDidDismiss();
+    if (!res.data.hasOwnProperty('cancel')) {
+      this.showTuto(index + 1);
+    } else {
+      this.userService.deleteTuto();
+      const alert = await this.alertController.create({
+        message: 'Vous pouvez toujours revoir ce tutoriel en le réactivant dans les paramètres du livre',
+        buttons: ['Ok']
+      });
+      await alert.present();
+    }
+  }
+
+  changeMsg() {
+    setTimeout(() => {
+      const command = this.text.split(' ')[0];
+      this.sound = false;
+      this.music = false;
+      this.ambiance = false;
+      if (command === '/sound') {
+        this.sound = true;
+      } else if (command === '/music') {
+        this.music = true;
+      } else if (command === '/ambiance') {
+        this.ambiance = true;
+      }
+      setTimeout(() => {
+        this.scrollToBottom();
+      }, 100);
+    }, 100);
+  }
+
+  showAudio(type: string) {
+    this.manual(type);
   }
 }

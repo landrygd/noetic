@@ -64,6 +64,10 @@ export class GamePage implements OnInit {
   varValue1: any;
   varValue2: any;
 
+  checkLabelRefresher: any;
+
+  autoScroll = true;
+
   @ViewChild('bg', {static: true, read: ElementRef}) bg: ElementRef;
 
   constructor(
@@ -86,12 +90,16 @@ export class GamePage implements OnInit {
   }
 
   async play() {
+    this.checkLabelRefresher = setInterval(() => {
+      this.cptChatLabel = {};
+    }, 60000);
     this.getWallpaper();
     this.input = false;
     this.question = false;
     this.paused = false;
     this.exited = false;
     this.logs = [];
+    this.chatId = this.bookService.curChatId;
     this.bookId = this.bookService.curBookId;
     if (this.userService.haveSave(this.bookId)) {
       await this.load();
@@ -99,14 +107,14 @@ export class GamePage implements OnInit {
     } else {
       this.line = 0;
       this.variables = {};
-      this.playChat();
+      this.playChat(this.chatId);
     }
   }
 
-  async playChat(chatName = 'main', line = 0) {
+  async playChat(chatId = 'main', line = 0) {
     this.line = line;
-    this.chatService.getChat(chatName);
-    this.chat = this.chatService.getChat(chatName);
+    this.chatService.getChat(chatId);
+    this.chat = this.chatService.getChat(chatId);
     this.chatLogs = this.chat.logs;
     this.labels = this.getLabels();
     this.mediaService.loadSounds(this.getChatSounds());
@@ -137,20 +145,28 @@ export class GamePage implements OnInit {
               case 'go':
                 if (this.opts.includes('chat')) {
                   if (this.chatService.haveChat(this.arg)) {
-                    if (this.checkCptLabel(this.arg)) {
+                    if (this.checkCptLabel(this.chatService.getChatIdByName(this.arg))) {
                       gochat = this.arg;
                     }
                   }
                 } else {
                   if (this.labels.hasOwnProperty(this.arg)) {
-                    if (this.checkCptLabel(this.chat.name, this.arg)) {
+                    if (this.checkCptLabel(this.chat.id, this.arg)) {
                       line = this.labels[this.arg];
                     }
                   }
                 }
                 break;
               case 'sound':
-                this.mediaService.playSound(this.args[0]);
+                if (this.opts.includes('stop')) {
+                  if (this.args.length > 0) {
+                    this.mediaService.stopSound(this.args[0]);
+                  } else {
+                    this.mediaService.stopSound();
+                  }
+                } else {
+                  this.mediaService.playSound(this.args[0]);
+                }
                 break;
               case 'ambiance':
                 if (this.opts.includes('stop')) {
@@ -179,7 +195,8 @@ export class GamePage implements OnInit {
                 if (this.opts.includes('stop')) {
                   this.mediaService.stopMusic();
                 } else {
-                  this.mediaService.playMusic(this.args[0]);
+                  const once = this.opts.includes('once');
+                  this.mediaService.playMusic(this.args[0], !once);
                 }
                 break;
               case 'input':
@@ -259,7 +276,7 @@ export class GamePage implements OnInit {
             }, time + this.waitTime);
           } else {
             setTimeout(() => {
-              this.playChat(gochat);
+              this.playChat(this.chatService.getChatIdByName(gochat));
             }, time + this.waitTime);
           }
         }
@@ -363,41 +380,56 @@ export class GamePage implements OnInit {
     }
   }
 
-  checkCptLabel(chatName = this.chat.name, labelName = 'main') {
-    if (this.cptChatLabel.hasOwnProperty(chatName)) {
-      if (this.cptChatLabel[chatName].hasOwnProperty(labelName)) {
-        this.cptChatLabel[chatName][labelName] += 1;
-        const cpt = this.cptChatLabel[chatName][labelName];
-        if (cpt >= 9) {
+  checkCptLabel(chatId = this.chat.id, labelName = 'main') {
+    if (this.cptChatLabel.hasOwnProperty(chatId)) {
+      if (this.cptChatLabel[chatId].hasOwnProperty(labelName)) {
+        this.cptChatLabel[chatId][labelName] += 1;
+        const cpt = this.cptChatLabel[chatId][labelName];
+        if (cpt >= 10) {
           if (labelName === 'main') {
             if (this.bookService.debug) {
               this.popupService.alert(
-                'Un chat ne peut être utilisé que 10 fois maximum! Il sera ignoré pendant la lecture ce quotas dépassé.'
+                'Un chat ne peut être utilisé que 10 fois par minute maximum! Il sera ignoré pendant la lecture ce quotas dépassé.'
                 );
             }
             return false;
           } else {
             if (this.bookService.debug) {
               this.popupService.alert(
-                'Un label ne peut être utilisé que 10 fois maximum! Il sera ignoré pendant la lecture ce quotas dépassé.'
+                'Un label ne peut être utilisé que 10 fois par minute maximum! Il sera ignoré pendant la lecture ce quotas dépassé.'
                 );
             }
             return false;
           }
         }
       } else {
-        this.cptChatLabel[chatName] = {[labelName]: 1};
+        this.cptChatLabel[chatId] = {[labelName]: 1};
       }
     } else {
-      this.cptChatLabel[chatName] = {main: 1};
+      this.cptChatLabel[chatId] = {main: 1};
     }
     return true;
   }
 
-  scrollToBottom() {
-    setTimeout(() => {
-    this.content.scrollToBottom(400);
-    }, 100);
+  scrollToBottom(autoScroll = false) {
+    if (autoScroll) {
+      this.autoScroll = true;
+    }
+    if (this.autoScroll) {
+      setTimeout(() => {
+        this.content.scrollToBottom(400);
+        }, 100);
+    }
+  }
+
+  async onScroll() {
+    this.content.getScrollElement().then((scroll) => {
+      if (scroll.scrollHeight - scroll.scrollTop - scroll.clientHeight > 200) {
+        this.autoScroll = false;
+      } else {
+        this.autoScroll = true;
+      }
+    });
   }
 
   getCommandValues(str: string) {
@@ -513,6 +545,7 @@ export class GamePage implements OnInit {
   }
 
   exit() {
+    clearInterval(this.checkLabelRefresher);
     this.mediaService.stopMusic();
     this.mediaService.stopAmbiance();
     this.actorService.ownActor = '';

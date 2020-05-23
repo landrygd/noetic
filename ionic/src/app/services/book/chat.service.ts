@@ -166,9 +166,9 @@ export class ChatService {
     return false;
   }
 
-  getChat(chatName: string) {
+  getChat(chatId: string) {
     for (const chat of this.bookService.chats) {
-      if (chat.name.toUpperCase() === chatName.toUpperCase()) {
+      if (chat.id.toUpperCase() === chatId.toUpperCase()) {
         return chat;
       }
     }

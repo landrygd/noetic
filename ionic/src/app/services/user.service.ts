@@ -415,6 +415,18 @@ export class UserService {
       'Voici Noetic, une appli pour créer ses propres histoires sous forme de chats ', 'Noetic, une app pour créer des histoires', userURL);
   }
 
+  haveTuto(): boolean {
+    return this.userData.hasOwnProperty('tuto');
+  }
+
+  async addTuto() {
+    await this.firestore.collection('users').doc(this.userId).update({tuto: true});
+  }
+
+  async deleteTuto() {
+    await this.firestore.collection('users').doc(this.userId).update({tuto: firebase.firestore.FieldValue.delete()});
+  }
+
   share(msg: string, subject: string, url: string, ) {
     if (!this.plt.is('cordova')) {
       const selBox = document.createElement('textarea');

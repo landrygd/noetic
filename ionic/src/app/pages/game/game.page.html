@@ -16,13 +16,18 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen padding #bg>
+<ion-content fullscreen padding #bg scrollEvents="true" (ionScrollEnd)="onScroll()">
   <div style="height: 100vh;"></div>
   <div>
     <ion-grid fixed *ngFor="let log of logs; index as i" class="ion-no-margin">
       <app-log [actors]="actors" [variables]="variables" [log]="log" [edit]="false" [index]="i" [speed]="speed" typing="true" (action)="action($event)" (scroll)="scrollToBottom()"></app-log>
     </ion-grid>
   </div>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="!autoScroll">
+    <ion-fab-button (click)="scrollToBottom(true)">
+      <ion-icon name="arrow-down"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
 
 <ion-footer>

@@ -6,6 +6,7 @@ import { UploadComponent } from './upload/upload.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { SearchUserComponent } from './search-user/search-user.component';
 import { WallpapersSearchComponent } from './wallpapers-search/wallpapers-search.component';
+import { ManualComponent } from './manual/manual.component';
 
 
 
@@ -13,7 +14,8 @@ import { WallpapersSearchComponent } from './wallpapers-search/wallpapers-search
   declarations: [
     UploadComponent,
     SearchUserComponent,
-    WallpapersSearchComponent
+    WallpapersSearchComponent,
+    ManualComponent
   ],
   imports: [
     CommonModule,
@@ -24,7 +26,8 @@ import { WallpapersSearchComponent } from './wallpapers-search/wallpapers-search
   exports: [
     UploadComponent,
     SearchUserComponent,
-    WallpapersSearchComponent
+    WallpapersSearchComponent,
+    ManualComponent
   ]
 })
 

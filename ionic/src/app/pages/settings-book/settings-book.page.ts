@@ -5,6 +5,7 @@ import { BookService } from 'src/app/services/book.service';
 import { NotifService } from 'src/app/services/user/notif.service';
 import { WallpapersSearchComponent } from 'src/app/components/modals/wallpapers-search/wallpapers-search.component';
 import { PopupService } from 'src/app/services/popup.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-settings-book',
@@ -20,7 +21,8 @@ export class SettingsBookPage implements OnInit {
     private toastController: ToastController,
     public notifService: NotifService,
     public popupService: PopupService,
-    public navController: NavController
+    public navController: NavController,
+    private userService: UserService
     ) {}
 
   ngOnInit() {
@@ -130,6 +132,11 @@ export class SettingsBookPage implements OnInit {
 
   unpublish() {
     this.alertUnpublish();
+  }
+
+  async tuto() {
+    await this.userService.addTuto();
+    this.toast('Tutoriel réactivé');
   }
 
   async invite() {

@@ -133,7 +133,6 @@ export class CoverPage implements OnInit {
   back() {
     this.commentService.unsyncComments();
     this.bookService.unsyncBook(true);
-    this.navCtrl.navigateBack('/tabs/home');
   }
 
   share() {

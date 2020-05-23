@@ -1,0 +1,139 @@
+{
+  "label": {
+    "icon": "bookmark",
+    "name": "label",
+    "desc": "Ajoute un marque page à un chat. On peut y retourner avec la commande /go",
+    "ex": ["/label nomDuLabel"]
+  },
+  "go": {
+    "icon": "arrow-forward",
+    "name": "go",
+    "desc": "Permet d'aller à un label",
+    "opts": ["-chat: pour aller à un chat"],
+    "ex": [
+      "/go nomDuLabel",
+      "/go -chat nomDuChat"
+    ]
+  },
+  "set": {
+    "icon": "settings",
+    "name": "set",
+    "desc": "Définit la valeur d'une variable. Attention, le nom d'une variable est toujours précédé du caractère '$' et ne doit contenir aucun espace",
+    "ex": [
+      "/set $nomDeLaVariable 42"
+    ]
+  },
+  "if": {
+    "icon": "settings",
+    "name": "if",
+    "desc": "Permet de tester des variables avec les opérateurs: ==, <=, >=, < et >",
+    "ex": ["/if $nomVariable == 42"]
+  },
+  "add": {
+    "icon": "settings",
+    "name": "add",
+    "desc": "Permet d'ajouter une valeur à une variable",
+    "ex": ["/add $nomVariable 42"]
+  },
+  "sub": {
+    "icon": "settings",
+    "name": "sub",
+    "desc": "Permet de soustraire une valeur à une variable",
+    "ex": ["/sub $nomVariable 42"]
+  },
+  "div": {
+    "icon": "settings",
+    "name": "div",
+    "desc": "Permet de diviser par une valeur une variable",
+    "ex": ["/div $nomVariable 42"]
+  },
+  "mul": {
+    "icon": "settings",
+    "name": "mul",
+    "desc": "Permet de multiplier par une valeur une variable",
+    "ex": ["/mul $nomVariable 42"]
+  },
+  "random": {
+    "icon": "settings",
+    "name": "random",
+    "desc": "Permet définir une valeur aléatoire à une variable",
+    "ex": [
+      "/random $nomVariable 42 100",
+      "/random $nomVariable 100"
+    ]
+  },
+  "wait": {
+    "icon": "hourglass",
+    "name": "wait",
+    "desc": "Pour attendre x secondes",
+    "ex": ["/wait 3"]
+  },
+  "input": {
+    "icon": "text",
+    "name": "input",
+    "desc": "Pour demander au lecteur une valeur pour une variable",
+    "ex": ["/input $nomVariable"]
+  },
+  "sound": {
+    "icon": "volume-medium",
+    "name": "sound",
+    "desc": "Joue un son disponible dans la bibliothèque de sons accessible en entrant la commande '/sound'",
+    "opts": ["-stop: pour arrêter un ou tous les sons"],
+    "ex": [
+      "/sound dog",
+      "/sound -stop",
+      "/sound -stop dog"
+    ]
+  },
+  "music": {
+    "icon": "musical-notes",
+    "name": "music",
+    "desc": "Joue une musique en boucle disponible dans la bibliothèque de musiques accessible en entrant la commande '/music'. A noter qu'elle ne se superposent pas",
+    "opts": [
+      "-once: pour jouer la musique une seule fois",
+      "-stop: pour arrêter la musique"
+    ],
+    "ex": [
+      "/music lacrimosa",
+      "/music -loop lacrimosa"
+    ]
+  },
+  "ambiance": {
+    "icon": "ear",
+    "name": "ambiance",
+    "desc": "Joue une ambiance en boucle disponible dans la bibliothèque d'ambiances accessible en entrant la commande '/ambiance'",
+    "opts": [
+      "-stop <nomAmbiance>: pour arrêter une ambiance",
+      "-stop: pour arrêter toutes les ambiances"
+    ],
+    "ex": [
+      "/ambiance rain",
+      "/ambiance -stop",
+      "/ambiance -stop rain"
+    ]
+  },
+  "control": {
+    "icon": "people",
+    "name": "control",
+    "desc": "Pour prendre le controle d'un personnage, ses messages seront affichés sur la droite",
+    "ex": ["/control @nomPersonnage"]
+  },
+  "end": {
+    "icon": "flag",
+    "name": "end",
+    "desc": "Met fin à une histoire",
+    "ex": ["/end"]
+  },
+  "alert": {
+    "icon": "alert",
+    "name": "alert",
+    "desc": "Affiche une alerte",
+    "ex": ["/alert Ceci est une alerte!"]
+  },
+  "question": {
+    "icon": "chatbubble",
+    "name": "question",
+    "desc": "Propose des choix de réponses au lecteur, le résultat sera stocké dans la variable $answer.",
+    "ex": ["/question réponse1; réponse2; réponse3; etc..."]
+  }
+}

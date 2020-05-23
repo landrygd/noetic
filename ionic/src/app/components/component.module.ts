@@ -11,6 +11,9 @@ import { PipesModule } from '../pipes/pipes.module';
 import { UserAvatarComponent } from './user-avatar/user-avatar.component';
 import { BookChipComponent } from './book-chip/book-chip.component';
 import { ActorProfileComponent } from './modals/actor-profile/actor-profile.component';
+import { TutoPopoverComponent } from './tuto-popover/tuto-popover.component';
+import { ChipAudioComponent } from './chip-audio/chip-audio.component';
+import { PopoverAudioPlayerComponent } from './popover-audio-player/popover-audio-player.component';
 
 
 
@@ -22,7 +25,10 @@ import { ActorProfileComponent } from './modals/actor-profile/actor-profile.comp
     UserChipComponent,
     UserAvatarComponent,
     BookChipComponent,
-    ActorProfileComponent
+    ActorProfileComponent,
+    TutoPopoverComponent,
+    ChipAudioComponent,
+    PopoverAudioPlayerComponent
   ],
   imports: [
     CommonModule,
@@ -38,7 +44,10 @@ import { ActorProfileComponent } from './modals/actor-profile/actor-profile.comp
     UserChipComponent,
     UserAvatarComponent,
     BookChipComponent,
-    ActorProfileComponent
+    ActorProfileComponent,
+    TutoPopoverComponent,
+    ChipAudioComponent,
+    PopoverAudioPlayerComponent
   ]
 })
 

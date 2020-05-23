@@ -140,6 +140,7 @@ export class AuthService {
         name: auth.user.displayName,
         nameLower: auth.user.displayName.toLowerCase(),
         first: true,
+        tuto: true,
         lang: this.traductionService.getCurLanguage(),
         avatar: auth.user.photoURL
       });
@@ -149,6 +150,7 @@ export class AuthService {
         name: registerData.name,
         nameLower: registerData.name.toLowerCase(),
         first: true,
+        tuto: true,
         lang: this.traductionService.getCurLanguage(),
       });
     }

@@ -1,32 +1,272 @@
 {
-  "nothing": {
-    "url": "",
-    "category": "",
-    "attribution": ""
+  "airplane": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Ftransport%2Fairplane.wav?alt=media&token=8875fe78-ae91-41f8-ab32-031bd494ffc0",
+    "category": "transport",
+    "attribution": "By Imphenzi"
   },
-  "fire": {
-    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Ffire.wav?alt=media&token=34e18c51-c79f-4401-82f7-25cd19c7da19",
-    "category": "nature",
-    "attribution": "BBC Sound Effect Library"
+  "ship": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Ftransport%2Fship.wav?alt=media&token=29b66c5c-6b58-4268-9a6f-186cd73f8793",
+    "category": "transport",
+    "attribution": "By Imphenzi"
   },
-  "jungle": {
-    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Fjungle.wav?alt=media&token=5c74eca1-7966-4fa8-8a3d-de2b9c987a6f",
+  "jetski": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Ftransport%2Fjetski.wav?alt=media&token=21463c54-f8ac-41fd-8149-ec8c1daee04a",
+    "category": "transport",
+    "attribution": "By Imphenzi"
+  },
+  "sonar": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Ftransport%2Fsonar.wav?alt=media&token=447ada71-677d-4641-be15-3228111ed9fc",
+    "category": "transport",
+    "attribution": "By Imphenzi"
+  },
+  "train": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Ftransport%2Ftrain.wav?alt=media&token=a0d06fdf-03bd-4149-813c-591ad0885d58",
+    "category": "transport",
+    "attribution": "By Imphenzi"
+  },
+  "helicopter": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Ftransport%2Fhelicopter.wav?alt=media&token=4fea33c5-d0cd-49c3-b226-54d6878f093c",
+    "category": "transport",
+    "attribution": "By Imphenzi"
+  },
+  "furnice": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Ftransport%2Ffurnice.wav?alt=media&token=632b272f-8d14-4741-b143-5157f6774cf0",
+    "category": "transport",
+    "attribution": "By Imphenzi"
+  },
+  "ferry": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Ftransport%2Fferry.wav?alt=media&token=29dc1477-4fc6-4de9-a33b-85f016c57324",
+    "category": "transport",
+    "attribution": "By Imphenzi"
+  },
+  "submarin": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Ftransport%2Fsubmarin.wav?alt=media&token=c4082cb8-d048-487d-b64a-fc17e39947f7",
+    "category": "transport",
+    "attribution": "By Imphenzi"
+  },
+  "car": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Ftransport%2Fcar.wav?alt=media&token=5d5b72b0-8ef1-4348-a48d-70a7ae2674b8",
+    "category": "transport",
+    "attribution": "By Imphenzi"
+  },
+  "tank": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Ftransport%2Ftank.wav?alt=media&token=6cdeb23b-77c8-48fa-bfb0-3912cc15daa2",
+    "category": "transport",
+    "attribution": "By Imphenzi"
+  },
+  "campfire": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Fcampfire.wav?alt=media&token=3fd7d445-4fd3-4c91-8cb5-46adfcf42bd8",
     "category": "nature",
-    "attribution": "BBC Sound Effect Library"
+    "attribution": "By Imphenzi"
+  },
+  "motor": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fmachines%2Fmotor.wav?alt=media&token=86d7c26a-224e-4958-842d-6ccc6df7995d",
+    "category": "machines",
+    "attribution": "By Imphenzi"
+  },
+  "factory": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fmachines%2Ffactory.wav?alt=media&token=f9933c3b-8455-4638-83c6-8dc6c99f14e2",
+    "category": "machines",
+    "attribution": "By Imphenzi"
+  },
+  "scifi-hangar": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fscifi%2Fscifi-hangar.wav?alt=media&token=e0ae675d-92e8-442e-a662-292c084eee29",
+    "category": "scifi",
+    "attribution": "By Imphenzi"
+  },
+  "alarm-high": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Falarm%2Falarm-high.wav?alt=media&token=5f5e8df8-4e46-4270-be02-88f970e6e62b",
+    "category": "alarm",
+    "attribution": "By Imphenzi"
+  },
+  "waterfall": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Fwaterfall.wav?alt=media&token=5c26fa81-7c41-46ff-bfdf-f1a46406b8f0",
+    "category": "nature",
+    "attribution": "By Imphenzi"
+  },
+  "forest": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Fforest.wav?alt=media&token=cfc25a60-bead-442d-9e2c-5fa6f20012f3",
+    "category": "nature",
+    "attribution": "By Imphenzi"
+  },
+  "scifi-generator": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fscifi%2Fscifi-generator.wav?alt=media&token=4d4146d0-25d8-41c7-a4c4-00fd6cc83b59",
+    "category": "scifi",
+    "attribution": "By Imphenzi"
+  },
+  "river": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Friver.wav?alt=media&token=6f38f20f-6a6c-465b-bdce-827aaf0d0624",
+    "category": "nature",
+    "attribution": "By Imphenzi"
   },
   "sea": {
-    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Fsea.wav?alt=media&token=316563c9-40ab-473c-95a7-df48c557d9d9",
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Fsea.wav?alt=media&token=374defb0-0a2f-4e92-aef9-e5e1982d6881",
     "category": "nature",
-    "attribution": "BBC Sound Effect Library"
-  },
-  "streat": {
-    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fcity%2Fstreet.wav?alt=media&token=27bcb61c-64a9-429f-b4ff-dcb1dac66a2e",
-    "category": "city",
-    "attribution": "BBC Sound Effect Library"
+    "attribution": "By Imphenzi"
   },
   "rain": {
-    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fweather%2Frain.wav?alt=media&token=df10c9e7-8cf3-42bb-b898-4dc6ed5b72d0",
-    "category": "weather",
-    "attribution": "BBC Sound Effect Library"
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Frain.wav?alt=media&token=11509017-fc49-4be6-ad36-2eb36911a5b1",
+    "category": "nature",
+    "attribution": "By Imphenzi"
+  },
+  "alarm-submarine": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Falarm%2Falarm-submarine.wav?alt=media&token=c77f9618-b865-45ab-b9e1-94dc04fd5822",
+    "category": "alarm",
+    "attribution": "By Imphenzi"
+  },
+  "scifi-drones": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fscifi%2Fscifi-drones.wav?alt=media&token=4681690a-aaf2-4bd4-a06f-3a72b69c7f11",
+    "category": "scifi",
+    "attribution": "By Imphenzi"
+  },
+  "scifi-pulse": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fscifi%2Fscifi-pulse.wav?alt=media&token=969370b4-da70-465e-b63c-b4952acdb159",
+    "category": "scifi",
+    "attribution": "By Imphenzi"
+  },
+  "scifi-hangar-deep": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fscifi%2Fscifi-hangar-deep.wav?alt=media&token=b3dc4b8d-2aff-4df4-a2af-acafc9e26891",
+    "category": "scifi",
+    "attribution": "By Imphenzi"
+  },
+  "alarm": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Falarm%2Falarm.wav?alt=media&token=64a3aa2e-0f18-4f4e-a46f-4bb710d6e7ca",
+    "category": "alarm",
+    "attribution": "By Imphenzi"
+  },
+  "medieval-battle": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fbattle%2Fmedieval-battle.wav?alt=media&token=caff7c5f-efc2-4c2f-a49a-d0b04ccbb25b",
+    "category": "battle",
+    "attribution": "By Imphenzi"
+  },
+  "fridge": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fmachines%2Ffridge.wav?alt=media&token=009ab8a0-f5e9-43ab-a99e-8462b57154cb",
+    "category": "machines",
+    "attribution": "By Imphenzi"
+  },
+  "scifi-machine": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fscifi%2Fscifi-machine.wav?alt=media&token=ac5f68ca-2153-429d-9eb5-ae2947648660",
+    "category": "scifi",
+    "attribution": "By Imphenzi"
+  },
+  "hall": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fcity%2Fhall.wav?alt=media&token=97e2746a-2cb3-44c0-b203-58e0780a09bd",
+    "category": "city",
+    "attribution": "By Imphenzi"
+  },
+  "scifi-electric": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fscifi%2Fscifi-electric.wav?alt=media&token=3d2ce94e-c736-44db-bd9d-8a2d47014ba1",
+    "category": "scifi",
+    "attribution": "By Imphenzi"
+  },
+  "scifi-hum": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fscifi%2Fscifi-hum.wav?alt=media&token=6fcfad9a-8c64-464d-a9ef-4aeff9bd63c2",
+    "category": "scifi",
+    "attribution": "By Imphenzi"
+  },
+  "ice": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Fice.wav?alt=media&token=d1c9510d-e901-48fa-9e54-fca82a63f007",
+    "category": "nature",
+    "attribution": "By Imphenzi"
+  },
+  "fan": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fmachines%2Ffan.wav?alt=media&token=797464d7-6ad1-4b89-8a22-eb16cb7b34ac",
+    "category": "machines",
+    "attribution": "By Imphenzi"
+  },
+  "truck": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Ftransport%2Ftruck.wav?alt=media&token=a2437d56-cb36-432e-a171-59f8d9fd88b0",
+    "category": "transport",
+    "attribution": "By Imphenzi"
+  },
+  "beach": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Fbeach.wav?alt=media&token=c8ea4bd1-9cd2-431e-9c3e-0584aa9f91a8",
+    "category": "nature",
+    "attribution": "By Imphenzi"
+  },
+  "elevator": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fcity%2Felevator.wav?alt=media&token=d18fefc4-b613-4bf6-9ba3-77abd71a22ef",
+    "category": "city",
+    "attribution": "By Imphenzi"
+  },
+  "strimmer": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fmachines%2Fstrimmer.wav?alt=media&token=67a6b311-48aa-45d5-abac-8bab9ee7b715",
+    "category": "machines",
+    "attribution": "By Imphenzi"
+  },
+  "tunnel": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fcity%2Ftunnel.wav?alt=media&token=7addfe9f-43b0-41f7-906b-5b16b8d15207",
+    "category": "city",
+    "attribution": "By Imphenzi"
+  },
+  "restaurant": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fcity%2Frestaurant.wav?alt=media&token=f39ec652-c83b-4253-a62a-a83ed3f9c4fd",
+    "category": "city",
+    "attribution": "By Imphenzi"
+  },
+  "digger": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fmachines%2Fdigger.wav?alt=media&token=4f27d5cb-d580-4fe9-a1e1-2840435f47ec",
+    "category": "machines",
+    "attribution": "By Imphenzi"
+  },
+  "lawn-mower": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fmachines%2Flawn-mower.wav?alt=media&token=fdcb9ef5-eb5f-4077-88e4-7c8ddb11d840",
+    "category": "machines",
+    "attribution": "By Imphenzi"
+  },
+  "scifi-spacecraft": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fscifi%2Fscifi-spacecraft.wav?alt=media&token=33a8a96d-7536-4e01-a141-db10d6150c9d",
+    "category": "scifi",
+    "attribution": "By Imphenzi"
+  },
+  "scifi-radar": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fscifi%2Fscifi-radar.wav?alt=media&token=4dc8a1cc-da55-441f-9147-0c99cfd4a73e",
+    "category": "scifi",
+    "attribution": "By Imphenzi"
+  },
+  "scifi-chaos": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fscifi%2Fscifi-chaos.wav?alt=media&token=37d29f4c-12ae-4b84-adca-b5bfe3f130aa",
+    "category": "scifi",
+    "attribution": "By Imphenzi"
+  },
+  "scifi-tonal": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fscifi%2Fscifi-tonal.wav?alt=media&token=6b6b6773-be2e-4fa6-87b4-5c5ce003a1e7",
+    "category": "scifi",
+    "attribution": "By Imphenzi"
+  },
+  "medieval-village": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fcity%2Fmedieval-village.wav?alt=media&token=07ec18eb-e331-4066-bab6-2b95619b2fc5",
+    "category": "city",
+    "attribution": "By Imphenzi"
+  },
+  "toilet": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fcity%2Ftoilet.wav?alt=media&token=f2d4177f-f0fb-4a04-9e86-7364aa533f5f",
+    "category": "city",
+    "attribution": "By Imphenzi"
+  },
+  "fireworks": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fcity%2Ffireworks.wav?alt=media&token=0095a603-31c6-4bb5-8d55-09fdf479af3c",
+    "category": "city",
+    "attribution": "By Imphenzi"
+  },
+  "parking": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fcity%2Fparking.wav?alt=media&token=ad44a5e1-5795-4508-8d06-8d155df051db",
+    "category": "city",
+    "attribution": "By Imphenzi"
+  },
+  "fountain": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fcity%2Ffountain.wav?alt=media&token=5885dd1c-a7ce-4c1a-8ff8-a71a857ff3e0",
+    "category": "city",
+    "attribution": "By Imphenzi"
+  },
+  "street": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fcity%2Fstreet.wav?alt=media&token=508fba32-adf6-4159-9923-13807fdc5e46",
+    "category": "city",
+    "attribution": "By Imphenzi"
+  },
+  "under-water": {
+    "url": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fambiances%2Fnature%2Funder-water.wav?alt=media&token=0663d7f4-fa79-4ad6-b9b8-4f7b9bba77c1",
+    "category": "nature",
+    "attribution": "By Imphenzi"
   }
 }
