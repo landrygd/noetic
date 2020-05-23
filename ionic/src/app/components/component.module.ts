@@ -12,10 +12,6 @@ import { UserAvatarComponent } from './user-avatar/user-avatar.component';
 import { BookChipComponent } from './book-chip/book-chip.component';
 import { ActorProfileComponent } from './modals/actor-profile/actor-profile.component';
 import { TutoPopoverComponent } from './tuto-popover/tuto-popover.component';
-import { ChipAudioComponent } from './chip-audio/chip-audio.component';
-import { PopoverAudioPlayerComponent } from './popover-audio-player/popover-audio-player.component';
-
-
 
 @NgModule({
   declarations: [
@@ -26,9 +22,7 @@ import { PopoverAudioPlayerComponent } from './popover-audio-player/popover-audi
     UserAvatarComponent,
     BookChipComponent,
     ActorProfileComponent,
-    TutoPopoverComponent,
-    ChipAudioComponent,
-    PopoverAudioPlayerComponent
+    TutoPopoverComponent
   ],
   imports: [
     CommonModule,
@@ -45,9 +39,7 @@ import { PopoverAudioPlayerComponent } from './popover-audio-player/popover-audi
     UserAvatarComponent,
     BookChipComponent,
     ActorProfileComponent,
-    TutoPopoverComponent,
-    ChipAudioComponent,
-    PopoverAudioPlayerComponent
+    TutoPopoverComponent
   ]
 })
 

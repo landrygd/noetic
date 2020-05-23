@@ -12,7 +12,6 @@ import { UploadComponent } from 'src/app/components/modals/upload/upload.compone
 import { ActorProfileComponent } from 'src/app/components/modals/actor-profile/actor-profile.component';
 import { ManualComponent } from 'src/app/components/modals/manual/manual.component';
 import { TutoPopoverComponent } from 'src/app/components/tuto-popover/tuto-popover.component';
-import { PopoverAudioPlayerComponent } from 'src/app/components/popover-audio-player/popover-audio-player.component';
 
 @NgModule({
   imports: [
@@ -27,8 +26,7 @@ import { PopoverAudioPlayerComponent } from 'src/app/components/popover-audio-pl
     UploadComponent,
     ActorProfileComponent,
     ManualComponent,
-    TutoPopoverComponent,
-    PopoverAudioPlayerComponent
+    TutoPopoverComponent
   ]
 })
 export class ChatPageModule {}
