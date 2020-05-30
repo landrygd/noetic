@@ -9,6 +9,8 @@ export class VariablesPipe implements PipeTransform {
   constructor(private actorService: ActorService) {}
 
   transform(value: string, variables: any, actors: any): any {
+    const ponctuation = /(~|`|[?]|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g;
+    value = value.replace(ponctuation, ' $1');
     const words = value.split(' ');
     const res = [];
     for (const word of words) {
@@ -17,7 +19,7 @@ export class VariablesPipe implements PipeTransform {
         if (variables.hasOwnProperty(nomVar)) {
           res.push(variables[nomVar]);
         } else if (nomVar === 'answer') {
-          res.push(this.toChip('réponse', 'chatbubble'));
+          res.push(this.toChip('réponse', 'chatbubble-ellipses'));
         } else {
           res.push(this.toChip(word.substring(1, word.length), 'pricetag'));
         }
@@ -39,7 +41,8 @@ export class VariablesPipe implements PipeTransform {
         res.push(word);
       }
     }
-    return res.join(' ');
+    const result = res.join(' ').replace(/[ ](~|`|[?]|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g, '$1');
+    return result;
   }
   bubbleIcon(text) {
     return  + text;
@@ -48,6 +51,7 @@ export class VariablesPipe implements PipeTransform {
     return '<ion-chip><ion-icon name="' + icon + '"></ion-icon><ion-label>' + text + '</ion-label></ion-chip>';
   }
   toVariable(text: string) {
-    return text.substring(1, text.length).replace('_', ' ');
+    const variable = text.replace('$', '').replace('_', ' ');
+    return variable;
   }
 }

@@ -22,7 +22,10 @@
     "@angular/router": "~8.2.14",
     "@capacitor/core": "1.5.2",
     "@ionic-native/core": "^5.25.0",
+    "@ionic-native/facebook": "^5.26.0",
+    "@ionic-native/firebase": "^5.26.0",
     "@ionic-native/globalization": "^5.25.0",
+    "@ionic-native/google-plus": "^5.26.0",
     "@ionic-native/local-notifications": "^5.26.0",
     "@ionic-native/network": "^5.25.0",
     "@ionic-native/social-sharing": "^5.26.0",
@@ -36,7 +39,10 @@
     "cordova-browser": "6.0.0",
     "cordova-ios": "5.1.1",
     "cordova-plugin-badge": "^0.8.8",
+    "cordova-plugin-facebook4": "^6.4.0",
+    "cordova-plugin-firebase": "^2.0.5",
     "cordova-plugin-globalization": "^1.11.0",
+    "cordova-plugin-googleplus": "^8.5.0",
     "cordova-plugin-local-notification": "^0.9.0-beta.2",
     "cordova-plugin-network-information": "^2.0.2",
     "cordova-plugin-x-socialsharing": "^5.6.5",
@@ -105,7 +111,18 @@
         "PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION": "This app requires photo library access to function properly.",
         "PHOTO_LIBRARY_USAGE_DESCRIPTION": "This app requires photo library access to function properly."
       },
-      "cordova-plugin-local-notification": {}
+      "cordova-plugin-local-notification": {},
+      "cordova-plugin-googleplus": {
+        "REVERSED_CLIENT_ID": "com.googleusercontent.apps.467577218262-65nh2ctdln5hvb7v3sdumq2p1pvh63tm",
+        "WEB_APPLICATION_CLIENT_ID": "467577218262-65nh2ctdln5hvb7v3sdumq2p1pvh63tm.apps.googleusercontent.com",
+        "PLAY_SERVICES_VERSION": "15.0.1"
+      },
+      "cordova-plugin-facebook4": {
+        "APP_ID": "2840128812770303",
+        "APP_NAME": "Noetic",
+        "FACEBOOK_HYBRID_APP_EVENTS": "false",
+        "FACEBOOK_ANDROID_SDK_VERSION": "5.13.0"
+      }
     },
     "platforms": [
       "android",

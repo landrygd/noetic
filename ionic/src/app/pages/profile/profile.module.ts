@@ -10,6 +10,7 @@ import { ProfilePage } from './profile.page';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { ComponentModule } from 'src/app/components/component.module';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     IonicModule,
     ProfilePageRoutingModule,
     ComponentModule,
-    ImageCropperModule
+    ImageCropperModule,
+    TranslateModule
   ],
   declarations: [ProfilePage],
   entryComponents: [UploadComponent]

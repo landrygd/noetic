@@ -21,11 +21,11 @@
                 </ion-item>
 
                 <ion-button (click)="resetPassword()" expand="block" fill="clear" shape="round" color="medium">
-                  Mot de passe oublié
+                  {{'LOGIN.forgotPassword' | translate}}
                 </ion-button>
 
                 <ion-button  block shape="round" fill="solid" (click)="login()" [disabled]="loginForm.invalid">
-                  Se connecter
+                  {{'LOGIN.login' | translate}}
                 </ion-button>
               </form>
             </ion-col>
@@ -33,17 +33,17 @@
           <ion-row>
             <ion-col class="ion-text-center">
               <ion-text color="medium">
-                <p>Pas de compte?</p>
+                <p>{{'LOGIN.noAccount' | translate}}</p>
               </ion-text>
               <ion-button (click)="signUp()" block fill="solid" shape="round">
-                Créer un compte
+                {{'LOGIN.register' | translate}}
               </ion-button>
             </ion-col>
           </ion-row>
           <ion-row>
             <ion-col class="ion-text-center">
               <ion-button (click)="return()" expand="block" fill="clear" shape="round" color="medium">
-                Retourner sur le site
+                {{'LOGIN.return' | translate}}
               </ion-button>
             </ion-col>
           </ion-row>
@@ -51,7 +51,7 @@
         
         
         <ion-text color="medium" class="ion-text-center">
-          <p text-center>Ou connectez-vous avec</p>
+          <p text-center>{{'LOGIN.otherConnexion' | translate}}</p>
         </ion-text>
         
         <div class="flex">

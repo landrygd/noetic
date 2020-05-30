@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subscription, merge } from 'rxjs';
-import { NavController, Platform } from '@ionic/angular';
+import { NavController, Platform, AlertController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFirestoreCollection, AngularFirestoreDocument, DocumentChangeAction } from '@angular/fire/firestore/public_api';
 import { PopupService } from './popup.service';
@@ -8,6 +8,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import * as firebase from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { TraductionService } from './traductionService.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,13 +19,27 @@ export class UserService {
   curUserId: string;
   connected = false;
 
+  mostVueSub: Subscription;
+  topRatedSub: Subscription;
+  mostRecentSub: Subscription;
+
   userId: string;
   user: Observable<unknown>;
   books: any[] = [];
   bookSub: Subscription;
   list: any[] = [];
   listSub: Subscription;
-  userData: any;
+  userData: {
+    name: string,
+    nameLower: string,
+    lang: string,
+    searchlangs: string[],
+    id: string,
+    avatar: string,
+    bio: string,
+    first: boolean,
+    tuto: boolean
+  };
   lang: string;
   userNotifs: any[];
   userNotifsSub: Subscription;
@@ -45,6 +60,64 @@ export class UserService {
   usersCollection: AngularFirestoreCollection<any>;
   userDoc: AngularFirestoreDocument;
 
+  mostVueBooks: any[] = [];
+  topRatedBooks: any[] = [];
+  mostRecentBooks: any[] = [];
+
+  languages = [
+    {
+      name: 'Français',
+      value: 'fr'
+    },
+    {
+      name: 'Anglais',
+      value: 'en'
+    },
+    {
+      name: 'Espagnol',
+      value: 'es'
+    },
+    {
+      name: 'Allemand',
+      value: 'de'
+    },
+    {
+      name: 'Chinois',
+      value: 'zh'
+    },
+    {
+      name: 'Arabe',
+      value: 'ar'
+    },
+    {
+      name: 'Portugais',
+      value: 'pt'
+    },
+    {
+      name: 'Russe',
+      value: 'ru'
+    },
+    {
+      name: 'Hindi',
+      value: 'hi'
+    },
+    {
+      name: 'Swahili',
+      value: 'sw'
+    }
+  ];
+  tradLanguages = [
+    {
+      name: 'Français',
+      value: 'fr'
+    },
+    {
+      name: 'Anglais',
+      value: 'en'
+    }
+  ];
+  langs: readonly string[];
+
   defaultAvatarURL = 'https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Favatars%2Fdefault.png' +
                      '?alt=media&token=49f967d6-cedb-4b22-9b14-9a2539606c38';
 
@@ -57,8 +130,13 @@ export class UserService {
     private fireauth: AngularFireAuth,
     private socialSharing: SocialSharing,
     private plt: Platform,
+    private alertController: AlertController,
+    private translator: TraductionService
     ) {
-    this.usersCollection = this.firestore.collection('users');
+      this.lang = navigator.language;
+      this.langs = navigator.languages;
+      this.getMenuBooks();
+      this.usersCollection = this.firestore.collection('users');
   }
 
   async syncUserData(userId: string) {
@@ -66,17 +144,25 @@ export class UserService {
     this.user = this.getUser();
     this.userDoc = this.usersCollection.doc(this.userId);
     await this.popupService.loading('Synchronisation...', 'sync');
-    this.userSub = this.firestore.collection('users').doc(this.userId).valueChanges().subscribe((value) => {
+    this.userSub = this.firestore.collection('users').doc(this.userId).valueChanges().subscribe((value: any) => {
       if (value) {
         this.userData = value;
         if (!this.connected) {
           this.connected = true;
           this.popupService.loadingDismiss('sync');
+          this.lang = this.userData.lang;
+          this.langs = this.userData.searchlangs;
+          this.translator.setLanguage(this.lang);
+          this.getMenuBooks();
           this.getBooks();
           this.getList();
           this.getSaves();
           this.syncNotifs();
           this.getFollowList();
+          // MAJ liste des langues de recherche
+          if (!this.userData.searchlangs) {
+            this.updateUserData({searchlangs: [this.lang]});
+          }
         }
         if (this.userData.first) {
           this.navCtrl.navigateRoot('presentation');
@@ -152,7 +238,9 @@ export class UserService {
 
   getUserBooks(userId): Promise<unknown> {
     return new Promise<unknown>(resolve => {
-      this.curUserBooksSub = this.usersCollection.doc(userId).collection('books').snapshotChanges().subscribe((val) => {
+      this.curUserBooksSub = this.usersCollection.doc(userId)
+      .collection('books', ref => ref.where('public', '==', true))
+      .snapshotChanges().subscribe((val) => {
         const res = [];
         val.forEach(doc => {
           res.push(doc.payload.doc.id);
@@ -219,7 +307,7 @@ export class UserService {
       for (const sub of listTen) {
         const orb = this.firestore.collection('books',
           ref => ref.where('authors', 'array-contains-any', sub).where('public', '==', true)
-                    .where('lang', '==', this.userData.lang).orderBy('date', 'desc').limit(10)
+                    .where('', '==', this.userData.lang).orderBy('date', 'desc').limit(10)
         ).valueChanges().subscribe((books) => {
           books.forEach((book) => res.push(book));
         });
@@ -400,7 +488,7 @@ export class UserService {
   }
 
   shareUser(userId: string) {
-    const userURL = 'https://app.noetic.site';
+    const userURL = 'https://app.noetic.site/user/' + userId;
     this.share('Voici mon profil sur Noetic: ', 'Partage de profil', userURL);
   }
 
@@ -486,6 +574,134 @@ export class UserService {
           }
         }
       ],
+    });
+  }
+
+  selectLanguages(type = 'checkbox'): Promise<string[]> {
+    return new Promise(async (res) => {
+      let inputs: any;
+      if (type === 'checkbox') {
+        inputs = this.languages;
+      }
+      if (type === 'radio') {
+        inputs = this.tradLanguages;
+      }
+      inputs.forEach(lang => {
+        lang.type = type;
+        lang.label = lang.name;
+        if (type === 'checkbox') {
+          lang.checked = false;
+          if (this.userData.searchlangs.includes(lang.value)) {
+            lang.checked = true;
+          }
+        }
+        if (type === 'radio') {
+          lang.checked = false;
+          if (this.userData.lang === lang.value) {
+            lang.checked = true;
+          }
+        }
+      });
+      const alert = await this.alertController.create({
+        cssClass: 'my-custom-class',
+        header: 'Langues disponibles',
+        inputs,
+        buttons: [
+          {
+            text: 'Annuler',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: () => {}
+          }, {
+            text: 'Ok',
+            handler: (data) => {
+              if (data.length <= 10) {
+                res(data);
+              } else {
+                res(this.userData.searchlangs);
+                this.popupService.toast('Vous ne pouvez pas choisir plus de 10 langues');
+              }
+            }
+          }
+        ]
+      });
+      await alert.present();
+
+    });
+  }
+
+  async chooseSpeakingLanguages() {
+    const searchlangs = await this.selectLanguages();
+    this.firestore.collection('users').doc(this.userId).update({searchlangs});
+  }
+
+  async chooseAppLanguage() {
+    const lang = await this.selectLanguages('radio');
+    this.firestore.collection('users').doc(this.userId).update({lang});
+    this.translator.setLanguage(lang);
+  }
+
+  alertRestart() {
+    this.popupService.alert('Veuillez redémarrer l\'application pour que votre paramétrage prenne effet');
+  }
+
+  async getMenuBooks() {
+    if (this.mostRecentSub) {
+      if (!this.mostRecentSub.closed) {
+        this.mostRecentSub.unsubscribe();
+        this.mostVueSub.unsubscribe();
+        this.topRatedSub.unsubscribe();
+      }
+    }
+    await this.getTopRated();
+    await this.getMostVue();
+    await this.getMostRecent();
+  }
+
+  async getMostVue(): Promise<any> {
+    return new Promise(res => {
+      this.mostVueSub = this.firestore.collection(
+      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('views', 'desc').limit(10)
+      ).valueChanges().subscribe((val) => {
+        this.mostVueBooks = val;
+        res();
+      });
+    });
+  }
+
+  async getTopRated(): Promise<any> {
+    return new Promise(res => {
+      this.topRatedSub = this.firestore.collection(
+      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('stars', 'desc').limit(10)
+      ).valueChanges().subscribe((val) => {
+        this.topRatedBooks = val;
+        res();
+      });
+    });
+  }
+
+  async getMostRecent(): Promise<any> {
+    return new Promise(res => {
+      this.mostRecentSub = this.firestore.collection(
+      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('date', 'desc').limit(10)
+      ).valueChanges().subscribe((val) => {
+        this.mostRecentBooks = val;
+        res();
+      });
+    });
+  }
+
+  uploadBanner(file, userId = this.curUserId): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const path = 'users/' + userId + '/banner.png';
+      this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
+        const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
+        await this.firestore.collection('users').doc(userId).update({banner: ref});
+        resolve();
+      }).catch((err) => {
+        this.popupService.error(err);
+        reject();
+      });
     });
   }
 }

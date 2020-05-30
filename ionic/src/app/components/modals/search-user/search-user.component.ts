@@ -1,22 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search-user',
   templateUrl: './search-user.component.html',
   styleUrls: ['./search-user.component.scss'],
 })
-export class SearchUserComponent implements OnInit {
+export class SearchUserComponent implements OnInit, OnDestroy {
 
   userId = '';
 
+  SEARCHUSER: any;
+
+  searchUserSub: Subscription;
+
   users: Observable<any>;
 
-  constructor(private modalCtrl: ModalController, public userService: UserService) { }
+  constructor(
+    private modalCtrl: ModalController,
+    public userService: UserService,
+    private translator: TranslateService
+    ) { }
 
-  ngOnInit() {}
+  async ngOnInit() {
+  }
+
+  getTraduction() {
+    this.searchUserSub = this.translator.get('MODALS.SEARCHUSER').subscribe((val) => {
+      this.SEARCHUSER = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.searchUserSub.unsubscribe();
+  }
 
   cancel() {
     this.dismiss();

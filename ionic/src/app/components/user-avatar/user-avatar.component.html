@@ -1,6 +1,6 @@
-<ion-fab-button color="light" [ngStyle]="{width: width, height: width}" a-sty>
-  <ion-avatar *ngIf="userAsync | async as user; else loading" button>
-    <ion-img [src]="user.avatar" *ngIf="user.avatar" button (click)="openProfile()"></ion-img>
+<ion-fab-button color="light" [ngStyle]="{width: width, height: width}">
+  <ion-avatar *ngIf="userAsync | async as user; else loading" button (click)="openProfile()">
+    <ion-img [src]="user.avatar" *ngIf="user.avatar" button></ion-img>
     <ion-img src="../../../assets/avatar/default.png" *ngIf="!user.avatar"></ion-img>
   </ion-avatar>
   <ng-template #loading>

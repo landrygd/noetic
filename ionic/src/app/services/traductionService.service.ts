@@ -8,12 +8,12 @@ export class TraductionService {
 
   curLanguage = 'en';
 
-  constructor(private translator: TranslateService) { 
+  constructor(private translator: TranslateService) {
     this.curLanguage = this.translator.getBrowserLang();
   }
 
   init() {
-    let language = this.translator.getBrowserLang();
+    const language = this.translator.getBrowserLang();
     this.translator.setDefaultLang(language);
     this.setLanguage(language);
   }

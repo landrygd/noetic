@@ -29,7 +29,7 @@ import { TutoPopoverComponent } from './tuto-popover/tuto-popover.component';
     IonicModule,
     FormsModule,
     ModalModule,
-    PipesModule
+    PipesModule,
   ],
   exports: [
     CardBookComponent,

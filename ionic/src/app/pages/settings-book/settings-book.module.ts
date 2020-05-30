@@ -10,6 +10,7 @@ import { SettingsBookPage } from './settings-book.page';
 import { ComponentModule } from 'src/app/components/component.module';
 import { SearchUserComponent } from 'src/app/components/modals/search-user/search-user.component';
 import { WallpapersSearchComponent } from 'src/app/components/modals/wallpapers-search/wallpapers-search.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { WallpapersSearchComponent } from 'src/app/components/modals/wallpapers-
     FormsModule,
     IonicModule,
     SettingsBookPageRoutingModule,
-    ComponentModule
+    ComponentModule,
+    TranslateModule
   ],
   declarations: [SettingsBookPage],
   entryComponents: [SearchUserComponent, WallpapersSearchComponent]

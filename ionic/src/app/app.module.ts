@@ -15,8 +15,8 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { ImageCropperModule } from 'ngx-image-cropper';
-import { HttpClient } from '@angular/common/http';
-import {TranslateModule} from '@ngx-translate/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { UserService } from './services/user.service';
 import { SlidesService } from './services/slides.service';
@@ -28,8 +28,10 @@ import { Network } from '@ionic-native/network/ngx';
 import { NetworkService } from './services/network.service';
 import { ComponentModule } from './components/component.module';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { MediaService } from './services/media.service';
+import { Facebook } from '@ionic-native/facebook/ngx';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyDAZRFBAHjrS8Ww03U95mMhX1-AD9rPDGo',
@@ -42,7 +44,7 @@ export const firebaseConfig = {
   measurementId: 'G-NLHMEK6CM5'
 };
 
-export function HttpLoaderFactory(http: HttpClient) {
+export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
@@ -61,9 +63,18 @@ export function HttpLoaderFactory(http: HttpClient) {
     AngularFirestoreModule,
     ImageCropperModule,
     ComponentModule,
-    TranslateModule.forRoot(),
+    HttpClientModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
+      }
+    }),
   ],
   providers: [
+    Facebook,
+    GooglePlus,
     LocalNotifications,
     SocialSharing,
     Network,

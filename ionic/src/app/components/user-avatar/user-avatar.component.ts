@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { Observable } from 'rxjs';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-user-avatar',
@@ -16,7 +17,8 @@ export class UserAvatarComponent implements OnInit {
   userAsync: Observable<unknown>;
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private navCtrl: NavController
     ) {}
 
   ngOnInit() {
@@ -29,7 +31,7 @@ export class UserAvatarComponent implements OnInit {
 
   openProfile() {
     if (!this.page) {
-      this.userService.openUser(this.userId);
+      this.navCtrl.navigateForward('user/' + this.userId);
     }
   }
 }

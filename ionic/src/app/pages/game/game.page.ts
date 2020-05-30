@@ -46,8 +46,8 @@ export class GamePage implements OnInit {
   opts: any[] = [];
   arg: any;
   args: any[];
-  places: {};
-  place: string;
+  places = {};
+  place = '';
 
   answers: string[];
 
@@ -207,35 +207,49 @@ export class GamePage implements OnInit {
                 this.paused = true;
                 this.answers = this.arg.split(';');
                 this.question = true;
+                setTimeout(() => this.scrollToBottom(), 100);
+                break;
+              case 'clear':
+                this.logs = [];
+                break;
+              case 'else':
+                line = this.getNextEndIf();
+                break;
+              case 'answer':
+                if (String(this.toVariable('$answer')) !== String(this.toVariable(this.arg))) {
+                  line = this.getNextAnswer();
+                }
                 break;
               case 'if':
-                const endVal = this.args.slice(2, this.args.length).join(' ');
-                if (['=', '==', '==='].includes(this.varValue1)) {
-                  if (this.varValue !== endVal) {
-                    line = this.getNextElse();
+                const endVal = this.varValue2;
+                const operator = this.varValue1;
+                const firstVal = this.varValue;
+                if (operator === '==') {
+                  if (String(firstVal) !== String(endVal)) {
+                    line = this.getNextEndIf();
                   }
-                } else if (this.varValue1 === '<') {
-                  if (this.varValue >= endVal) {
-                    line = this.getNextElse();
+                } else if (operator === '<') {
+                  if (Number(firstVal) >= Number(endVal)) {
+                    line = this.getNextEndIf();
                   }
-                } else if (this.varValue1 === '<=') {
-                  if (this.varValue > endVal) {
-                    line = this.getNextElse();
+                } else if (operator === '<=') {
+                  if (Number(firstVal) > Number(endVal)) {
+                    line = this.getNextEndIf();
                   }
-                } else if (this.varValue1 === '>') {
-                  if (this.varValue <= endVal) {
-                    line = this.getNextElse();
+                } else if (operator === '>') {
+                  if (Number(firstVal) <= Number(endVal)) {
+                    line = this.getNextEndIf();
                   }
-                } else if (this.varValue1 === '>=') {
-                  if (this.varValue < endVal) {
-                    line = this.getNextElse();
+                } else if (operator === '>=') {
+                  if (Number(firstVal) < Number(endVal)) {
+                    line = this.getNextEndIf();
                   }
-                } else if (this.varValue1 === ['!=', '!==']) {
-                  if (this.varValue === endVal) {
-                    line = this.getNextElse();
+                } else if (operator === ['!=', '!==']) {
+                  if (Number(firstVal) === Number(endVal)) {
+                    line = this.getNextEndIf();
                   }
                 } else {
-                  line = this.getNextElse();
+                  line = this.getNextEndIf();
                 }
                 break;
               case 'set':
@@ -306,37 +320,40 @@ export class GamePage implements OnInit {
       } else if (operator === 'random') {
         this.actors[actorId][nomVar] = this.getRandom();
       }
-      if (this.actors[actorId][nomVar]) {
-        if (operator === 'add') {
-          this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) + Number(value);
-        } else if (operator === 'sub') {
-          this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) - Number(value);
-        } else if (operator === 'mul') {
-          this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) * Number(value);
-        } else if (operator === 'div') {
-          this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) / Number(value);
-        }
-        return this.actors[actorId][nomVar];
+      if (!this.actors[actorId][nomVar]) {
+        this.actors[actorId][nomVar] = 0;
       }
+      if (operator === 'add') {
+        this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) + Number(value);
+      } else if (operator === 'sub') {
+        this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) - Number(value);
+      } else if (operator === 'mul') {
+        this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) * Number(value);
+      } else if (operator === 'div') {
+        this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) / Number(value);
+      }
+      return this.actors[actorId][nomVar];
     } else {
       const value = this.varValue1;
+      console.log(value, operator);
       if (operator === 'set') {
         this.variables[this.nomVar] = value;
       } else if (operator === 'random') {
         this.variables[this.nomVar] = this.getRandom();
       }
-      if (this.haveVariable(this.nomVar)) {
-        if (operator === 'add') {
-          this.variables[this.nomVar] = Number(this.variables[this.nomVar]) + Number(value);
-        } else if (operator === 'sub') {
-          this.variables[this.nomVar] = Number(this.variables[this.nomVar]) - Number(value);
-        } else if (operator === 'mul') {
-          this.variables[this.nomVar] = Number(this.variables[this.nomVar]) * Number(value);
-        } else if (operator === 'div') {
-          this.variables[this.nomVar] = Number(this.variables[this.nomVar]) / Number(value);
-        }
-        return this.variables[this.nomVar];
+      if (!this.haveVariable(this.nomVar)) {
+        this.variables[this.nomVar] = 0;
       }
+      if (operator === 'add') {
+        this.variables[this.nomVar] = Number(this.variables[this.nomVar]) + Number(value);
+      } else if (operator === 'sub') {
+        this.variables[this.nomVar] = Number(this.variables[this.nomVar]) - Number(value);
+      } else if (operator === 'mul') {
+        this.variables[this.nomVar] = Number(this.variables[this.nomVar]) * Number(value);
+      } else if (operator === 'div') {
+        this.variables[this.nomVar] = Number(this.variables[this.nomVar]) / Number(value);
+      }
+      return this.variables[this.nomVar];
     }
     return null;
   }
@@ -439,6 +456,7 @@ export class GamePage implements OnInit {
     let opt = true;
     this.arg = '';
     this.args = [];
+    this.opts = [];
     for (let word of words) {
       word = word.trim();
       if (word !== '') {
@@ -574,6 +592,14 @@ export class GamePage implements OnInit {
     return val;
   }
 
+  toName(val: string) {
+    if (val !== undefined) {
+      val.replace('$', '');
+      val.replace('@', '');
+    }
+    return val;
+  }
+
   async askQuestion() {
     const buttons = [];
     for (const answer of this.answers) {
@@ -595,14 +621,52 @@ export class GamePage implements OnInit {
     return new Promise(res => setTimeout(() => res(), second * 1000));
   }
 
-  getNextElse() {
-    for (let i = this.line; i < this.chatLogs.length; i++) {
+  getNextEndIf() {
+    let cpt = 0;
+    for (let i = this.line + 1; i < this.chatLogs.length; i++) {
       const log = this.chatLogs[i];
-      if (log.msg === '/else') {
-        return i;
+      if (this.getCommand(log.msg) === '/if') {
+        cpt += 1;
+      }
+      if (this.getCommand(log.msg) === '/endif') {
+        if (cpt > 0) {
+          cpt -= 1;
+        } else {
+          return i + 1;
+        }
+      }
+      if (this.getCommand(log.msg) === '/else') {
+        if (cpt <= 0) {
+          return i + 1;
+        }
       }
     }
-    return this.chatLogs.length;
+    // saut ignoré
+    return this.line + 1;
+  }
+
+  getNextAnswer() {
+    let cpt = 0;
+    for (let i = this.line + 1; i < this.chatLogs.length; i++) {
+      const log = this.chatLogs[i];
+      if (this.getCommand(log.msg) === '/question') {
+        cpt += 1;
+      }
+      if (this.getCommand(log.msg) === '/answer') {
+        if (cpt <= 0) {
+          return i;
+        }
+      }
+      if (this.getCommand(log.msg) === '/endanswers') {
+        if (cpt > 0) {
+          cpt -= 1;
+        } else {
+          return i + 1;
+        }
+      }
+    }
+    // saut ignoré
+    return this.line + 1;
   }
 
   async askInput(): Promise<any> {

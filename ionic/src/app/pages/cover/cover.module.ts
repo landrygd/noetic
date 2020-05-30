@@ -10,6 +10,7 @@ import { CoverPage } from './cover.page';
 import { PipesModule } from 'src/app/pipes/pipes.module';
 import { ComponentModule } from 'src/app/components/component.module';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { UploadComponent } from 'src/app/components/modals/upload/upload.compone
     IonicModule,
     CoverPageRoutingModule,
     PipesModule,
-    ComponentModule
+    ComponentModule,
+    TranslateModule
   ],
   declarations: [CoverPage],
   entryComponents: [UploadComponent]

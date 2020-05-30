@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { AlertController } from '@ionic/angular';
 import { ThemeService } from 'src/app/services/theme.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -15,7 +16,8 @@ export class UserSettingsPage implements OnInit {
   constructor(
     public authService: AuthService,
     private alertController: AlertController,
-    public themeService: ThemeService
+    public themeService: ThemeService,
+    public userService: UserService
     ) {}
 
   ngOnInit() {
@@ -54,5 +56,14 @@ export class UserSettingsPage implements OnInit {
 
   toggleDarkMode() {
     this.themeService.toggleAppTheme();
+  }
+
+
+  chooseSpeakingLanguages() {
+    this.userService.chooseSpeakingLanguages();
+  }
+
+  chooseAppLanguage() {
+    this.userService.chooseAppLanguage();
   }
 }

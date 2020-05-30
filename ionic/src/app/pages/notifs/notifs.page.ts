@@ -27,11 +27,11 @@ export class NotifsPage implements OnInit {
 
   accept(notif) {
     this.notifService.acceptInvitation(notif.user, notif.book);
-    this.erase(notif.id);
+    this.erase(notif);
   }
 
   refuse(notif) {
-    this.erase(notif.id);
+    this.erase(notif);
   }
 
   erase(notif) {

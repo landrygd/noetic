@@ -1,6 +1,208 @@
 {
-  "TITLE"         : "Bonjour Monsieur",
-  "TITLE_2"       : "Bonjour {{value}}",
-  "description"   : "Ooohh .... vous venez de traduire ce texte?",
-  "data"          :{"name": "je m'appelle {{name_value}}"}
+  "ATTRIBUTIONS": {},
+  "SEARCH": {
+    "nosearch": "Recherche vide",
+    "noresult": "Pas de résultat"
+  },
+  "CHART": {
+    "header": "Charte de Noetic",
+    "intro": "Il est formellement interdit dans tout ouvrage :",
+    "rules": [
+      "De porter des propos racistes, homophobes, sexiste ou tout autres sujets politiquement incorrectes.",
+      "D’être irrespectueux envers le lecteur, le harceler ou l’agresser.",
+      "De spammer, abuser des bruitages.",
+      "De spoiler sans avertir les lecteurs.",
+      "D’utiliser du contenu pornographique ou d’extrême violence.",
+      "De ne pas avertir les lecteurs d’un contenu choquant où parlant d’un sujet sensible.",
+      "De divulguer des informations privée d’autres personnes sans consentement.",
+      "Plagier une histoire",
+      "Ne pas mentionner les auteurs des images utilisées. Y compris la couverture!"
+    ],
+    "outro": "Tout utilisateur ne respectant pas ces règles est pénalisable d’un bannissement."
+  },
+  "CHAT": {
+    "avaibleSounds": "Voir les sons disponibles",
+    "avaibleMusics": "Voir les musiques disponibles",
+    "avaibleAmbiances": "Voir les ambiances disponibles",
+    "enterMessage": "Entrez un message...",
+    "alertSettingsHeader": "Paramètres du chat"
+  },
+  "COVER": {
+    "more": "En savoir plus",
+    "changeDesc": "Changer de description",
+    "changeVerso": "Changer le verso",
+    "addTag": "Ajouter un tag",
+    "answer": "Répondre",
+    "seeAuthorAnswer": "Voir la réponse du créateur",
+    "hideAuthorAnswer": "Cacher la réponse du créateur",
+    "toastCommentSent": "Commentaire envoyé",
+    "toastAddedToList": "Ajouté à la liste",
+    "toastRemovedFromList": "Retiré de la liste",
+    "alertTitleHeader": "Changer de titre",
+    "alertTitlePlaceholder": "Votre titre",
+    "alertAnswerPlaceholder": "Entrez votre réponse",
+    "alertTagPlaceholder": "Nom du tag",
+    "alertDescPlaceholder": "Votre description",
+    "alertVersoPlaceholder": "Votre verso"
+  },
+  "PASSWORD": {
+    "reinit": "Réinitialiser le mot de passe"
+  },
+  "GAME": {
+    "answer": "Choisir une réponse",
+    "input": "Entrer du texte"
+  },
+  "HOME": {
+    "saves": "Mes sauvegardes",
+    "topRated": "Les mieux notés",
+    "mostVue": "Les plus vues",
+    "mostRecent": "Les plus récents",
+    "search": "Chercher une histoire",
+    "popupRGPD": "En poursuivant votre navigation sur ce site, vous acceptez l’utilisation de cookies pour vous proposer du contenu ciblé adapté à vos centres d’intérêts et réaliser des statistiques de visites."
+  },
+  "LOGIN": {
+    "forgotPassword": "Mot de passe oublié?",
+    "login": "Se connecter",
+    "noAccount": "Pas de compte?",
+    "register": "Créer un compte",
+    "return": "Retourner sur le site",
+    "otherConnexion": "Ou connectez vous avec"
+  },
+  "MAP": {},
+  "NEWBOOK": {
+    "changeCover": "Changer de couverture",
+    "create": "Créer une histoire"
+  },
+  "NOTIFS": {
+    "noNotif": "Pas de notifications pour le moment...",
+    "invWriting": "vous propose d'écrire avec lui sur le livre",
+    "acceptInvWriting": "a accepté votre invitation sur le livre"
+  },
+  "OFFLINE": {
+    "pleaseReconnect": "Veuillez réétablir la connexion pour continuer."
+  },
+  "PRESENTATION": {
+    "create": "Créez",
+    "createDesc": "des histoires à travers des chats interactifs,",
+    "invite": "Invitez",
+    "inviteDesc": "vos amis à créez et/ou jouer une histoire ensemble,",
+    "discover": "Et découvrez",
+    "discoverDesc": "ce que les autres ont partagés, vous risquez d'être surpris!",
+    "letsGo": "C'est parti !"
+  },
+  "PRIVACY": {},
+  "PROFILE": {
+    "noBio": "Rien a dire pour le moment...",
+    "follow": "Suivre",
+    "unfollow": "Arrêter de suivre",
+    "myStories": "Mes histoires",
+    "hisStories": "Ses histoires",
+    "myList": "Ma liste",
+    "myFollows": "Mes Suivis"
+  },
+  "REGISTER": {
+    "accept": "J'accepte",
+    "privatePolicy": "la politique de confidentialité"
+  },
+  "BOOKSETTINGS": {
+    "header": "Paramètres du livre",
+    "publish": "Publier ce livre",
+    "unPublish": "Arrêter de publier ce livre",
+    "tuto": "Recommencer le tutoriel",
+    "background": "Changer d'arrière plan",
+    "invite": "Inviter un ami à coopérer",
+    "leave": "Se retirer du livre",
+    "delete": "Supprimer ce livre"
+  },
+  "STORY": {},
+  "TABS": {
+    "home": "Accueil",
+    "profile": "Profil"
+  },
+  "BOOKTABS": {
+    "story": "Scénario"
+  },
+  "USERSETTINGS": {
+    "header": "Paramètres d'utilisateur",
+    "nightMode": "Mode nuit",
+    "changeMail": "Changer d'adresse mail",
+    "reinitPassword": "Réinitialiser le mot de passe",
+    "searchLanguages": "Gérer les langues des livres de recherchés",
+    "language": "Gérer la langue de l'application"
+  },
+
+  "MODALS": {
+    "UPLOAD": {
+      "header": "Charger une image",
+      "error": "Erreur de chargement de l'image. Veuillez vérifier si elle est bien au format .jpeg ou .png."
+    },
+    "ACTOR": {
+      "changeColor": "Changer de couleur",
+      "warningDesc": "En supprimant cet acteur, vous supprimez également tout ses messages."
+    },
+    "MANUAL": {
+      "command": "Chercher un bruitage",
+      "sound": "Chercher un son",
+      "ambiance": "Chercher une ambiance",
+      "music": "Chercher une musique"
+    },
+    "SEARCHUSER": {
+      "search": "Chercher un utilisateur"
+    },
+    "WALLPAPER": {
+      "header": "Choisir un arrière plan"
+    }
+  },
+
+  "ERRORS": {
+    "title3CarMin": "Le titre doit faire au moins plus de 3 caractères",
+    "title40CarMax": "Le titre doit faire moins 40 caractères",
+    "5TagsMax": "Impossible d'avoir plus de 5 tags pour un même livre.",
+    "unratedComment": "Veuillez noter avant d'envoyer votre avis",
+    "invalidLabelName": "Impossible de créer de label avec ce nom.",
+    "buttonsNotAvaible": "Impossible d'exécuter les boutons ici."
+  },
+
+  "POPUPS": {},
+
+  "COMMON": {
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "ok": "Ok",
+    "loading": "Chargement en cours...",
+    "read": "Lire",
+    "return": "Retour",
+    "category": "Catégorie",
+    "notifs": "Notifications",
+    "accept": "Accepter",
+    "refuse": "Refuser",
+    "erase": "Effacer",
+    "disconnected": "Déconnecté",
+    "next": "Suivant",
+    "register": "S'inscrire",
+    "examples": "Exemples",
+    "use": "Utiliser",
+    "send": "Envoyer",
+    "options": "Options",
+    "warning": "Attention",
+    "delete": "Supprimer",
+    "rename": "Renommer",
+    "more": "En savoir plus"
+  },
+
+  "CATEGORIES": {
+    "action": "Action",
+    "adventure": "Aventure",
+    "fanfiction": "Fan-fiction",
+    "fantastic": "Fantastique",
+    "fiction": "Fiction générale",
+    "horror": "Horreur",
+    "humor": "Humour",
+    "mystery": "Mytérieux",
+    "nonfiction": "Non-Fiction",
+    "romance": "Romance",
+    "scifi": "Science-Fiction",
+    "thriller": "Thriller",
+    "undefined": "Non catégorisé"
   }
+}

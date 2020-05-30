@@ -16,10 +16,7 @@ export class NotifService {
     private bookService: BookService,
     private userService: UserService,
     private localNotifications: LocalNotifications
-  ) {
-    // this.userNotifs = this.firestore.collection('users').doc(this.userId).collection('notifs');
-    // this.userId = this.authService.userId;
-   }
+  ) {}
 
   sendNotif(type, userId, bookId) {
     const id = this.firestore.createId();

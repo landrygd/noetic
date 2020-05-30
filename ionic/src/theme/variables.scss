@@ -682,67 +682,139 @@ ion-action-sheet button span {
   justify-content: center;
 }
 
-ion-action-sheet {
+.action-sheet-button.sc-ion-action-sheet-md {
+  padding: 0;
+  span {
+    padding: 0 16px 0 16px;
+  }
+}
 
-  .red * { color: #f44336; }
+ion-action-sheet {
+  /* Red */
+  .red span { 
+    color: var(--ion-color-red-contrast);
+    background-color: var(--ion-color-red);
+  }
 
   /* Pink */
-  .pink * { color: #e91e63; }
-  
+  .pink span {
+    color: var(--ion-color-pink-contrast);
+    background-color: var(--ion-color-pink);
+  }
+
   /* Purple */
-  .purple * { color: #9c27b0; }
-  
+  .purple span {
+    color: var(--ion-color-purple-contrast);
+    background-color: var(--ion-color-purple);
+  }
+
   /* Deep Purple */
-  .deep-purple * { color: #673ab7; }
-  
+  .deep-purple span { 
+    color: var(--ion-color-deep-purple-contrast);
+    background-color: var(--ion-color-deep-purple);
+  }
+
   /* Indigo */
-  .indigo * { color: #3f51b5; }
+  .indigo span { 
+    color: var(--ion-color-indigo-contrast);
+    background-color: var(--ion-color-indigo);
+  }
   
   /* Blue */
-  .blue * { color: #2196f3; }
-  
+  .blue span { 
+    color: var(--ion-color-blue-contrast);
+    background-color: var(--ion-color-blue);
+  }
+
   /* Light Blue */
-  .light-blue * { color: #03a9f4; }
-  
+  .light-blue span { 
+    color: var(--ion-color-light-blue-contrast);
+    background-color: var(--ion-color-light-blue);
+  }
+
   /* Cyan */
-  .cyan * { color: #00bcd4; }
-  
+  .cyan span { 
+    color: var(--ion-color-cyan-contrast);
+    background-color: var(--ion-color-cyan);
+  }
+
   /* Teal */
-  .teal * { color: #009688; }
-  
+  .teal span { 
+    color: var(--ion-color-teal-contrast);
+    background-color: var(--ion-color-teal);
+  }
+
   /* Green */
-  .green * { color: #4caf50; }
-  
+  .green span { 
+    color: var(--ion-color-green-contrast);
+    background-color: var(--ion-color-green);
+  }
+
   /* Light Green */
-  .light-green * { color: #8bc34a; }
-  
+  .light-green span { 
+    color: var(--ion-color-light-green-contrast);
+    background-color: var(--ion-color-light-green);
+  }
+
   /* Lime */
-  .lime * { color: #cddc39; }
-  
+  .lime span { 
+    color: var(--ion-color-lime-contrast);
+    background-color: var(--ion-color-lime);
+  }
+
   /* Yellow */
-  .yellow * { color: #ffeb3b; }
-  
+  .yellow span { 
+    color: var(--ion-color-yellow-contrast);
+    background-color: var(--ion-color-yellow);
+  }
+
   /* Amber */
-  .amber * { color: #ffc107; }
-  
+  .amber span { 
+    color: var(--ion-color-amber-contrast);
+    background-color: var(--ion-color-amber);
+  }
+
   /* Orange */
-  .orange * { color: #ff9800; }
-  
+  .orange span { 
+    color: var(--ion-color-orange-contrast);
+    background-color: var(--ion-color-orange);
+  }
+
   /* Deep Orange */
-  .deep-orange * { color: #ff5722; }
-  
+  .deep-orange span { 
+    color: var(--ion-color-deep-orange-contrast);
+    background-color: var(--ion-color-deep-orange);
+  }
+
   /* Brown */
-  .brown * { color: #795548; }
-  
+  .brown span { 
+    color: var(--ion-color-brown-contrast);
+    background-color: var(--ion-color-brown);
+  }
+
   /* Grey */
-  .grey * { color: #9e9e9e; }
-  
+  .grey span { 
+    color: var(--ion-color-grey-contrast);
+    background-color: var(--ion-color-grey);
+  }
+
   /* Blue Grey */
-  .blue-grey * { color: #607d8b; }
-  
-  /* White / Black */
-  .white * { color: #ffffff; background-color: gray;}
-  .black * { color: #000000; background-color: gray;}
+  .blue-grey span { 
+    color: var(--ion-color-blue-grey-contrast);
+    background-color: var(--ion-color-blue-grey);
+  }
+
+  /* White */
+  .white span { 
+    color: var(--ion-color-white-contrast);
+    background-color: var(--ion-color-white);
+  }
+
+  /* Black */
+  .black span { 
+    color: var(--ion-color-black-contrast);
+    background-color: var(--ion-color-black);
+  }
 }
 
 .white-silhouette {

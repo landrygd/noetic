@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { NavController, ToastController, AlertController, ModalController } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
 import { BookService } from 'src/app/services/book.service';
@@ -7,13 +7,15 @@ import { AuthService } from 'src/app/services/auth.service';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { PopupService } from 'src/app/services/popup.service';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cover',
   templateUrl: './cover.page.html',
   styleUrls: ['./cover.page.scss'],
 })
-export class CoverPage implements OnInit {
+export class CoverPage implements OnInit, OnDestroy {
   com: any[] = [];
   tags: any[] = [];
 
@@ -22,7 +24,12 @@ export class CoverPage implements OnInit {
   inList = false;
   curBookId: string;
 
-  comment = {
+  comment: {
+    userId: string,
+    text: string,
+    rate: number,
+    date: number
+  } = {
     userId: this.userService.userId,
     text: '',
     rate: 0,
@@ -32,6 +39,21 @@ export class CoverPage implements OnInit {
   commented = false;
   lastRate = 0;
   loading = true;
+  editComment = false;
+
+  ERRORS: any = {};
+  COVER: any = {};
+  COMMON: any = {};
+
+  coverSub: Subscription;
+  errosSub: Subscription;
+  commonSub: Subscription;
+
+  haveCommentedSub: Subscription;
+
+  background = 'url("../../../assets/banner.png")';
+
+  @ViewChild('banner', {static: true, read: ElementRef}) banner: ElementRef;
 
   constructor(
     public navCtrl: NavController,
@@ -44,15 +66,32 @@ export class CoverPage implements OnInit {
     private modalController: ModalController,
     private popupService: PopupService,
     private route: ActivatedRoute,
-    ) {
-      // if (!this.bookService.curBookId) {
-      //   this.navCtrl.pop();
-      // } else {
-      //   this.curBookId = this.bookService.curBookId;
-      // }
-    }
+    private translator: TranslateService
+    ) {}
 
   ngOnInit() {
+    this.getTraduction();
+  }
+
+  getTraduction() {
+    this.errosSub = this.translator.get('ERRORS').subscribe((val) => {
+      this.ERRORS = val;
+    });
+    this.coverSub = this.translator.get('COVER').subscribe((val) => {
+      this.COVER = val;
+    });
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.coverSub.unsubscribe();
+    this.errosSub.unsubscribe();
+    this.commonSub.unsubscribe();
+  }
+
+  ionViewWillEnter() {
     const bookId = this.route.snapshot.paramMap.get('id');
     this.curBookId = bookId;
     if (this.bookService.curBookId !== bookId) {
@@ -61,11 +100,13 @@ export class CoverPage implements OnInit {
       .then(() => {
         this.loading = false;
         this.commentService.syncComments(this.bookService.book.id);
+        this.getBanner();
         if (this.authService.connected) {
           this.inList = this.userService.haveFromList(this.bookService.book.id);
-          this.commentService.haveCommented(this.bookService.book.id).subscribe((value) => {
+          this.haveCommentedSub = this.commentService.haveCommented(this.bookService.book.id).subscribe((value) => {
             if (value.length !== 0) {
-              this.comment = value[0];
+              const comment: any = value[0].payload.doc.data();
+              this.comment = comment;
               this.commented = true;
               this.lastRate = this.comment.rate;
             }
@@ -83,22 +124,22 @@ export class CoverPage implements OnInit {
 
   async answer(userId) {
     const alert = await this.alertController.create({
-      header: 'Répondre',
+      header: this.COVER.answer,
       inputs: [
         {
           name: 'answer',
           id: 'answer',
           type: 'textarea',
-          placeholder: 'Entrez votre réponse'
+          placeholder: this.COVER.alertAnswerPlaceholder
         },
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel',
           cssClass: 'secondary',
         }, {
-          text: 'Envoyer',
+          text: this.COMMON.send,
           handler: (data) => {
             this.commentService.answerToComment(this.bookService.book.id, userId, data.answer);
           }
@@ -110,9 +151,9 @@ export class CoverPage implements OnInit {
 
   async more() {
     const alert = await this.alertController.create({
-      header: 'Verso',
+      header: this.COVER.changeVerso,
       message: this.bookService.book.verso,
-      buttons: ['OK']
+      buttons: [this.COMMON.ok]
     });
 
     await alert.present();
@@ -132,7 +173,13 @@ export class CoverPage implements OnInit {
 
   back() {
     this.commentService.unsyncComments();
+    if (this.haveCommentedSub) {
+      if (!this.haveCommentedSub.closed) {
+        this.haveCommentedSub.unsubscribe();
+      }
+    }
     this.bookService.unsyncBook(true);
+    this.bookService.curBookId = '';
   }
 
   share() {
@@ -142,24 +189,25 @@ export class CoverPage implements OnInit {
   async addTag() {
     if (this.bookService.book.tags.length < 5) {
       const alert = await this.alertController.create({
-        header: 'Ajouter un tag',
+        header: this.COVER.addTag,
         inputs: [
           {
             name: 'tag',
             type: 'text',
-            placeholder: 'Nom du tag',
+            placeholder: this.COVER.alertTagPlaceholder,
           }
         ],
         buttons: [
           {
-            text: 'Annuler',
+            text: this.COMMON.cancel,
             role: 'cancel',
             cssClass: 'secondary'
           }, {
-            text: 'Confirmer',
+            text: this.COMMON.confirm,
             handler: (data) => {
               const tags = this.bookService.book.tags;
-              tags.push(data.tag);
+              const tag: string = data.tag;
+              tags.push(tag.toLowerCase());
               this.bookService.updateBookData({tags});
             }
           }
@@ -168,8 +216,8 @@ export class CoverPage implements OnInit {
       await alert.present();
     } else {
       const alert = await this.alertController.create({
-        message: 'Impossible d\'avoir plus de 5 tags pour un même livre.',
-        buttons: ['OK']
+        message: this.ERRORS.TagsMax,
+        buttons: [this.COMMON.ok]
       });
       await alert.present();
     }
@@ -193,25 +241,25 @@ export class CoverPage implements OnInit {
   }
 
   send() {
-    const date = Date.now();
+    const date: number = Date.now();
     this.comment.date = date;
     if (this.comment.rate !== 0 ) {
       this.commentService.addComment(this.comment, this.bookService.book.id, this.commented, this.lastRate);
-      this.toast('Avis envoyé');
+      this.toast(this.ERRORS.toastCommentSent);
     } else {
-      this.toast('Veuillez noter avant d\'envoyer votre avis');
+      this.toast(this.ERRORS.unratedComment);
     }
   }
 
   addToList() {
     this.userService.addBookListRef(this.bookService.book.id);
-    this.toast('Ajouté à la liste');
+    this.toast(this.ERRORS.toastAddedToList);
     this.inList = true;
   }
 
   removeFromList() {
     this.userService.deleteBookListRef(this.bookService.book.id);
-    this.toast('Retiré de la liste');
+    this.toast(this.ERRORS.toastRemovedFromList);
     this.inList = false;
   }
 
@@ -229,7 +277,6 @@ export class CoverPage implements OnInit {
 
   starAverageToArray() {
     const size = Math.round(this.bookService.book.stars / Math.max(this.bookService.book.votes, 1));
-    console.log(size);
     return new Array(size);
   }
 
@@ -251,29 +298,29 @@ export class CoverPage implements OnInit {
 
   async changeTitle() {
     const alert = await this.alertController.create({
-      header: 'Changer de titre',
+      header: this.COVER.alertTitleHeader,
       inputs: [
         {
           name: 'title',
           type: 'text',
-          placeholder: 'Votre titre',
+          placeholder: this.COVER.alertTitlePlaceholder,
           value: this.bookService.book.title,
         }
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel',
           cssClass: 'secondary'
         }, {
-          text: 'Confirmer',
+          text: this.COMMON.confirm,
           handler: (data) => {
             const title: string = data.title;
             if (title.length < 3) {
-              this.popupService.alert('Le titre doit faire au moins plus de 3 caractères');
+              this.popupService.alert(this.ERRORS.title3CarMin);
               return;
             } else if (title.length > 40) {
-              this.popupService.alert('Le titre doit faire moins 40 caractères');
+              this.popupService.alert(this.ERRORS.title40CarMax);
               return;
             }
             this.bookService.updateBookData({title, titleLower: title.toLowerCase()});
@@ -286,22 +333,22 @@ export class CoverPage implements OnInit {
 
   async changeDesc() {
     const alert = await this.alertController.create({
-      header: 'Changer de description (courte)',
+      header: this.COVER.changeDesc,
       inputs: [
         {
           name: 'desc',
           type: 'text',
-          placeholder: 'Votre description',
+          placeholder: this.COVER.alertDescPlaceholder,
           value: this.bookService.book.desc,
         }
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel',
           cssClass: 'secondary'
         }, {
-          text: 'Confirmer',
+          text: this.COMMON.confirm,
           handler: (data) => {
             this.bookService.updateBookData({desc: data.desc});
           }
@@ -313,22 +360,22 @@ export class CoverPage implements OnInit {
 
   async changeVerso() {
     const alert = await this.alertController.create({
-      header: 'Changer de verso',
+      header: this.COVER.changeVerso,
       inputs: [
         {
           name: 'verso',
           type: 'textarea',
-          placeholder: 'Votre verso',
+          placeholder: this.COVER.alertVersoPlaceholder,
           value: this.bookService.book.verso,
         }
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel',
           cssClass: 'secondary'
         }, {
-          text: 'Confirmer',
+          text: this.COMMON.confirm,
           handler: (data) => {
             this.bookService.updateBookData({verso: data.verso});
           }
@@ -353,6 +400,33 @@ export class CoverPage implements OnInit {
           }
       });
       return await modal.present();
+    }
+  }
+
+  async changeBanner() {
+    if (this.bookService.isAuthor) {
+      const modal = await this.modalController.create({
+        component: UploadComponent,
+        componentProps: {
+          type: 'banner',
+        }
+      });
+      modal.onDidDismiss()
+        .then(async (data) => {
+          if (data.data) {
+            await this.bookService.uploadBanner(data.data);
+            this.getBanner();
+          }
+      });
+      return await modal.present();
+    }
+  }
+
+  getBanner() {
+    const banner = this.bookService.book.banner;
+    if (banner) {
+      const res = 'url(' + banner + ')';
+      this.background = res;
     }
   }
 

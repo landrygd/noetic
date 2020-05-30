@@ -27,6 +27,8 @@ export class ProfilePage implements OnInit, OnDestroy {
   userId: string;
   tabs = false;
 
+  banner: string = 'url("../../../assets/banner.png")';
+
   constructor(
     public modalController: ModalController,
     public actionSheetController: ActionSheetController,
@@ -89,6 +91,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   syncData() {
     this.userSub = this.userAsync.subscribe((val) => {
       this.user = val;
+      this.getBanner();
       this.ownProfile = this.user.id === this.userService.userId;
       // this.userBooks = this.userService.getBooks();
       if (!this.followSub && this.userService.connected) {
@@ -267,6 +270,33 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   share() {
     this.userService.shareUser(this.userId);
+  }
+
+  async changeBanner() {
+    if (this.ownProfile && this.tabs) {
+      const modal = await this.modalController.create({
+        component: UploadComponent,
+        componentProps: {
+          type: 'banner',
+        }
+      });
+      modal.onDidDismiss()
+        .then(async (data) => {
+          if (data.data) {
+            await this.userService.uploadBanner(data.data);
+            this.getBanner();
+          }
+      });
+      return await modal.present();
+    }
+  }
+
+  getBanner() {
+    const banner = this.user.banner;
+    if (banner) {
+      const res = 'url(' + banner + ')';
+      this.banner = res;
+    }
   }
 
   report() {

@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header *ngIf="WALLPAPER">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button (click)="cancel()">
@@ -6,7 +6,7 @@
       </ion-button>
     </ion-buttons>
     <ion-title>
-      Choisir un arrière plan
+      {{WALLPAPER.header}}
     </ion-title>
   </ion-toolbar>
 </ion-header>

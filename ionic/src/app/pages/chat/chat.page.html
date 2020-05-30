@@ -31,13 +31,13 @@
 
 <ion-footer>
   <ion-button (click)="showAudio('sound')" expand="block" fill="solid" shape="round" *ngIf="sound">
-    Voir les sons disponibles
+    {{'CHAT.avaibleSounds' | translate}}
   </ion-button>
   <ion-button (click)="showAudio('music')" expand="block" fill="solid" shape="round" *ngIf="music">
-    Voir les musiques disponibles
+    {{'CHAT.avaibleMusics' | translate}}
   </ion-button>
   <ion-button (click)="showAudio('ambiance')" expand="block" fill="solid" shape="round" *ngIf="ambiance">
-    Voir les ambiances disponibles
+    {{'CHAT.avaibleAmbiances' | translate}}
   </ion-button>
   <ion-toolbar>
     <ion-buttons slot="start">
@@ -58,7 +58,7 @@
         <ion-icon slot="icon-only" name="help" ></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-textarea #chatBar [disabled]='textarea' rows="1" [(ngModel)]='text' placeholder="Entrez un message..." (ionInput)="changeMsg()" (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
+    <ion-textarea #chatBar [disabled]='textarea' rows="1" [(ngModel)]='text' [placeholder]="'CHAT.enterMessage' | translate" (ionInput)="changeMsg()" (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
     <ion-buttons slot="end">
       <ion-button (click)="send()" expand="block" fill="clear" shape="round" color="primary">
         <ion-icon slot="icon-only" name="send" ></ion-icon>

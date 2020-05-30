@@ -1,6 +1,156 @@
 {
-  "TITLE": "Hello sir",
-  "TITLE_2": "Hello {{value}}",
-  "description": "Ooohh .... did you just translate this text ?",
-  "data": {"name": "My name is {{name_value}}"}
+  "ATTRIBUTIONS": {},
+  "SEARCH": {
+    "nosearch": "Empty search",
+    "noresult": "No result"
+  },
+  "CHART": {
+    "header": "Noetic Chart",
+    "intro": "Il est formellement interdit dans tout ouvrage :",
+    "rules": [
+      "De porter des propos racistes, homophobes, sexiste ou tout autres sujets politiquement incorrectes.",
+      "D’être irrespectueux envers le lecteur, le harceler ou l’agresser.",
+      "De spammer, abuser des bruitages.",
+      "De spoiler sans avertir les lecteurs.",
+      "D’utiliser du contenu pornographique ou d’extrême violence.",
+      "De ne pas avertir les lecteurs d’un contenu choquant où parlant d’un sujet sensible.",
+      "De divulguer des informations privée d’autres personnes sans consentement.",
+      "Plagier une histoire",
+      "Ne pas mentionner les auteurs des images utilisées. Y compris la couverture!"
+    ],
+    "outro": "Tout utilisateur ne respectant pas ces règles est pénalisable d’un bannissement."
+  },
+  "CHAT": {
+    "avaibleSounds": "Voir les sons disponibles",
+    "avaibleMusics": "Voir les musiques disponibles",
+    "avaibleAmbiances": "Voir les ambiances disponibles",
+    "enterMessage": "Entrez un message..."
+  },
+  "COVER": {
+    "more": "En savoir plus",
+    "changeVerso": "Changer le verso",
+    "addTag": "Ajouter un tag",
+    "answer": "Répondre",
+    "seeAuthorAnswer": "Voir la réponse du créateur",
+    "hideAuthorAnswer": "Cacher la réponse du créateur"
+  },
+  "PASSWORD": {
+    "reinit": "Réinitialiser le mot de passe"
+  },
+  "GAME": {
+    "answer": "Choisir une réponse",
+    "input": "Entrer du texte"
+  },
+  "HOME": {
+    "saves": "My saves",
+    "topRated": "Top rated",
+    "mostVue": "Most view",
+    "mostRecent": "Most recent",
+    "search": "Search for a story"
+  },
+  "LOGIN": {
+    "forgotPassword": "Password forgotten?",
+    "login": "Log in",
+    "noAccount": "No account yet",
+    "register": "Create an account",
+    "return": "Return to the site",
+    "otherConnexion": "Or log in with"
+  },
+  "MAP": {},
+  "NEWBOOK": {
+    "changeCover": "Change cover",
+    "create": "Create a story"
+  },
+  "NOTIFS": {
+    "noNotif": "No notification for the time being...",
+    "invWriting": "invite you to write with him/her on the story",
+    "acceptInvWriting": "accepted your invitation on the story"
+  },
+  "OFFLINE": {
+    "pleaseReconnect": "Please re-establish connection to continue"
+  },
+  "PRESENTATION": {
+    "create": "Create",
+    "createDesc": "stories with interactives chats,",
+    "invite": "Invite",
+    "inviteDesc": "your friends to read/write stories together,",
+    "discover": "And find out",
+    "discoverDesc": "what the others have done, you might be surprised!",
+    "letsGo": "Let's go !"
+  },
+  "PRIVACY": {},
+  "PROFILE": {
+    "noBio": "Nothing to say for the time being...",
+    "follow": "Follow",
+    "unfollow": "Stop following",
+    "myStories": "My Stories",
+    "hisStories": "His/her stories",
+    "myList": "My list",
+    "myFollows": "My follows"
+  },
+  "REGISTER": {
+    "accept": "I accept",
+    "privatePolicy": "the privacy policy"
+  },
+  "BOOKSETTINGS": {
+    "header": "Book settings",
+    "publish": "Publish the book",
+    "unPublish": "Stop publishing the book",
+    "tuto": "Restart the tutorial again",
+    "background": "Change the background",
+    "invite": "Invite a firend to cooperate.",
+    "leave": "Leave this book",
+    "delete": "Delete this book"
+  },
+  "STORY": {},
+  "TABS": {
+    "home": "Home",
+    "profile": "Profile"
+  },
+  "BOOKTABS": {
+    "story": "Scenario"
+  },
+  "USERSETTINGS": {
+    "header": "User settings",
+    "nightMode": "Night mode",
+    "changeMail": "Change the mail addresse",
+    "reinitPassword": "Reset the password",
+    "searchLanguages": "Manage the languages of the research books",
+    "language": "Manage the application language"
+  },
+
+  "POPUP": {},
+
+  "COMMON": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "ok": "Ok",
+    "loading": "Loading...",
+    "read": "Read",
+    "return": "Return",
+    "category": "Category",
+    "notifs": "Notifications",
+    "accept": "Accept",
+    "refuse": "Refuse",
+    "erase": "Erase",
+    "disconnected": "Disconnected",
+    "next": "Next",
+    "register": "Register"
+  },
+
+  "CATEGORIES": {
+    "action": "Action",
+    "adventure": "Adventure",
+    "fanfiction": "Fan-fiction",
+    "fantastic": "Fantastic",
+    "fiction": "General fiction",
+    "horror": "Horror",
+    "humor": "Humor",
+    "mystery": "Mystery",
+    "nonfiction": "Non-Fiction",
+    "romance": "Romance",
+    "scifi": "Science-Fiction",
+    "thriller": "Thriller",
+    "undefined": "Uncategorized"
   }
+}

@@ -8,6 +8,7 @@ import { BookSearchPageRoutingModule } from './book-search-routing.module';
 
 import { BookSearchPage } from './book-search.page';
 import { ComponentModule } from 'src/app/components/component.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { ComponentModule } from 'src/app/components/component.module';
     FormsModule,
     IonicModule,
     BookSearchPageRoutingModule,
-    ComponentModule
+    ComponentModule,
+    TranslateModule
   ],
   declarations: [BookSearchPage]
 })

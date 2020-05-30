@@ -12,6 +12,7 @@ import { UploadComponent } from 'src/app/components/modals/upload/upload.compone
 import { ActorProfileComponent } from 'src/app/components/modals/actor-profile/actor-profile.component';
 import { ManualComponent } from 'src/app/components/modals/manual/manual.component';
 import { TutoPopoverComponent } from 'src/app/components/tuto-popover/tuto-popover.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import { TutoPopoverComponent } from 'src/app/components/tuto-popover/tuto-popov
     FormsModule,
     IonicModule,
     ChatPageRoutingModule,
-    ComponentModule
+    ComponentModule,
+    TranslateModule
   ],
   declarations: [ChatPage],
   entryComponents: [

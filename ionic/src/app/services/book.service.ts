@@ -16,15 +16,31 @@ export class BookService {
 
   curBookId: string;
   curChatId: string;
-  lang: string;
-  book: any = {};
+  langs: string[];
+  book: {
+    authors: string[],
+    cat: string,
+    cover: string,
+    date: number,
+    desc: string,
+    id: string,
+    lang: string,
+    stars: number,
+    starsAvg: number,
+    starsArray: any[],
+    tags: string[],
+    title: string,
+    titleLower: string,
+    verso: string,
+    views: number,
+    votes: number,
+    banner: string,
+    wallpaper: string
+  };
+
   isAuthor: boolean;
 
   debug = false;
-
-  mostVueBooks: any[] = [];
-  topRatedBooks: any[] = [];
-  mostRecentBooks: any[] = [];
 
   bookSub: Subscription;
   bookChatSub: Subscription;
@@ -62,8 +78,8 @@ export class BookService {
     private popupService: PopupService
   ) {
     this.booksCollection = this.firestore.collection('books');
-    this.lang = this.traduction.getCurLanguage();
-   }
+  }
+
 
   getBooks(bookIdArray: any[]): Observable<any> {
     if (bookIdArray.length > 0 ) {
@@ -100,7 +116,7 @@ export class BookService {
     this.firestore.collection('/books').doc(bookId).set(book).then(async () => {
       // Upload le cover si une image est chargée
       if (cover.charAt(0) !== '.') {
-        this.uploadCover(cover, this.curBookId);
+        this.uploadCover(cover, bookId);
       }
       await this.navCtrl.pop().then( async () => {
         await this.openCover(bookId);
@@ -189,12 +205,31 @@ export class BookService {
   }
 
   uploadCover(file, bookId = this.curBookId) {
-    const path = 'books/' + bookId + '/cover.png';
-    this.firestorage.ref(path).putString(file, 'data_url').then( () => {
-      this.firestorage.ref(path).getDownloadURL().subscribe((ref) => {
-        this.firestore.collection('books').doc(bookId).update({cover: ref});
+    return new Promise((resolve, reject) => {
+      const path = 'books/' + bookId + '/cover.png';
+      this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
+        const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
+        await this.firestore.collection('books').doc(bookId).update({cover: ref});
+        resolve();
+      }).catch((err) => {
+        this.popupService.error(err);
+        reject();
       });
-    }).catch((err) => this.popupService.error(err));
+    });
+  }
+
+  uploadBanner(file, bookId = this.curBookId): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const path = 'books/' + bookId + '/banner.png';
+      this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
+        const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
+        await this.firestore.collection('books').doc(bookId).update({banner: ref});
+        resolve();
+      }).catch((err) => {
+        this.popupService.error(err);
+        reject();
+      });
+    });
   }
 
   async changeWallpaper(bookId, url: string) {
@@ -202,43 +237,10 @@ export class BookService {
     this.popupService.toast('Arrière plan changé');
   }
 
-  getMostVue(lang = this.lang): Promise<any> {
-    return new Promise(res => {
-      this.firestore.collection(
-      'books', ref => ref.where('public', '==', true).where('lang', '==', lang).orderBy('views', 'desc').limit(10)
-      ).valueChanges().subscribe((val) => {
-        this.mostVueBooks = val;
-        res();
-      });
-    });
-  }
-
-  getTopRated(lang = this.lang): Promise<any> {
-    return new Promise(res => {
-      this.firestore.collection(
-      'books', ref => ref.where('public', '==', true).where('lang', '==', lang).orderBy('stars', 'desc').limit(10)
-      ).valueChanges().subscribe((val) => {
-        this.topRatedBooks = val;
-        res();
-      });
-    });
-  }
-
-  getMostRecent(lang = this.lang): Promise<any> {
-    return new Promise(res => {
-    this.firestore.collection(
-      'books', ref => ref.where('public', '==', true).where('lang', '==', lang).orderBy('date', 'desc').limit(10)
-      ).valueChanges().subscribe((val) => {
-        this.mostRecentBooks = val;
-        res();
-      });
-    });
-  }
-
-  searchByName(filter: string, lang = this.lang): Observable<any> {
+  searchByName(filter: string, langs = this.langs): Observable<any> {
     const queryByName = this.firestore.collection(
        'books', ref => ref.where('public', '==', true)
-                          .where('lang', '==', lang)
+                          .where('lang', 'in', langs)
                           .orderBy('titleLower')
                           .startAt(filter.toLowerCase())
                           .endAt(filter.toLowerCase() + '\uf8ff')
@@ -247,12 +249,16 @@ export class BookService {
     return queryByName;
   }
 
-  searchByTag(filter: string, lang = this.lang): Observable<any> {
-    const filterArray = filter.split(' ');
+  searchByTag(filter: string, langs = this.langs): Observable<any> {
+    const filterArray: string[] = filter.split(' ');
+    const res = [];
+    filterArray.forEach((val) => {
+      res.push(val.toLowerCase());
+    });
     const queryByTag = this.firestore.collection(
        'books', ref => ref.where('public', '==', true)
-                          .where('lang', '==', lang)
-                          .where('tags', 'array-contains-any', filterArray)
+                          .where('lang', 'in', langs)
+                          .where('tags', 'array-contains-any', res)
                           .limit(10)
       ).valueChanges();
     return queryByTag;
@@ -281,6 +287,9 @@ export class BookService {
       // On supprime les médias
       if (this.haveCover()) {
         this.firestorage.ref('books/' + bookId + '/cover.png').delete();
+      }
+      if (this.haveBanner()) {
+        this.firestorage.ref('books/' + bookId + '/banner.png').delete();
       }
       this.firestore.collection('books').doc(bookId).collection('medias').get().subscribe((data) => {
         data.docs.forEach((doc) => {
@@ -318,7 +327,7 @@ export class BookService {
     const bookSub = bookRef.get().subscribe((val) => {
       const authors: string[] = val.data().authors;
       if (!authors.includes(userId)) {
-        if (authors.length >= 10) {
+        if (authors.length < 10) {
           authors.push(userId);
           bookRef.update({authors});
         } else {
@@ -353,6 +362,25 @@ export class BookService {
 
   haveCover(): boolean {
     return this.book.cover.charAt(0) !== '.';
+  }
+
+  haveBanner(): boolean {
+    return this.book.banner !== undefined;
+  }
+
+  leaveBook() {
+    this.navCtrl.navigateRoot('/tabs/profile');
+    const authors = this.book.authors;
+    const index = authors.indexOf(this.userService.userId);
+    if (index > -1) {
+      authors.splice(index, 1);
+    }
+    // On supprime la ref du livre
+    this.userService.deleteBookRef(this.curBookId);
+    // On retire l'auteur
+    this.updateBookData({authors});
+    this.popupService.loadingDismiss();
+
   }
 
   getBook(bookId) {
@@ -441,19 +469,21 @@ export class BookService {
 
   async publishBook() {
     await this.firestore.collection('/books').doc(this.curBookId).update({public: true});
+    await this.firestore.collection('/users').doc(this.userService.userId).collection('books').doc(this.curBookId).update({public: true});
     this.popupService.toast('Livre publié!');
   }
 
   unpublishBook() {
     this.firestore.collection('/books').doc(this.curBookId).update({public: false});
+    this.firestore.collection('/users').doc(this.userService.userId).collection('books').doc(this.curBookId).update({public: false});
   }
 
   getCategory(category) {
     const res = [];
-    const lang = this.userService.userData.lang;
+    const langs = this.userService.userData.searchlangs;
     this.firestore.collection(
       'books',
-       ref => ref.where('public', '==', true).where('lang', '==', lang).where('cat', '==', category).orderBy('views', 'desc').limit(10)
+       ref => ref.where('public', '==', true).where('lang', 'in', langs).where('cat', '==', category).orderBy('views', 'desc').limit(10)
       ).get().subscribe((data) => {
       data.docs.forEach((doc) => {
         res.push(doc.data());

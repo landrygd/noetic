@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { TabsBookPageRoutingModule } from './tabs-book-routing.module';
 
 import { TabsBookPage } from './tabs-book.page';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    TabsBookPageRoutingModule
+    TabsBookPageRoutingModule,
+    TranslateModule
   ],
   declarations: [TabsBookPage]
 })

@@ -1,7 +1,7 @@
-<ion-header>
+<ion-header *ngIf="COMMON && UPLOAD">
   <ion-toolbar>
     <ion-title>
-      Charger une image
+      {{UPLOAD.header}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -14,7 +14,7 @@
       [maintainAspectRatio]="true"
       [containWithinAspectRatio]="true"
       [aspectRatio]="ratio"
-      format="png"
+      format="jpeg"
       (imageCropped)="imageCropped($event)"
       (imageLoaded)="imageLoaded()"
       (cropperReady)="cropperReady()"
@@ -24,7 +24,7 @@
   ></image-cropper>
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="COMMON && UPLOAD">
   <ion-toolbar>
     <ion-item>
       <input type="file" (change)="fileChangeEvent($event)"/>
@@ -34,11 +34,11 @@
     <ion-buttons slot="end">
       <ion-button (click)="cancel()" color="medium">
         <ion-icon slot="start" name="close"></ion-icon>
-        Annuler
+        {{COMMON.cancel}}
       </ion-button>
       <ion-button (click)="confirm()" color="success" [disabled]="!imported">
         <ion-icon slot="start" name="checkmark"></ion-icon>
-        Confirmer
+        {{COMMON.confirm}}
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { OfflinePageRoutingModule } from './offline-routing.module';
 
 import { OfflinePage } from './offline.page';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    OfflinePageRoutingModule
+    OfflinePageRoutingModule,
+    TranslateModule
   ],
   declarations: [OfflinePage]
 })

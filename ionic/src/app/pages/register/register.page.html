@@ -37,17 +37,17 @@
 
                 <div style="color: white;">
                   <ion-checkbox [(ngModel)]="privacy" [ngModelOptions]="{standalone: true}" slot="start" class="ion-margin-end"></ion-checkbox>
-                  <ion-label slot="start">J'accepte la </ion-label>
+                  <ion-label slot="start">{{'REGISTER.accept' | translate}} </ion-label>
                   <ion-chip slot="start" color="primary" mode="ios" (click)="showPrivacy()">
                     <ion-icon name="document-text"></ion-icon>
-                    <ion-label>politique de confidentialité</ion-label>
+                    <ion-label>{{'REGISTER.privatePolicy' | translate}}</ion-label>
                   </ion-chip>
                 </div>
 
                 
         
                 <ion-button block shape="round" color="primary" type="submit" fill="solid" [disabled]="registerForm.invalid">
-                  S'incrire
+                  {{'COMMON.register' | translate}}
                 </ion-button>
               </form>
             </ion-col>
@@ -55,7 +55,7 @@
           <ion-row>
             <ion-col>
               <ion-button (click)="login()" expand="block" fill="clear" shape="round" color="medium">
-                Retour
+                {{'COMMON.return' | translate}}
               </ion-button>
             </ion-col>
           </ion-row>

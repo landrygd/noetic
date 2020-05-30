@@ -3,42 +3,42 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="profile"></ion-back-button>
     </ion-buttons>
-    <ion-title>Notifications</ion-title>
+    <ion-title>{{'COMMON.notifs' | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-card *ngIf="userService.userNotifs.length == 0">
     <ion-card-content>
-      Pas de notification pour le moment...
+      {{'NOTIFS.noNotif' | translate}}
     </ion-card-content>
   </ion-card>
   <ion-list *ngIf="userService.userNotifs.length > 0">
     <ion-item *ngFor="let notif of userService.userNotifs; index as i">
       <div>
         <div *ngIf="notif.type == 'invBook'">
-          <app-user-chip [userId]="notif.user"></app-user-chip> vous propose d'écrire <app-book-chip [bookId]="notif.book"></app-book-chip> avec lui!
+          <app-user-chip [userId]="notif.user"></app-user-chip> {{'NOTIFS.invWriting' | translate}} <app-book-chip [bookId]="notif.book"></app-book-chip>
         </div>
 
         <div *ngIf="notif.type == 'acceptedInvBook'">
-          <app-user-chip [userId]="notif.user"></app-user-chip> a accepté votre invitation sur le livre <app-book-chip [bookId]="notif.book"></app-book-chip>!
+          <app-user-chip [userId]="notif.user"></app-user-chip> {{'NOTIFS.acceptInvWriting' | translate}} <app-book-chip [bookId]="notif.book"></app-book-chip>
         </div>
 
         <ion-buttons *ngIf="isQuestion(notif.type)">
           <ion-button (click)="refuse(notif)" expand="block" fill="clear" shape="round" color="medium" slot="primary">
             <ion-icon slot="start" name="close"></ion-icon>
-            Refuser
+            {{'COMMON.refuse' | translate}}
           </ion-button>
           <ion-button (click)="accept(notif)" expand="block" fill="clear" shape="round" color="success" slot="primary">
             <ion-icon slot="start" name="checkmark"></ion-icon>
-            Accepter
+            {{'COMMON.accept' | translate}}
           </ion-button>
         </ion-buttons>
 
         <ion-buttons *ngIf="!isQuestion(notif.type)">
           <ion-button (click)="erase(notif)" expand="block" fill="clear" shape="round" color="medium" slot="primary">
             <ion-icon slot="start" name="trash"></ion-icon>
-            Effacer
+            {{'COMMON.erase' | translate}}
           </ion-button>
         </ion-buttons>
       </div>

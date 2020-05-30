@@ -1,6 +1,6 @@
 <ion-content>
   <div *ngIf="!loading; else loader">
-    <div class="header">
+    <div class="header" [style.backgroundImage]="banner">
       <ion-toolbar style="--background: transparent;">
         <ion-buttons slot="start">
           <ion-back-button (click)="back()" defaultHref="tabs/home" *ngIf="!tabs" class="headerButton"></ion-back-button>
@@ -10,6 +10,9 @@
           </ion-button>   
         </ion-buttons>
         <ion-buttons slot="end">
+          <ion-button (click)="changeBanner()" *ngIf="ownProfile && tabs">
+            <ion-icon name="camera" slot="icon-only" class="headerButton"></ion-icon>
+          </ion-button>
           <ion-button (click)="options()" fill="clear" shape="round" *ngIf="ownProfile && tabs">
             <ion-icon slot="icon-only" name="ellipsis-vertical" class="headerButton"></ion-icon>
           </ion-button>
@@ -44,13 +47,13 @@
           <ion-button (click)="changeBio()" expand="block" color="medium" fill="clear" shape="round" *ngIf="ownProfile">
             <ion-label>
               <p *ngIf="user.bio">{{user.bio}}</p>
-              <p *ngIf="!user.bio">Rien à dire pour le moment</p>
+              <p *ngIf="!user.bio">{{'PROFILE.noBio' | translate}}t</p>
             </ion-label>
             <ion-icon name="pencil" slot="end"></ion-icon>
           </ion-button>
           <ion-text color="medium" *ngIf="!ownProfile">
             <p *ngIf="user.bio">{{user.bio}}</p>
-            <p *ngIf="!user.bio">Rien à dire pour le moment</p>
+            <p *ngIf="!user.bio">{{'PROFILE.noBio' | translate}}</p>
           </ion-text>
         </ion-col>
       </ion-row>
@@ -58,19 +61,19 @@
     <div class="subscribe" *ngIf="!ownProfile">
       <ion-button (click)="follow()" expand="block" fill="solid" shape="round" style="width: 50vw;" *ngIf="!followed">
         <ion-icon name="person-add" slot="start"></ion-icon>
-        Suivre
+        {{'PROFILE.follow' | translate}}
       </ion-button>
 
       <ion-button (click)="unfollow()" expand="block" fill="solid" shape="round" style="width: 50vw;" *ngIf="followed">
         <ion-icon name="person-remove" slot="start"></ion-icon>
-        Arrêter de suivre
+        {{'PROFILE.unfollow' | translate}}
       </ion-button>
     </div>
     <div *ngIf="ownProfile">
       <div *ngIf="userService.books.length !== 0">
         <h1 class="ion-text-center">
           <ion-icon name="library"></ion-icon>
-          Mes histoires
+          {{'PROFILE.myStories' | translate}}
         </h1>
         <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userService.books.length !== 0">
           <ion-slide>
@@ -85,7 +88,7 @@
     
       <h2 class="section" *ngIf="userService.list.length !== 0">
         <ion-icon name="list"></ion-icon>
-        Ma liste
+        {{'PROFILE.myList' | translate}}
       </h2>
     
       <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.list.length !== 0">
@@ -96,7 +99,7 @@
     
       <h2 class="section" *ngIf="userService.followList.length !== 0">
         <ion-icon name="people"></ion-icon>
-        Mes suivies
+        {{'PROFILE.myFollows' | translate}}
       </h2>
 
       <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.followList.length !== 0">
@@ -109,7 +112,7 @@
       <div *ngIf="userService.curUserBooks.length !== 0">
         <h1 class="ion-text-center">
           <ion-icon name="library"></ion-icon>
-          Ses histoires
+          {{'PROFILE.hisStories' | translate}}
         </h1>
         <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userService.curUserBooks.length !== 0">
           <ion-slide>

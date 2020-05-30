@@ -1,6 +1,6 @@
-<ion-header>
+<ion-header *ngIf="SEARCHUSER">
   <ion-toolbar>
-    <ion-searchbar (ionCancel)="cancel()" placeholder="Chercher un utilisateur" inputmode="text" type="text" (ionChange)="onSearchChange($event.target.value)" [debounce]="250" showCancelButton="250"></ion-searchbar>
+    <ion-searchbar (ionCancel)="cancel()" [placeholder]="SEARCHUSER.search" inputmode="text" type="text" (ionChange)="onSearchChange($event.target.value)" [debounce]="250" showCancelButton="250"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 

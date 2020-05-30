@@ -10,6 +10,7 @@ import { GamePage } from './game.page';
 import { ComponentModule } from 'src/app/components/component.module';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { ActorProfileComponent } from 'src/app/components/modals/actor-profile/actor-profile.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { ActorProfileComponent } from 'src/app/components/modals/actor-profile/a
     FormsModule,
     IonicModule,
     GamePageRoutingModule,
-    ComponentModule
+    ComponentModule,
+    TranslateModule
   ],
   declarations: [GamePage],
   entryComponents: [

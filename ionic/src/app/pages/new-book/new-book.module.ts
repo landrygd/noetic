@@ -9,6 +9,7 @@ import { NewBookPageRoutingModule } from './new-book-routing.module';
 import { NewBookPage } from './new-book.page';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { ComponentModule } from 'src/app/components/component.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { ComponentModule } from 'src/app/components/component.module';
     IonicModule,
     NewBookPageRoutingModule,
     ComponentModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule
   ],
   declarations: [NewBookPage],
   entryComponents: [UploadComponent]

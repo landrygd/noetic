@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { ModalController, NavController, ActionSheetController, AlertController } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ModalController, NavController, ActionSheetController, AlertController, ToastController } from '@ionic/angular';
+import { Observable, Subscription } from 'rxjs';
 import { SlidesService } from 'src/app/services/slides.service';
 import { UserService } from 'src/app/services/user.service';
 import { BookService } from 'src/app/services/book.service';
+import { Storage } from '@ionic/storage';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
   curCategory = 'undefined';
 
   mostVueList: Observable<any>;
@@ -23,6 +25,14 @@ export class HomePage implements OnInit {
 
   userBookList: string[] = [];
 
+  homeSub: Subscription;
+  commonSub: Subscription;
+
+  HOME: any = {};
+  COMMON: any = {};
+
+  rgpd: any;
+
   constructor(
     public userService: UserService,
     public bookService: BookService,
@@ -30,22 +40,42 @@ export class HomePage implements OnInit {
     public navCtrl: NavController,
     public slides: SlidesService,
     private actionSheetController: ActionSheetController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private toastController: ToastController,
+    private storage: Storage,
+    private translator: TranslateService
     ) {}
 
-  async ngOnInit() {
-    await this.getBooks();
+  ngOnInit() {
+    this.getTraduction();
+    this.storage.get('RGPD').then((val) => {
+      this.rgpd = val;
+    });
   }
+
+  ionViewWillEnter() {
+    if (!this.rgpd) {
+      this.presentRgpd();
+    }
+  }
+
+  getTraduction() {
+    this.homeSub = this.translator.get('HOME').subscribe((val) => {
+      this.HOME = val;
+    });
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.homeSub.unsubscribe();
+    this.commonSub.unsubscribe();
+  }
+
 
   ionViewDidEnter() {
     setTimeout(() => this.refresh('', true), 500);
-  }
-
-  async getBooks() {
-    await this.bookService.getTopRated();
-    await this.bookService.getMostVue();
-    await this.bookService.getMostRecent();
-    this.refresh('', true);
   }
 
   search() {
@@ -164,13 +194,37 @@ export class HomePage implements OnInit {
   }
 
   refresh(event, noEvent= false) {
-    this.topRatedBooks = this.bookService.topRatedBooks;
-    this.mostVueBooks = this.bookService.mostVueBooks;
-    this.mostRecentBooks = this.bookService.mostRecentBooks;
+    this.topRatedBooks = this.userService.topRatedBooks;
+    this.mostVueBooks = this.userService.mostVueBooks;
+    this.mostRecentBooks = this.userService.mostRecentBooks;
     if (!noEvent) {
       setTimeout(() => {
         event.target.complete();
       }, 500);
     }
+  }
+
+  async presentRgpd() {
+    const toast = await this.toastController.create({
+      animated: true,
+      buttons: [
+        {
+          text: this.COMMON.accept,
+          icon: 'checkmark',
+          role: 'cancel',
+          handler: () => {
+            this.storage.set('RGPD', true);
+            this.rgpd = true;
+          }
+        }
+      ],
+      color: 'primary',
+      cssClass: 'rgpd',
+      keyboardClose: true,
+      message: this.HOME.popupRGPD + ' <a href="https://app.noetic.site/privacy">' + this.COMMON.more + '</a>',
+      mode: 'ios',
+      position: 'bottom',
+    });
+    toast.present();
   }
 }

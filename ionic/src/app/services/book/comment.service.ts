@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, DocumentChangeAction } from '@angular/fire/firestore';
 import { BookService } from '../book.service';
 import { UserService } from '../user.service';
 import { Subscription, Observable } from 'rxjs';
@@ -47,8 +47,12 @@ export class CommentService {
 
   syncComments(bookId) {
     this.commentsSub = this.firestore.collection('books').doc(bookId)
-                                     .collection('comments', ref => ref.limit(10)).valueChanges().subscribe((value) => {
-      this.comments = value;
+                                     .collection('comments', ref => ref.limit(10)).snapshotChanges().subscribe((value) => {
+      this.comments = [];
+      value.forEach(data => {
+        const comment = data.payload.doc.data();
+        this.comments.push(comment);
+      });
       this.comments.forEach((comment) => {
         comment.user = this.userService.getUser(comment.userId);
       });
@@ -59,8 +63,8 @@ export class CommentService {
     this.commentsSub.unsubscribe();
   }
 
-  haveCommented(bookId = this.bookService.curBookId): Observable<any> {
+  haveCommented(bookId = this.bookService.curBookId): Observable<DocumentChangeAction<firebase.firestore.DocumentData>[]> {
     return this.firestore.collection('books').doc(bookId)
-                         .collection('comments', ref => ref.where('userId', '==', this.userService.userId)).valueChanges();
+                         .collection('comments', ref => ref.where('userId', '==', this.userService.userId)).snapshotChanges();
   }
 }

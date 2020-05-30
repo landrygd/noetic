@@ -16,7 +16,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen padding #bg scrollEvents="true" (ionScrollEnd)="onScroll()">
+<ion-content padding #bg scrollEvents="true" (ionScrollEnd)="onScroll()">
   <div style="height: 100vh;"></div>
   <div>
     <ion-grid fixed *ngFor="let log of logs; index as i" class="ion-no-margin">
@@ -33,10 +33,10 @@
 <ion-footer>
   <ion-toolbar>
     <ion-button (click)="askQuestion()" expand="block" fill="solid" shape="round" *ngIf="question">
-      Choisir une réponse
+      {{'GAME.answer' | translate}}
     </ion-button>
     <ion-button (click)="askInput()" expand="block" fill="solid" shape="round" *ngIf="input">
-      Entrer du texte
+      {{'GAME.input' | translate}}
     </ion-button>
   </ion-toolbar>
 </ion-footer>

@@ -8,6 +8,7 @@ import { TabsPageRoutingModule } from './tabs-routing.module';
 import { TabsPage } from './tabs.page';
 import { ComponentModule } from 'src/app/components/component.module';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { UploadComponent } from 'src/app/components/modals/upload/upload.compone
     CommonModule,
     FormsModule,
     TabsPageRoutingModule,
-    ComponentModule
+    ComponentModule,
+    TranslateModule
   ],
   declarations: [TabsPage],
   entryComponents: [UploadComponent]

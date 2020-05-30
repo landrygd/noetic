@@ -3,21 +3,32 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="tabs/profile"></ion-back-button>
     </ion-buttons>
-    <ion-title>Paramètres d'utilisateur</ion-title>
+    <ion-title>{{'USERSETTINGS.header' | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list>
     <ion-item>
-      <ion-label>Mode nuit</ion-label>
+      <ion-icon slot="start" name="moon"></ion-icon>
+      <ion-label>{{'USERSETTINGS.nightMode' | translate}}</ion-label>
       <ion-toggle [checked]="themeService.darkMode" (ionChange)="toggleDarkMode()"></ion-toggle>
     </ion-item>
     <ion-item (click)="changeEmail()" button details>
-      <ion-label>Changer d'adresse email</ion-label>
+      <ion-icon slot="start" name="mail"></ion-icon>
+      <ion-label>{{'USERSETTINGS.changeMail' | translate}}</ion-label>
     </ion-item>
     <ion-item (click)="changePassword()" button details>
-      <ion-label>Réinitialiser le mot de passe</ion-label>
+      <ion-icon slot="start" name="key"></ion-icon>
+      <ion-label>{{'USERSETTINGS.reinitPassword' | translate}}</ion-label>
+    </ion-item>
+    <ion-item (click)="chooseSpeakingLanguages()" button details>
+      <ion-icon slot="start" name="chatbox-ellipses"></ion-icon>
+      <ion-label>{{'USERSETTINGS.searchLanguages' | translate}}</ion-label>
+    </ion-item>
+    <ion-item (click)="chooseAppLanguage()" button details>
+      <ion-icon slot="start" name="chatbox-ellipses"></ion-icon>
+      <ion-label>{{'USERSETTINGS.language' | translate}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>

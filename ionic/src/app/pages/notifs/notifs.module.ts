@@ -8,6 +8,7 @@ import { NotifsPageRoutingModule } from './notifs-routing.module';
 
 import { NotifsPage } from './notifs.page';
 import { ComponentModule } from 'src/app/components/component.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { ComponentModule } from 'src/app/components/component.module';
     FormsModule,
     IonicModule,
     NotifsPageRoutingModule,
-    ComponentModule
+    ComponentModule,
+    TranslateModule
   ],
   declarations: [NotifsPage]
 })

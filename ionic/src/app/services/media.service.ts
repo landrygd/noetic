@@ -102,6 +102,7 @@ export class MediaService {
     if (this.musics.hasOwnProperty(name)) {
       this.musics[name].loop = loop;
       this.musics[name].play();
+      this.curMusic = name;
     }
   }
 

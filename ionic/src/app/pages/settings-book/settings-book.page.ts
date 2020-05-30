@@ -107,6 +107,26 @@ export class SettingsBookPage implements OnInit {
     await alert.present();
   }
 
+  async leave() {
+    const alert = await this.alertController.create({
+      header: 'Se retirer du livre',
+      message: 'Etes vous sûr de vouloir vous retirer des auteurs de ce livre?',
+      buttons: [
+        {
+          text: 'Non',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: 'Oui',
+          handler: () => {
+            this.bookService.leaveBook();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
   async background() {
     const modal = await this.modalController.create({
     component: WallpapersSearchComponent,

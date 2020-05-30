@@ -4,12 +4,14 @@ import { TraductionService } from './traductionService.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { NavController } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { AngularFirestoreDocument } from '@angular/fire/firestore/public_api';
 import { AngularFireStorage } from '@angular/fire/storage';
 import * as firebase from 'firebase/app';
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
+import { Facebook } from '@ionic-native/facebook/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +35,10 @@ export class AuthService {
     private traductionService: TraductionService,
     private navCtrl: NavController,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private gplus: GooglePlus,
+    private plt: Platform,
+    private facebook: Facebook
   ) {
     // Définir la langue courante
     this.lang = this.traductionService.getCurLanguage();
@@ -174,7 +179,39 @@ export class AuthService {
       ).catch((err) => this.popupService.error(err));
   }
 
+  async nativeGoogleAuth(): Promise<void> {
+    try {
+      const gplusUser = await this.gplus.login({
+        webClientId: '467577218262-0p5rdtm5e35re4ccoee76t5s4bvhiasn.apps.googleusercontent.com',
+        offline: true,
+        scopes: 'profile email'
+      });
+
+      this.fireauth.signInWithCredential(
+        firebase.auth.GoogleAuthProvider.credential(gplusUser.idToken)
+      ).then(auth => this.authConnexion(auth));
+    } catch (err) {
+      this.popupService.error(err);
+    }
+  }
+
+  async nativeFacebookAuth(): Promise<void> {
+    try {
+      const facebookUser = await this.facebook.login(['email']);
+
+      this.fireauth.signInWithCredential(
+        firebase.auth.GoogleAuthProvider.credential(facebookUser.authResponse.accessToken)
+      ).then(auth => this.authConnexion(auth));
+    } catch (err) {
+      this.popupService.error(err);
+    }
+  }
+
   googleAuth() {
+    if (this.plt.is('cordova')) {
+      this.nativeGoogleAuth();
+      return;
+    }
     const provider = new firebase.auth.GoogleAuthProvider();
     this.fireauth.signInWithPopup(provider).then(auth => {
       this.authConnexion(auth);
@@ -184,6 +221,10 @@ export class AuthService {
   }
 
   facebookAuth() {
+    if (this.plt.is('cordova')) {
+      this.nativeFacebookAuth();
+      return;
+    }
     const provider = new firebase.auth.FacebookAuthProvider();
     this.fireauth.signInWithPopup(provider).then(auth => {
       this.authConnexion(auth);

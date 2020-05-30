@@ -24,7 +24,6 @@ export class CommandPipe implements PipeTransform {
       } else {
         this.getCommandValues(value);
         let icon = 'help';
-        let argChip = '<ion-chip>' + this.arg + '</ion-chip>';
         const nomVar = this.args[0];
         const varValue = this.args[1];
         const varValue2 = this.args[2];
@@ -32,35 +31,44 @@ export class CommandPipe implements PipeTransform {
           case 'go':
             icon = 'arrow-forward';
             if (this.opts.includes('chat')) {
-              res = 'Aller au chat ' + argChip;
+              res = 'Aller au chat ' + this.toChip(this.arg, 'chatbox');
             } else {
-              res = 'Aller au label ' + argChip;
+              res = 'Aller au label ' + this.toChip(this.arg, 'bookmark');
             }
             break;
           case 'label':
             icon = 'bookmark';
-            res = 'Label ' + argChip;
+            res = 'Label ' + this.toChip(this.arg, 'bookmark');
             break;
           case 'question':
-            icon = 'chatbubble';
+            icon = 'chatbubble-ellipses';
             const answers = this.arg.split(';');
-            argChip = '';
+            let list = '';
             for (const ans of answers) {
-              argChip += this.toChip(ans, 'chatbubble');
+              list += this.toChip(ans, 'chatbubble-ellipses');
             }
-            res = 'Poser une question avec les réponses:' + argChip;
+            res = 'Poser une question avec les réponses:' + list;
+            break;
+          case 'endanswers':
+            icon = 'chatbubble-ellipses';
+            res = 'Fin des réponses';
+            break;
+          case 'answer':
+            icon = 'chatbubble-ellipses';
+            res = 'Si la réponse est ' + this.toChip(this.arg, 'chatbubble-ellipses');
+            break;
+          case 'clear':
+            icon = 'trash-bin';
+            res = 'Effacer les messages';
             break;
           case 'if':
             icon = 'settings';
             const endVal = this.args.slice(2, this.args.length).join(' ');
             switch (varValue) {
-              case '=':
               case '==':
-              case '===':
                 res = 'Si ' + nomVar + ' est égal à ' + endVal;
                 break;
               case '!=':
-              case '!==':
                 res = 'Si ' + nomVar + ' n\'est pas égal à ' + endVal;
                 break;
               case '<=':
@@ -79,7 +87,11 @@ export class CommandPipe implements PipeTransform {
             break;
           case 'else':
             icon = 'settings';
-            res = 'Sinon continuer';
+            res = 'Sinon';
+            break;
+          case 'endif':
+            icon = 'settings';
+            res = 'Fin de condition';
             break;
           case 'set':
             icon = 'settings';

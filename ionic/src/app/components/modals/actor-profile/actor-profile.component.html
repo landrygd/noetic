@@ -37,20 +37,20 @@
         <ion-button (click)="changeBio()" expand="block" color="medium" fill="clear" shape="round" *ngIf="isAuthor">
           <ion-label>
             <p *ngIf="actor.bio">{{actor.bio}}</p>
-            <p *ngIf="!actor.bio">Rien à dire pour le moment</p>
+            <p *ngIf="!actor.bio">{{PROFILE.noBio}}</p>
           </ion-label>
           <ion-icon name="pencil" slot="end"></ion-icon>
         </ion-button>
         <ion-text color="medium" *ngIf="!isAuthor">
           <p *ngIf="actor.bio">{{actor.bio}}</p>
-          <p *ngIf="!actor.bio">Rien à dire pour le moment</p>
+          <p *ngIf="!actor.bio">{{PROFILE.noBio}}</p>
         </ion-text>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-button (click)="changeColor()" [color]="getColor(actor)" expand="block" fill="clear" shape="round" *ngIf="isAuthor">
-          Changer de couleur
+          {{ACTOR.changeColor}}
         </ion-button>
       </ion-col>
     </ion-row>

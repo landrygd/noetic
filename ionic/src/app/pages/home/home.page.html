@@ -4,14 +4,14 @@
     <ion-searchbar
       style="padding: 0;"
       mode="ios"
-      placeholder="Chercher une histoire" 
+      [placeholder]="'HOME.search' | translate" 
       [debounce]="250" 
       showCancelButton="never"
       searchIcon="search"
       (click)="search()"
       ></ion-searchbar>
-      <ion-buttons slot="end">
-        <ion-button (click)="options()" fill="clear">
+      <ion-buttons slot="end" style="margin: auto;">
+        <ion-button (click)="options()" fill="clear" slot="end">
           <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
         </ion-button>
       </ion-buttons>
@@ -28,7 +28,7 @@
 
   <h2 class="section" *ngIf="userService.savesId.length !== 0">
     <ion-icon name="save"></ion-icon>
-    Mes sauvegardes
+    {{'HOME.saves' | translate}}
   </h2>
 
   <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.savesId.length !== 0">
@@ -39,7 +39,7 @@
 
   <h2 class="section">
     <ion-icon name="star"></ion-icon>
-    Les mieux notés
+    {{'HOME.topRated' | translate}}
   </h2>
 
   <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="topRatedBooks; else loadingTopRated">
@@ -56,7 +56,7 @@
 
   <h2 class="section">
     <ion-icon name="eye"></ion-icon>
-    Les plus vues
+    {{'HOME.mostVue' | translate}}
   </h2>
 
   <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostVueBooks; else loadingMostVue">
@@ -73,7 +73,7 @@
 
   <h2 class="section">
     <ion-icon name="time"></ion-icon>
-    Les plus récents
+    {{'HOME.mostRecent' | translate}}
   </h2>
 
   <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostRecentBooks; else loadingMostRecent">

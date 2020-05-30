@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { ModalController, IonContent, ActionSheetController, AlertController, IonTextarea, PopoverController } from '@ionic/angular';
 import { ChatService } from 'src/app/services/book/chat.service';
 import { PopupService } from 'src/app/services/popup.service';
@@ -9,13 +9,15 @@ import { MediaService } from 'src/app/services/media.service';
 import { ManualComponent } from 'src/app/components/modals/manual/manual.component';
 import { TutoPopoverComponent } from 'src/app/components/tuto-popover/tuto-popover.component';
 import { UserService } from 'src/app/services/user.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.page.html',
   styleUrls: ['./chat.page.scss'],
 })
-export class ChatPage implements OnInit, AfterViewInit {
+export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(IonContent, { static: false }) content: IonContent;
   @ViewChild('bg', {static: true, read: ElementRef}) bg: ElementRef;
@@ -91,6 +93,12 @@ export class ChatPage implements OnInit, AfterViewInit {
     }
   ];
 
+  ERRORS: any = {};
+  COMMON: any = {};
+
+  errorSub: Subscription;
+  commonSub: Subscription;
+
   constructor(
     public chatService: ChatService,
     public bookService: BookService,
@@ -102,13 +110,30 @@ export class ChatPage implements OnInit, AfterViewInit {
     public slides: SlidesService,
     public mediaService: MediaService,
     private popoverController: PopoverController,
-    private userService: UserService
+    private userService: UserService,
+    private translator: TranslateService
     ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.chatService.syncChat(this.bookService.curChatId);
     this.loaded = true;
     this.getWallpaper();
+    setTimeout(() => this.scrollToBottom(), 200);
+    this.getTraduction();
+  }
+
+  getTraduction() {
+    this.errorSub = this.translator.get('ERRORS').subscribe((val) => {
+      this.ERRORS = val;
+    });
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.errorSub.unsubscribe();
+    this.commonSub.unsubscribe();
   }
 
   getWallpaper() {
@@ -133,7 +158,9 @@ export class ChatPage implements OnInit, AfterViewInit {
       this.autoScroll = true;
     }
     if (this.autoScroll) {
-      this.content.scrollToBottom(500);
+      setTimeout(() => {
+        this.content.scrollToBottom(0);
+        }, 200);
     }
   }
 
@@ -155,7 +182,7 @@ export class ChatPage implements OnInit, AfterViewInit {
       log.actor = this.actor;
     }
     if ((log.msg.substring(0, 7).toLowerCase() === '/l main' || log.msg.substring(0, 11).toLowerCase() === '/label main')) {
-      this.popup.alert('Impossible de créer de label avec ce nom.');
+      this.popup.alert(this.ERRORS.invalidLabelName);
     } else {
       if (this.curIndex === -1) {
         this.chatService.addChatLog(log);
@@ -238,26 +265,12 @@ export class ChatPage implements OnInit, AfterViewInit {
     }
   }
 
-  async plus() {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'More options',
-      buttons: [{
-        text: 'Cancel',
-        icon: 'close',
-        role: 'cancel',
-        handler: () => {
-        }
-      }]
-    });
-    await actionSheet.present();
-  }
-
   debug() {
     this.bookService.play(this.bookService.curBookId, this.chatService.curChatId, true);
   }
 
   action(name) {
-    this.popup.toast('impossible d\'executer les boutons ici');
+    this.popup.toast(this.ERRORS.buttonsNotAvaible);
   }
 
   renameChat() {
@@ -268,20 +281,20 @@ export class ChatPage implements OnInit, AfterViewInit {
     const actionSheet = await this.actionSheetController.create({
       header: 'Paramètres',
       buttons: [{
-        text: 'Supprimer',
+        text: this.COMMON.delete,
         role: 'destructive',
         icon: 'trash',
         handler: () => {
           this.deleteChat();
         }
       }, {
-        text: 'Renommer',
+        text: this.COMMON.rename,
         icon: 'create',
         handler: () => {
           this.renameChat();
         }
       }, {
-        text: 'Annuler',
+        text: this.COMMON.cancel,
         icon: 'close',
         role: 'cancel'
       }]

@@ -123,9 +123,10 @@ export class NewBookPage implements OnInit {
   }
 
   addTag() {
-    if (this.bookForm.value.tag !== '') {
-      if (!this.tags.includes(this.bookForm.value.tag)) {
-        this.tags.push(this.bookForm.value.tag);
+    const tag: string = this.bookForm.value.tag;
+    if (tag !== '') {
+      if (!this.tags.includes(tag)) {
+        this.tags.push(tag.toLowerCase());
         this.bookForm.value.tag = '';
         this.bookForm.patchValue({tag: ''});
       }

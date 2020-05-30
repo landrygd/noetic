@@ -1,19 +1,27 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
 import Commands from '../../../../assets/json/commands.json';
 import Sounds from '../../../../assets/json/sounds.json';
 import Musics from '../../../../assets/json/musics.json';
 import Ambiances from '../../../../assets/json/ambiances.json';
 import { MediaService } from 'src/app/services/media.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-manual',
   templateUrl: './manual.component.html',
   styleUrls: ['./manual.component.scss'],
 })
-export class ManualComponent implements OnInit {
+export class ManualComponent implements OnInit, OnDestroy {
 
   @Input() type: string;
+
+  MANUAL: any = {};
+  COMMON: any = {};
+
+  manualSub: Subscription;
+  commonSub: Subscription;
 
   commands = [];
 
@@ -21,13 +29,20 @@ export class ManualComponent implements OnInit {
 
   results = [];
 
-  placeholder = 'Chercher une commande';
+  placeholder: string;
 
-  constructor(private modalCtrl: ModalController, private alertController: AlertController, private mediaService: MediaService) { }
+  constructor(
+    private modalCtrl: ModalController,
+    private alertController: AlertController,
+    private mediaService: MediaService,
+    private translator: TranslateService
+    ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.getTraduction();
+    this.placeholder = this.MANUAL.command;
     if (this.type === 'sound') {
-      this.placeholder = 'Chercher un bruitage';
+      this.placeholder = this.MANUAL.sound;
       Object.keys(Sounds).forEach((key) => {
         const sound = Sounds[key];
         sound.name = key;
@@ -37,7 +52,7 @@ export class ManualComponent implements OnInit {
         }
       });
     } else if (this.type === 'music') {
-      this.placeholder = 'Chercher une musique';
+      this.placeholder = this.MANUAL.music;
       Object.keys(Musics).forEach((key) => {
         const music = Musics[key];
         music.name = key;
@@ -47,7 +62,7 @@ export class ManualComponent implements OnInit {
         }
       });
     } else if (this.type === 'ambiance') {
-      this.placeholder = 'Chercher une ambiance';
+      this.placeholder = this.MANUAL.ambiance;
       Object.keys(Ambiances).forEach((key) => {
         const ambiance = Ambiances[key];
         ambiance.name = key;
@@ -63,6 +78,20 @@ export class ManualComponent implements OnInit {
     }
     this.commands.sort(this.sortByProp('name'));
     this.search();
+  }
+
+  getTraduction() {
+    this.manualSub = this.translator.get('MODALS.MANUAL').subscribe((val) => {
+      this.MANUAL = val;
+    });
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.manualSub.unsubscribe();
+    this.commonSub.unsubscribe();
   }
 
   search() {
@@ -121,13 +150,13 @@ export class ManualComponent implements OnInit {
     }
     let message = '';
     if (command.opts) {
-      message += this.toList(command.opts, 'Options') + '<br>';
+      message += this.toList(command.opts, this.COMMON.options);
     }
     if (command.ex) {
-      message += this.toList(command.ex, 'Exemples');
+      message += this.toList(command.ex, this.COMMON.examples);
     }
     if (command.category) {
-      message += 'Catégorie: ' + command.category + '<br>';
+      message += this.COMMON.categorie + ': ' + command.category + '<br>';
     }
     if (command.attribution) {
       message += command.attribution;
@@ -138,11 +167,11 @@ export class ManualComponent implements OnInit {
       message,
       buttons: [
         {
-          text: 'Retour',
+          text: this.COMMON.return,
           role: 'cancel',
           cssClass: 'secondary'
         }, {
-          text: 'Utiliser',
+          text: this.COMMON.use,
           handler: () => {
             if (this.type === '') {
               this.modalCtrl.dismiss({command: command.ex[0]});

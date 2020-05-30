@@ -75,6 +75,8 @@ export class RegisterPage implements OnInit {
 
   signUp() {
     const res = this.registerForm.value;
+    res.name = res.name.trim();
+    res.email = res.email.trim();
     let error = '';
     if (res.password !== res.confirmPassword) {
       error = 'Les mots de passe ne se correspondent pas.';

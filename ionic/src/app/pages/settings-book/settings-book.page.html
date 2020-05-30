@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="tabs-book"></ion-back-button>
     </ion-buttons>
-    <ion-title>Paramètres</ion-title>
+    <ion-title>{{'BOOKSETTINGS.header' | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,27 +11,31 @@
   <ion-list>
     <ion-item button (click)="publish()" *ngIf="!bookService.book.public">
       <ion-icon slot="start" name="share" color="primary"></ion-icon>
-      <ion-label color="primary">Publier ce livre</ion-label>
+      <ion-label color="primary">{{'BOOKSETTINGS.publish' | translate}}</ion-label>
     </ion-item>
     <ion-item button (click)="unpublish()" *ngIf="bookService.book.public">
       <ion-icon slot="start" name="share"></ion-icon>
-      <ion-label>Arrêter de publier ce livre</ion-label>
+      <ion-label>{{'BOOKSETTINGS.unPublish' | translate}}</ion-label>
     </ion-item>
     <ion-item button (click)="tuto()">
       <ion-icon slot="start" name="help"></ion-icon>
-      <ion-label>Réactiver le tutoriel</ion-label>
+      <ion-label>{{'BOOKSETTINGS.tuto' | translate}}</ion-label>
     </ion-item>
     <ion-item button (click)="background()">
       <ion-icon slot="start" name="image"></ion-icon>
-      <ion-label>Changer d'arrière plan par défaut</ion-label>
+      <ion-label>{{'BOOKSETTINGS.background' | translate}}</ion-label>
     </ion-item>
     <ion-item button (click)="invite()">
       <ion-icon slot="start" name="person-add"></ion-icon>
-      <ion-label>Inviter un ami</ion-label>
+      <ion-label>{{'BOOKSETTINGS.invite' | translate}}</ion-label>
+    </ion-item>
+    <ion-item button (click)="leave()" *ngIf="bookService.book.authors.length > 1">
+      <ion-icon slot="start" name="exit" color="danger"></ion-icon>
+      <ion-label color="danger">{{'BOOKSETTINGS.leave' | translate}}</ion-label>
     </ion-item>
     <ion-item button (click)="delete()">
       <ion-icon slot="start" name="trash" color="danger"></ion-icon>
-      <ion-label color="danger">Supprimer ce livre</ion-label>
+      <ion-label color="danger">{{'BOOKSETTINGS.delete' | translate}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>

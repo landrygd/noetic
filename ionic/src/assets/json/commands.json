@@ -26,8 +26,38 @@
   "if": {
     "icon": "settings",
     "name": "if",
-    "desc": "Permet de tester des variables avec les opérateurs: ==, <=, >=, < et >",
+    "desc": "Permet de tester des variables avec les opérateurs: ==, <=, >=, < et >. Doit être suivi de la commande '/endif' pour fermer la condition",
     "ex": ["/if $nomVariable == 42"]
+  },
+  "else": {
+    "icon": "settings",
+    "name": "else",
+    "desc": "si la condition est fausse un saut est automatiquement effectué à la ligne. Doit être placé entre un '/if' et '/endif'",
+    "ex": ["/else"]
+  },
+  "endif": {
+    "icon": "settings",
+    "name": "endif",
+    "desc": "Ferme une condition. Si elle est fausse, un saut est automatiquement effectué à la ligne de cette instruction.",
+    "ex": ["/endif"]
+  },
+  "answer": {
+    "icon": "chatbubble-ellipses",
+    "name": "answer",
+    "desc": "Vérifie la réponse. A noter que l'ensemble des réponses d'une question doit être fermé par la commande /endanswers",
+    "ex": ["/answer oui"]
+  },
+  "endanswers": {
+    "icon": "chatbubble-ellipses",
+    "name": "endanswers",
+    "desc": "Ferme l'ensemble des réponses d'une question. Pour chaque fin de réponse, un saut est fait automatiquement à cette instruction",
+    "ex": ["/endanswers"]
+  },
+  "clear": {
+    "icon": "trash-bin",
+    "name": "clear",
+    "desc": "Efface les messages",
+    "ex": ["/clear"]
   },
   "add": {
     "icon": "settings",
@@ -78,7 +108,10 @@
     "icon": "volume-medium",
     "name": "sound",
     "desc": "Joue un son disponible dans la bibliothèque de sons accessible en entrant la commande '/sound'",
-    "opts": ["-stop: pour arrêter un ou tous les sons"],
+    "opts": [
+      "-stop: pour arrêter un ou tous les sons",
+      "-stop nomDuSon: pour arrêter un son"
+    ],
     "ex": [
       "/sound dog",
       "/sound -stop",
@@ -91,11 +124,12 @@
     "desc": "Joue une musique en boucle disponible dans la bibliothèque de musiques accessible en entrant la commande '/music'. A noter qu'elle ne se superposent pas",
     "opts": [
       "-once: pour jouer la musique une seule fois",
-      "-stop: pour arrêter la musique"
+      "-stop: pour arrêter la musique",
+      "-stop nomDeLaMusique: pour arrêter une musique"
     ],
     "ex": [
-      "/music lacrimosa",
-      "/music -loop lacrimosa"
+      "/music medieval",
+      "/music -loop medieval"
     ]
   },
   "ambiance": {
@@ -103,7 +137,7 @@
     "name": "ambiance",
     "desc": "Joue une ambiance en boucle disponible dans la bibliothèque d'ambiances accessible en entrant la commande '/ambiance'",
     "opts": [
-      "-stop <nomAmbiance>: pour arrêter une ambiance",
+      "-stop nomAmbiance: pour arrêter une ambiance",
       "-stop: pour arrêter toutes les ambiances"
     ],
     "ex": [

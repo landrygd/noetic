@@ -29,7 +29,9 @@ export class LoginPage implements OnInit {
   }
 
   login() {
-    this.authService.login(this.loginForm.value);
+    const res = this.loginForm.value;
+    res.email.trim();
+    this.authService.login(res);
   }
 
   signUp() {
