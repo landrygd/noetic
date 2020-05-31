@@ -244,7 +244,7 @@ export class BookService {
                           .orderBy('titleLower')
                           .startAt(filter.toLowerCase())
                           .endAt(filter.toLowerCase() + '\uf8ff')
-                          .limit(10)
+                          .limit(20)
       ).valueChanges();
     return queryByName;
   }
@@ -259,7 +259,7 @@ export class BookService {
        'books', ref => ref.where('public', '==', true)
                           .where('lang', 'in', langs)
                           .where('tags', 'array-contains-any', res)
-                          .limit(10)
+                          .limit(20)
       ).valueChanges();
     return queryByTag;
   }

@@ -661,7 +661,7 @@ export class UserService {
   async getMostVue(): Promise<any> {
     return new Promise(res => {
       this.mostVueSub = this.firestore.collection(
-      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('views', 'desc').limit(10)
+      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('views', 'desc').limit(20)
       ).valueChanges().subscribe((val) => {
         this.mostVueBooks = val;
         res();
@@ -672,7 +672,7 @@ export class UserService {
   async getTopRated(): Promise<any> {
     return new Promise(res => {
       this.topRatedSub = this.firestore.collection(
-      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('stars', 'desc').limit(10)
+      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('stars', 'desc').limit(20)
       ).valueChanges().subscribe((val) => {
         this.topRatedBooks = val;
         res();
@@ -683,7 +683,7 @@ export class UserService {
   async getMostRecent(): Promise<any> {
     return new Promise(res => {
       this.mostRecentSub = this.firestore.collection(
-      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('date', 'desc').limit(10)
+      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('date', 'desc').limit(20)
       ).valueChanges().subscribe((val) => {
         this.mostRecentBooks = val;
         res();
