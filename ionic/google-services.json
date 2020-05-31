@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "467577218262",
+    "firebase_url": "https://noetic-app.firebaseio.com",
+    "project_id": "noetic-app",
+    "storage_bucket": "noetic-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:467577218262:android:e5f4728dfa49b814f8d577",
+        "android_client_info": {
+          "package_name": "com.blockup.noetic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "467577218262-03sqn5hpp370v4adtfuigj3esjcm32sq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.blockup.noetic",
+            "certificate_hash": "7ae8fa2f4319c0c10246f21cc7e9c4ef272f234b"
+          }
+        },
+        {
+          "client_id": "467577218262-0p5rdtm5e35re4ccoee76t5s4bvhiasn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSrMe6-VIF8M9wo0MwcTMahDzJf_RQL-w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "467577218262-0p5rdtm5e35re4ccoee76t5s4bvhiasn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "467577218262-65nh2ctdln5hvb7v3sdumq2p1pvh63tm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.blockup.noetic"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
