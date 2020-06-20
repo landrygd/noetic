@@ -1,9 +1,12 @@
-import { Component, OnInit, Input, Output, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { AnimationService } from 'src/app/services/animation.service';
 import { ActorService } from 'src/app/services/book/actor.service';
 import { ChatService } from 'src/app/services/book/chat.service';
 import { BookService } from 'src/app/services/book.service';
+import { ThemeService } from 'src/app/services/theme.service';
+import { PopoverController, Platform } from '@ionic/angular';
+import { LogEditComponent } from '../log-edit/log-edit.component';
 
 @Component({
   selector: 'app-log',
@@ -13,7 +16,7 @@ import { BookService } from 'src/app/services/book.service';
 
 export class LogComponent implements OnInit {
 
-  @Input() log: any;
+  @Input() log: {msg: string, actor: string};
   @Input() index = 0;
   @Input() selected = false;
   @Input() edit = false;
@@ -24,12 +27,14 @@ export class LogComponent implements OnInit {
 
   @ViewChild('ref', { read: ElementRef, static: true}) ref: ElementRef;
 
-  @Output() action = new EventEmitter<string>();
   @Output() scroll = new EventEmitter<void>();
+  @Output() action = new EventEmitter<void>();
 
   actorId: string;
   variablesJSON: any;
   actorsJSON: any;
+
+  msgSlot = 'start';
 
   color = 'primary';
   msg = '';
@@ -38,38 +43,51 @@ export class LogComponent implements OnInit {
   button = '';
   actionName = '';
 
+  ownPlayer = false;
+
+  narrator = '';
+
+  editClass = 'not-editing';
+  itemClass = 'not-editing-item';
+  cardClass = 'not-editing-card';
+
   constructor(
     private actorService: ActorService,
     public animation: AnimationService,
-    private chatService: ChatService,
-    public bookService: BookService
+    public chatService: ChatService,
+    public bookService: BookService,
+    private popoverController: PopoverController,
+    private plat: Platform
     ) {}
-
-  actionEmit(name: string) {
-    this.action.emit(name);
-  }
 
   ngOnInit() {
     this.variablesJSON = this.variables;
     this.actorsJSON = this.actors;
+    if (this.edit) {
+      this.editClass = 'editing-text';
+      this.itemClass = 'editing-item';
+      this.cardClass = 'editing-card';
+    }
     if (this.log.hasOwnProperty('actor')) {
       this.actorId = this.log.actor;
-    }
-    if (this.log.hasOwnProperty('color')) {
-      this.color = this.log.color;
+    } else {
+      if (!this.edit) {
+        this.narrator = 'narrator';
+      }
     }
     if (this.log.hasOwnProperty('msg')) {
       this.msg = this.log.msg;
       if (this.typing) {
         setTimeout(() => this.endTyping(), (this.msg.length / this.speed) * 30000);
       }
-      if (this.msg === '/end') {
+      if (this.msg === '/finish') {
         this.button = 'Quitter';
-        this.actionName = 'end';
+        this.actionName = 'finish';
       }
     }
-    if (!this.edit) {
-      this.animation.fadeIn(this.ref);
+    this.ownPlayer = this.actorService.isOwnActor(this.actorId);
+    if (this.ownPlayer) {
+        this.msgSlot = 'end';
     }
     this.scroll.emit();
   }
@@ -79,11 +97,23 @@ export class LogComponent implements OnInit {
     this.scroll.emit();
   }
 
-  getClass() {
-    if (this.selected) {
-      return 'selected';
+  getItemColor() {
+    if (this.edit) {
+      if (this.selected) {
+        return 'primary';
+      } else {
+        return 'light';
+      }
     } else {
-      return 'notselected';
+      return 'transparent';
+    }
+  }
+
+  getButtonColor() {
+    if (this.selected) {
+      return 'light';
+    } else {
+      return 'primary';
     }
   }
 
@@ -91,22 +121,17 @@ export class LogComponent implements OnInit {
     this.chatService.deleteChatLog(this.index);
   }
 
-  getColor(actor) {
-    if (actor.color) {
-      return actor.color;
-    } else {
-      return 'light';
+  async logEdit(ev: any) {
+    const popover = await this.popoverController.create({
+      component: LogEditComponent,
+      event: ev,
+      translucent: false,
+      showBackdrop: false
+    });
+    await popover.present();
+    const action = (await popover.onDidDismiss()).data;
+    if (action) {
+      this.action.emit(action.action);
     }
-  }
-
-  isOwnPlayer(actor): boolean {
-    return this.actorService.isOwnActor(actor.id);
-  }
-
-  getSlot(actor) {
-    if (this.isOwnPlayer(actor)) {
-      return 'end';
-    }
-    return 'start';
   }
 }

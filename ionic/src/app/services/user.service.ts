@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Observable, Subscription, merge } from 'rxjs';
 import { NavController, Platform, AlertController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -133,10 +133,13 @@ export class UserService {
     private alertController: AlertController,
     private translator: TraductionService
     ) {
-      this.lang = navigator.language;
-      this.langs = navigator.languages;
-      this.getMenuBooks();
       this.usersCollection = this.firestore.collection('users');
+  }
+
+  async syncDisconnectedCase() {
+    this.lang = await this.translator.getLanguage();
+    this.langs = await this.translator.getLanguages();
+    this.getMenuBooks();
   }
 
   async syncUserData(userId: string) {

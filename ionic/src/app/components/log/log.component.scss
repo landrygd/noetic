@@ -1,22 +1,68 @@
-.selected {
-  background: rgba(56, 128, 255, 0.5);
-}
-
 .notselected {
   background: transparent;
 }
 
 ion-card {
-  margin: 5px;
-  margin-top: 0;
-}
-
-ion-card-content {
-  padding: 8px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding: 5px;
+  margin: 0
 }
 
 ion-col {
   padding: 0;
+}
+
+ion-badge {
+  padding: 2px
+}
+
+
+ion-card {
+  margin: 0 0 0 5px;
+  max-width: 60vw;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.msgBox {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+app-avatar {
+  margin: 3px
+}
+
+ion-item {
+  min-height: 50px;
+}
+
+.not-editing-item {
+  width: 100vw;
+}
+
+.editing-card {
+  height: 44px;
+}
+
+.editing-item {
+  height: 50px;
+}
+
+.narrator {
+  margin: auto;
+  text-align: center;
+}
+
+.editing-text {
+  margin: 0;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+p {
+  margin: 0;
 }

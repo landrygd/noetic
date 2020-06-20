@@ -42,14 +42,9 @@ export class CommandPipe implements PipeTransform {
             break;
           case 'question':
             icon = 'chatbubble-ellipses';
-            const answers = this.arg.split(';');
-            let list = '';
-            for (const ans of answers) {
-              list += this.toChip(ans, 'chatbubble-ellipses');
-            }
-            res = 'Poser une question avec les réponses:' + list;
+            res = 'Poser une question';
             break;
-          case 'endanswers':
+          case 'end':
             icon = 'chatbubble-ellipses';
             res = 'Fin des réponses';
             break;
@@ -185,7 +180,7 @@ export class CommandPipe implements PipeTransform {
             icon = 'people';
             res = 'Contrôler le personnage ' + this.arg;
             break;
-          case 'end':
+          case 'finish':
             icon = 'flag';
             res = 'Fin de l\'histoire';
             break;
@@ -211,18 +206,25 @@ export class CommandPipe implements PipeTransform {
     this.args = [];
     this.opts = [];
     for (const word of words) {
+      let subword = word;
+      if (word.length > 7) {
+        subword = word.substring(0, 7) + '...';
+      }
       if (word.charAt(0) === '-' && opt) {
         this.opts.push(word.slice(1));
       } else {
         if (opt) {
           opt = false;
           this.arg = word;
-          this.args.push(word);
+          this.args.push(subword);
         } else {
           this.arg += ' ' + word;
-          this.args.push(word);
+          this.args.push(subword);
         }
       }
+    }
+    if (this.arg.length > 7) {
+      this.arg = this.arg.substring(0, 7) + '...';
     }
     return;
   }

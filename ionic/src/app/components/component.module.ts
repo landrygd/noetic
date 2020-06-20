@@ -12,6 +12,7 @@ import { UserAvatarComponent } from './user-avatar/user-avatar.component';
 import { BookChipComponent } from './book-chip/book-chip.component';
 import { ActorProfileComponent } from './modals/actor-profile/actor-profile.component';
 import { TutoPopoverComponent } from './tuto-popover/tuto-popover.component';
+import { LogEditComponent } from './log-edit/log-edit.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { TutoPopoverComponent } from './tuto-popover/tuto-popover.component';
     UserAvatarComponent,
     BookChipComponent,
     ActorProfileComponent,
-    TutoPopoverComponent
+    TutoPopoverComponent,
+    LogEditComponent
   ],
   imports: [
     CommonModule,
@@ -39,7 +41,8 @@ import { TutoPopoverComponent } from './tuto-popover/tuto-popover.component';
     UserAvatarComponent,
     BookChipComponent,
     ActorProfileComponent,
-    TutoPopoverComponent
+    TutoPopoverComponent,
+    LogEditComponent
   ]
 })
 

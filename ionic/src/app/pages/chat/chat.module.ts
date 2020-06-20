@@ -13,6 +13,7 @@ import { ActorProfileComponent } from 'src/app/components/modals/actor-profile/a
 import { ManualComponent } from 'src/app/components/modals/manual/manual.component';
 import { TutoPopoverComponent } from 'src/app/components/tuto-popover/tuto-popover.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { LogEditComponent } from 'src/app/components/log-edit/log-edit.component';
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ import { TranslateModule } from '@ngx-translate/core';
     UploadComponent,
     ActorProfileComponent,
     ManualComponent,
-    TutoPopoverComponent
+    TutoPopoverComponent,
+    LogEditComponent
   ]
 })
 export class ChatPageModule {}

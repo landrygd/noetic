@@ -13,7 +13,9 @@ export class ChatService {
   curChatId: string;
   chatLogsSub: Subscription;
   chat: any = {};
-  chatLogs: any[] = [];
+  chatLogs: {msg: string, actor: string, number: number, action: string}[] = [];
+  tabs: any[] = [];
+  lastClosed = 0;
 
   constructor(
     private navCtrl: NavController,
@@ -26,14 +28,63 @@ export class ChatService {
   syncChat(chatId) {
     this.curChatId = chatId;
     this.chatLogsSub = this.firestore.collection('books').doc(this.bookService.curBookId)
-                                     .collection('chats').doc(chatId).valueChanges().subscribe((value: any) => {
+                                     .collection('chats').doc(chatId).valueChanges().subscribe((value: {logs: any[]}) => {
       if (value !== undefined) {
         this.chat = value;
-        this.chatLogs = value.logs;
+        this.chatLogs = value.logs.slice();
+        this. getTabs();
       } else {
         this.chatLogsSub.unsubscribe();
       }
     });
+  }
+
+  getTabs() {
+    let cpt = 0;
+    this.tabs = [];
+    let before = 0;
+    for (const log of this.chatLogs) {
+      if (before > 0) {
+        cpt += before;
+        before -= 1;
+      }
+      if (['/question', '/if'].includes(this.getCommand(log.msg))) {
+        if (cpt < 5) {
+          before += 1;
+        }
+      }
+      if (this.getCommand(log.msg) === '/end') {
+        if (cpt > 0) {
+          cpt -= 1;
+        }
+      }
+      this.tabs.push(new Array(cpt));
+    }
+    this.lastClosed = this.chatLogs.length;
+    if (cpt > 0) {
+      // before = 0;
+      for (let i = this.chatLogs.length - 1; i >= 0; i--) {
+        const log = this.chatLogs[i];
+        // if (before < 0) {
+        //   cpt += before;
+        //   before += 1;
+        // }
+        if (['/question', '/if'].includes(this.getCommand(log.msg))) {
+          cpt -= 1;
+        }
+        if (this.getCommand(log.msg) === '/end') {
+          cpt += 1;
+        }
+        if (cpt <= 0) {
+          this.lastClosed = i;
+          break;
+        }
+      }
+    }
+  }
+
+  getCommand(msg: string) {
+    return msg.split(' ')[0];
   }
 
   unsyncChat() {
@@ -49,13 +100,6 @@ export class ChatService {
   addChatLog(log, index = this.chatLogs.length) {
     if (log.msg.length > 800) {
       this.popupService.alert('Impossible d\'envoyer plus de 800 caractères.');
-      return;
-    }
-    if (this.chatLogs.length > 1000) {
-      this.popupService.alert(
-        'Impossible d\'envoyer plus de 1000 messages dans un chat.' +
-        ' Vous pouvez en créer un autre et y rediriger le lecteur en entrant la commande "/go -chat NOM_DU_CHAT"'
-        );
       return;
     }
     const res = this.chatLogs;
@@ -108,6 +152,13 @@ export class ChatService {
   }
 
   setChatLogs(logs) {
+    if (logs > 1000) {
+      this.popupService.alert(
+        'Impossible d\'envoyer plus de 1000 messages dans un chat.' +
+        ' Vous pouvez en créer un autre et y rediriger le lecteur en entrant la commande "/go -chat NOM_DU_CHAT"'
+        );
+      return;
+    }
     this.firestore.collection('books').doc(this.bookService.curBookId).collection('chats').doc(this.curChatId).update({logs});
   }
 

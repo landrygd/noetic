@@ -15,13 +15,19 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen #bg scrollEvents="true" (ionScrollEnd)="onScroll()">
-  <div style="height: 100vh;"></div>
-  <ion-reorder-group (ionItemReorder)="doReorder($event)" disabled="false">
-    <ion-grid fixed class="ion-no-padding ion-no-margin" *ngFor="let log of chatService.chatLogs; index as i">
-      <app-log  class="ion-no-margin" [log]="log" [index]="i" [edit]="true" [selected]="isLogSelected(i)" (click)="select(i)" button ></app-log>
-    </ion-grid>
-  </ion-reorder-group>
+<ion-content #bg scrollEvents="true" (ionScrollEnd)="onScroll()" *ngIf="chat">
+  <ion-virtual-scroll [items]="chat.logs" approxItemHeight="50" >
+    <ion-row *virtualItem="let log; let i = index" [style.opacity]="getLogOpacity(i)">
+      <ion-col size="0.1" *ngFor="let tab of chatService.tabs[i]" class="ion-no-padding">
+        <div class="verticalLine" [ngStyle]="{ 'background-color': tabColor }"></div>
+      </ion-col>
+      <ion-col class="ion-no-margin colMsg">
+        <app-log button class="ion-no-margin" [log]="log" [index]="i"
+        [edit]="true" [selected]="isLogSelected(i)" (action)="actionLog($event)" (click)="select($event, i);$event.stopPropagation();"></app-log>
+      </ion-col>
+    </ion-row>
+  </ion-virtual-scroll>
+  
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="!autoScroll">
     <ion-fab-button (click)="scrollToBottom(true)">
       <ion-icon name="arrow-down"></ion-icon>
@@ -40,6 +46,22 @@
     {{'CHAT.avaibleAmbiances' | translate}}
   </ion-button>
   <ion-toolbar>
+    <ion-segment value="actor" (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="tool">
+        
+        <ion-label><ion-icon name="hammer"></ion-icon>Outils</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="actor">
+        
+        <ion-label><ion-icon name="people"></ion-icon>Acteurs</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="command">
+        
+        <ion-label><ion-icon name="terminal"></ion-icon>Commandes</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="segment === 'actor'">
     <ion-buttons slot="start">
       <ion-fab-button size="small" (click)="newActor()" class="avatarButton">
         <ion-icon name="add"></ion-icon>
@@ -47,17 +69,31 @@
     </ion-buttons>
     <ion-slides [options]="slides.avatarOpts">
       <ion-slide *ngFor="let actor of bookService.actors">
-        <app-avatar (click)="setActor(actor.id)" [actorId]="actor.id" [ngClass]="getClassFabActor(actor.id)"></app-avatar>
+        <div [ngClass]="getClassFabActor(actor.id)">
+          <app-avatar (click)="setActor(actor.id)" [actorId]="actor.id"></app-avatar>
+          <p class="note">{{actor.name}}</p>
+        </div>
+      </ion-slide>
+    </ion-slides>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="segment === 'command'">
+    <ion-buttons slot="start">
+      <ion-fab-button size="small" (click)="manual()" class="avatarButton">
+        <ion-icon name="search"></ion-icon>
+      </ion-fab-button>
+    </ion-buttons>
+    <ion-slides [options]="slides.avatarOpts">
+      <ion-slide *ngFor="let command of commands">
+        <div>
+          <ion-fab-button size="small" class="ion-no-margin" (click)="useCommand(command.name)">
+            <ion-icon [name]="command.icon"></ion-icon>
+          </ion-fab-button>
+          <p class="note">{{command.name}}</p>
+        </div>
       </ion-slide>
     </ion-slides>
   </ion-toolbar>
   <ion-toolbar>
-    <app-avatar slot="start" [actorId]="actor" *ngIf="actor" [enabled]="true"></app-avatar>
-    <ion-buttons slot="start" *ngIf="!actor">
-      <ion-button (click)="manual()" expand="block" fill="clear" shape="round" color="primary">
-        <ion-icon slot="icon-only" name="help" ></ion-icon>
-      </ion-button>
-    </ion-buttons>
     <ion-textarea #chatBar [disabled]='textarea' rows="1" [(ngModel)]='text' [placeholder]="'CHAT.enterMessage' | translate" (ionInput)="changeMsg()" (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
     <ion-buttons slot="end">
       <ion-button (click)="send()" expand="block" fill="clear" shape="round" color="primary">

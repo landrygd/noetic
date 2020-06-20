@@ -202,6 +202,11 @@ export class HomePage implements OnInit, OnDestroy {
         event.target.complete();
       }, 500);
     }
+    setTimeout(() => {
+      if (this.mostRecentBooks.length === 0) {
+        this.refresh('', true);
+      }
+    }, 100);
   }
 
   async presentRgpd() {

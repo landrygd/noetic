@@ -114,7 +114,7 @@
         </ion-text>
       </ion-text>
     </div>
-    <ion-button (click)="more()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor && this.bookService.book.verso > 0">
+    <ion-button (click)="more()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor && verso">
       {{'COVER.more' | translate}}
     </ion-button>
     <ion-button (click)="changeVerso()" expand="block" fill="clear" shape="round" *ngIf="bookService.isAuthor">
@@ -144,9 +144,9 @@
         <ion-label slot="start" color="primary">
           <ion-icon name="star" *ngFor="let star of [0,0,0,0,0]; index as i"></ion-icon>
         </ion-label>
-        <ion-note slot="end" class="ion-text-end">
-          {{comment.date|timeAgo}} 
-        </ion-note>
+        <!-- <ion-note slot="end" class="ion-text-end">
+          {{comment.date.toString() | timeago}}
+        </ion-note> -->
       </ion-item>
       <ion-item lines="none">
         <ion-textarea disabled [(ngModel)]="comment.text" placeholder="Laisser un avis" (keypress)="enter($event.keyCode)" class="ion-no-padding"></ion-textarea>
@@ -168,9 +168,9 @@
                   {{user.name}}<br>
                   <ion-icon name="star" *ngFor="let i of starToArray(comment.rate)" color="primary"></ion-icon>
               </ion-label>
-              <ion-note slot="end" class="ion-text-end">
-                {{comment.date|timeAgo}} 
-              </ion-note>
+              <!-- <ion-note slot="end" class="ion-text-end" *ngIf="comment.date">
+                {{comment.date.toString() | timeago}}
+              </ion-note> -->
             </ion-item>
             <ion-item lines="none">
               <p>

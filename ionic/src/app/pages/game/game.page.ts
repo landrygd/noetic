@@ -21,7 +21,11 @@ export class GamePage implements OnInit {
   bookId: string;
   sub: Subscription;
   line = -1;
-  chat: any;
+  chat: {
+    logs: any[];
+    name: string;
+    id: string;
+  };
   chatLogs: any[] = [];
   logs: any[] = [];
   chatId = 'main';
@@ -113,7 +117,6 @@ export class GamePage implements OnInit {
 
   async playChat(chatId = 'main', line = 0) {
     this.line = line;
-    this.chatService.getChat(chatId);
     this.chat = this.chatService.getChat(chatId);
     this.chatLogs = this.chat.logs;
     this.labels = this.getLabels();
@@ -179,10 +182,10 @@ export class GamePage implements OnInit {
                   this.mediaService.playAmbiance(this.args[0]);
                 }
                 break;
-              case 'end':
+              case 'finish':
                 line = this.chatLogs.length;
                 this.ended = true;
-                this.logs.push({msg: '/end'});
+                this.logs.push({msg: '/finish'});
                 break;
               case 'alert':
                 await this.popupService.alert(this.arg);
@@ -205,7 +208,7 @@ export class GamePage implements OnInit {
                 break;
               case 'question':
                 this.paused = true;
-                this.answers = this.arg.split(';');
+                this.answers = this.getAnswers();
                 this.question = true;
                 setTimeout(() => this.scrollToBottom(), 100);
                 break;
@@ -335,7 +338,6 @@ export class GamePage implements OnInit {
       return this.actors[actorId][nomVar];
     } else {
       const value = this.varValue1;
-      console.log(value, operator);
       if (operator === 'set') {
         this.variables[this.nomVar] = value;
       } else if (operator === 'random') {
@@ -541,7 +543,7 @@ export class GamePage implements OnInit {
 
   action(name) {
     switch (name) {
-      case 'end':
+      case 'finish':
         this.exit();
     }
   }
@@ -556,7 +558,7 @@ export class GamePage implements OnInit {
       );
       setTimeout(() => {
         this.logs.push(
-          {msg: '/end'}
+          {msg: '/finish'}
         );
       }, 3000);
     }, 2000);
@@ -610,8 +612,15 @@ export class GamePage implements OnInit {
         }
       });
     }
+    let header = 'Choisir une réponse';
+    const lastLog = this.logs[this.logs.length - 1];
+    if (lastLog !== undefined) {
+      if (lastLog.msg.charAt(0) !== '/') {
+        header = lastLog.msg.substring(0, 30);
+      }
+    }
     const actionSheet = await this.actionSheetController.create({
-      header: 'Choisissez votre réponse',
+      header,
       buttons,
     });
     await actionSheet.present();
@@ -625,10 +634,10 @@ export class GamePage implements OnInit {
     let cpt = 0;
     for (let i = this.line + 1; i < this.chatLogs.length; i++) {
       const log = this.chatLogs[i];
-      if (this.getCommand(log.msg) === '/if') {
+      if (['/if', '/question'].includes(this.getCommand(log.msg))) {
         cpt += 1;
       }
-      if (this.getCommand(log.msg) === '/endif') {
+      if (this.getCommand(log.msg) === '/end') {
         if (cpt > 0) {
           cpt -= 1;
         } else {
@@ -645,6 +654,38 @@ export class GamePage implements OnInit {
     return this.line + 1;
   }
 
+  getArg(msg: string) {
+    const res = msg.split(' ');
+    res.shift();
+    return res.join(' ');
+  }
+
+  getAnswers(): string[] {
+    const res = [];
+    let cpt = 0;
+    for (let i = this.line + 1; i < this.chatLogs.length; i++) {
+      const log = this.chatLogs[i];
+      console.log(log);
+      if (['/if', '/question'].includes(this.getCommand(log.msg))) {
+        cpt += 1;
+      }
+      if (this.getCommand(log.msg) === '/answer') {
+        res.push(this.getArg(log.msg));
+      }
+      if (this.getCommand(log.msg) === '/end') {
+        if (cpt > 0) {
+          cpt -= 1;
+        } else {
+          console.log(res);
+          return res;
+        }
+      }
+    }
+    // pas de réponse
+    return [];
+  }
+
+
   getNextAnswer() {
     let cpt = 0;
     for (let i = this.line + 1; i < this.chatLogs.length; i++) {
@@ -657,7 +698,7 @@ export class GamePage implements OnInit {
           return i;
         }
       }
-      if (this.getCommand(log.msg) === '/endanswers') {
+      if (this.getCommand(log.msg) === '/end') {
         if (cpt > 0) {
           cpt -= 1;
         } else {

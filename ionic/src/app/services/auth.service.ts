@@ -46,6 +46,7 @@ export class AuthService {
     this.fireauth.authState.subscribe(auth => {
       if (!auth) {
         this.connected = false;
+        this.userService.syncDisconnectedCase();
       } else {
         this.connected = true;
         this.auth = auth;

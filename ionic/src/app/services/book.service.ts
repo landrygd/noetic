@@ -35,7 +35,8 @@ export class BookService {
     views: number,
     votes: number,
     banner: string,
-    wallpaper: string
+    wallpaper: string,
+    public: boolean
   };
 
   isAuthor: boolean;
@@ -73,7 +74,6 @@ export class BookService {
 
     private alertController: AlertController,
     private navCtrl: NavController,
-    private traduction: TraductionService,
     public userService: UserService,
     private popupService: PopupService
   ) {

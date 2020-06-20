@@ -32,6 +32,8 @@ import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { MediaService } from './services/media.service';
 import { Facebook } from '@ionic-native/facebook/ngx';
+import { Globalization } from '@ionic-native/globalization/ngx';
+import { TimeagoModule } from 'ngx-timeago';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyDAZRFBAHjrS8Ww03U95mMhX1-AD9rPDGo',
@@ -73,6 +75,7 @@ export function createTranslateLoader(http: HttpClient) {
     }),
   ],
   providers: [
+    Globalization,
     Facebook,
     GooglePlus,
     LocalNotifications,

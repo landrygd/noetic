@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
-import { ModalController, IonContent, ActionSheetController, AlertController, IonTextarea, PopoverController } from '@ionic/angular';
+import { Component, OnInit, ViewChild, AfterViewInit, ElementRef, OnDestroy, HostListener } from '@angular/core';
+import { ModalController, IonContent, ActionSheetController, AlertController,
+         IonTextarea, PopoverController, Platform, ToastController } from '@ionic/angular';
 import { ChatService } from 'src/app/services/book/chat.service';
 import { PopupService } from 'src/app/services/popup.service';
 import { BookService } from 'src/app/services/book.service';
@@ -10,7 +11,10 @@ import { ManualComponent } from 'src/app/components/modals/manual/manual.compone
 import { TutoPopoverComponent } from 'src/app/components/tuto-popover/tuto-popover.component';
 import { UserService } from 'src/app/services/user.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { ThemeService } from 'src/app/services/theme.service';
+import { AngularFirestore } from '@angular/fire/firestore';
+import Commands from '../../../assets/json/commands.json';
 
 @Component({
   selector: 'app-chat',
@@ -23,9 +27,14 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('bg', {static: true, read: ElementRef}) bg: ElementRef;
   @ViewChild('chatBar', {static: true, read: IonTextarea}) chatBar: IonTextarea;
 
+  segment = 'actor';
   text = '';
-  chat = [];
-  curIndex = -1;
+  chat: {
+    logs: any[];
+    name: string;
+    id: string;
+  };
+  selection = [];
   avatar = 'assets/avatar/man.png';
   actor: string;
   textarea = false;
@@ -36,61 +45,22 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   music = false;
   ambiance = false;
 
-  tuto = [
-    {
-      target: 'chatBar',
-      info: 'Bienvenue sur l\'éditeur de Noetic, pour passer ce tutoriel, appuyez sur annuler'
-    },
-    {
-      target: 'chatBar',
-      // tslint:disable-next-line: max-line-length
-      info: 'Pour ajouter un message, il faut entrer du texte sur la bar de chat puis appuyer sur le bouton "envoyer" en bas à droite de l\'écran'
-    },
-    {
-      target: 'chatBar',
-      // tslint:disable-next-line: max-line-length
-      info: 'Pour ajouter un personnage, il faut appuyer sur une bouton "+" en bas à gauche de l\'écran'
-    },
-    {
-      target: 'chatBar',
-      // tslint:disable-next-line: max-line-length
-      info: 'Pour faire parler un personnage, il faut appuyer sur son avatar pour le sélectionner dans la barre des personnages'
-    },
-    {
-      target: 'chatBar',
-      // tslint:disable-next-line: max-line-length
-      info: 'Vous pouvez déselectionner un personnage en rappuyant sur son avatar. Sans personnage selectionné, vous êtes en mode narrateur.'
-    },
-    {
-      target: 'chatBar',
-      // tslint:disable-next-line: max-line-length
-      info: 'Une fois les messages ajoutés, vous pouvez les réordonner en les faisant glisser avec les barres horizontales à leur droite'
-    },
-    {
-      target: 'chatBar',
-      // tslint:disable-next-line: max-line-length
-      info: 'Pour supprimer un message ou modifier, il faut le sélectionner en appuyant sur lui puis le réappuyer pour le déselectionner'
-    },
-    {
-      target: 'chatBar',
-      // tslint:disable-next-line: max-line-length
-      info: 'Vous pourrez tester votre histoire en appuyant sur le bouton "play" en haut à droite de l\'écran'
-    },
-    {
-      target: 'chatBar',
-      // tslint:disable-next-line: max-line-length
-      info: 'Pour éditer ou supprimer un acteur, il faut appuyer sur son avatar dans la barre de chat ou directement sur le chat'
-    },
-    {
-      target: 'chatBar',
-      // tslint:disable-next-line: max-line-length
-      info: 'Pour rendre votre histoire dynamique, vous pouvez également entrer une commande en vous référant au manuel en bas à gauche'
-    },
-    {
-      target: 'chatBar',
-      // tslint:disable-next-line: max-line-length
-      info: 'Ce tutoriel est terminé, bonne découverte!'
-    }
+  edittingLog = false;
+  history: {action: string, index: number, logs: {msg: string, actor: string, id: string}[]}[] = [];
+  historyIndex = -1;
+
+  tuto: string[] = [
+    'Bienvenue sur l\'éditeur de scénario, appuyez sur "OK" pour continuer ce tutoriel ou "Passer" pour le passer',
+    'Vous pouvez entrer du texte dans la bar de tchat en bas de l\'écran',
+    'Pour ajouter un acteur, appuyez sur le bouton "+" dans la section "acteur"',
+    'Pour le sélectionner/déselectionner, appuyez sur son avatar dans la bar de tchat',
+    'Vous pouvez éditer un acteur en appuyant sur son avatar dans le tchat',
+    'Pour rendre le tchat dynamique, appuyez sur la section "commande"',
+    'Ici vous pourrez chercher des commandes en appuyant sur la loupe',
+    'Notez que vous pouvez inclure des variables dans vos textes avec le signe "$"',
+    'Exemple: "/input $nom" puis "Bonjour $nom"',
+    'Vous pouvez repasser ce tutoriel en le réactivant dans les paramètres de votre projet',
+    'Bonne découverte!'
   ];
 
   ERRORS: any = {};
@@ -98,6 +68,13 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   errorSub: Subscription;
   commonSub: Subscription;
+
+  tabColor = '#000';
+
+  chatAsync: Observable<any>;
+  chatSub: Subscription;
+
+  commands = [];
 
   constructor(
     public chatService: ChatService,
@@ -111,16 +88,81 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     public mediaService: MediaService,
     private popoverController: PopoverController,
     private userService: UserService,
-    private translator: TranslateService
+    private translator: TranslateService,
+    private themeService: ThemeService,
+    private firestore: AngularFirestore,
+    private popupService: PopupService,
+    private toastController: ToastController
     ) {}
 
+  @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    this.shortcuts(event);
+  }
+
   async ngOnInit() {
+    this.historyIndex = this.history.length;
     this.chatService.syncChat(this.bookService.curChatId);
     this.loaded = true;
-    this.getWallpaper();
     setTimeout(() => this.scrollToBottom(), 200);
     this.getTraduction();
+    this.chatSub = this.firestore.collection('books').doc(this.bookService.curBookId)
+                                     .collection('chats').doc(this.chatService.curChatId).valueChanges().subscribe((chat: any) => {
+                                       this.chat = chat;
+    });
+    this.commands = [];
+    Object.keys(Commands).forEach((key) => {
+      this.commands.push(Commands[key]);
+    });
   }
+
+  shortcuts(event: KeyboardEvent): void {
+    if (event.ctrlKey) {
+      switch (event.key) {
+        case 'c':
+          this.copy();
+          break;
+        case 'v':
+          this.paste();
+          break;
+        case 'x':
+          this.cut();
+          break;
+        case 'z':
+          this.undo();
+          break;
+        case 'y':
+          this.redo();
+          break;
+        case 'a':
+          this.selectAll();
+          break;
+        case 's':
+          this.save();
+          break;
+      }
+    } else if (event.shiftKey) {
+      switch (event.key) {
+        case 'E':
+          this.edit();
+          break;
+      }
+    } else {
+      switch (event.key) {
+        case 'Backspace':
+          this.delete();
+          break;
+      }
+    }
+ }
+
+ async toast(message, position) {
+   const toast = await this.toastController.create({
+     message,
+     position,
+     duration: 1000
+   });
+   toast.present();
+ }
 
   getTraduction() {
     this.errorSub = this.translator.get('ERRORS').subscribe((val) => {
@@ -134,6 +176,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.errorSub.unsubscribe();
     this.commonSub.unsubscribe();
+    this.chatSub.unsubscribe();
   }
 
   getWallpaper() {
@@ -146,7 +189,12 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+
+
   ngAfterViewInit() {
+    if (this.themeService.darkMode) {
+      this.tabColor = '#fff';
+    }
     if (this.userService.haveTuto()) {
       setTimeout(() => {this.showTuto(); }, 500);
     }
@@ -184,42 +232,57 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     if ((log.msg.substring(0, 7).toLowerCase() === '/l main' || log.msg.substring(0, 11).toLowerCase() === '/label main')) {
       this.popup.alert(this.ERRORS.invalidLabelName);
     } else {
-      if (this.curIndex === -1) {
-        this.chatService.addChatLog(log);
+      if (this.edittingLog) {
+        this.chatService.editChatLog(log, this.selection[0]);
+        this.selection = [];
+        this.edittingLog = false;
       } else {
-        this.chatService.editChatLog(log, this.curIndex);
+        if (this.selection.length === 0) {
+          this.addHistoryAction({action: 'add', index: this.chat.logs.length, logs: [log]});
+          this.chatService.addChatLog(log);
+        } else {
+          this.chatService.addChatLog(log, this.selection[this.selection.length - 1] + 1);
+          this.selection = [this.selection[this.selection.length - 1] + 1];
+        }
       }
     }
     setTimeout(() => this.scrollToBottom(), 50);
     setTimeout(() => this.text = '', 1);
-    this.curIndex = -1;
     this.textarea = false;
   }
 
-  doReorder(event) {
-    this.curIndex = -1;
-    this.chat = this.chatService.chatLogs;
-    const itemMove = this.chat.splice(event.detail.from, 1)[0];
-    this.chat.splice(event.detail.to, 0, itemMove);
-    this.chatService.setChatLogs(this.chat);
-    event.detail.complete();
-  }
-
-  select(index) {
-    if (index !== this.curIndex) {
-      this.curIndex = index;
-      this.text = this.chatService.chatLogs[index].msg;
-      if (this.chatService.chatLogs[index].actor) {
-        this.actor = this.chatService.chatLogs[index].actor;
+  select(event, index) {
+    const relativeX = event.clientX / event.target.clientWidth;
+    if (relativeX < 0.9) {
+      if (event) {
+        if (event.shiftKey) {
+          this.selection = this.getMajSelection(index);
+          return;
+        } else {
+          if (!(this.selection.includes(index))) {
+            this.selection = [index];
+            return;
+          }
+        }
       }
-    } else {
-      this.curIndex = -1;
+      this.selection = [];
       this.text = '';
     }
   }
 
+  getMajSelection(x2): any[] {
+    const x1 = this.selection[0];
+    const min = Math.min(x1, x2);
+    const max = Math.max(x1, x2);
+    const res = [];
+    for (let i = min; i <= max; i++) {
+      res.push(i);
+    }
+    return res;
+  }
+
   getClass(index) {
-    if (index === this.curIndex) {
+    if (this.selection.includes(index)) {
       return 'selected';
     } else {
       return 'notselected';
@@ -241,6 +304,14 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  getLogOpacity(index) {
+    if (index > this.chatService.lastClosed) {
+      return 0.5;
+    }
+    return 1;
+  }
+
+
   deleteChat() {
     this.chatService.deleteChat();
   }
@@ -258,7 +329,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   isLogSelected(index) {
-    if (index === this.curIndex) {
+    if (this.selection.includes(index)) {
       return true;
     } else {
       return false;
@@ -317,15 +388,34 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
 
   async showTuto(index = 0) {
-    const tuto = this.tuto[index];
-    let event: CustomEvent<any>;
-    if (tuto.target === 'chatBar') {
-      const sub = this.chatBar.ionFocus.subscribe((ev) => {
-        event = ev;
-        sub.unsubscribe();
-        this.presentPopover(event, index);
+    if (this.tuto.length > index) {
+      const message = this.tuto[index];
+      const toast = await this.toastController.create({
+        message,
+        position: 'top',
+        color: 'primary',
+        buttons: [
+          {
+            icon: 'checkmark',
+            text: 'OK',
+            handler: () => {
+              toast.dismiss();
+              this.showTuto(index + 1);
+            }
+          },
+          {
+            icon: 'play-skip-forward',
+            text: 'Passer',
+            handler: () => {
+              toast.dismiss();
+              this.showTuto(this.tuto.length);
+            }
+          }
+        ],
       });
-      setTimeout(() => {this.chatBar.setFocus(); }, 500);
+      toast.present();
+    } else {
+      this.userService.deleteTuto();
     }
   }
 
@@ -334,7 +424,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     const popover = await this.popoverController.create({
       component: TutoPopoverComponent,
       componentProps: {
-        info: this.tuto[index].info,
+        info: this.tuto[index],
         end
       },
       event: ev,
@@ -348,7 +438,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
       this.userService.deleteTuto();
       const alert = await this.alertController.create({
         message: 'Vous pouvez toujours revoir ce tutoriel en le réactivant dans les paramètres du livre',
-        buttons: ['Ok']
+        buttons: ['Ok'],
       });
       await alert.present();
     }
@@ -375,5 +465,155 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   showAudio(type: string) {
     this.manual(type);
+  }
+
+  actionLog(event) {
+    switch (event) {
+      case 'copy':
+        this.copy();
+        break;
+      case 'paste':
+        this.paste();
+        break;
+      case 'delete':
+        this.delete();
+        break;
+      case 'edit':
+        this.edit();
+        break;
+    }
+  }
+
+  getSelectionLogs() {
+    const min = this.selection[0];
+    const max = min + this.selection.length;
+    const res = [];
+    for (const log of this.chat.logs.slice(min, max)) {
+      res.push(JSON.stringify(log));
+    }
+    return res.join('%SEP%');
+  }
+
+  copy() {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.getSelectionLogs();
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.popupService.toast('Copié dans le presse papier');
+  }
+
+  cut() {
+    this.copy();
+    this.delete();
+  }
+
+  delete(index = this.selection[0], length = this.selection.length) {
+    const res = this.chat.logs;
+    const logs = res.slice(index, index + length);
+    res.splice(index, length);
+    this.addHistoryAction({action: 'delete', index, logs});
+    this.update(res);
+    this.selection = [];
+  }
+
+  async paste() {
+    const clipboard = await navigator.clipboard.readText();
+    const clipbordLogs = clipboard.split('%SEP%').reverse();
+    const logs: any[] = [];
+    for (const log of clipbordLogs) {
+      logs.push(JSON.parse(log));
+    }
+    let min;
+    if (this.selection === []) {
+      min = this.chat.logs.length - 1;
+    } else {
+      min = this.selection[this.selection.length - 1] + 1;
+    }
+    const res = this.chat.logs.slice();
+    for (const log of logs) {
+      res.splice(min, 0, log);
+    }
+    this.addHistoryAction({action: 'add', index: this.chat.logs.length, logs});
+    this.update(res);
+  }
+
+  update(chat = this.chat.logs) {
+    this.chatService.setChatLogs(chat);
+  }
+
+  addHistoryAction(value) {
+    this.history = this.history.slice(0, this.historyIndex);
+    this.history.push(value);
+    this.historyIndex = this.history.length;
+  }
+
+  undo(reversed = false) {
+    if (this.historyIndex > 0) {
+      this.historyIndex -= 1;
+      const lastModif = this.history[this.historyIndex];
+      let action = lastModif.action;
+      if (reversed) {
+        if (action === 'add') {
+          action = 'delete';
+        } else {
+          action = 'add';
+        }
+      }
+      switch (action) {
+        case 'add':
+          this.delete(lastModif.index, lastModif.logs.length);
+          break;
+        case 'delete':
+          const logs = lastModif.logs.reverse();
+          const res = this.chat.logs.slice();
+          for (const log of logs) {
+            res.splice(lastModif.index, 0, log);
+          }
+          this.update(res);
+          break;
+      }
+    }
+  }
+
+  redo() {
+    if (this.historyIndex > 0) {
+      this.historyIndex += 1;
+      this.undo(true);
+    }
+  }
+
+  edit() {
+    this.edittingLog = true;
+    const index = this.selection[0];
+    this.text = this.chatService.chatLogs[index].msg;
+    if (this.chatService.chatLogs[index].actor) {
+      this.actor = this.chatService.chatLogs[index].actor;
+    }
+  }
+
+  save() {
+    this.toast('la sauvegarde est automatique', 'top');
+  }
+
+  selectAll() {
+    this.selection = [];
+    for (let i = 0; i < this.chat.logs.length; i++) {
+      this.selection.push(i);
+    }
+  }
+
+  segmentChanged(ev: any) {
+    this.segment = ev.target.value;
+  }
+
+  useCommand(name) {
+    this.text = Commands[name].ex[0];
   }
 }

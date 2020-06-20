@@ -53,6 +53,8 @@ export class CoverPage implements OnInit, OnDestroy {
 
   background = 'url("../../../assets/banner.png")';
 
+  verso = false;
+
   @ViewChild('banner', {static: true, read: ElementRef}) banner: ElementRef;
 
   constructor(
@@ -98,6 +100,7 @@ export class CoverPage implements OnInit, OnDestroy {
       this.bookService.curBookId = this.curBookId;
       this.bookService.syncBook(this.curBookId, true)
       .then(() => {
+        this.verso = this.bookService.book.verso.length > 0;
         this.loading = false;
         this.commentService.syncComments(this.bookService.book.id);
         this.getBanner();

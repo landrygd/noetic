@@ -20,7 +20,7 @@ import { TranslateModule } from '@ngx-translate/core';
     CoverPageRoutingModule,
     PipesModule,
     ComponentModule,
-    TranslateModule
+    TranslateModule,
   ],
   declarations: [CoverPage],
   entryComponents: [UploadComponent]

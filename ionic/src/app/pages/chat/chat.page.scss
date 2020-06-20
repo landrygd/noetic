@@ -23,3 +23,39 @@
 //   width: 100%;
 //   height: 100%;
 // }
+
+ion-virtual-scroll > *, app-log {
+  min-height: 50px;
+  height: 50px;
+}
+
+.verticalLine {
+  width: 2px;
+  min-width: 2px;
+  margin: auto;
+  height: 50px;
+  opacity: 0.5;
+}
+
+.colMsg {
+  padding: 5px 0 5px 0;
+}
+
+* {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+}
+
+.note {
+  margin: auto;
+  font-size: 14px;
+  display: block;
+  width: 40px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

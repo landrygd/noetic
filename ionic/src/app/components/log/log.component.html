@@ -1,14 +1,47 @@
-<ion-row lines="none" [ngClass]="getClass()" class="ion-no-margin" #ref style="width: 100vw;">
+
+
+<ion-item [color]="getItemColor()" [class]="itemClass" *ngIf="!(log.msg.charAt(0) === '/'); else command" 
+          #ref button detail="false" lines="none">
+  
+  <!-- <ion-note style="margin: 5px;" slot="start">{{index}}</ion-note> -->
+  <div class="msgBox" slot="start" *ngIf="bookService.actorsById[log.actor] as actor; else card">
+    <app-avatar *ngIf="!ownPlayer || edit" [enabled]="true" [actorId]="log.actor" class="ion-no-margin"></app-avatar>
+    <ion-card [color]="actor.color" [slot]="msgSlot">
+      <p [class]="editClass">{{actor.name}} <br> {{log.msg}}</p>
+      
+    </ion-card>
+  </div>
+  <ng-template #card>
+    <ion-card [class]="'narrator ' + cardClass" style="background: lightyellow">
+      <p [class]="editClass">{{log.msg}}</p>
+    </ion-card>
+  </ng-template>
+  <ion-button slot="end" *ngIf="selected && edit" (click)="logEdit($event)" expand="block" fill="clear" shape="round" class="ion-no-padding">
+    <ion-icon name="ellipsis-vertical" [color]="getButtonColor()"></ion-icon>
+  </ion-button>
+</ion-item>
+
+<ng-template #command>
+  <ion-item #ref button [color]="getItemColor()" detail="false" lines="none" [class]="itemClass">
+    <p slot="start" [innerHTML]="log.msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
+    <ion-button slot="end" *ngIf="selected && edit" (click)="logEdit($event)" expand="block" fill="clear" shape="round" class="ion-no-padding">
+      <ion-icon name="ellipsis-vertical" [color]="getButtonColor()"></ion-icon>
+    </ion-button>
+  </ion-item>
+</ng-template>
+
+<!-- OLD VERSION -->
+<!-- <ion-row lines="none" [ngClass]="getClass()" class="ion-no-margin" #ref style="width: 100vw;">
   <ion-col style="max-width: 60px;" *ngIf="bookService.actorsById[actorId] as actor">
-    <app-avatar [enabled]="true" [actorId]="actor.id" class="ion-no-margin" *ngIf="!isOwnPlayer(actor)"></app-avatar>
+    <app-avatar [enabled]="true" [actorId]="actor.id" class="ion-no-margin" *ngIf="!ownPlayer"></app-avatar>
   </ion-col>
   <ion-col *ngIf="bookService.actorsById[actorId] as actor">
     <ion-item color="transparent" lines="none" class="ion-no-margin ion-no-padding">
       <ion-card [color]="getColor(actor)" class="ion-no-margin" [slot]="getSlot(actor)">
-        <ion-card-content style="padding-bottom: 0;" *ngIf="!isOwnPlayer(actor)">
+        <ion-card-content style="padding-bottom: 0;" *ngIf="!ownPlayer">
           <p>{{actor.name}}<p>
         </ion-card-content>
-        <ion-card-content style="padding-bottom: 0;" *ngIf="isOwnPlayer(actor)">
+        <ion-card-content style="padding-bottom: 0;" *ngIf="ownPlayer">
         </ion-card-content>
         <ion-card-content style="padding-top: 0;" *ngIf="!typing" [innerHTML]="msg | variables:variablesJSON:actorsJSON | toHtml"></ion-card-content>
         <ion-card-content *ngIf="typing" #ref>
@@ -44,4 +77,4 @@
   <ion-col size="1" *ngIf="edit">
     <ion-reorder></ion-reorder>
   </ion-col>
-</ion-row>
+</ion-row> -->
