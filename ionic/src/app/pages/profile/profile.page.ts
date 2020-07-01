@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { SlidesService } from 'src/app/services/slides.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { PopupService } from 'src/app/services/popup.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
@@ -27,7 +27,12 @@ export class ProfilePage implements OnInit, OnDestroy {
   userId: string;
   tabs = false;
 
-  banner: string = 'url("../../../assets/banner.png")';
+  banner = 'url("../../../assets/banner.png")';
+
+  profileSub: Subscription;
+  commonSub: Subscription;
+  PROFILE: any;
+  COMMON: any;
 
   constructor(
     public modalController: ModalController,
@@ -40,9 +45,29 @@ export class ProfilePage implements OnInit, OnDestroy {
     public slides: SlidesService,
     private authService: AuthService,
     private route: ActivatedRoute,
+    private translator: TranslateService
     ) {}
 
   ngOnInit() {
+    this.getTraduction();
+  }
+
+  getTraduction() {
+    this.profileSub = this.translator.get('PROFILE').subscribe((val) => {
+      this.PROFILE = val;
+    });
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.profileSub.unsubscribe();
+    this.commonSub.unsubscribe();
+    if (this.followSub) {
+      this.followSub.unsubscribe();
+      this.userSub.unsubscribe();
+    }
   }
 
   async ionViewDidEnter() {
@@ -109,12 +134,6 @@ export class ProfilePage implements OnInit, OnDestroy {
       this.loading = false;
     });
   }
-  ngOnDestroy() {
-    if (this.followSub) {
-      this.followSub.unsubscribe();
-      this.userSub.unsubscribe();
-    }
-  }
 
   async changeAvatar(userId) {
     if (userId === this.userService.userId) {
@@ -132,27 +151,27 @@ export class ProfilePage implements OnInit, OnDestroy {
     const actionSheet = await this.actionSheetController.create({
       buttons: [
         {
-          text: 'Partager le profil',
+          text: this.PROFILE.share,
           icon: 'share-social',
           handler: () => {
             actionSheet.dismiss().then(() => this.share());
           }
         },
         {
-          text: 'Paramètres',
+          text: this.COMMON.settings,
           icon: 'settings',
           handler: () => {
             this.navCtrl.navigateForward('user-settings');
           }
         },
         {
-        text: 'Se déconnecter',
+        text: this.PROFILE.disconnect,
         icon: 'exit',
         handler: () => {
           this.authService.logout();
         }
         }, {
-        text: 'Annuler',
+        text: this.COMMON.cancel,
         icon: 'close',
         role: 'cancel'
       }]
@@ -160,56 +179,24 @@ export class ProfilePage implements OnInit, OnDestroy {
     await actionSheet.present();
   }
 
-  async about() {
-    const actionSheet = await this.actionSheetController.create({
-      buttons: [
-        {
-          text: 'Politique de confidentialité',
-          icon: 'document-text',
-          handler: () => {
-            this.navCtrl.navigateForward('privacy');
-          }
-        },
-        {
-          text: 'A propos de l\'application',
-          icon: 'logo-google-playstore',
-          handler: () => {
-            window.open('https://play.google.com/store/apps/details?id=com.blockup.noetic', '_blank');
-          }
-        },
-        {
-          text: 'A propos de Blockup',
-          icon: 'business',
-          handler: () => {
-            window.open('https://blockup.net', '_blank');
-          }
-        }, {
-          text: 'Annuler',
-          icon: 'close',
-          role: 'cancel'
-      }]
-    });
-    await actionSheet.present();
-  }
-
   async changeUsername() {
     const alert = await this.alertController.create({
-      header: 'Changer de pseudo',
+      header: this.PROFILE.changePseudo,
       inputs: [
         {
           name: 'name',
           type: 'text',
-          placeholder: 'Votre pseudo',
+          placeholder: this.PROFILE.newPseudo,
           value: this.userService.userData.name,
         }
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel',
           cssClass: 'secondary'
         }, {
-          text: 'Ok',
+          text: this.COMMON.ok,
           handler: (data) => {
             this.userService.updateUserData({name: data.name});
           }
@@ -225,18 +212,18 @@ export class ProfilePage implements OnInit, OnDestroy {
       bio = this.userService.userData.bio;
     }
     const alert = await this.alertController.create({
-      header: 'Changer de bio',
+      header: this.PROFILE.changeBio,
       inputs: [
         {
           name: 'bio',
           type: 'text',
-          placeholder: 'Votre bio',
+          placeholder: this.PROFILE.newBio,
           value: bio,
         }
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel',
           cssClass: 'secondary'
         }, {

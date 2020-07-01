@@ -1,20 +1,40 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { AlertController, ToastController, LoadingController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class PopupService {
+export class PopupService implements OnInit, OnDestroy {
 
   loader: HTMLIonLoadingElement;
   alerter: HTMLIonAlertElement;
 
+  commonSub: Subscription;
+  COMMON: any;
+
   constructor(
     private alertController: AlertController,
     private toastController: ToastController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private translator: TranslateService
     ) {}
+
+  ngOnInit() {
+    this.getTraduction();
+  }
+
+  getTraduction() {
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.commonSub.unsubscribe();
+  }
 
   async init() {
     this.loader = await this.loadingController.create({});
@@ -54,7 +74,7 @@ export class PopupService {
     await this.alerter.present();
   }
 
-  async loading(msg = 'Chargement...', id = 'unknowed') {
+  async loading(msg = this.COMMON.loading, id = 'unknowed') {
     this.loader = await this.loadingController.create({
       id,
       message: msg,
@@ -71,9 +91,9 @@ export class PopupService {
 
   async error(err: string) {
     const alert = await this.alertController.create({
-      header: 'Erreur',
+      header: this.COMMON.error,
       message: err,
-      buttons: ['Mince...']
+      buttons: [this.COMMON.ok]
     });
     await alert.present();
     this.loader.dismiss();

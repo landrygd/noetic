@@ -86,7 +86,7 @@ export class HomePage implements OnInit, OnDestroy {
     const actionSheet = await this.actionSheetController.create({
       buttons: [
         {
-          text: 'A propos',
+          text: this.HOME.about,
           icon: 'information',
           handler: () => {
             actionSheet.dismiss();
@@ -94,7 +94,7 @@ export class HomePage implements OnInit, OnDestroy {
           }
         },
         {
-          text: 'Partager l\'application',
+          text: this.HOME.share,
           icon: 'share',
           handler: async () => {
             await actionSheet.dismiss();
@@ -102,7 +102,7 @@ export class HomePage implements OnInit, OnDestroy {
           }
         },
         {
-          text: 'Noter l\'application',
+          text: this.HOME.rate,
           icon: 'star',
           handler: () => {
             actionSheet.dismiss();
@@ -110,7 +110,7 @@ export class HomePage implements OnInit, OnDestroy {
           }
         },
         {
-          text: 'Signaler un problème',
+          text: this.HOME.report,
           icon: 'warning',
           handler: () => {
             actionSheet.dismiss();
@@ -118,7 +118,7 @@ export class HomePage implements OnInit, OnDestroy {
           }
         },
         {
-        text: 'Annuler',
+        text: this.COMMON.cancel,
         icon: 'close',
         role: 'cancel'
       }]
@@ -130,41 +130,41 @@ export class HomePage implements OnInit, OnDestroy {
     const actionSheet = await this.actionSheetController.create({
       buttons: [
         {
-          text: 'Politique de confidentialité',
+          text: this.HOME.policy,
           icon: 'document-text',
           handler: () => {
             this.navCtrl.navigateForward('privacy');
           }
         },
         {
-          text: 'Charte de Noetic',
+          text: this.HOME.chart,
           icon: 'receipt',
           handler: () => {
             this.navCtrl.navigateForward('chart');
           }
         },
         {
-          text: 'A propos de l\'application',
+          text: this.HOME.aboutApp,
           icon: 'logo-google-playstore',
           handler: () => {
             window.open('https://play.google.com/store/apps/details?id=com.blockup.noetic', '_blank');
           }
         },
         {
-          text: 'Site de Noetic',
+          text: this.HOME.noeticSite,
           icon: 'globe',
           handler: () => {
             window.open('https://noetic.site', '_blank');
           }
         },
         {
-          text: 'A propos de Blockup',
+          text: this.HOME.aboutBlockup,
           icon: 'business',
           handler: () => {
             window.open('https://blockup.net', '_blank');
           }
         }, {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           icon: 'close',
           role: 'cancel'
       }]
@@ -177,15 +177,6 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async rate() {
-    const alert = await this.alertController.create({
-      header: 'Avant de continuer...',
-      message: 'L\'équipe vous remercie pour votre engagement. ' +
-      'Apporter votre avis sur notre application nous aide à mieux comprendre les besoins de nos utilisateurs. ' +
-      'Nous espérons sincèrement que votre expérience sur Noetic vous a plu.',
-      buttons: ['Noter l\application']
-    });
-    await alert.present();
-    await alert.onDidDismiss();
     window.open('https://play.google.com/store/apps/details?id=com.blockup.noetic', '_blank');
   }
 

@@ -63,8 +63,8 @@ export class NetworkService {
 
   updateNetworkStatus(status: ConnectionStatus) {
     this.status.next(status);
-    const connection = status === ConnectionStatus.Offline ? 'connecté' : 'déconnecté';
-    this.popupService.toast('Vous êtes ' + connection);
+    // const connection = status === ConnectionStatus.Offline ? 'connecté' : 'déconnecté';
+    // this.popupService.toast('Vous êtes ' + connection);
   }
 
   async offline() {

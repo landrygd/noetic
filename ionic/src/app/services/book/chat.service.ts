@@ -1,14 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { NavController, AlertController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Subscription, Observable } from 'rxjs';
 import { BookService } from '../book.service';
 import { PopupService } from '../popup.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ChatService {
+export class ChatService implements OnInit, OnDestroy {
 
   curChatId: string;
   chatLogsSub: Subscription;
@@ -17,13 +18,37 @@ export class ChatService {
   tabs: any[] = [];
   lastClosed = 0;
 
+  CHAT: any;
+  COMMON: any;
+  chatTradSub: Subscription;
+  commonSub: Subscription;
+
   constructor(
     private navCtrl: NavController,
     private bookService: BookService,
     private firestore: AngularFirestore,
     private popupService: PopupService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private translator: TranslateService
   ) { }
+
+  ngOnInit() {
+    this.getTraduction();
+  }
+
+  getTraduction() {
+    this.chatTradSub = this.translator.get('SERVICES.CHAT').subscribe((val) => {
+      this.CHAT = val;
+    });
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.chatTradSub.unsubscribe();
+    this.commonSub.unsubscribe();
+  }
 
   syncChat(chatId) {
     this.curChatId = chatId;
@@ -99,7 +124,7 @@ export class ChatService {
 
   addChatLog(log, index = this.chatLogs.length) {
     if (log.msg.length > 800) {
-      this.popupService.alert('Impossible d\'envoyer plus de 800 caractères.');
+      this.popupService.alert(this.CHAT.logMaxError);
       return;
     }
     const res = this.chatLogs;
@@ -118,29 +143,27 @@ export class ChatService {
       this.unsyncChat();
       this.firestore.collection('books').doc(this.bookService.curBookId).collection('chats').doc(chatId).delete();
       this.navCtrl.navigateRoot('/tabs-book');
-    } else {
-      this.popupService.toast('Le premier chat ne peut pas être supprimé');
     }
   }
 
   async renameChat() {
     const alert = await this.alertController.create({
-      header: 'Changer de pseudo',
+      header: this.CHAT.changeChatName,
       inputs: [
         {
           name: 'name',
           type: 'text',
-          placeholder: 'Votre pseudo',
+          placeholder: this.CHAT.newChatName,
           value: this.chat.name,
         }
       ],
       buttons: [
         {
-          text: 'Cancel',
+          text: this.COMMON.cancel,
           role: 'cancel',
           cssClass: 'secondary'
         }, {
-          text: 'Ok',
+          text: this.COMMON.ok,
           handler: (data) => {
             this.firestore.collection('books').doc(this.bookService.curBookId)
                           .collection('chats').doc(this.curChatId).update({name: data.name});
@@ -154,8 +177,7 @@ export class ChatService {
   setChatLogs(logs) {
     if (logs > 1000) {
       this.popupService.alert(
-        'Impossible d\'envoyer plus de 1000 messages dans un chat.' +
-        ' Vous pouvez en créer un autre et y rediriger le lecteur en entrant la commande "/go -chat NOM_DU_CHAT"'
+        this.CHAT.chatLogsMaxError
         );
       return;
     }

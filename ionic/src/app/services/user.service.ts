@@ -1,5 +1,5 @@
-import { Injectable, OnInit } from '@angular/core';
-import { Observable, Subscription, merge } from 'rxjs';
+import { Injectable, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { NavController, Platform, AlertController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFirestoreCollection, AngularFirestoreDocument, DocumentChangeAction } from '@angular/fire/firestore/public_api';
@@ -9,11 +9,12 @@ import * as firebase from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { TraductionService } from './traductionService.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class UserService implements OnDestroy {
 
   curUser: Observable<unknown>;
   curUserId: string;
@@ -64,58 +65,14 @@ export class UserService {
   topRatedBooks: any[] = [];
   mostRecentBooks: any[] = [];
 
-  languages = [
-    {
-      name: 'Français',
-      value: 'fr'
-    },
-    {
-      name: 'Anglais',
-      value: 'en'
-    },
-    {
-      name: 'Espagnol',
-      value: 'es'
-    },
-    {
-      name: 'Allemand',
-      value: 'de'
-    },
-    {
-      name: 'Chinois',
-      value: 'zh'
-    },
-    {
-      name: 'Arabe',
-      value: 'ar'
-    },
-    {
-      name: 'Portugais',
-      value: 'pt'
-    },
-    {
-      name: 'Russe',
-      value: 'ru'
-    },
-    {
-      name: 'Hindi',
-      value: 'hi'
-    },
-    {
-      name: 'Swahili',
-      value: 'sw'
-    }
-  ];
-  tradLanguages = [
-    {
-      name: 'Français',
-      value: 'fr'
-    },
-    {
-      name: 'Anglais',
-      value: 'en'
-    }
-  ];
+  userTradSub: Subscription;
+  commonSub: Subscription;
+  languagesTradSub: Subscription;
+  USER: any;
+  COMMON: any;
+  LANGUAGES: any;
+  languages: any[];
+  tradLanguages: any[];
   langs: readonly string[];
 
   defaultAvatarURL = 'https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Favatars%2Fdefault.png' +
@@ -131,14 +88,123 @@ export class UserService {
     private socialSharing: SocialSharing,
     private plt: Platform,
     private alertController: AlertController,
-    private translator: TraductionService
+    private traductionService: TraductionService,
+    private translator: TranslateService
     ) {
       this.usersCollection = this.firestore.collection('users');
   }
 
+  async getTraduction() {
+    this.userTradSub = this.translator.get('SERVICES.USER').subscribe((val) => {
+      this.USER = val;
+    });
+    // this.traductionService.get('LANGUAGES.french').then((val) => console.log(val));
+    this.languagesTradSub = this.traductionService.translator.get(['LANGUAGES']).subscribe((val) => {
+      console.log(val);
+      this.LANGUAGES = val.LANGUAGES;
+      this.languages = [
+        {
+          name: this.LANGUAGES.french,
+          value: 'fr'
+        },
+        {
+          name: this.LANGUAGES.english,
+          value: 'en'
+        },
+        {
+          name: this.LANGUAGES.spanish,
+          value: 'es'
+        },
+        {
+          name: this.LANGUAGES.german,
+          value: 'de'
+        },
+        {
+          name: this.LANGUAGES.chinese,
+          value: 'zh'
+        },
+        {
+          name: this.LANGUAGES.arabic,
+          value: 'ar'
+        },
+        {
+          name: this.LANGUAGES.portugese,
+          value: 'pt'
+        },
+        {
+          name: this.LANGUAGES.russian,
+          value: 'ru'
+        },
+        {
+          name: this.LANGUAGES.hindi,
+          value: 'hi'
+        },
+        {
+          name: this.LANGUAGES.swahili,
+          value: 'sw'
+        }
+      ];
+      this.tradLanguages = [
+        {
+          name: this.LANGUAGES.french,
+          value: 'fr'
+        },
+        {
+          name: this.LANGUAGES.english,
+          value: 'en'
+        },
+        {
+          name: this.LANGUAGES.spanish,
+          value: 'es'
+        },
+        {
+          name: this.LANGUAGES.german,
+          value: 'de'
+        },
+        {
+          name: this.LANGUAGES.chinese,
+          value: 'zh'
+        },
+        {
+          name: this.LANGUAGES.arabic,
+          value: 'ar'
+        },
+        {
+          name: this.LANGUAGES.portugese,
+          value: 'pt'
+        },
+        {
+          name: this.LANGUAGES.russian,
+          value: 'ru'
+        },
+        {
+          name: this.LANGUAGES.hindi,
+          value: 'hi'
+        },
+        {
+          name: this.LANGUAGES.swahili,
+          value: 'sw'
+        }
+      ];
+      console.log(this.LANGUAGES);
+      console.log(this.tradLanguages);
+      console.log(this.languages);
+    });
+
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.languagesTradSub.unsubscribe();
+    this.userTradSub.unsubscribe();
+    this.commonSub.unsubscribe();
+  }
+
   async syncDisconnectedCase() {
-    this.lang = await this.translator.getLanguage();
-    this.langs = await this.translator.getLanguages();
+    this.lang = await this.traductionService.getLanguage();
+    this.langs = await this.traductionService.getLanguages();
     this.getMenuBooks();
   }
 
@@ -146,16 +212,16 @@ export class UserService {
     this.userId = userId;
     this.user = this.getUser();
     this.userDoc = this.usersCollection.doc(this.userId);
-    await this.popupService.loading('Synchronisation...', 'sync');
+    // await this.popupService.loading(this.COMMON.loading, 'sync');
     this.userSub = this.firestore.collection('users').doc(this.userId).valueChanges().subscribe((value: any) => {
       if (value) {
         this.userData = value;
         if (!this.connected) {
           this.connected = true;
-          this.popupService.loadingDismiss('sync');
+          // this.popupService.loadingDismiss('sync');
           this.lang = this.userData.lang;
           this.langs = this.userData.searchlangs;
-          this.translator.setLanguage(this.lang);
+          this.traductionService.setLanguage(this.lang);
           this.getMenuBooks();
           this.getBooks();
           this.getList();
@@ -175,7 +241,7 @@ export class UserService {
         setTimeout(() => {
           if (!this.userData && !this.userSub.closed) {
             this.popupService.loadingDismiss('sync');
-            this.popupService.alert('Erreur de synchronisation');
+            this.popupService.alert(this.USER.syncError);
             this.logout();
           }
         }, 3000);
@@ -353,11 +419,11 @@ export class UserService {
           await this.getUserBooks(curUserId);
           resolve();
         }).catch(() => {
-          this.popupService.alert('Utilisateur inexistant');
+          this.popupService.alert(this.USER.userNotFoundError);
           reject();
         });
       } else {
-        await this.popupService.toast('c\'est votre propre profil!');
+        await this.popupService.toast(this.USER.ownProfileError);
         return resolve();
       }
     });
@@ -372,8 +438,6 @@ export class UserService {
       if (curUserId !== this.userId) {
         this.usersCollection.doc(this.userId).collection('follows').doc(curUserId).set({});
         this.usersCollection.doc(curUserId).collection('followers').doc(this.userId).set({});
-      } else {
-        this.popupService.toast('Vous ne pouvez pas vous suivre vous-même');
       }
     } else {
       this.navCtrl.navigateForward('login');
@@ -424,7 +488,7 @@ export class UserService {
 
   async addSave(bookId: string, data: any) {
     await this.userDoc.collection('saves').doc(bookId).set(data);
-    this.popupService.toast('Lecture sauvegardée');
+    this.popupService.toast(this.USER.readingSaved);
   }
 
   loadSave(bookId: string): Promise<any> {
@@ -492,7 +556,7 @@ export class UserService {
 
   shareUser(userId: string) {
     const userURL = 'https://app.noetic.site/user/' + userId;
-    this.share('Voici mon profil sur Noetic: ', 'Partage de profil', userURL);
+    this.share(this.USER.shareProfileMsg, this.USER.shareProfileSubject, userURL);
   }
 
   shareApp() {
@@ -503,7 +567,7 @@ export class UserService {
       userURL = 'https://play.google.com/store/apps/details?id=com.blockup.noetic';
     }
     this.share(
-      'Voici Noetic, une appli pour créer ses propres histoires sous forme de chats ', 'Noetic, une app pour créer des histoires', userURL);
+      this.USER.shareAppMsg, this.USER.shareAppSubject, userURL);
   }
 
   haveTuto(): boolean {
@@ -531,7 +595,7 @@ export class UserService {
       selBox.select();
       document.execCommand('copy');
       document.body.removeChild(selBox);
-      this.popupService.toast('Lien copié dans le presse papier');
+      this.popupService.toast(this.USER.copiedLink);
     } else {
       this.popupService.loading();
       this.socialSharing.share(msg, subject, [], url)
@@ -541,26 +605,26 @@ export class UserService {
   }
 
   async report(type: string, id: string = '') {
-    let header = 'Signaler un problème';
+    let header = this.USER.report;
     if (type === 'user') {
-      header = 'Signaler un utilisateur';
+      header = this.USER.reportUser;
     } else if (type === 'book') {
-      header = 'Signaler un livre';
+      header = this.USER.reportBook;
     }
     const alert = await this.popupService.alertObj({
       header,
-      message: 'Nous ferons de notre mieux pour le corriger dans les plus brefs délais. Tout spams est sanctionnable de bannissement.',
+      message: this.USER.reportMsg,
       inputs: [
         {
           name: 'msg',
           type: 'textarea',
-          placeholder: 'Votre problème'
+          placeholder: this.USER.reportPlaceholder
         }
       ],
       buttons: [
-        'Annuler',
+        this.COMMON.cancel,
         {
-          text: 'Envoyer',
+          text: this.COMMON.send,
           handler: (data) => {
             if (this.connected) {
               if (type === 'app') {
@@ -570,9 +634,7 @@ export class UserService {
               } else if (type === 'book') {
                 this.firestore.collection('reports').add({type: 'book', from: this.userId, msg: data.msg, toBook: id});
               }
-              this.popupService.toast('Report envoyé');
-            } else {
-              this.popupService.error('Vous devez vous connecter pour signaler un problème.');
+              this.popupService.toast(this.USER.reportSent);
             }
           }
         }
@@ -607,22 +669,22 @@ export class UserService {
       });
       const alert = await this.alertController.create({
         cssClass: 'my-custom-class',
-        header: 'Langues disponibles',
+        header: this.USER.avaibleLanguages,
         inputs,
         buttons: [
           {
-            text: 'Annuler',
+            text: this.COMMON.cancel,
             role: 'cancel',
             cssClass: 'secondary',
             handler: () => {}
           }, {
-            text: 'Ok',
+            text: this.COMMON.ok,
             handler: (data) => {
               if (data.length <= 10) {
                 res(data);
               } else {
                 res(this.userData.searchlangs);
-                this.popupService.toast('Vous ne pouvez pas choisir plus de 10 langues');
+                this.popupService.toast(this.USER.languagesMax);
               }
             }
           }
@@ -641,11 +703,11 @@ export class UserService {
   async chooseAppLanguage() {
     const lang = await this.selectLanguages('radio');
     this.firestore.collection('users').doc(this.userId).update({lang});
-    this.translator.setLanguage(lang);
+    this.traductionService.setLanguage(lang);
   }
 
   alertRestart() {
-    this.popupService.alert('Veuillez redémarrer l\'application pour que votre paramétrage prenne effet');
+    this.popupService.alert(this.USER.restartApp);
   }
 
   async getMenuBooks() {

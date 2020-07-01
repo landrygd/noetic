@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { PopupService } from './popup.service';
 import { TraductionService } from './traductionService.service';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { NavController, Platform } from '@ionic/angular';
 import { AngularFirestoreDocument } from '@angular/fire/firestore/public_api';
@@ -12,11 +12,12 @@ import { UserService } from './user.service';
 import { Router } from '@angular/router';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { Facebook } from '@ionic-native/facebook/ngx';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnInit, OnDestroy {
 
   userId: string;
   auth: firebase.User;
@@ -26,6 +27,11 @@ export class AuthService {
   books: any;
 
   authState: Observable<any>;
+
+  AUTH: any;
+  COMMON: any;
+  authTradSub: Subscription;
+  commonSub: Subscription;
 
   constructor(
     private firestore: AngularFirestore,
@@ -38,7 +44,8 @@ export class AuthService {
     private router: Router,
     private gplus: GooglePlus,
     private plt: Platform,
-    private facebook: Facebook
+    private facebook: Facebook,
+    private translator: TranslateService
   ) {
     // Définir la langue courante
     this.lang = this.traductionService.getCurLanguage();
@@ -59,59 +66,79 @@ export class AuthService {
     });
    }
 
-  async deleteAccount() {
-    const alert = await this.popupService.alertObj({
-      header: 'Attention!',
-      subHeader: 'Etes-vous sûr de supprimer votre compte?',
-      message: 'En le supprimant tout vos livres seront également supprimés.',
-      inputs: [
-        {
-          name: 'password',
-          type: 'password',
-          placeholder: 'Mot de passe'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Annuler',
-          role: 'cancel',
-          cssClass: 'danger'
-        }, {
-          text: 'Supprimer ce compte',
-          handler: (data) => {
-            const credential = firebase.auth.EmailAuthProvider.credential(this.auth.email, data.password);
-            this.auth.reauthenticateWithCredential(credential).then(() => this.deleteAccountProcess())
-                                                              .catch((err) => this.popupService.error(err));
-          }
-        }
-      ]
+
+  ngOnInit() {
+    this.getTraduction();
+  }
+
+  getTraduction() {
+    this.authTradSub = this.translator.get('SERVICES.AUTH').subscribe((val) => {
+      this.AUTH = val;
+    });
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
     });
   }
 
-  private async deleteAccountProcess() {
-    this.popupService.loading('Suppression du compte...');
-
-    // Supression des livres
-    const books = [];
-    // this.userData.book.forEach(bookId => {
-    //   this.bookService.deleteBook(bookId);
-    // });
-    const userRef: AngularFirestoreDocument = this.firestore.collection('users').doc(this.userId);
-    // Supression des sous-collections
-    const subCollections = ['followers', 'follows'];
-    subCollections.forEach((subCollection) => {
-      userRef.collection(subCollection).get().subscribe((data) => {
-        data.docs.forEach((doc) => userRef.collection(subCollection).doc(doc.id).delete());
-      });
-    });
-    // Supression des images
-    this.firestorage.ref('users/' + this.userId).delete();
-    // Supression du document curUser
-    userRef.delete();
-    // Supression de l'utilisateur
-    this.auth.delete();
-    this.popupService.loadingDismiss();
+  ngOnDestroy() {
+    this.authTradSub.unsubscribe();
+    this.commonSub.unsubscribe();
   }
+
+  // TODO?
+  // async deleteAccount() {
+  //   const alert = await this.popupService.alertObj({
+  //     header: this.COMMON.warning,
+  //     subHeader: 'Etes-vous sûr de supprimer votre compte?',
+  //     message: 'En le supprimant tout vos livres seront également supprimés.',
+  //     inputs: [
+  //       {
+  //         name: 'password',
+  //         type: 'password',
+  //         placeholder: 'Mot de passe'
+  //       }
+  //     ],
+  //     buttons: [
+  //       {
+  //         text: 'Annuler',
+  //         role: 'cancel',
+  //         cssClass: 'danger'
+  //       }, {
+  //         text: 'Supprimer ce compte',
+  //         handler: (data) => {
+  //           const credential = firebase.auth.EmailAuthProvider.credential(this.auth.email, data.password);
+  //           this.auth.reauthenticateWithCredential(credential).then(() => this.deleteAccountProcess())
+  //                                                             .catch((err) => this.popupService.error(err));
+  //         }
+  //       }
+  //     ]
+  //   });
+  // }
+
+  // private async deleteAccountProcess() {
+  //   this.popupService.loading('Suppression du compte...');
+
+  //   // Supression des livres
+  //   const books = [];
+  //   // this.userData.book.forEach(bookId => {
+  //   //   this.bookService.deleteBook(bookId);
+  //   // });
+  //   const userRef: AngularFirestoreDocument = this.firestore.collection('users').doc(this.userId);
+  //   // Supression des sous-collections
+  //   const subCollections = ['followers', 'follows'];
+  //   subCollections.forEach((subCollection) => {
+  //     userRef.collection(subCollection).get().subscribe((data) => {
+  //       data.docs.forEach((doc) => userRef.collection(subCollection).doc(doc.id).delete());
+  //     });
+  //   });
+  //   // Supression des images
+  //   this.firestorage.ref('users/' + this.userId).delete();
+  //   // Supression du document curUser
+  //   userRef.delete();
+  //   // Supression de l'utilisateur
+  //   this.auth.delete();
+  //   this.popupService.loadingDismiss();
+  // }
 
   async login(loginData) {
     this.popupService.loading('Connexion...');
@@ -133,7 +160,7 @@ export class AuthService {
       })
       .catch(err => {
         this.popupService.loadingDismiss();
-        this.popupService.toast('Email déjà utilisé');
+        this.popupService.toast(this.AUTH.emailUsedError);
       });
     }
   }
@@ -175,7 +202,7 @@ export class AuthService {
   resetPassword(email: string) {
     this.fireauth.sendPasswordResetEmail(email).then(() => this.navCtrl.navigateBack('login').then(
       () => this.popupService.alert(
-        'Un lien de réinitialisation de votre mot de passe vient d\'être envoyé dans votre adresse mail: ' + email)
+        this.AUTH.resetPasswordLink + ' ' + email)
         ),
       ).catch((err) => this.popupService.error(err));
   }
@@ -245,31 +272,31 @@ export class AuthService {
 
   async changeEmail(email: string) {
     const alert = await this.popupService.alertObj({
-      message: 'Pour des raisons de sécurité, veuillez entrer votre mot de passe.',
+      message: this.AUTH.confirmPasswordWarning,
       inputs: [
         {
           name: 'password',
           type: 'password',
-          placeholder: 'Mot de passe'
+          placeholder: this.AUTH.password,
         }
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel'
         }, {
-          text: 'Confirmer',
+          text: this.COMMON.confirm,
           handler: (data) => {
             const oldEmail = this.auth.email;
             const credential = firebase.auth.EmailAuthProvider.credential(oldEmail, data.password);
             this.auth.reauthenticateWithCredential(credential).then(() => {
               this.auth.updateEmail(email).then(
                 () => this.popupService.alert(
-                  'Votre adresse mail est maintenant: ' +
+                  this.AUTH.confirmNewMail + ' ' +
                   this.auth.email
                   )
                 ).catch((err) => this.popupService.error(err));
-            }).catch((err) => this.popupService.alert('Mot de passe incorrect'));
+            }).catch((err) => this.popupService.alert(this.AUTH.passwordError));
           }
         }
       ]
@@ -278,30 +305,30 @@ export class AuthService {
 
   async changePassword() {
     const alert = await this.popupService.alertObj({
-      message: 'Pour des raisons de sécurité, veuillez entrer votre mot de passe actuel.',
+      message: this.AUTH.confirmPasswordWarning,
       inputs: [
         {
           name: 'password',
           type: 'password',
-          placeholder: 'Mot de passe'
+          placeholder: this.AUTH.password,
         }
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel'
         }, {
-          text: 'Confirmer',
+          text: this.COMMON.confirm,
           handler: (data) => {
             const oldEmail = this.auth.email;
             const credential = firebase.auth.EmailAuthProvider.credential(oldEmail, data.password);
             this.auth.reauthenticateWithCredential(credential).then(() => {
               this.fireauth.sendPasswordResetEmail(oldEmail).then(() => this.navCtrl.navigateBack('login').then(
                 () => this.popupService.alert(
-                  'Un lien de réinitialisation de votre mot de passe vient d\'être envoyé dans votre adresse mail: ' + oldEmail)
+                  this.AUTH.resetPasswordLink + ' ' + oldEmail)
                   ),
                 ).catch((err) => this.popupService.error(err));
-            }).catch((err) => this.popupService.alert('Mot de passe incorrect'));
+            }).catch((err) => this.popupService.alert(this.AUTH.passwordError));
           }
         }
       ]

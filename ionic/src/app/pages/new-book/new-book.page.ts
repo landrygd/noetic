@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -6,6 +6,8 @@ import { TraductionService } from 'src/app/services/traductionService.service';
 import { BookService } from 'src/app/services/book.service';
 import { UserService } from 'src/app/services/user.service';
 import { PopupService } from 'src/app/services/popup.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-new-book',
@@ -13,7 +15,7 @@ import { PopupService } from 'src/app/services/popup.service';
   styleUrls: ['./new-book.page.scss'],
 })
 
-export class NewBookPage implements OnInit {
+export class NewBookPage implements OnInit, OnDestroy {
   coverSize = 'cover';
   cover = '../../../assets/cover/cover1.png';
   tags = [];
@@ -21,14 +23,21 @@ export class NewBookPage implements OnInit {
   bookForm: FormGroup;
   bookId: string;
 
+  newBookSub: Subscription;
+  commonSub: Subscription;
+
+  NEWBOOK: any;
+  COMMON: any;
+
   constructor(
     public bookService: BookService,
     public userService: UserService,
     public modalCtrl: ModalController,
     public nacCtrl: NavController,
     private formBuilder: FormBuilder,
-    private translator: TraductionService,
-    private popupService: PopupService
+    private translator: TranslateService,
+    private traductionService: TraductionService,
+    private popupService: PopupService,
     ) {
     this.bookId = this.bookService.generateBookId();
     const max = 3;
@@ -44,7 +53,24 @@ export class NewBookPage implements OnInit {
     });
    }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getTraduction();
+  }
+
+  getTraduction() {
+    this.newBookSub = this.translator.get('NEWBOOK').subscribe((val) => {
+      this.NEWBOOK = val;
+    });
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.newBookSub.unsubscribe();
+    this.commonSub.unsubscribe();
+  }
+
 
   confirm() {
     const form = this.bookForm.value;
@@ -53,22 +79,22 @@ export class NewBookPage implements OnInit {
 
     // Traitement des infos
     if (title.length < 3) {
-      this.popupService.alert('Le titre doit faire au moins plus de 3 caractères');
+      this.popupService.alert(this.NEWBOOK.titleMinError);
       return;
     } else if (title.length > 40) {
-      this.popupService.alert('Le titre doit faire moins 40 caractères');
+      this.popupService.alert(this.NEWBOOK.titleMaxError);
       return;
     } else if (form.desc.length < 3) {
-      this.popupService.alert('La description doit faire au moins plus de 3 caractères');
+      this.popupService.alert(this.NEWBOOK.descMinError);
       return;
     } else if (form.desc.length > 250) {
-      this.popupService.alert('La description doit faire moins de 250 caractères');
+      this.popupService.alert(this.NEWBOOK.descMaxError);
       return;
     } else if (this.tags.length > 5) {
-      this.popupService.alert('Il ne doit pas y avoir plus de 5 tags');
+      this.popupService.alert(this.NEWBOOK.tagMaxError);
       return;
     } else if (form.verso.length > 2000) {
-      this.popupService.alert('Le verso doit faire moins de 2000 caractères');
+      this.popupService.alert(this.NEWBOOK.versoMaxError);
       return;
     }
 
@@ -85,7 +111,7 @@ export class NewBookPage implements OnInit {
       cover: this.cover,
       cat: form.cat,
       verso: form.verso,
-      lang: this.translator.getCurLanguage(),
+      lang: this.traductionService.getCurLanguage(),
       authors,
       date: Date.now()
     };
@@ -114,7 +140,7 @@ export class NewBookPage implements OnInit {
   enter(keyCode) {
     if (keyCode === 13) {
       if (this.tags.length >= 5) {
-        this.popupService.alert('Il ne doit pas y avoir plus de 5 tags');
+        this.popupService.alert(this.NEWBOOK.tagMaxError);
         return;
       } else {
         this.addTag();

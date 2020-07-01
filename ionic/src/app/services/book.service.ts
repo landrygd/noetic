@@ -1,17 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFirestoreCollection } from '@angular/fire/firestore/public_api';
 import { Observable, Subscription } from 'rxjs';
 import { NavController, AlertController } from '@ionic/angular';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { TraductionService } from './traductionService.service';
 import { UserService } from './user.service';
 import { PopupService } from './popup.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BookService {
+export class BookService implements OnInit, OnDestroy {
   booksCollection: AngularFirestoreCollection<any>;
 
   curBookId: string;
@@ -52,6 +52,11 @@ export class BookService {
   actors: any[] = [];
   places: any[] = [];
 
+  BOOK: any;
+  COMMON: any;
+  bookTradSub: Subscription;
+  commonSub: Subscription;
+
   actorsById: any = {};
   category = [
     'action',
@@ -75,11 +80,29 @@ export class BookService {
     private alertController: AlertController,
     private navCtrl: NavController,
     public userService: UserService,
-    private popupService: PopupService
+    private popupService: PopupService,
+    private translator: TranslateService
   ) {
     this.booksCollection = this.firestore.collection('books');
   }
 
+  ngOnInit() {
+    this.getTraduction();
+  }
+
+  getTraduction() {
+    this.bookTradSub = this.translator.get('SERVICES.BOOK').subscribe((val) => {
+      this.BOOK = val;
+    });
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.bookTradSub.unsubscribe();
+    this.commonSub.unsubscribe();
+  }
 
   getBooks(bookIdArray: any[]): Observable<any> {
     if (bookIdArray.length > 0 ) {
@@ -109,7 +132,7 @@ export class BookService {
   }
 
   async newBook(book, cover = '', bookId = this.firestore.createId()) {
-    await this.popupService.loading('Création...', 'creation');
+    await this.popupService.loading(this.COMMON.loading, 'creation');
     // Ajouter l'id référant dans user
     this.userService.addBookRef(bookId);
     // Créer le livre, l'ouvir et y ajouter un chat
@@ -134,26 +157,26 @@ export class BookService {
     await this.popupService.loadingDismiss();
     if (!(size > 10000000)) {
       const alert = await this.alertController.create({
-        header: 'Ajouter un chat',
+        header: this.BOOK.addChat,
         inputs: [
           {
             name: 'name',
             type: 'text',
-            placeholder: 'Nom'
+            placeholder: this.BOOK.chatName
           }
         ],
         buttons: [
           {
-            text: 'Annuler',
+            text: this.COMMON.cancel,
             role: 'cancel',
             cssClass: 'secondary'
           }, {
-            text: 'Créer',
+            text: this.COMMON.create,
             handler: (data) => {
               if (data.name) {
                 this.addChat(data.name);
               } else {
-                this.popupService.toast('Veuillez entrer un nom');
+                this.popupService.toast(this.BOOK.chatNameError);
               }
             }
           }
@@ -161,7 +184,7 @@ export class BookService {
       });
       await alert.present();
     } else {
-      this.popupService.alert('Impossible créer un chat, votre livre est trop volumineux!');
+      this.popupService.alert(this.BOOK.newChatError);
     }
   }
 
@@ -177,11 +200,11 @@ export class BookService {
 
   addChat(chatName , main = false) {
     if (chatName.toUpperCase() === 'MAIN' && !main) {
-      this.popupService.toast('impossible d\'utiliser ce nom');
+      this.popupService.toast(this.BOOK.chatReservedNameError);
       return;
     }
     if (this.haveChat(chatName)) {
-      this.popupService.toast('nom déjà utilisé');
+      this.popupService.toast(this.BOOK.chatUsedNameError);
       return;
     }
     let id = 'main';
@@ -234,7 +257,7 @@ export class BookService {
 
   async changeWallpaper(bookId, url: string) {
     await this.firestore.collection('books').doc(bookId).update({wallpaper: url});
-    this.popupService.toast('Arrière plan changé');
+    this.popupService.toast(this.BOOK.backgroundChanged);
   }
 
   searchByName(filter: string, langs = this.langs): Observable<any> {
@@ -265,7 +288,7 @@ export class BookService {
   }
 
   async deleteBook(bookId = this.curBookId) {
-    await this.popupService.loading('Suppression...');
+    await this.popupService.loading();
     this.navCtrl.navigateRoot('/tabs/profile');
     // retirer book de la liste
     this.userService.deleteBookRef(bookId);
@@ -331,10 +354,10 @@ export class BookService {
           authors.push(userId);
           bookRef.update({authors});
         } else {
-          this.popupService.alert('Il ne peut pas y avoir plus de 10 auteurs par livre.');
+          this.popupService.alert(this.BOOK.authorMaxError);
         }
       } else {
-        this.popupService.alert('Vous êtes déjà auteur de ce livre.');
+        this.popupService.alert(this.BOOK.authorAlreadyError);
       }
       bookSub.unsubscribe();
     });
@@ -401,7 +424,7 @@ export class BookService {
           this.isAuthor = this.book.authors.includes(this.userService.userId) && this.userService.connected;
           res();
         } else {
-          reject('Livre inexistant');
+          reject(this.BOOK.bookNotExistError);
         }
       });
     });
@@ -470,7 +493,7 @@ export class BookService {
   async publishBook() {
     await this.firestore.collection('/books').doc(this.curBookId).update({public: true});
     await this.firestore.collection('/users').doc(this.userService.userId).collection('books').doc(this.curBookId).update({public: true});
-    this.popupService.toast('Livre publié!');
+    this.popupService.toast(this.BOOK.bookPublished);
   }
 
   unpublishBook() {
@@ -489,7 +512,7 @@ export class BookService {
         res.push(doc.data());
       });
       if (res.length === 0) {
-        this.popupService.toast('catégorie vide pour le moment');
+        this.popupService.toast(this.BOOK.emptyCategory);
       }
     });
     return res;
@@ -522,6 +545,6 @@ export class BookService {
 
   shareBook(bookId: string) {
     const bookUrl = 'https://app.noetic.site/book/' + bookId;
-    this.userService.share('Voici un livre sur Noetic', 'Partage de livre', bookUrl);
+    this.userService.share(this.BOOK.shareMsg, this.BOOK.shareSubject, bookUrl);
   }
 }

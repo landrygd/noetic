@@ -1,18 +1,26 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { NavController, ToastController, IonInput, IonDatetime } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
 })
-export class RegisterPage implements OnInit {
+export class RegisterPage implements OnInit, OnDestroy {
 
   confirmPassword = '';
   registerForm: FormGroup;
   privacy = false;
+
+  registerSub: Subscription;
+  commonSub: Subscription;
+
+  REGISTER: any;
+  COMMON: any;
 
   @ViewChild('date', { static: true }) dateView: IonDatetime;
   @ViewChild('email', { static: true }) emailView: IonInput;
@@ -23,7 +31,8 @@ export class RegisterPage implements OnInit {
     public authService: AuthService,
     public navCtrl: NavController,
     private toastController: ToastController,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private translator: TranslateService
   ) {
     this.registerForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -55,6 +64,21 @@ export class RegisterPage implements OnInit {
   }
 
   ngOnInit() {
+    this.getTraduction();
+  }
+
+  getTraduction() {
+    this.registerSub = this.translator.get('REGISTER').subscribe((val) => {
+      this.REGISTER = val;
+    });
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.registerSub.unsubscribe();
+    this.commonSub.unsubscribe();
   }
 
   showPrivacy() {
@@ -79,28 +103,25 @@ export class RegisterPage implements OnInit {
     res.email = res.email.trim();
     let error = '';
     if (res.password !== res.confirmPassword) {
-      error = 'Les mots de passe ne se correspondent pas.';
+      error = this.REGISTER.paswordMatchError;
     }
     if (!this.allLetterOrNumber(res.name)) {
-      error = 'Le pseudo ne contenir que des chiffres et des lettres.';
+      error = this.REGISTER.pseudoInvalidCarError;
     }
-    // if (new Date(Date.now() - new Date(res.birthday).getTime()).getFullYear() - 1970 < 12) {
-    //   error = 'L\'âge minimum requis est de 12 ans';
-    // }
     if (res.password.length < 8) {
-      error = 'Le mot de passe doit contenir au moins 8 caractères.';
+      error = this.REGISTER.paswordMinError;
     }
     if (res.password.length > 30) {
-      error = 'Le mot de passe ne doit contenir pas contenir plus de 30 caractères.';
+      error = this.REGISTER.passwordMaxError;
     }
     if (res.name.length < 4) {
-      error = 'Le pseudo doit contenir au moins 4 caractères.';
+      error = this.REGISTER.pseudoMinError;
     }
     if (res.name.length > 30) {
-      error = 'Le pseudo ne doit contenir pas contenir plus de 30 caractères.';
+      error = this.REGISTER.pseudoMaxError;
     }
     if (!this.privacy) {
-      error = 'Vous devez accepter la politique de confidentialité pour vous inscrire.';
+      error = this.REGISTER.policyError;
     }
     if (error === '') {
       this.authService.signUp(res);

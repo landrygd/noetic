@@ -1,15 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit, OnDestroy } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { BookService } from '../book.service';
 import { Subscription } from 'rxjs';
 import { AlertController, ActionSheetController } from '@ionic/angular';
 import { PopupService } from '../popup.service';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ActorService {
+export class ActorService implements OnInit, OnDestroy {
 
   actors: any[] = [];
   actorsId: string[] = [];
@@ -17,14 +18,44 @@ export class ActorService {
   ownActor: string;
   actorSub: Subscription;
 
+  ACTOR: any;
+  COMMON: any;
+  PROFILE: any;
+  actorTradSub: Subscription;
+  commonSub: Subscription;
+  profileTradSub: Subscription;
+
   constructor(
     private firestore: AngularFirestore,
     private firestorage: AngularFireStorage,
     private bookService: BookService,
     private alertController: AlertController,
     private popupService: PopupService,
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private translator: TranslateService
   ) { }
+
+  ngOnInit() {
+    this.getTraduction();
+  }
+
+  getTraduction() {
+    this.actorTradSub = this.translator.get('SERVICES.ACTOR').subscribe((val) => {
+      this.ACTOR = val;
+    });
+    this.profileTradSub = this.translator.get('PROFILE').subscribe((val) => {
+      this.PROFILE = val;
+    });
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.profileTradSub.unsubscribe();
+    this.actorTradSub.unsubscribe();
+    this.commonSub.unsubscribe();
+  }
 
   addActor(actorName) {
     const id = this.firestore.createId();
@@ -36,7 +67,7 @@ export class ActorService {
   }
 
   async deleteActor(actorId: string) {
-    await this.popupService.loading('Suppression...');
+    await this.popupService.loading();
     if (this.getAvatarurl(actorId)) {
       this.bookService.deleteMedia(this.getAvatarurl(actorId));
     }
@@ -80,22 +111,22 @@ export class ActorService {
 
   async changeActorName(actorId: string) {
     const alert = await this.alertController.create({
-      header: 'Changer le pseudo',
+      header: this.PROFILE.changePseudo,
       inputs: [
         {
           name: 'name',
           type: 'text',
-          placeholder: 'Pseudo',
+          placeholder: this.PROFILE.newPseudo,
           value: this.bookService.actorsById[actorId].name,
         }
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel',
           cssClass: 'secondary'
         }, {
-          text: 'Ok',
+          text: this.COMMON.ok,
           handler: (data) => {
             this.updateActorData(actorId, {name: data.name});
           }
@@ -107,22 +138,22 @@ export class ActorService {
 
   async changeActorBio(actorId: string) {
     const alert = await this.alertController.create({
-      header: 'Changer le bio',
+      header: this.PROFILE.changeBio,
       inputs: [
         {
           name: 'bio',
           type: 'text',
-          placeholder: 'Bio',
+          placeholder: this.PROFILE.newBio,
           value: this.bookService.actorsById[actorId].bio,
         }
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel',
           cssClass: 'secondary'
         }, {
-          text: 'Ok',
+          text: this.COMMON.ok,
           handler: (data) => {
             this.updateActorData(actorId, {bio: data.bio});
           }
@@ -149,7 +180,7 @@ export class ActorService {
       });
     }
     buttons.push({
-      text: 'Annuler',
+      text: this.COMMON.cancel,
       icon: 'close',
       role: 'cancel',
       handler: () => {}
@@ -184,26 +215,26 @@ export class ActorService {
 
   async newActor() {
     const alert = await this.alertController.create({
-      header: 'Ajouter un acteur',
+      header: this.ACTOR.newActor,
       inputs: [
         {
           name: 'name',
           type: 'text',
-          placeholder: 'Nom'
+          placeholder: this.ACTOR.actorName,
         }
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel',
           cssClass: 'secondary'
         }, {
-          text: 'Créer',
+          text: this.COMMON.confirm,
           handler: (data) => {
             if (data.name) {
               this.addActor(data.name);
             } else {
-              this.popupService.toast('Veuillez entrer un nom');
+              this.popupService.toast(this.ACTOR.actorNameError);
             }
           }
         }

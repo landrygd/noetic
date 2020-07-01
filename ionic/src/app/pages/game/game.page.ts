@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { NavController, AlertController, ActionSheetController, IonContent } from '@ionic/angular';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Subscription } from 'rxjs';
@@ -8,13 +8,14 @@ import { PopupService } from 'src/app/services/popup.service';
 import { UserService } from 'src/app/services/user.service';
 import { MediaService } from 'src/app/services/media.service';
 import { ActorService } from 'src/app/services/book/actor.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.page.html',
   styleUrls: ['./game.page.scss'],
 })
-export class GamePage implements OnInit {
+export class GamePage implements OnInit, OnDestroy {
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
 
@@ -74,6 +75,11 @@ export class GamePage implements OnInit {
 
   @ViewChild('bg', {static: true, read: ElementRef}) bg: ElementRef;
 
+  commonSub: Subscription;
+  gameSub: Subscription;
+  COMMON: any;
+  GAME: any;
+
   constructor(
     public bookService: BookService,
     public chatService: ChatService,
@@ -85,12 +91,28 @@ export class GamePage implements OnInit {
     public userService: UserService,
     private alertController: AlertController,
     private mediaService: MediaService,
-    private actorService: ActorService
+    private actorService: ActorService,
+    private translator: TranslateService
     ) {
     }
 
   ngOnInit() {
     this.play();
+    this.getTraduction();
+  }
+
+  getTraduction() {
+    this.gameSub = this.translator.get('GAME').subscribe((val) => {
+      this.GAME = val;
+    });
+    this.commonSub = this.translator.get('COMMON').subscribe((val) => {
+      this.COMMON = val;
+    });
+  }
+
+  ngOnDestroy() {
+    this.gameSub.unsubscribe();
+    this.commonSub.unsubscribe();
   }
 
   async play() {
@@ -408,14 +430,14 @@ export class GamePage implements OnInit {
           if (labelName === 'main') {
             if (this.bookService.debug) {
               this.popupService.alert(
-                'Un chat ne peut être utilisé que 10 fois par minute maximum! Il sera ignoré pendant la lecture ce quotas dépassé.'
+                this.GAME.maxChatError
                 );
             }
             return false;
           } else {
             if (this.bookService.debug) {
               this.popupService.alert(
-                'Un label ne peut être utilisé que 10 fois par minute maximum! Il sera ignoré pendant la lecture ce quotas dépassé.'
+                this.GAME.maxLabelError
                 );
             }
             return false;
@@ -550,18 +572,8 @@ export class GamePage implements OnInit {
 
   end() {
     this.logs.push(
-      {msg: 'Cette histoire est à présent terminée.'}
+      {msg: '/finish'}
     );
-    setTimeout(() => {
-      this.logs.push(
-        {msg: 'N\'hésitez pas à laisser un commentaire pour soutenir son/ses créateur(s)!'}
-      );
-      setTimeout(() => {
-        this.logs.push(
-          {msg: '/finish'}
-        );
-      }, 3000);
-    }, 2000);
   }
 
   exit() {
@@ -612,7 +624,7 @@ export class GamePage implements OnInit {
         }
       });
     }
-    let header = 'Choisir une réponse';
+    let header = this.GAME.answer;
     const lastLog = this.logs[this.logs.length - 1];
     if (lastLog !== undefined) {
       if (lastLog.msg.charAt(0) !== '/') {
@@ -724,11 +736,11 @@ export class GamePage implements OnInit {
       }],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel',
           cssClass: 'secondary',
         }, {
-          text: 'Ok',
+          text: this.COMMON.ok,
           handler: (data) => {
             this.variables[this.nomVar] = data.res;
             answered = true;
@@ -746,14 +758,14 @@ export class GamePage implements OnInit {
   async options() {
     const actionSheet = await this.actionSheetController.create({
       buttons: [{
-        text: 'Recommencer le livre',
+        text: this.GAME.restartBook,
         role: 'destructive',
         icon: 'refresh',
         handler: () => {
           this.alertRestart();
         }
       }, {
-        text: 'Annuler',
+        text: this.COMMON.cancel,
         icon: 'close',
         role: 'cancel',
       }]
@@ -763,15 +775,15 @@ export class GamePage implements OnInit {
 
   async alertRestart() {
     const alert = await this.alertController.create({
-      header: 'Attention!',
-      message: 'En recommençant ce livre, toutes vos sauvegardes seront perdues définitivement!',
+      header: this.COMMON.warning,
+      message: this.GAME.restartBookWarning,
       buttons: [
         {
-          text: 'Annuler',
+          text: this.COMMON.cancel,
           role: 'cancel',
           cssClass: 'secondary',
         }, {
-          text: 'Confirmer',
+          text: this.COMMON.confirm,
           handler: () => {
             this.restart();
           }

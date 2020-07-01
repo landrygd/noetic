@@ -11,7 +11,7 @@ export class TraductionService {
   curLanguage = 'en';
 
   constructor(
-    private translator: TranslateService,
+    public translator: TranslateService,
     // tslint:disable-next-line: deprecation
     private globalization: Globalization,
     private plat: Platform
@@ -58,5 +58,12 @@ export class TraductionService {
 
   getCurLanguage() {
     return this.curLanguage;
+  }
+
+  get(path: string) {
+    // const subArray = await this.translator.get(path).toPromise();
+    // this.translator.get()
+    // console.log(res);
+    // resolve(res);
   }
 }
