@@ -36,6 +36,10 @@ export class CommandPipe implements PipeTransform {
               res = 'Aller au label ' + this.toChip(this.arg, 'bookmark');
             }
             break;
+          case 'chat':
+            icon = 'arrow-forward';
+            res = 'Aller au chat ' + this.toChip(this.arg, 'chatbox');
+            break;
           case 'label':
             icon = 'bookmark';
             res = 'Label ' + this.toChip(this.arg, 'bookmark');
@@ -45,8 +49,8 @@ export class CommandPipe implements PipeTransform {
             res = 'Poser une question';
             break;
           case 'end':
-            icon = 'chatbubble-ellipses';
-            res = 'Fin des réponses';
+            icon = 'settings';
+            res = 'Fin';
             break;
           case 'answer':
             icon = 'chatbubble-ellipses';

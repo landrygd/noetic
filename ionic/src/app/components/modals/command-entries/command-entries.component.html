@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{'MODALS.MANUAL.desc.' + name | translate}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<form [formGroup]="output">
+  <ion-list>
+    <ion-item *ngFor="let input of inputs">
+      <ion-label position="floating">{{'MODALS.MANUAL.args.' + input.name | translate}}</ion-label>
+      <ion-input [formControlName]="input.name" required *ngIf="!isList(input.type)" type="input.type"></ion-input>
+      <ion-select [formControlName]="input.name" required *ngIf="isList(input.type)">
+        <ion-select-option *ngFor="let type of input.type" [value]="type">{{'MODALS.MANUAL.types.' + type | translate}}</ion-select-option>
+      </ion-select>
+      <ion-button *ngIf="input.type == 'music'" (click)="audio('music')" expand="block" fill="clear" shape="round" slot="end">
+        {{'MODALS.MANUAL.music' | translate}}
+      </ion-button>
+      <ion-button *ngIf="input.type == 'sound'" (click)="audio('sound')" expand="block" fill="clear" shape="round" slot="end">
+        {{'MODALS.MANUAL.sound' | translate}}
+      </ion-button>
+      <ion-button *ngIf="input.type == 'ambiance'" (click)="audio('ambiance')" expand="block" fill="clear" shape="round" slot="end">
+        {{'MODALS.MANUAL.ambiance' | translate}}
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</form>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()" slot="secondary">
+        <ion-icon slot="start" name="close"></ion-icon>
+        {{'COMMON.cancel' | translate}}
+      </ion-button>
+      <ion-button (click)="use()" slot="primary" [disabled]="output.invalid">
+        <ion-icon slot="start" name="checkmark"></ion-icon>
+        {{'COMMON.use' | translate}}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

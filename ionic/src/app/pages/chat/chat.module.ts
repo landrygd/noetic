@@ -14,6 +14,8 @@ import { ManualComponent } from 'src/app/components/modals/manual/manual.compone
 import { TutoPopoverComponent } from 'src/app/components/tuto-popover/tuto-popover.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LogEditComponent } from 'src/app/components/log-edit/log-edit.component';
+import { CommandEntriesComponent } from 'src/app/components/modals/command-entries/command-entries.component';
+import { AudioListComponent } from 'src/app/components/modals/audio-list/audio-list.component';
 
 @NgModule({
   imports: [
@@ -30,7 +32,9 @@ import { LogEditComponent } from 'src/app/components/log-edit/log-edit.component
     ActorProfileComponent,
     ManualComponent,
     TutoPopoverComponent,
-    LogEditComponent
+    LogEditComponent,
+    CommandEntriesComponent,
+    AudioListComponent
   ]
 })
 export class ChatPageModule {}

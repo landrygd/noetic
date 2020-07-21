@@ -17,7 +17,7 @@
   <ion-list>
     <ion-item *ngFor="let command of results" button details (click)="showCommand(command)">
       <ion-icon slot="start" [name]="command.icon"></ion-icon>
-      <ion-label>{{MANUAL.desc[command.name]}}</ion-label>
+      <ion-label>{{command.name}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>

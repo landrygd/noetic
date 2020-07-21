@@ -15,6 +15,7 @@ import { Subscription, Observable } from 'rxjs';
 import { ThemeService } from 'src/app/services/theme.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import Commands from '../../../assets/json/commands.json';
+import { AudioListComponent } from 'src/app/components/modals/audio-list/audio-list.component';
 
 @Component({
   selector: 'app-chat',
@@ -23,7 +24,7 @@ import Commands from '../../../assets/json/commands.json';
 })
 export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild(IonContent, { static: false }) content: IonContent;
+  @ViewChild('bg', { static: false }) content: IonContent;
   @ViewChild('bg', {static: true, read: ElementRef}) bg: ElementRef;
   @ViewChild('chatBar', {static: true, read: IonTextarea}) chatBar: IonTextarea;
 
@@ -49,25 +50,14 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   history: {action: string, index: number, logs: {msg: string, actor: string, id: string}[]}[] = [];
   historyIndex = -1;
 
-  tuto: string[] = [
-    'Bienvenue sur l\'éditeur de scénario, appuyez sur "OK" pour continuer ce tutoriel ou "Passer" pour le passer',
-    'Vous pouvez entrer du texte dans la bar de tchat en bas de l\'écran',
-    'Pour ajouter un acteur, appuyez sur le bouton "+" dans la section "acteur"',
-    'Pour le sélectionner/déselectionner, appuyez sur son avatar dans la bar de tchat',
-    'Vous pouvez éditer un acteur en appuyant sur son avatar dans le tchat',
-    'Pour rendre le tchat dynamique, appuyez sur la section "commande"',
-    'Ici vous pourrez chercher des commandes en appuyant sur la loupe',
-    'Notez que vous pouvez inclure des variables dans vos textes avec le signe "$"',
-    'Exemple: "/input $nom" puis "Bonjour $nom"',
-    'Vous pouvez repasser ce tutoriel en le réactivant dans les paramètres de votre projet',
-    'Bonne découverte!'
-  ];
+  tuto: string[] = [];
 
   ERRORS: any = {};
   COMMON: any = {};
 
   errorSub: Subscription;
   commonSub: Subscription;
+  tutoSub: Subscription;
 
   tabColor = '#000';
 
@@ -113,6 +103,10 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     Object.keys(Commands).forEach((key) => {
       this.commands.push(Commands[key]);
     });
+  }
+
+  showCat(name) {
+
   }
 
   shortcuts(event: KeyboardEvent): void {
@@ -165,6 +159,9 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
  }
 
   getTraduction() {
+    this.tutoSub = this.translator.get('TUTO').subscribe((val) => {
+      this.tuto = val;
+    });
     this.errorSub = this.translator.get('ERRORS').subscribe((val) => {
       this.ERRORS = val;
     });
@@ -174,6 +171,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.tutoSub.unsubscribe();
     this.errorSub.unsubscribe();
     this.commonSub.unsubscribe();
     this.chatSub.unsubscribe();
@@ -240,6 +238,10 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
         if (this.selection.length === 0) {
           this.addHistoryAction({action: 'add', index: this.chat.logs.length, logs: [log]});
           this.chatService.addChatLog(log);
+          if (this.text.indexOf('/if') === 0 || this.text.indexOf('/question') === 0) {
+            this.addHistoryAction({action: 'add', index: this.chat.logs.length, logs: [{msg: '/end'}]});
+            this.chatService.addChatLog({msg: '/end'});
+          }
         } else {
           this.chatService.addChatLog(log, this.selection[this.selection.length - 1] + 1);
           this.selection = [this.selection[this.selection.length - 1] + 1];
@@ -380,8 +382,11 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     });
     await modal.present();
     const data = await modal.onDidDismiss();
-    if (data.data) {
-      this.text = data.data.command;
+    if (type !== '') {
+      type = '/' + type + ' ';
+    }
+    if (typeof data.data === 'string') {
+      this.text = type + data.data;
     }
   }
 
@@ -463,8 +468,19 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     }, 100);
   }
 
-  showAudio(type: string) {
-    this.manual(type);
+  async showAudio(type: string) {
+    const modal = await this.modalCtrl.create({
+    component: AudioListComponent,
+    componentProps: {type}
+    });
+    await modal.present();
+    const data = await modal.onDidDismiss();
+    if (type !== '') {
+      type = '/' + type + ' ';
+    }
+    if (data.data) {
+      this.text = type + data.data;
+    }
   }
 
   actionLog(event) {

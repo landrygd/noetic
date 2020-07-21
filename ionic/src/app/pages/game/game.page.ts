@@ -182,6 +182,13 @@ export class GamePage implements OnInit, OnDestroy {
                   }
                 }
                 break;
+              case 'chat':
+                if (this.chatService.haveChat(this.arg)) {
+                  if (this.checkCptLabel(this.chatService.getChatIdByName(this.arg))) {
+                    gochat = this.arg;
+                  }
+                }
+                break;
               case 'sound':
                 if (this.opts.includes('stop')) {
                   if (this.args.length > 0) {

@@ -11,12 +11,11 @@ import { Command } from 'src/app/classes/command';
 import { CommandEntriesComponent } from '../command-entries/command-entries.component';
 
 @Component({
-  selector: 'app-manual',
-  templateUrl: './manual.component.html',
-  styleUrls: ['./manual.component.scss'],
+  selector: 'app-audio-list',
+  templateUrl: './audio-list.component.html',
+  styleUrls: ['./audio-list.component.scss'],
 })
-
-export class ManualComponent implements OnInit, OnDestroy {
+export class AudioListComponent implements OnInit, OnDestroy {
 
   @Input() type: string;
 
@@ -34,19 +33,11 @@ export class ManualComponent implements OnInit, OnDestroy {
 
   placeholder: string;
 
-  categories: [
-    'control',
-    'variables',
-    'appearance',
-    'audio'
-  ];
-
   constructor(
     private modalCtrl: ModalController,
     private alertController: AlertController,
     private mediaService: MediaService,
-    private translator: TranslateService,
-    private modalController: ModalController
+    private translator: TranslateService
     ) {}
 
   async ngOnInit() {
@@ -115,15 +106,15 @@ export class ManualComponent implements OnInit, OnDestroy {
         let category = false;
         let attribution = false;
         if (command.desc) {
-          desc = command.desc.toLowerCase().search(this.filter.toLowerCase()) !== -1;
+          desc = command.desc.search(this.filter) !== -1;
         }
         if (command.category) {
-          category = command.category.toLowerCase().search(this.filter.toLowerCase()) !== -1;
+          category = command.category.search(this.filter) !== -1;
         }
         if (command.attribution) {
-          attribution = command.attribution.toLowerCase().search(this.filter.toLowerCase()) !== -1;
+          attribution = command.attribution.search(this.filter) !== -1;
         }
-        if (command.name.toLowerCase().search(this.filter.toLowerCase()) !== -1 || desc || category || attribution) {
+        if (command.name.search(this.filter) !== -1 || desc || category || attribution) {
           res.push(command);
         }
       });
@@ -142,11 +133,11 @@ export class ManualComponent implements OnInit, OnDestroy {
     };
   }
 
-  cancel(data = {}) {
-    this.modalCtrl.dismiss(data);
+  cancel() {
+    this.modalCtrl.dismiss();
   }
 
-  async showCommand(command: Command) {
+  async showCommand(command: any) {
     if (this.type === 'sound') {
       this.mediaService.loadSounds([command.name]);
       this.mediaService.playSound(command.name);
@@ -159,44 +150,42 @@ export class ManualComponent implements OnInit, OnDestroy {
       this.mediaService.loadAmbiances([command.name]);
       this.mediaService.playAmbiance(command.name);
     }
-    const inputs = [];
-    if (command.args) {
-      for (const arg of command.args) {
-        if (typeof arg.type === 'string') {
-          // const input = {
-          //   name: arg.name,
-          //   placeholder: this.MANUAL.args[arg.name],
-          //   type: arg.type
-          // };
-          // inputs.push(input);
-        } else {
-          for (const type of arg.type) {
-            const input = {
-              name: type,
-              label: this.MANUAL.types[type],
-              type: 'radio'
-            };
-            inputs.push(input);
+    let message = '';
+    if (command.opts) {
+      message += this.toList(command.opts, this.COMMON.options);
+    }
+    if (command.ex) {
+      message += this.toList(command.ex, this.COMMON.examples);
+    }
+    if (command.category) {
+      message += this.COMMON.categorie + ': ' + command.category + '<br>';
+    }
+    if (command.attribution) {
+      message += command.attribution;
+    }
+    const alert = await this.alertController.create({
+      header: command.name,
+      subHeader: command.desc,
+      message,
+      buttons: [
+        {
+          text: this.COMMON.return,
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: this.COMMON.use,
+          handler: () => {
+            if (this.type === '') {
+              this.modalCtrl.dismiss({command: command.ex[0]});
+            } else {
+              this.modalCtrl.dismiss(command.name);
+            }
           }
         }
-      }
-    }
-    if (command.args) {
-      const modal = await this.modalController.create({
-      component: CommandEntriesComponent,
-      componentProps: { name: command.name, inputs: command.args }
-      });
-      await modal.present();
-      const outputs = await modal.onDidDismiss();
-      if (outputs.data !== undefined) {
-        const args = outputs.data.join(' ');
-        const data = '/' + command.name + ' ' + args;
-        await this.modalCtrl.dismiss(data);
-        this.cancel(data);
-      }
-    } else {
-      this.modalCtrl.dismiss('/' + command.name);
-    }
+      ]
+    });
+    await alert.present();
+    await alert.onDidDismiss();
     if (this.type === 'sound') {
       this.mediaService.stopSound();
     }
@@ -215,13 +204,5 @@ export class ManualComponent implements OnInit, OnDestroy {
     });
     res += '</ul>';
     return res;
-  }
-
-  async forgotEntryAlert() {
-    const alert = await this.alertController.create({
-      message: this.MANUAL.forgotEntry,
-      buttons: [this.COMMON.ok]
-    });
-    await alert.present();
   }
 }

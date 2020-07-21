@@ -2,172 +2,271 @@
   "label": {
     "icon": "bookmark",
     "name": "label",
-    "desc": "Ajoute un marque page à un chat. On peut y retourner avec la commande /go",
-    "ex": ["/label nomDuLabel"]
+    "cat": "control",
+    "args": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ]
   },
   "go": {
     "icon": "arrow-forward",
     "name": "go",
-    "desc": "Permet d'aller à un label",
-    "opts": ["-chat: pour aller à un chat"],
-    "ex": [
-      "/go nomDuLabel",
-      "/go -chat nomDuChat"
+    "cat": "control",
+    "args": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ]
+  },
+  "chat": {
+    "icon": "arrow-forward",
+    "name": "chat",
+    "cat": "control",
+    "args": [
+      {
+        "name": "name",
+        "type": "string"
+      }
     ]
   },
   "set": {
     "icon": "settings",
     "name": "set",
-    "desc": "Définit la valeur d'une variable. Attention, le nom d'une variable est toujours précédé du caractère '$' et ne doit contenir aucun espace",
-    "ex": [
-      "/set $nomDeLaVariable 42"
+    "cat": "variable",
+    "args": [
+      {
+        "name": "variable",
+        "type": "variable"
+      },
+      {
+        "name": "value",
+        "type": "any"
+      }
     ]
   },
   "if": {
     "icon": "settings",
     "name": "if",
-    "desc": "Permet de tester des variables avec les opérateurs: ==, <=, >=, < et >. Doit être suivi de la commande '/endif' pour fermer la condition",
-    "ex": ["/if $nomVariable == 42"]
+    "cat": "control",
+    "args": [
+      {
+        "name": "variable",
+        "type": "variable"
+      },
+      {
+        "name": "operator",
+        "type": [
+          "==",
+          ">=",
+          "<=",
+          ">",
+          "<"
+        ]
+      },
+      {
+        "name": "value",
+        "type": "any"
+      }
+    ]
   },
   "else": {
     "icon": "settings",
     "name": "else",
-    "desc": "si la condition est fausse un saut est automatiquement effectué à la ligne. Doit être placé entre un '/if' et '/endif'",
-    "ex": ["/else"]
-  },
-  "endif": {
-    "icon": "settings",
-    "name": "endif",
-    "desc": "Ferme une condition. Si elle est fausse, un saut est automatiquement effectué à la ligne de cette instruction.",
-    "ex": ["/endif"]
+    "cat": "control"
   },
   "answer": {
     "icon": "chatbubble-ellipses",
     "name": "answer",
-    "desc": "Vérifie la réponse. A noter que l'ensemble des réponses d'une question doit être fermé par la commande /endanswers",
-    "ex": ["/answer oui"]
-  },
-  "endanswers": {
-    "icon": "chatbubble-ellipses",
-    "name": "endanswers",
-    "desc": "Ferme l'ensemble des réponses d'une question. Pour chaque fin de réponse, un saut est fait automatiquement à cette instruction",
-    "ex": ["/endanswers"]
+    "cat": "control",
+    "args": [
+      {
+        "name": "value",
+        "type": "string"
+      }
+    ]
   },
   "clear": {
     "icon": "trash-bin",
     "name": "clear",
-    "desc": "Efface les messages",
-    "ex": ["/clear"]
+    "cat": "appearance"
   },
   "add": {
     "icon": "settings",
     "name": "add",
-    "desc": "Permet d'ajouter une valeur à une variable",
-    "ex": ["/add $nomVariable 42"]
+    "cat": "variable",
+    "args": [
+      {
+        "name": "variable",
+        "type": "variable"
+      },
+      {
+        "name": "value",
+        "type": "number"
+      }
+    ]
   },
   "sub": {
     "icon": "settings",
     "name": "sub",
-    "desc": "Permet de soustraire une valeur à une variable",
-    "ex": ["/sub $nomVariable 42"]
+    "cat": "variable",
+    "args": [
+      {
+        "name": "variable",
+        "type": "variable"
+      },
+      {
+        "name": "value",
+        "type": "number"
+      }
+    ]
   },
   "div": {
     "icon": "settings",
     "name": "div",
-    "desc": "Permet de diviser par une valeur une variable",
-    "ex": ["/div $nomVariable 42"]
+    "cat": "variable",
+    "args": [
+      {
+        "name": "variable",
+        "type": "variable"
+      },
+      {
+        "name": "value",
+        "type": "number"
+      }
+    ]
   },
   "mul": {
     "icon": "settings",
     "name": "mul",
-    "desc": "Permet de multiplier par une valeur une variable",
-    "ex": ["/mul $nomVariable 42"]
+    "cat": "variable",
+    "args": [
+      {
+        "name": "variable",
+        "type": "variable"
+      },
+      {
+        "name": "value",
+        "type": "number"
+      }
+    ]
   },
   "random": {
     "icon": "settings",
     "name": "random",
-    "desc": "Permet définir une valeur aléatoire à une variable",
-    "ex": [
-      "/random $nomVariable 42 100",
-      "/random $nomVariable 100"
+    "cat": "variable",
+    "args": [
+      {
+        "name": "variable",
+        "type": "variable"
+      },
+      {
+        "name": "min",
+        "type": "number"
+      },
+      {
+        "name": "max",
+        "type": "number"
+      }
     ]
   },
   "wait": {
     "icon": "hourglass",
     "name": "wait",
-    "desc": "Pour attendre x secondes",
-    "ex": ["/wait 3"]
+    "cat": "control",
+    "args": [
+      {
+        "name": "secondes",
+        "type": "number"
+      }
+    ]
   },
   "input": {
     "icon": "text",
     "name": "input",
-    "desc": "Pour demander au lecteur une valeur pour une variable",
-    "ex": ["/input $nomVariable"]
+    "cat": "variable",
+    "args": [
+      {
+        "name": "variable",
+        "type": "variable"
+      }
+    ]
   },
   "sound": {
     "icon": "volume-medium",
     "name": "sound",
-    "desc": "Joue un son disponible dans la bibliothèque de sons accessible en entrant la commande '/sound'",
+    "cat": "audio",
     "opts": [
-      "-stop: pour arrêter un ou tous les sons",
-      "-stop nomDuSon: pour arrêter un son"
+      "stop"
     ],
-    "ex": [
-      "/sound dog",
-      "/sound -stop",
-      "/sound -stop dog"
+    "args": [
+      {
+        "name": "sound",
+        "type": "sound"
+      }
     ]
   },
   "music": {
     "icon": "musical-notes",
     "name": "music",
-    "desc": "Joue une musique en boucle disponible dans la bibliothèque de musiques accessible en entrant la commande '/music'. A noter qu'elle ne se superposent pas",
+    "cat": "audio",
     "opts": [
-      "-once: pour jouer la musique une seule fois",
-      "-stop: pour arrêter la musique",
-      "-stop nomDeLaMusique: pour arrêter une musique"
+      "stop",
+      "once"
     ],
-    "ex": [
-      "/music medieval",
-      "/music -loop medieval"
+    "args": [
+      {
+        "name": "music",
+        "type": "music"
+      }
     ]
   },
   "ambiance": {
     "icon": "ear",
     "name": "ambiance",
-    "desc": "Joue une ambiance en boucle disponible dans la bibliothèque d'ambiances accessible en entrant la commande '/ambiance'",
+    "cat": "audio",
     "opts": [
-      "-stop nomAmbiance: pour arrêter une ambiance",
-      "-stop: pour arrêter toutes les ambiances"
+      "stop"
     ],
-    "ex": [
-      "/ambiance rain",
-      "/ambiance -stop",
-      "/ambiance -stop rain"
+    "args": [
+      {
+        "name": "ambiance",
+        "type": "ambiance"
+      }
     ]
   },
   "control": {
     "icon": "people",
     "name": "control",
-    "desc": "Pour prendre le controle d'un personnage, ses messages seront affichés sur la droite",
-    "ex": ["/control @nomPersonnage"]
+    "cat": "appearance",
+    "args": [
+      {
+        "name": "actor",
+        "type": "actor"
+      }
+    ]
   },
-  "end": {
+  "finish": {
     "icon": "flag",
-    "name": "end",
-    "desc": "Met fin à une histoire",
-    "ex": ["/end"]
+    "name": "finish",
+    "cat": "control"
   },
   "alert": {
     "icon": "alert",
     "name": "alert",
-    "desc": "Affiche une alerte",
-    "ex": ["/alert Ceci est une alerte!"]
+    "cat": "appearance",
+    "args": [
+      {
+        "name": "message",
+        "type": "string"
+      }
+    ]
   },
   "question": {
     "icon": "chatbubble",
     "name": "question",
-    "desc": "Propose des choix de réponses au lecteur, le résultat sera stocké dans la variable $answer.",
-    "ex": ["/question réponse1; réponse2; réponse3; etc..."]
+    "cat": "control"
   }
 }

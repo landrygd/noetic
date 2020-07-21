@@ -49,15 +49,15 @@
     <ion-segment value="actor" (ionChange)="segmentChanged($event)">
       <ion-segment-button value="tool">
         
-        <ion-label><ion-icon name="hammer"></ion-icon>Outils</ion-label>
+        <ion-label><ion-icon name="hammer"></ion-icon>{{'CHAT.tools' | translate}}</ion-label>
       </ion-segment-button>
       <ion-segment-button value="actor">
         
-        <ion-label><ion-icon name="people"></ion-icon>Acteurs</ion-label>
+        <ion-label><ion-icon name="people"></ion-icon>{{'CHAT.actors' | translate}}</ion-label>
       </ion-segment-button>
       <ion-segment-button value="command">
         
-        <ion-label><ion-icon name="terminal"></ion-icon>Commandes</ion-label>
+        <ion-label><ion-icon name="terminal"></ion-icon>{{'CHAT.commands' | translate}}</ion-label>
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
@@ -77,21 +77,15 @@
     </ion-slides>
   </ion-toolbar>
   <ion-toolbar *ngIf="segment === 'command'">
-    <ion-buttons slot="start">
-      <ion-fab-button size="small" (click)="manual()" class="avatarButton">
-        <ion-icon name="search"></ion-icon>
-      </ion-fab-button>
+    <ion-buttons>
+      <ion-button style="margin: auto;" (click)="manual()"expand="block" fill="clear" shape="round">
+        <ion-icon name="search" slot="start"></ion-icon>
+        {{'MODALS.MANUAL.command' | translate}}
+      </ion-button>
     </ion-buttons>
-    <ion-slides [options]="slides.avatarOpts">
-      <ion-slide *ngFor="let command of commands">
-        <div>
-          <ion-fab-button size="small" class="ion-no-margin" (click)="useCommand(command.name)">
-            <ion-icon [name]="command.icon"></ion-icon>
-          </ion-fab-button>
-          <p class="note">{{command.name}}</p>
-        </div>
-      </ion-slide>
-    </ion-slides>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="segment === 'tool'">
+    <ion-title style="width: fit-content;margin: auto;">{{'COMMON.comingSoon' | translate}}</ion-title>
   </ion-toolbar>
   <ion-toolbar>
     <ion-textarea #chatBar [disabled]='textarea' rows="1" [(ngModel)]='text' [placeholder]="'CHAT.enterMessage' | translate" (ionInput)="changeMsg()" (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>

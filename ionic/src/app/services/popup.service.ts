@@ -74,7 +74,7 @@ export class PopupService implements OnInit, OnDestroy {
     await this.alerter.present();
   }
 
-  async loading(msg = this.COMMON.loading, id = 'unknowed') {
+  async loading(msg = 'loading...', id = 'unknowed') {
     this.loader = await this.loadingController.create({
       id,
       message: msg,

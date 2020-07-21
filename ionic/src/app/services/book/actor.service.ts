@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
   providedIn: 'root'
 })
-export class ActorService implements OnInit, OnDestroy {
+export class ActorService implements OnDestroy {
 
   actors: any[] = [];
   actorsId: string[] = [];
@@ -33,9 +33,7 @@ export class ActorService implements OnInit, OnDestroy {
     private popupService: PopupService,
     private actionSheetController: ActionSheetController,
     private translator: TranslateService
-  ) { }
-
-  ngOnInit() {
+  ) {
     this.getTraduction();
   }
 

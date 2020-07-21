@@ -21,6 +21,19 @@
 	"BOOKTABS": {
 		"story": "Scénario"
 	},
+	"TUTO": [
+    "Bienvenue sur l'éditeur de scénario, appuyez sur \"OK\" pour continuer ce tutoriel ou \"Passer\" pour le passer",
+    "Vous pouvez entrer du texte dans la bar de tchat en bas de l'écran",
+    "Pour ajouter un acteur, appuyez sur le bouton \"+\" dans la section \"acteur\"",
+    "Pour le sélectionner/déselectionner, appuyez sur son avatar dans la bar de tchat",
+    "Vous pouvez éditer un acteur en appuyant sur son avatar dans le tchat",
+    "Pour rendre le tchat dynamique, appuyez sur la section \"commande\"",
+    "Ici vous pourrez chercher des commandes en appuyant sur la loupe",
+    "Notez que vous pouvez inclure des variables dans vos textes avec le signe \"$\"",
+    "Exemple: \"/input $nom\" puis \"Bonjour $nom\"",
+    "Vous pouvez repasser ce tutoriel en le réactivant dans les paramètres de votre projet",
+    "Bonne découverte!"
+  ],
 	"CATEGORIES": {
 		"action": "Action",
 		"adventure": "Aventure",
@@ -57,9 +70,13 @@
 		"avaibleAmbiances": "Voir les ambiances disponibles",
 		"avaibleMusics": "Voir les musiques disponibles",
 		"avaibleSounds": "Voir les sons disponibles",
-		"enterMessage": "Entrez un message..."
+		"enterMessage": "Entrez un message...",
+		"tools": "Outils",
+		"actors": "Acteurs",
+		"commands": "Commandes"
 	},
 	"COMMON": {
+		"comingSoon": "Bientôt disponible",
 		"accept": "Accepter",
 		"cancel": "Annuler",
 		"category": "Catégorie",
@@ -166,9 +183,70 @@
 		},
 		"MANUAL": {
 			"ambiance": "Chercher une ambiance",
-			"command": "Chercher un bruitage",
+			"command": "Chercher une commande",
 			"music": "Chercher une musique",
-			"sound": "Chercher un son"
+			"sound": "Chercher un bruitage",
+			"forgotEntry": "Entrée manquante",
+			"cat": {
+				"control": "Contrôle",
+				"variables": "Variables",
+				"appearance": "Apparence",
+				"audio": "Audio"
+			},
+			"types": {
+				"==": "égual",
+				"!=": "différent",
+				"<=": "inférieur ou égual",
+				">=": "supérieur ou égual",
+				"<": "strictement inférieur",
+				">": "strictement supérieur"
+			},
+			"args": {
+				"name": "Nom",
+				"value": "Valeur",
+				"variable": "Variable",
+				"min": "Minimum",
+				"max": "Maximum",
+				"secondes": "Secondes",
+				"sound": "Bruitage",
+				"music": "Musique",
+				"ambiance": "Ambiance",
+				"actor": "Acteur",
+				"message": "Message",
+				"answer": "Réponse",
+				"addanswer": "Ajouter une réponse",
+				"operator": "Opérateur"
+			},
+			"opts": {
+				"stop": "Arrêter",
+				"once": "Une seule fois"
+			},
+			"desc": {
+				"label": "Ajouter un marque page",
+				"go": "Rediriger à un label",
+				"chat": "Rediriger à un chat",
+				"set": "Définir une variable",
+				"if":  "Tester une variable",
+				"else": "Sauter si le test est faux",
+				"end": "Fermer une imbrication",
+				"answer": "Vérifier la réponse",
+				"clear": "Effacer les messages",
+				"add": "Ajouter à une variable",
+				"sub": "Soustraire à une variable",
+				"div": "Diviser une variable",
+				"mul": "Multiplier une variable.",
+				"random": "Difinir une variable",
+				"wait": "Attendre x secondes",
+				"input": "Demmander une valeur",
+				"sound": "Jouer un son",
+				"music": "Jouer une musique",
+				"ambiance": "Jouer une ambiance",
+				"control": "Afficher les messages à droite",
+				"finish": "Mettre fin à une histoire",
+				"alert": "Afficher une alerte",
+				"question": "Poser une question"
+			}
+
 		},
 		"SEARCHUSER": {
 			"search": "Chercher un utilisateur"
