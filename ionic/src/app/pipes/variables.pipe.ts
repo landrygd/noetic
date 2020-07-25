@@ -18,8 +18,6 @@ export class VariablesPipe implements PipeTransform {
         const nomVar = this.toVariable(word);
         if (variables.hasOwnProperty(nomVar)) {
           res.push(variables[nomVar]);
-        } else if (nomVar === 'answer') {
-          res.push(this.toChip('réponse', 'chatbubble-ellipses'));
         } else {
           res.push(this.toChip(word.substring(1, word.length), 'pricetag'));
         }

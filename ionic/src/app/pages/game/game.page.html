@@ -32,11 +32,35 @@
 
 <ion-footer>
   <ion-toolbar>
-    <ion-button (click)="askQuestion()" expand="block" fill="solid" shape="round" *ngIf="question">
-      {{'GAME.answer' | translate}}
+    <ion-row *ngIf="!question && !inputShowed && !ended">
+      <ion-col size="8">
+        <ion-button (click)="next()" expand="block" fill="solid" shape="round">
+          {{'COMMON.next' | translate}}
+        </ion-button>
+      </ion-col>
+      <ion-col size="4">
+        <ion-item>
+          <ion-label>{{'COMMON.auto' | translate}}</ion-label>
+          <ion-toggle [(ngModel)]="autoPlay" (ionChange)="toggleAuto()" slot="end"></ion-toggle>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    
+    <ion-button (click)="exit()" expand="block" fill="solid" shape="round" *ngIf="ended">
+      {{'COMMON.leave' | translate}}
     </ion-button>
-    <ion-button (click)="askInput()" expand="block" fill="solid" shape="round" *ngIf="input">
-      {{'GAME.input' | translate}}
-    </ion-button>
+
+    <ion-list *ngIf="question">
+      <ion-button (click)="answer(toVariable(ans))" expand="block" fill="solid" shape="round" *ngFor="let ans of answers">
+        {{this.toVariable(ans)}}
+      </ion-button>
+    </ion-list>
+
+    <ion-item *ngIf="inputShowed">
+      <ion-input [(ngModel)]="input" type="text" [placeholder]="'GAME.input' | translate" (keypress)="enter($event.keyCode)"></ion-input>
+      <ion-button (click)="send()" expand="block" fill="clear" shape="round" slot="end">
+        <ion-icon slot="icon-only" name="send"></ion-icon>
+      </ion-button>
+    </ion-item>
   </ion-toolbar>
 </ion-footer>

@@ -268,5 +268,25 @@
     "icon": "chatbubble",
     "name": "question",
     "cat": "control"
+  },
+  "stopsound": {
+    "icon": "chatbubble",
+    "name": "question",
+    "cat": "control"
+  },
+  "stopambiance": {
+    "icon": "chatbubble",
+    "name": "question",
+    "cat": "control"
+  },
+  "stopmusic": {
+    "icon": "chatbubble",
+    "name": "question",
+    "cat": "control"
+  },
+  "end": {
+    "icon": "settings",
+    "name": "end",
+    "cat": "control"
   }
 }

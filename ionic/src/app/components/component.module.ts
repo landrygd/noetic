@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardBookComponent } from './card-book/card-book.component';
@@ -32,6 +33,7 @@ import { LogEditComponent } from './log-edit/log-edit.component';
     FormsModule,
     ModalModule,
     PipesModule,
+    TranslateModule
   ],
   exports: [
     CardBookComponent,

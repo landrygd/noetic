@@ -26,6 +26,9 @@ export class ManualComponent implements OnInit, OnDestroy {
   manualSub: Subscription;
   commonSub: Subscription;
 
+  commandSub: Subscription;
+  COMMANDS: any = {};
+
   commands = [];
 
   filter = '';
@@ -98,11 +101,15 @@ export class ManualComponent implements OnInit, OnDestroy {
     this.commonSub = this.translator.get('COMMON').subscribe((val) => {
       this.COMMON = val;
     });
+    this.commandSub = this.translator.get('COMMANDS').subscribe((val) => {
+      this.COMMANDS = val;
+    });
   }
 
   ngOnDestroy() {
     this.manualSub.unsubscribe();
     this.commonSub.unsubscribe();
+    this.commandSub.unsubscribe();
   }
 
   search() {
@@ -114,8 +121,8 @@ export class ManualComponent implements OnInit, OnDestroy {
         let desc = false;
         let category = false;
         let attribution = false;
-        if (command.desc) {
-          desc = command.desc.toLowerCase().search(this.filter.toLowerCase()) !== -1;
+        if (this.COMMANDS[command.name]) {
+          desc = this.COMMANDS[command.name].desc.toLowerCase().search(this.filter.toLowerCase()) !== -1;
         }
         if (command.category) {
           category = command.category.toLowerCase().search(this.filter.toLowerCase()) !== -1;

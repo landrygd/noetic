@@ -76,6 +76,7 @@
 		"commands": "Commandes"
 	},
 	"COMMON": {
+    "auto": "auto",
 		"comingSoon": "Bientôt disponible",
 		"accept": "Accepter",
 		"cancel": "Annuler",
@@ -103,7 +104,8 @@
 		"settings": "Paramètres",
 		"use": "Utiliser",
 		"warning": "Attention",
-		"yes": "Oui"
+    "yes": "Oui",
+    "leave": "Quitter"
 	},
 	"COVER": {
 		"addTag": "Ajouter un tag",
@@ -220,33 +222,7 @@
 			"opts": {
 				"stop": "Arrêter",
 				"once": "Une seule fois"
-			},
-			"desc": {
-				"label": "Ajouter un marque page",
-				"go": "Rediriger à un label",
-				"chat": "Rediriger à un chat",
-				"set": "Définir une variable",
-				"if":  "Tester une variable",
-				"else": "Sauter si le test est faux",
-				"end": "Fermer une imbrication",
-				"answer": "Vérifier la réponse",
-				"clear": "Effacer les messages",
-				"add": "Ajouter à une variable",
-				"sub": "Soustraire à une variable",
-				"div": "Diviser une variable",
-				"mul": "Multiplier une variable.",
-				"random": "Difinir une variable",
-				"wait": "Attendre x secondes",
-				"input": "Demmander une valeur",
-				"sound": "Jouer un son",
-				"music": "Jouer une musique",
-				"ambiance": "Jouer une ambiance",
-				"control": "Afficher les messages à droite",
-				"finish": "Mettre fin à une histoire",
-				"alert": "Afficher une alerte",
-				"question": "Poser une question"
 			}
-
 		},
 		"SEARCHUSER": {
 			"search": "Chercher un utilisateur"
@@ -388,5 +364,115 @@
 		"nightMode": "Mode nuit",
 		"reinitPassword": "Réinitialiser le mot de passe",
 		"searchLanguages": "Gérer les langues des livres de recherchés"
-	}
+  },
+  "COMMANDS": {
+    "label": {
+      "show": "Label §1",
+      "desc": "Ajouter un marque page"
+    },
+    "go": {
+      "show": "Aller au label §1",
+      "desc": "Rediriger à un label"
+    },
+    "chat": {
+      "show": "Aller au chat §1",
+      "desc": "Rediriger à un chat"
+    },
+    "set": {
+      "show": "Mettre §1 à §2",
+      "desc": "Définir une variable"
+    },
+    "if": {
+      "show": "Si §*",
+      "desc": "Tester une variable"
+    },
+    "else": {
+      "show": "Sinon",
+      "desc": "Sauter si le test est faux"
+    },
+    "end": {
+      "show": "Fin",
+      "desc": "Fermer une imbrication"
+    },
+    "answer": {
+      "show": "Si la réponse est §*",
+      "desc": "Vérifier la réponse"
+    },
+    "clear": {
+      "show": "Effacer les messages",
+      "desc": "Effacer les messages"
+    },
+    "add": {
+      "show": "Ajouter §2 à §1",
+      "desc": "Ajouter à une variable"
+    },
+    "sub": {
+      "show": "Soustraire §2 à §1",
+      "desc": "Soustraire à une variable"
+    },
+    "div": {
+      "show": "Diviser §1 à §2",
+      "desc": "Diviser une variable"
+    },
+    "mul": {
+      "show": "Multiplier §1 à §2",
+      "desc": "Multiplier une variable"
+    },
+    "random": {
+      "show": "Choisir un entier entre §1 et §2 pour §3",
+      "desc": "Choisir un entier aléatoire"
+    },
+    "wait": {
+      "show": "Attendre §1 secondes",
+      "desc": "Attendre x secondes"
+    },
+    "input": {
+      "show": "Demmander une valeur pour §1",
+      "desc": "Demmander une valeur"
+    },
+    "sound": {
+      "show": "Jouer le son §1",
+      "desc": "Jouer un son"
+    },
+    "music": {
+      "show": "Jouer la musique §1",
+      "desc": "Jouer une musique"
+    },
+    "ambiance": {
+      "show": "Jouer l'ambiance §1",
+      "desc": "Jouer une ambiance"
+    },
+    "control": {
+      "show": "Contrôler le personnage §1",
+      "desc": "Afficher les messages à droite"
+    },
+    "finish": {
+      "show": "Fin de l'histoire",
+      "desc": "Mettre fin à une histoire"
+    },
+    "alert": {
+      "show": "Afficher le message §*",
+      "desc": "Afficher une alerte"
+    },
+    "question": {
+      "show": "Poser une question",
+      "desc": "Poser une question"
+    },
+    "stopsound": {
+      "show": "Arrêter de jouer le son §1",
+      "desc": "Arrêter de jouer un son"
+    },
+    "stopambiance": {
+      "show": "Arrêter de jouer l'ambiance §1",
+      "desc": "Arrêter de jouer une ambiance"
+    },
+    "stopmusic": {
+      "show": "Arrêter de jouer la musique §1",
+      "desc": "Arrêter de jouer une musique"
+    },
+    "unknowed": {
+      "show": "Commande inconnue",
+      "desc": "Commande inconnue"
+    }
+  }
 }

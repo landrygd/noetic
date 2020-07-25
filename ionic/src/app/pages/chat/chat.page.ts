@@ -64,6 +64,8 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   chatAsync: Observable<any>;
   chatSub: Subscription;
 
+  chatBarFocused = false;
+
   commands = [];
 
   constructor(
@@ -109,42 +111,52 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
+  onChatBarFocused() {
+    this.chatBarFocused = true;
+  }
+
+  onChatBarBlurred() {
+    this.chatBarFocused = false;
+  }
+
   shortcuts(event: KeyboardEvent): void {
-    if (event.ctrlKey) {
-      switch (event.key) {
-        case 'c':
-          this.copy();
-          break;
-        case 'v':
-          this.paste();
-          break;
-        case 'x':
-          this.cut();
-          break;
-        case 'z':
-          this.undo();
-          break;
-        case 'y':
-          this.redo();
-          break;
-        case 'a':
-          this.selectAll();
-          break;
-        case 's':
-          this.save();
-          break;
-      }
-    } else if (event.shiftKey) {
-      switch (event.key) {
-        case 'E':
-          this.edit();
-          break;
-      }
-    } else {
-      switch (event.key) {
-        case 'Backspace':
-          this.delete();
-          break;
+    if (!this.chatBarFocused) {
+      if (event.ctrlKey) {
+        switch (event.key) {
+          case 'c':
+            this.copy();
+            break;
+          case 'v':
+            this.paste();
+            break;
+          case 'x':
+            this.cut();
+            break;
+          case 'z':
+            this.undo();
+            break;
+          case 'y':
+            this.redo();
+            break;
+          case 'a':
+            this.selectAll();
+            break;
+          case 's':
+            this.save();
+            break;
+        }
+      } else if (event.shiftKey) {
+        switch (event.key) {
+          case 'E':
+            this.edit();
+            break;
+        }
+      } else {
+        switch (event.key) {
+          case 'Backspace':
+            this.delete();
+            break;
+        }
       }
     }
  }

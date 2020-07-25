@@ -28,7 +28,7 @@ export class LogComponent implements OnInit {
   @ViewChild('ref', { read: ElementRef, static: true}) ref: ElementRef;
 
   @Output() scroll = new EventEmitter<void>();
-  @Output() action = new EventEmitter<void>();
+  @Output() action = new EventEmitter<any>();
 
   actorId: string;
   variablesJSON: any;
@@ -133,5 +133,16 @@ export class LogComponent implements OnInit {
     if (action) {
       this.action.emit(action.action);
     }
+  }
+
+  isEnd(msg) {
+    if (msg === '/finish') {
+      return true && !this.edit;
+    }
+    return false;
+  }
+
+  actionEmit(action: string) {
+    this.action.emit(action);
   }
 }

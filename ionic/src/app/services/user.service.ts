@@ -92,16 +92,15 @@ export class UserService implements OnDestroy {
     private translator: TranslateService
     ) {
       this.usersCollection = this.firestore.collection('users');
+      this.getTraduction();
   }
 
   async getTraduction() {
     this.userTradSub = this.translator.get('SERVICES.USER').subscribe((val) => {
       this.USER = val;
     });
-    // this.traductionService.get('LANGUAGES.french').then((val) => console.log(val));
-    this.languagesTradSub = this.traductionService.translator.get(['LANGUAGES']).subscribe((val) => {
-      console.log(val);
-      this.LANGUAGES = val.LANGUAGES;
+    this.languagesTradSub = this.traductionService.translator.get('LANGUAGES').subscribe((val) => {
+      this.LANGUAGES = val;
       this.languages = [
         {
           name: this.LANGUAGES.french,
@@ -186,9 +185,6 @@ export class UserService implements OnDestroy {
           value: 'sw'
         }
       ];
-      console.log(this.LANGUAGES);
-      console.log(this.tradLanguages);
-      console.log(this.languages);
     });
 
     this.commonSub = this.translator.get('COMMON').subscribe((val) => {

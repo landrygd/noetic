@@ -260,10 +260,10 @@ export class BookService implements OnInit, OnDestroy {
     this.popupService.toast(this.BOOK.backgroundChanged);
   }
 
-  searchByName(filter: string, langs = this.langs): Observable<any> {
+  searchByName(filter: string): Observable<any> {
     const queryByName = this.firestore.collection(
        'books', ref => ref.where('public', '==', true)
-                          .where('lang', 'in', langs)
+                          .where('lang', 'in', this.userService.langs)
                           .orderBy('titleLower')
                           .startAt(filter.toLowerCase())
                           .endAt(filter.toLowerCase() + '\uf8ff')
@@ -272,7 +272,7 @@ export class BookService implements OnInit, OnDestroy {
     return queryByName;
   }
 
-  searchByTag(filter: string, langs = this.langs): Observable<any> {
+  searchByTag(filter: string): Observable<any> {
     const filterArray: string[] = filter.split(' ');
     const res = [];
     filterArray.forEach((val) => {
@@ -280,7 +280,6 @@ export class BookService implements OnInit, OnDestroy {
     });
     const queryByTag = this.firestore.collection(
        'books', ref => ref.where('public', '==', true)
-                          .where('lang', 'in', langs)
                           .where('tags', 'array-contains-any', res)
                           .limit(20)
       ).valueChanges();

@@ -39,11 +39,19 @@ export class GamePage implements OnInit, OnDestroy {
   ended = false;
   paused = false;
   waitTime = 500;
-  input = false;
+  inputShowed = false;
+
+  gochat = '';
+
+  autoPlay = false;
 
   avatar = undefined;
 
+  curLine = 0;
+
   speed = 1000; // CPS
+
+  nextTimer: any;
 
   curLog: any;
   msg: string;
@@ -79,6 +87,10 @@ export class GamePage implements OnInit, OnDestroy {
   gameSub: Subscription;
   COMMON: any;
   GAME: any;
+
+  input = '';
+
+  time = 0;
 
   constructor(
     public bookService: BookService,
@@ -120,7 +132,7 @@ export class GamePage implements OnInit, OnDestroy {
       this.cptChatLabel = {};
     }, 60000);
     this.getWallpaper();
-    this.input = false;
+    this.inputShowed = false;
     this.question = false;
     this.paused = false;
     this.exited = false;
@@ -149,15 +161,16 @@ export class GamePage implements OnInit, OnDestroy {
   }
 
   async playLog() {
+    console.log(this.curLog);
     if (!this.exited) {
       if (this.line < this.chatLogs.length) {
-        let gochat = '';
-        let line = this.line + 1;
-        let time = 1000;
+        this.gochat = '';
+        this.curLine = this.line + 1;
+        this.time = 1000;
         this.curLog = this.chatLogs[this.line];
         this.msg = this.curLog.msg;
         if (this.msg.charAt(0) === '/') {
-          time = -this.waitTime;
+          this.time = -this.waitTime;
           if (this.msg.charAt(1) !== '/') {
             this.getCommandValues(this.msg);
             this.nomVar = this.getVariableName(this.args[0]);
@@ -171,13 +184,13 @@ export class GamePage implements OnInit, OnDestroy {
                 if (this.opts.includes('chat')) {
                   if (this.chatService.haveChat(this.arg)) {
                     if (this.checkCptLabel(this.chatService.getChatIdByName(this.arg))) {
-                      gochat = this.arg;
+                      this.gochat = this.arg;
                     }
                   }
                 } else {
                   if (this.labels.hasOwnProperty(this.arg)) {
                     if (this.checkCptLabel(this.chat.id, this.arg)) {
-                      line = this.labels[this.arg];
+                      this.curLine = this.labels[this.arg];
                     }
                   }
                 }
@@ -185,7 +198,7 @@ export class GamePage implements OnInit, OnDestroy {
               case 'chat':
                 if (this.chatService.haveChat(this.arg)) {
                   if (this.checkCptLabel(this.chatService.getChatIdByName(this.arg))) {
-                    gochat = this.arg;
+                    this.gochat = this.arg;
                   }
                 }
                 break;
@@ -211,10 +224,30 @@ export class GamePage implements OnInit, OnDestroy {
                   this.mediaService.playAmbiance(this.args[0]);
                 }
                 break;
+              case 'stopsound':
+                if (this.args.length > 0) {
+                  this.mediaService.stopSound(this.args[0]);
+                } else {
+                  this.mediaService.stopSound();
+                }
+                break;
+              case 'stopmusic':
+                  if (this.args.length > 0) {
+                    this.mediaService.stopMusic(this.args[0]);
+                  } else {
+                    this.mediaService.stopMusic();
+                  }
+                  break;
+              case 'stopambiance':
+                if (this.args.length > 0) {
+                  this.mediaService.stopAmbiance(this.args[0]);
+                } else {
+                  this.mediaService.stopAmbiance();
+                }
+                break;
               case 'finish':
-                line = this.chatLogs.length;
+                this.curLine = this.chatLogs.length;
                 this.ended = true;
-                this.logs.push({msg: '/finish'});
                 break;
               case 'alert':
                 await this.popupService.alert(this.arg);
@@ -233,7 +266,7 @@ export class GamePage implements OnInit, OnDestroy {
                 break;
               case 'input':
                 this.paused = true;
-                this.input = true;
+                this.inputShowed = true;
                 break;
               case 'question':
                 this.paused = true;
@@ -245,11 +278,11 @@ export class GamePage implements OnInit, OnDestroy {
                 this.logs = [];
                 break;
               case 'else':
-                line = this.getNextEndIf();
+                this.curLine = this.getNextEndIf();
                 break;
               case 'answer':
                 if (String(this.toVariable('$answer')) !== String(this.toVariable(this.arg))) {
-                  line = this.getNextAnswer();
+                  this.curLine = this.getNextAnswer();
                 }
                 break;
               case 'if':
@@ -258,30 +291,30 @@ export class GamePage implements OnInit, OnDestroy {
                 const firstVal = this.varValue;
                 if (operator === '==') {
                   if (String(firstVal) !== String(endVal)) {
-                    line = this.getNextEndIf();
+                    this.curLine = this.getNextEndIf();
                   }
                 } else if (operator === '<') {
                   if (Number(firstVal) >= Number(endVal)) {
-                    line = this.getNextEndIf();
+                    this.curLine = this.getNextEndIf();
                   }
                 } else if (operator === '<=') {
                   if (Number(firstVal) > Number(endVal)) {
-                    line = this.getNextEndIf();
+                    this.curLine = this.getNextEndIf();
                   }
                 } else if (operator === '>') {
                   if (Number(firstVal) <= Number(endVal)) {
-                    line = this.getNextEndIf();
+                    this.curLine = this.getNextEndIf();
                   }
                 } else if (operator === '>=') {
                   if (Number(firstVal) < Number(endVal)) {
-                    line = this.getNextEndIf();
+                    this.curLine = this.getNextEndIf();
                   }
                 } else if (operator === ['!=', '!==']) {
                   if (Number(firstVal) === Number(endVal)) {
-                    line = this.getNextEndIf();
+                    this.curLine = this.getNextEndIf();
                   }
                 } else {
-                  line = this.getNextEndIf();
+                  this.curLine = this.getNextEndIf();
                 }
                 break;
               case 'set':
@@ -312,25 +345,27 @@ export class GamePage implements OnInit, OnDestroy {
           }
         } else {
           this.logs.push(this.curLog);
-          time = this.curLog.msg.length * 50;
+          this.time = this.curLog.msg.length * 50;
         }
-        if (!this.paused) {
-          if (gochat === '') {
-            setTimeout(() => {
-              this.line = line;
-              this.playLog();
-            }, time + this.waitTime);
-          } else {
-            setTimeout(() => {
-              this.playChat(this.chatService.getChatIdByName(gochat));
-            }, time + this.waitTime);
-          }
+        const totalTime = this.time + this.waitTime;
+        if ((this.autoPlay || totalTime === 0) && !this.paused) {
+          this.next();
         }
       } else if (!this.ended) {
-        setTimeout(() => {
+        if (this.autoPlay) {
+          this.nextTimer = setTimeout(() => {
+            this.end();
+          }, this.waitTime);
+        } else {
           this.end();
-        }, this.waitTime);
+        }
       }
+    }
+  }
+
+  toggleAuto() {
+    if (this.autoPlay === true) {
+      this.playLog();
     }
   }
 
@@ -509,8 +544,8 @@ export class GamePage implements OnInit, OnDestroy {
 
   resume() {
     this.paused = false;
-    this.line += 1;
-    this.playLog();
+    this.next();
+    // this.playLog();
   }
 
   getLabels() {
@@ -533,10 +568,6 @@ export class GamePage implements OnInit, OnDestroy {
       res.push(0);
     }
     this.database.object('games/' + this.bookId + '/chat/' + this.bookService.curChatId).update({answers: res});
-  }
-
-  send() {
-
   }
 
   plus() {
@@ -578,6 +609,7 @@ export class GamePage implements OnInit, OnDestroy {
   }
 
   end() {
+    this.ended = true;
     this.logs.push(
       {msg: '/finish'}
     );
@@ -757,9 +789,15 @@ export class GamePage implements OnInit, OnDestroy {
     });
     await this.popupService.alerter.onDidDismiss();
     if (answered) {
-      this.input = false;
+      this.inputShowed = false;
       this.resume();
     }
+  }
+
+  send() {
+    this.variables[this.nomVar] = this.input;
+    this.inputShowed = false;
+    this.resume();
   }
 
   async options() {
@@ -859,5 +897,32 @@ export class GamePage implements OnInit, OnDestroy {
 
   getFirstArg(msg: string) {
     return msg.split(' ')[1];
+  }
+
+  next() {
+    if (!this.autoPlay) {
+      this.time = 0;
+      this.waitTime = 0;
+    } else {
+      clearTimeout(this.nextTimer);
+    }
+    if (!this.paused) {
+      if (this.gochat === '') {
+          this.nextTimer = setTimeout(() => {
+            this.line = this.curLine;
+            this.playLog();
+          }, this.time + this.waitTime);
+      } else {
+          this.nextTimer = setTimeout(() => {
+            this.playChat(this.chatService.getChatIdByName(this.gochat));
+          }, this.time + this.waitTime);
+      }
+    }
+  }
+
+  enter(keyCode) {
+    if (keyCode === 13) {
+      this.send();
+    }
   }
 }
