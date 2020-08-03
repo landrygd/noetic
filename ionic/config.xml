@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.blockup.noetic" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.blockup.noetic" version="0.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Noetic</name>
-    <description>Application de création de chat intéractif.</description>
+    <description>Chat game engine</description>
     <author email="landrymailme@gmail.com" href="http://ionicframework.com/">Landry</author>
     <content src="index.html" />
     <access origin="*" />
