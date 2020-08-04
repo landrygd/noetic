@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
   providedIn: 'root'
 })
-export class ChatService implements OnInit, OnDestroy {
+export class ChatService implements OnDestroy {
 
   curChatId: string;
   chatLogsSub: Subscription;
@@ -30,9 +30,7 @@ export class ChatService implements OnInit, OnDestroy {
     private popupService: PopupService,
     private alertController: AlertController,
     private translator: TranslateService
-  ) { }
-
-  ngOnInit() {
+  ) {
     this.getTraduction();
   }
 

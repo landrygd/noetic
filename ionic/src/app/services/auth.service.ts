@@ -17,12 +17,12 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements OnInit, OnDestroy {
+export class AuthService implements OnDestroy {
 
   userId: string;
   auth: firebase.User;
   connected = false;
-  lang = 'fr';
+  lang = 'en';
   userData: any;
   books: any;
 
@@ -64,12 +64,8 @@ export class AuthService implements OnInit, OnDestroy {
         }
       }
     });
-   }
-
-
-  ngOnInit() {
     this.getTraduction();
-  }
+   }
 
   getTraduction() {
     this.authTradSub = this.translator.get('SERVICES.AUTH').subscribe((val) => {

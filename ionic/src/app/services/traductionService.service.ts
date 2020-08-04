@@ -17,6 +17,7 @@ export class TraductionService {
     private plat: Platform
     ) {
     this.curLanguage = this.translator.getBrowserLang();
+    this.translator.setDefaultLang(this.curLanguage);
   }
 
   async init() {

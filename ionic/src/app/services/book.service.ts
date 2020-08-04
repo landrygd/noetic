@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
   providedIn: 'root'
 })
-export class BookService implements OnInit, OnDestroy {
+export class BookService implements OnDestroy {
   booksCollection: AngularFirestoreCollection<any>;
 
   curBookId: string;
@@ -84,9 +84,6 @@ export class BookService implements OnInit, OnDestroy {
     private translator: TranslateService
   ) {
     this.booksCollection = this.firestore.collection('books');
-  }
-
-  ngOnInit() {
     this.getTraduction();
   }
 

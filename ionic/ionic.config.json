@@ -1,8 +1,11 @@
 {
-  "name": "ionic",
+  "name": "noetic",
   "integrations": {
     "capacitor": {},
     "cordova": {}
   },
-  "type": "angular"
+  "type": "angular",
+  "hooks": {
+    "build:before": "./config/build-before.js"
+  }
 }

@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
   providedIn: 'root'
 })
 
-export class PopupService implements OnInit, OnDestroy {
+export class PopupService implements OnDestroy {
 
   loader: HTMLIonLoadingElement;
   alerter: HTMLIonAlertElement;
@@ -20,11 +20,9 @@ export class PopupService implements OnInit, OnDestroy {
     private toastController: ToastController,
     private loadingController: LoadingController,
     private translator: TranslateService
-    ) {}
-
-  ngOnInit() {
-    this.getTraduction();
-  }
+    ) {
+      this.getTraduction();
+    }
 
   getTraduction() {
     this.commonSub = this.translator.get('COMMON').subscribe((val) => {
