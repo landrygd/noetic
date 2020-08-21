@@ -33,6 +33,13 @@
       <ion-icon slot="start" name="exit" color="danger"></ion-icon>
       <ion-label color="danger">{{'BOOKSETTINGS.leave' | translate}}</ion-label>
     </ion-item>
+    <ion-item>
+      <ion-icon slot="start" name="flag"></ion-icon>
+      <ion-label>{{'BOOKSETTINGS.mainChat' | translate}}</ion-label>
+      <ion-select [value]="bookService.book.main" [placeholder]="'BOOKSETTINGS.selectMainChat' | translate" (ionChange)="changeMainChat($event.detail.value)">
+        <ion-select-option [value]="chat.id" *ngFor="let chat of bookService.chats">{{chat.name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
     <ion-item button (click)="delete()">
       <ion-icon slot="start" name="trash" color="danger"></ion-icon>
       <ion-label color="danger">{{'BOOKSETTINGS.delete' | translate}}</ion-label>

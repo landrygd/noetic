@@ -16,7 +16,9 @@
 		"stopPublishingConfirm": "Etes vous sûr de rendre ce livre privé?",
 		"tuto": "Recommencer le tutoriel",
 		"tutoReactivated": "Tutoriel réactivé",
-		"unPublish": "Arrêter de publier ce livre"
+    "unPublish": "Arrêter de publier ce livre",
+    "mainChat": "Tchat principal",
+    "selectMainChat": "sélectionner le tchat principal"
 	},
 	"BOOKTABS": {
 		"story": "Scénario"
@@ -66,7 +68,7 @@
 		]
 	},
 	"CHAT": {
-		"alertSettingsHeader": "Paramètres du chat",
+		"alertSettingsHeader": "Paramètres du tchat",
 		"avaibleAmbiances": "Voir les ambiances disponibles",
 		"avaibleMusics": "Voir les musiques disponibles",
 		"avaibleSounds": "Voir les sons disponibles",
@@ -136,7 +138,7 @@
 	"GAME": {
 		"answer": "Choisir une réponse",
 		"input": "Entrer du texte",
-		"maxChatError": "Un chat ne peut être utilisé que 10 fois par minute maximum! Il sera ignoré pendant la lecture ce quotas dépassé.",
+		"maxChatError": "Un tchat ne peut être utilisé que 10 fois par minute maximum! Il sera ignoré pendant la lecture ce quotas dépassé.",
 		"maxLabelError": "Un label ne peut être utilisé que 10 fois par minute maximum! Il sera ignoré pendant la lecture ce quotas dépassé.",
 		"restartBook": "Recommencer le livre",
 		"restartBookWarning": "En recommençant ce livre, toutes vos sauvegardes seront perdues définitivement!"
@@ -310,26 +312,26 @@
 			"resetPasswordLink": "Un lien de réinitialisation de votre mot de passe vient d'être envoyé dans votre adresse mail:"
 		},
 		"BOOK": {
-			"addChat": "Ajouter un chat",
+			"addChat": "Ajouter un tchat",
 			"authorAlreadyError": "Vous êtes déjà auteur de ce livre",
 			"authorMaxError": "Il ne peut pas y avoir plus de 10 auteurs par livre",
 			"backgroundChanged": "Arrière plan changé",
 			"bookNotExistError": "Livre inexistant",
 			"bookPublished": "Livre publié",
-			"chatName": "Nom du chat",
+			"chatName": "Nom du tchat",
 			"chatNameError": "Veuillez entrer un nom",
 			"chatReservedNameError": "Impossible d'utiliser ce nom",
 			"chatUsedNameError": "Nom déjà utilisé",
 			"emptyCategory": "Catégorie vide pour le moment",
-			"newChatError": "Impossible créer un chat, votre livre est trop volumineux",
+			"newChatError": "Impossible créer un tchat, votre livre est trop volumineux",
 			"shareMsg": "Voici un livre sur Noetic",
 			"shareSubject": "Partage de livre"
 		},
 		"CHAT": {
-			"changeChatName": "Changer le nom du chat",
-			"chatLogsMaxError": "Impossible d'envoyer plus de 1000 messages dans un chat.",
+			"changeChatName": "Changer le nom du tchat",
+			"chatLogsMaxError": "Impossible d'envoyer plus de 1000 messages dans un tchat.",
 			"logMaxError": "Impossible d'envoyer plus de 800 caractères",
-			"newChatName": "Nouveau nom du chat"
+			"newChatName": "Nouveau nom du tchat"
 		},
 		"USER": {
 			"avaibleLanguages": "Langues disponibles",
@@ -375,8 +377,8 @@
       "desc": "Rediriger à un label"
     },
     "chat": {
-      "show": "Aller au chat §1",
-      "desc": "Rediriger à un chat"
+      "show": "Aller au tchat §1",
+      "desc": "Rediriger à un tchat"
     },
     "set": {
       "show": "Mettre §1 à §2",

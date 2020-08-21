@@ -113,6 +113,7 @@ export class NewBookPage implements OnInit, OnDestroy {
       verso: form.verso,
       lang: this.traductionService.getCurLanguage(),
       authors,
+      main: 'main',
       date: Date.now()
     };
     this.bookService.newBook(book, this.cover, this.bookId);

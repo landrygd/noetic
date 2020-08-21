@@ -200,4 +200,8 @@ export class SettingsBookPage implements OnInit, OnDestroy {
     });
     toast.present();
   }
+
+  changeMainChat(chatId) {
+    this.bookService.setMainChat(chatId);
+  }
 }

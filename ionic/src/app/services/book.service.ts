@@ -36,7 +36,8 @@ export class BookService implements OnDestroy {
     votes: number,
     banner: string,
     wallpaper: string,
-    public: boolean
+    public: boolean,
+    main: string
   };
 
   isAuthor: boolean;
@@ -430,6 +431,7 @@ export class BookService implements OnDestroy {
       bookChatPromise = new Promise(res => {
         this.bookChatSub = this.firestore.collection('books').doc(curBookId).collection('chats').valueChanges().subscribe((value) => {
           this.chats = value;
+          console.log(value);
           res();
         });
       });
@@ -461,6 +463,11 @@ export class BookService implements OnDestroy {
       this.bookChatSub.unsubscribe();
       this.bookActorSub.unsubscribe();
     }
+  }
+
+  setMainChat(chatId: string) {
+    this.firestore.collection('/books').doc(this.curBookId).update({main: chatId})
+    .catch((err) => this.popupService.error(err)).then(() => console.log(this.book));
   }
 
   // uploadFile(type: string, file: any, id= this.userId) {

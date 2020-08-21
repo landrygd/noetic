@@ -139,6 +139,7 @@ export class GamePage implements OnInit, OnDestroy {
     this.logs = [];
     this.chatId = this.bookService.curChatId;
     this.bookId = this.bookService.curBookId;
+    this.chatId = this.bookService.book.main;
     if (this.userService.haveSave(this.bookId)) {
       await this.load();
       this.playChat(this.chatId, this.line);

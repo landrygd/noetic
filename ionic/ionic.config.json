@@ -4,8 +4,5 @@
     "capacitor": {},
     "cordova": {}
   },
-  "type": "angular",
-  "hooks": {
-    "build:before": "./config/build-before.js"
-  }
+  "type": "angular"
 }
