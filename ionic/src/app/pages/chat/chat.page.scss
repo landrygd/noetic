@@ -59,3 +59,10 @@ ion-virtual-scroll > *, app-log {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+.center {
+  display: flex; 
+  align-items: center; 
+  text-align: center; 
+  justify-content: center;
+}

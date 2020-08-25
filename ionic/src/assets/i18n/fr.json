@@ -75,7 +75,10 @@
 		"enterMessage": "Entrez un message...",
 		"tools": "Outils",
 		"actors": "Acteurs",
-		"commands": "Commandes"
+    "commands": "Commandes",
+    "addActor": "Ajouter un acteur",
+    "voidChat": "Tchat vide",
+    "test": "Tester"
 	},
 	"COMMON": {
     "auto": "auto",
