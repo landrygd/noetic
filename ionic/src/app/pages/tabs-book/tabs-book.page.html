@@ -1,8 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="'book/' + bookService.book.id"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{bookService.book.title}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="settings()" expand="block" fill="clear" shape="round">
+        <ion-icon slot="icon-only" name="settings"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+
 <ion-tabs>
   <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="actors">
+      <ion-icon name="people"></ion-icon>
+      <ion-label>{{'BOOKTABS.actors' | translate}}</ion-label>
+    </ion-tab-button>
     <ion-tab-button tab="story">
       <ion-icon name="book"></ion-icon>
       <ion-label>{{'BOOKTABS.story' | translate}}</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="places">
+      <ion-icon name="location"></ion-icon>
+      <ion-label>{{'BOOKTABS.places' | translate}}</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>

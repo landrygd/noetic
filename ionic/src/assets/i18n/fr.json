@@ -21,7 +21,9 @@
     "selectMainChat": "sélectionner le tchat principal"
 	},
 	"BOOKTABS": {
-		"story": "Scénario"
+    "story": "Scénario",
+    "actors": "Acteurs",
+    "places": "Lieux"
 	},
 	"TUTO": [
     "Bienvenue sur l'éditeur de scénario, appuyez sur \"OK\" pour continuer ce tutoriel ou \"Passer\" pour le passer",
@@ -81,7 +83,9 @@
     "test": "Tester"
 	},
 	"COMMON": {
-    "auto": "auto",
+    "name": "Nom",
+    "id": "Identifiant",
+    "auto": "Auto",
 		"comingSoon": "Bientôt disponible",
 		"accept": "Accepter",
 		"cancel": "Annuler",
@@ -136,8 +140,10 @@
 		"invalidLabelName": "Impossible de créer de label avec ce nom.",
 		"title3CarMin": "Le titre doit faire au moins plus de 3 caractères",
 		"title40CarMax": "Le titre doit faire moins 40 caractères",
-		"unratedComment": "Veuillez noter avant d'envoyer votre avis"
-	},
+		"unratedComment": "Veuillez noter avant d'envoyer votre avis",
+    "noSpace": "Veuillez enlever les espaces",
+    "fieldMissing": "Champ manquant"
+  },
 	"GAME": {
 		"answer": "Choisir une réponse",
 		"input": "Entrer du texte",
@@ -184,6 +190,10 @@
 		"return": "Retourner sur le site"
 	},
 	"MODALS": {
+    "NEW-ENTITY": {
+      "enterName": "Entrez un nom",
+      "id": "Identifiant"
+    },
 		"ACTOR": {
 			"changeColor": "Changer de couleur",
 			"warningDesc": "En supprimant cet acteur, vous supprimez également tout ses messages."
@@ -301,6 +311,9 @@
 		"nosearch": "Recherche vide"
 	},
 	"SERVICES": {
+    "PLACE": {
+      "header": "Nouveau lieu"
+    },
 		"ACTOR": {
 			"actorName": "Nom de l'acteur",
 			"actorNameError": "Veuillez entrer un nom",

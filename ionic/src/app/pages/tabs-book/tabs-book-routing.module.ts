@@ -19,6 +19,26 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'actors',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../actors/actors.module').then(m => m.ActorsPageModule)
+          }
+        ]
+      },
+      {
+        path: 'places',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../places/places.module').then(m => m.PlacesPageModule)
+          }
+        ]
+      },
+      {
         path: '',
         redirectTo: 'story',
         pathMatch: 'full'

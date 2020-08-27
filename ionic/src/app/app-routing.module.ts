@@ -93,7 +93,15 @@ const routes: Routes = [
   {
     path: 'chart',
     loadChildren: () => import('./pages/chart/chart.module').then( m => m.ChartPageModule)
+  },  {
+    path: 'actors',
+    loadChildren: () => import('./pages/actors/actors.module').then( m => m.ActorsPageModule)
+  },
+  {
+    path: 'places',
+    loadChildren: () => import('./pages/places/places.module').then( m => m.PlacesPageModule)
   }
+
 ];
 @NgModule({
   imports: [

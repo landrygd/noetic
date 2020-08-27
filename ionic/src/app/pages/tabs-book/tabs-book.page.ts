@@ -1,3 +1,5 @@
+import { BookService } from 'src/app/services/book.service';
+import { NavController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +9,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TabsBookPage implements OnInit {
 
-  constructor() { }
+  constructor(
+    public navCtrl: NavController,
+    public bookService: BookService
+  ) {
+    if (this.bookService.curBookId === undefined) {
+      this.navCtrl.navigateRoot('/');
+    }
+   }
 
   ngOnInit() {
+  }
+
+  settings() {
+    this.navCtrl.navigateForward('settings-book');
   }
 
 }

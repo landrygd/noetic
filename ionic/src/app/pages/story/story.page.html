@@ -1,14 +1,5 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button [defaultHref]="'book/' + bookService.book.id"></ion-back-button>
-    </ion-buttons>
-    <ion-title>{{bookService.book.title}}</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="settings()" expand="block" fill="clear" shape="round">
-        <ion-icon slot="icon-only" name="settings"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -20,7 +11,7 @@
 </ion-item>
 </ion-content>
 
-<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+<ion-fab vertical="bottom" horizontal="start" slot="fixed">
   <ion-fab-button>
     <ion-icon name="add" (click)="addChat()"></ion-icon>
   </ion-fab-button>
