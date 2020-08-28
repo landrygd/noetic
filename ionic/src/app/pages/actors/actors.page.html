@@ -6,13 +6,17 @@
 <ion-content>
   <ion-virtual-scroll [items]="bookService.actors">
     <ion-item *virtualItem="let actor" button (click)="viewProfile(actor.id)">
-      <app-avatar [enabled]="true" [actorId]="actor.id" class="ion-no-margin" slot="start"></app-avatar>
+      <app-avatar [enabled]="false" [id]="actor.id" class="ion-no-margin" slot="start"></app-avatar>
       <ion-label class="ion-margin-start" [color]="actor.color">{{actor.name}}</ion-label>
     </ion-item>
   </ion-virtual-scroll>
-  <ion-fab vertical="bottom" horizontal="start" slot="fixed" (click)="newActor()">
-      <ion-fab-button >
-        <ion-icon name="person-add"></ion-icon>
-      </ion-fab-button>
-  </ion-fab>
+  <ion-button (click)="newActor()" expand="block" fill="clear" shape="round">
+    {{'ACTORS.addActor' | translate}}
+  </ion-button>
 </ion-content>
+
+<ion-fab vertical="bottom" horizontal="start" slot="fixed" (click)="newActor()">
+  <ion-fab-button>
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

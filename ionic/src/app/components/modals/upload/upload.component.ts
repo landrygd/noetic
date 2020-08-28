@@ -7,6 +7,7 @@ import { ActorService } from 'src/app/services/book/actor.service';
 import { PopupService } from 'src/app/services/popup.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { PlaceService } from 'src/app/services/book/place.service';
 
 @Component({
   selector: 'app-upload',
@@ -40,8 +41,9 @@ export class UploadComponent implements OnInit, OnDestroy {
     public bookService: BookService,
     public actorService: ActorService,
     private popupService: PopupService,
-    private translator: TranslateService
-    ) {}
+    private translator: TranslateService,
+    private placeService: PlaceService
+  ) { }
 
   async ngOnInit() {
     this.getTraduction();
@@ -70,20 +72,20 @@ export class UploadComponent implements OnInit, OnDestroy {
   }
 
   fileChangeEvent(event: any): void {
-      this.imageChangedEvent = event;
-      this.imported = true;
+    this.imageChangedEvent = event;
+    this.imported = true;
   }
   imageCropped(event: ImageCroppedEvent) {
-      this.file = event.base64;
+    this.file = event.base64;
   }
   imageLoaded() {
-      // show cropper
+    // show cropper
   }
   cropperReady() {
-      // cropper ready
+    // cropper ready
   }
   loadImageFailed() {
-      this.popupService.alert(this.UPLOAD.error);
+    this.popupService.alert(this.UPLOAD.error);
   }
 
   cancel() {
@@ -96,6 +98,23 @@ export class UploadComponent implements OnInit, OnDestroy {
     }
     if (this.type === 'actorAvatar') {
       this.actorService.uploadAvatar(this.file, this.fileId);
+    }
+    switch (this.type) {
+      case 'userAvatar':
+        this.userService.uploadAvatar(this.file);
+        break;
+      case 'actorAvatar':
+        this.bookService.uploadAvatar(this.file, this.fileId, 'actors');
+        break;
+      case 'itemAvatar':
+        this.bookService.uploadAvatar(this.file, this.fileId, 'items');
+        break;
+      case 'placeAvatar':
+        this.bookService.uploadAvatar(this.file, this.fileId, 'places');
+        break;
+      case 'roleAvatar':
+        this.bookService.uploadAvatar(this.file, this.fileId, 'roles');
+        break;
     }
     this.modalController.dismiss(this.file);
   }

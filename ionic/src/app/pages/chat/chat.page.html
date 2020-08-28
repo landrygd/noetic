@@ -75,7 +75,7 @@
     <ion-slides [options]="slides.avatarOpts" *ngIf="bookService.actors.length > 0">
       <ion-slide *ngFor="let actor of bookService.actors">
         <div [ngClass]="getClassFabActor(actor.id)">
-          <app-avatar (click)="setActor(actor.id)" [actorId]="actor.id"></app-avatar>
+          <app-avatar (click)="setActor(actor.id)" [id]="actor.id"></app-avatar>
           <p class="note">{{actor.name}}</p>
         </div>
       </ion-slide>

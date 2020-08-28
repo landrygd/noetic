@@ -1,11 +1,18 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>places</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <ion-virtual-scroll [items]="bookService.places">
+    <ion-item *virtualItem="let place" button (click)="showPlace(place.id)">
+      <app-avatar [enabled]="false" [id]="place.id" type="place" class="ion-no-margin" slot="start"></app-avatar>
+      <ion-label class="ion-margin-start" [color]="place.color">{{place.name}}</ion-label>
+    </ion-item>
+  </ion-virtual-scroll>
+  <ion-button (click)="newPlace()" expand="block" fill="clear" shape="round">
+    {{'PLACES.addPlace' | translate}}
+  </ion-button>
 </ion-content>
 
 <ion-fab vertical="bottom" horizontal="start" slot="fixed" (click)="newPlace()">

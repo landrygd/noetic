@@ -1,4 +1,3 @@
-import { ActorProfileComponent } from 'src/app/components/modals/actor-profile/actor-profile.component';
 import { ComponentModule } from 'src/app/components/component.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -9,6 +8,9 @@ import { IonicModule } from '@ionic/angular';
 import { ActorsPageRoutingModule } from './actors-routing.module';
 
 import { ActorsPage } from './actors.page';
+import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
+import { EntityModalComponent } from 'src/app/components/modals/entity-modal/entity-modal.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -16,9 +18,10 @@ import { ActorsPage } from './actors.page';
     FormsModule,
     IonicModule,
     ActorsPageRoutingModule,
-    ComponentModule
+    ComponentModule,
+    TranslateModule
   ],
   declarations: [ActorsPage],
-  entryComponents: [ActorProfileComponent]
+  entryComponents: [EntityModalComponent, UploadComponent]
 })
 export class ActorsPageModule {}

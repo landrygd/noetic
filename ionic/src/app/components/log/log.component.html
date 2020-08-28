@@ -3,7 +3,7 @@
   
   <!-- <ion-note style="margin: 5px;" slot="start">{{index}}</ion-note> -->
   <div class="msgBox" slot="start" *ngIf="bookService.actorsById[log.actor] as actor; else card">
-    <app-avatar *ngIf="!ownPlayer || edit" [enabled]="true" [actorId]="log.actor" class="ion-no-margin"></app-avatar>
+    <app-avatar *ngIf="!ownPlayer || edit" [enabled]="true" [id]="log.actor" class="ion-no-margin"></app-avatar>
     <ion-card [color]="actor.color" [slot]="msgSlot">
       <p [class]="editClass" [innerHTML]="log.msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
       
@@ -30,10 +30,10 @@
 
 <!-- OLD VERSION -->
 <!-- <ion-row lines="none" [ngClass]="getClass()" class="ion-no-margin" #ref style="width: 100vw;">
-  <ion-col style="max-width: 60px;" *ngIf="bookService.actorsById[actorId] as actor">
-    <app-avatar [enabled]="true" [actorId]="actor.id" class="ion-no-margin" *ngIf="!ownPlayer"></app-avatar>
+  <ion-col style="max-width: 60px;" *ngIf="bookService.actorsById[id] as actor">
+    <app-avatar [enabled]="true" [id]="actor.id" class="ion-no-margin" *ngIf="!ownPlayer"></app-avatar>
   </ion-col>
-  <ion-col *ngIf="bookService.actorsById[actorId] as actor">
+  <ion-col *ngIf="bookService.actorsById[id] as actor">
     <ion-item color="transparent" lines="none" class="ion-no-margin ion-no-padding">
       <ion-card [color]="getColor(actor)" class="ion-no-margin" [slot]="getSlot(actor)">
         <ion-card-content style="padding-bottom: 0;" *ngIf="!ownPlayer">
@@ -49,7 +49,7 @@
     </ion-item>
   </ion-col>
 
-  <ion-col size="10" *ngIf="!bookService.actorsById[actorId]">
+  <ion-col size="10" *ngIf="!bookService.actorsById[id]">
     <ion-card color="light" *ngIf="!button">
       <ion-card-content *ngIf="!typing" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml">
       </ion-card-content>

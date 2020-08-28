@@ -161,34 +161,6 @@ export class ActorService implements OnDestroy {
     await alert.present();
   }
 
-  async changeActorColor(actorId: string) {
-    const colors =
-    ['red', 'pink', 'purple', 'deep-purple', 'indigo',
-    'blue', 'light-blue', 'cyan', 'teal', 'green',
-    'light-green', 'lime', 'yellow', 'amber', 'orange',
-    'deep-orange', 'brown', 'grey', 'blue-grey', 'white', 'black'];
-    const buttons = [];
-    for (const color of colors) {
-      buttons.push({
-        text: color,
-        cssClass: color,
-        handler: () => {
-          this.updateActorData(actorId, {color});
-        }
-      });
-    }
-    buttons.push({
-      text: this.COMMON.cancel,
-      icon: 'close',
-      role: 'cancel',
-      handler: () => {}
-    });
-    const actionSheet = await this.actionSheetController.create({
-      buttons
-    });
-    await actionSheet.present();
-  }
-
   updateActorData(actorId: string, data: any) {
     this.firestore.collection('/books').doc(this.bookService.curBookId).collection('actors').doc(actorId).update(data);
   }

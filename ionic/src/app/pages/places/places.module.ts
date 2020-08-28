@@ -1,4 +1,4 @@
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { ModalModule } from './../../components/modals/modal.module';
 import { ComponentModule } from 'src/app/components/component.module';
 import { NgModule } from '@angular/core';
@@ -10,6 +10,8 @@ import { IonicModule } from '@ionic/angular';
 import { PlacesPageRoutingModule } from './places-routing.module';
 
 import { PlacesPage } from './places.page';
+import { EntityModalComponent } from 'src/app/components/modals/entity-modal/entity-modal.component';
+import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 
 @NgModule({
   imports: [
@@ -17,8 +19,10 @@ import { PlacesPage } from './places.page';
     FormsModule,
     IonicModule,
     PlacesPageRoutingModule,
-    ComponentModule
+    ComponentModule,
+    TranslateModule
   ],
-  declarations: [PlacesPage]
+  declarations: [PlacesPage],
+  entryComponents: [EntityModalComponent, UploadComponent]
 })
 export class PlacesPageModule {}

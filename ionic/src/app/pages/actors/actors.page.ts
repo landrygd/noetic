@@ -1,8 +1,8 @@
 import { ModalController } from '@ionic/angular';
-import { ActorProfileComponent } from 'src/app/components/modals/actor-profile/actor-profile.component';
 import { BookService } from 'src/app/services/book.service';
 import { ActorService } from 'src/app/services/book/actor.service';
 import { Component, OnInit } from '@angular/core';
+import { EntityModalComponent } from 'src/app/components/modals/entity-modal/entity-modal.component';
 
 @Component({
   selector: 'app-actors',
@@ -23,8 +23,8 @@ export class ActorsPage implements OnInit {
 
   async viewProfile(actorId: string) {
     const modal = await this.modalController.create({
-    component: ActorProfileComponent,
-    componentProps: { actorId }
+    component: EntityModalComponent,
+    componentProps: { id: actorId, type: 'actor' }
     });
     await modal.present();
   }

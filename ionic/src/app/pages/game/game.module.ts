@@ -9,8 +9,8 @@ import { GamePageRoutingModule } from './game-routing.module';
 import { GamePage } from './game.page';
 import { ComponentModule } from 'src/app/components/component.module';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
-import { ActorProfileComponent } from 'src/app/components/modals/actor-profile/actor-profile.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { EntityModalComponent } from 'src/app/components/modals/entity-modal/entity-modal.component';
 
 @NgModule({
   imports: [
@@ -24,7 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
   declarations: [GamePage],
   entryComponents: [
     UploadComponent,
-    ActorProfileComponent
+    EntityModalComponent
   ]
 })
 export class GamePageModule {}

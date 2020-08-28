@@ -25,6 +25,12 @@
     "actors": "Acteurs",
     "places": "Lieux"
 	},
+	"ACTORS": {
+		"addActor": "Ajouter un acteur"
+	},
+	"PLACES": {
+		"addPlace": "Ajouter un lieu"
+	},
 	"TUTO": [
     "Bienvenue sur l'éditeur de scénario, appuyez sur \"OK\" pour continuer ce tutoriel ou \"Passer\" pour le passer",
     "Vous pouvez entrer du texte dans la bar de tchat en bas de l'écran",
@@ -83,8 +89,11 @@
     "test": "Tester"
 	},
 	"COMMON": {
-    "name": "Nom",
-    "id": "Identifiant",
+		"warningDelete": "Etes vous sûr de vouloir supprimer cet objet?",
+		"name": "Nom",
+		"desc": "Description",
+		"id": "Identifiant",
+		"role": "Rôle identifiant",
     "auto": "Auto",
 		"comingSoon": "Bientôt disponible",
 		"accept": "Accepter",
@@ -114,7 +123,9 @@
 		"use": "Utiliser",
 		"warning": "Attention",
     "yes": "Oui",
-    "leave": "Quitter"
+		"leave": "Quitter",
+		"nodesc": "Pas de description",
+		"update": "Modifier"
 	},
 	"COVER": {
 		"addTag": "Ajouter un tag",
@@ -142,7 +153,8 @@
 		"title40CarMax": "Le titre doit faire moins 40 caractères",
 		"unratedComment": "Veuillez noter avant d'envoyer votre avis",
     "noSpace": "Veuillez enlever les espaces",
-    "fieldMissing": "Champ manquant"
+		"fieldMissing": "Champ manquant",
+		"idIncorrect": "L'identifiant ne doit contenir que des chiffres, des lettres et les carractères - et _"
   },
 	"GAME": {
 		"answer": "Choisir une réponse",
@@ -193,7 +205,10 @@
     "NEW-ENTITY": {
       "enterName": "Entrez un nom",
       "id": "Identifiant"
-    },
+		},
+		"ENTITY": {
+			"addItem": "Ajouter un objet"
+		},
 		"ACTOR": {
 			"changeColor": "Changer de couleur",
 			"warningDesc": "En supprimant cet acteur, vous supprimez également tout ses messages."
@@ -328,6 +343,13 @@
 			"resetPasswordLink": "Un lien de réinitialisation de votre mot de passe vient d'être envoyé dans votre adresse mail:"
 		},
 		"BOOK": {
+			"header": {
+				"places": "Créer un nouveau lieu",
+				"actors": "Créer un nouvel acteur",
+				"types": "Créer un nouveau type",
+				"chats": "Créer un nouveau tchat",
+				"items": "Créer un nouvel objet"
+			},
 			"addChat": "Ajouter un tchat",
 			"authorAlreadyError": "Vous êtes déjà auteur de ce livre",
 			"authorMaxError": "Il ne peut pas y avoir plus de 10 auteurs par livre",

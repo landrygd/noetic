@@ -11,9 +11,9 @@ import { UserChipComponent } from './user-chip/user-chip.component';
 import { PipesModule } from '../pipes/pipes.module';
 import { UserAvatarComponent } from './user-avatar/user-avatar.component';
 import { BookChipComponent } from './book-chip/book-chip.component';
-import { ActorProfileComponent } from './modals/actor-profile/actor-profile.component';
 import { TutoPopoverComponent } from './tuto-popover/tuto-popover.component';
 import { LogEditComponent } from './log-edit/log-edit.component';
+import { EntityModalComponent } from './modals/entity-modal/entity-modal.component';
 
 @NgModule({
   declarations: [
@@ -23,9 +23,9 @@ import { LogEditComponent } from './log-edit/log-edit.component';
     UserChipComponent,
     UserAvatarComponent,
     BookChipComponent,
-    ActorProfileComponent,
     TutoPopoverComponent,
-    LogEditComponent
+    LogEditComponent,
+    EntityModalComponent
   ],
   imports: [
     CommonModule,
@@ -42,9 +42,9 @@ import { LogEditComponent } from './log-edit/log-edit.component';
     UserChipComponent,
     UserAvatarComponent,
     BookChipComponent,
-    ActorProfileComponent,
     TutoPopoverComponent,
-    LogEditComponent
+    LogEditComponent,
+    EntityModalComponent
   ]
 })
 
