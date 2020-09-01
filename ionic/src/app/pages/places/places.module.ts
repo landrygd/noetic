@@ -12,6 +12,7 @@ import { PlacesPageRoutingModule } from './places-routing.module';
 import { PlacesPage } from './places.page';
 import { EntityModalComponent } from 'src/app/components/modals/entity-modal/entity-modal.component';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
+import { IdFinderComponent } from 'src/app/components/modals/id-finder/id-finder.component';
 
 @NgModule({
   imports: [
@@ -23,6 +24,6 @@ import { UploadComponent } from 'src/app/components/modals/upload/upload.compone
     TranslateModule
   ],
   declarations: [PlacesPage],
-  entryComponents: [EntityModalComponent, UploadComponent]
+  entryComponents: [EntityModalComponent, UploadComponent, IdFinderComponent]
 })
 export class PlacesPageModule {}

@@ -11,6 +11,7 @@ import { ActorsPage } from './actors.page';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { EntityModalComponent } from 'src/app/components/modals/entity-modal/entity-modal.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { IdFinderComponent } from 'src/app/components/modals/id-finder/id-finder.component';
 
 @NgModule({
   imports: [
@@ -22,6 +23,6 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule
   ],
   declarations: [ActorsPage],
-  entryComponents: [EntityModalComponent, UploadComponent]
+  entryComponents: [EntityModalComponent, UploadComponent, IdFinderComponent]
 })
 export class ActorsPageModule {}

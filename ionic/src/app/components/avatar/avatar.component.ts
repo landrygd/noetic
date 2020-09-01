@@ -15,7 +15,7 @@ export class AvatarComponent implements OnInit {
   @Input() id: string;
   @Input() enabled = false;
   @Input() height = 40;
-  @Input() type = 'actor';
+  @Input() collection = 'actors';
 
   actor: string;
 
@@ -40,7 +40,7 @@ export class AvatarComponent implements OnInit {
     if (this.enabled) {
       const modal = await this.modalController.create({
       component: EntityModalComponent,
-      componentProps: { id, type: this.type }
+      componentProps: { id, collection: this.collection }
       });
       await modal.present();
     }

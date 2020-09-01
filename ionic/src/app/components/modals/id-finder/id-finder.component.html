@@ -1,0 +1,13 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-searchbar placeholder="Chercher" inputmode="text" type="text" (ionCancel)="dismiss()" (ionChange)="onSearchChange($event.target.value)" [debounce]="250" showCancelButton="always"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let result of results" button details (click)="dismiss({id: result.id})">
+      <ion-icon slot="start" [name]="collection | collectionToIcon"></ion-icon>
+      <ion-label>{{result.name}}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

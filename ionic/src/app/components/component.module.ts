@@ -14,6 +14,7 @@ import { BookChipComponent } from './book-chip/book-chip.component';
 import { TutoPopoverComponent } from './tuto-popover/tuto-popover.component';
 import { LogEditComponent } from './log-edit/log-edit.component';
 import { EntityModalComponent } from './modals/entity-modal/entity-modal.component';
+import { IdFinderComponent } from './modals/id-finder/id-finder.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { EntityModalComponent } from './modals/entity-modal/entity-modal.compone
     BookChipComponent,
     TutoPopoverComponent,
     LogEditComponent,
-    EntityModalComponent
+    EntityModalComponent,
+    IdFinderComponent
   ],
   imports: [
     CommonModule,
@@ -44,7 +46,8 @@ import { EntityModalComponent } from './modals/entity-modal/entity-modal.compone
     BookChipComponent,
     TutoPopoverComponent,
     LogEditComponent,
-    EntityModalComponent
+    EntityModalComponent,
+    IdFinderComponent
   ]
 })
 

@@ -46,7 +46,7 @@ export class VariablesPipe implements PipeTransform {
     return  + text;
   }
   toChip(text: string, icon: string) {
-    return '<ion-chip><ion-icon name="' + icon + '"></ion-icon><ion-label>' + text + '</ion-label></ion-chip>';
+    return '<ion-chip><ion-label>' + text + '</ion-label></ion-chip>';
   }
   toVariable(text: string) {
     const variable = text.replace('$', '').replace('_', ' ');

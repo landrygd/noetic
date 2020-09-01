@@ -264,6 +264,28 @@
       }
     ]
   },
+  "mode": {
+    "icon": "repeat",
+    "name": "mode",
+    "cat": "control",
+    "args": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ]
+  },
+  "place": {
+    "icon": "location",
+    "name": "place",
+    "cat": "control",
+    "args": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ]
+  },
   "question": {
     "icon": "chatbubble",
     "name": "question",

@@ -49,13 +49,13 @@ export class BookService implements OnDestroy {
   bookActorSub: Subscription;
   bookPlaceSub: Subscription;
   bookItemSub: Subscription;
-  bookTypeSub: Subscription;
+  bookRoleSub: Subscription;
 
   chats: any[] = [];
   actors: any[] = [];
   places: any[] = [];
   items: any[] = [];
-  types: any[] = [];
+  roles: any[] = [];
 
   BOOK: any;
   COMMON: any;
@@ -206,6 +206,29 @@ export class BookService implements OnDestroy {
     } else {
       this.popupService.alert(this.BOOK.newChatError);
     }
+  }
+
+  getEntitiesCollection(collection) {
+    const res = {};
+    for (const id of Object.keys(this.entities)) {
+      const entity = this.entities[id];
+      if (entity.collection === collection) {
+        console.log('MATCH');
+        res[id] = entity;
+      }
+    }
+    return res;
+  }
+
+  objectToList(object, exclude: string[] = []) {
+    const res = [];
+    Object.keys(object).forEach((item) => {
+      if (!exclude.includes(item)) {
+        res.push(object[item]);
+      }
+    });
+    console.log({object, exclude});
+    return res;
   }
 
   async getChatsSize() {
@@ -452,13 +475,24 @@ export class BookService implements OnDestroy {
     let bookActorPromise: Promise<any>;
     let bookPlacePromise: Promise<any>;
     let bookItemPromise: Promise<any>;
-    let bookTypePromise: Promise<any>;
+    let bookRolePromise: Promise<any>;
     if (!cover) {
-      bookChatPromise = new Promise(res => {
+      bookChatPromise = new Promise(resolve => {
         this.bookChatSub = this.firestore.collection('books').doc(curBookId).collection('chats').valueChanges().subscribe((value) => {
           this.chats = value;
-          console.log(value);
-          res();
+          // Remove all places
+          const res = {};
+          Object.values(this.entities).forEach((entity: any) => {
+            if (entity.collection !== 'chats') {
+              res[entity.id] = entity;
+            }
+          });
+          this.entities = res;
+          value.forEach(entity => {
+            entity.collection = 'chats';
+            this.entities[entity.id] = entity;
+          });
+          resolve();
         });
       });
       bookActorPromise = new Promise(resolve => {
@@ -472,62 +506,75 @@ export class BookService implements OnDestroy {
           // Remove all actors
           const res = {};
           Object.values(this.entities).forEach((entity: any) => {
-            if (entity.type !== 'actor') {
+            if (entity.collection !== 'actors') {
               res[entity.id] = entity;
             }
           });
           this.entities = res;
           value.forEach(entity => {
-            entity.type = 'actor';
+            entity.collection = 'actors';
             this.entities[entity.id] = entity;
           });
           resolve();
         });
       });
       bookPlacePromise = new Promise(resolve => {
-        this.bookActorSub = this.firestore.collection('books').doc(curBookId)
+        this.bookPlaceSub = this.firestore.collection('books').doc(curBookId)
                                           .collection('places').valueChanges().subscribe((value: any) => {
           this.places = value;
           console.log(value);
           // Remove all places
           const res = {};
           Object.values(this.entities).forEach((entity: any) => {
-            if (entity.type !== 'place') {
+            if (entity.collection !== 'places') {
               res[entity.id] = entity;
             }
           });
           this.entities = res;
           value.forEach(entity => {
-            entity.type = 'place';
+            entity.collection = 'places';
             this.entities[entity.id] = entity;
           });
           resolve();
         });
       });
       bookItemPromise = new Promise(resolve => {
-        this.bookActorSub = this.firestore.collection('books').doc(curBookId).collection('items').valueChanges().subscribe((value: any) => {
+        this.bookItemSub = this.firestore.collection('books').doc(curBookId).collection('items').valueChanges().subscribe((value: any) => {
           this.items = value;
           console.log(value);
           // Remove all items
           const res = {};
           Object.values(this.entities).forEach((entity: any) => {
-            if (entity.type !== 'item') {
+            if (entity.collection !== 'items') {
               res[entity.id] = entity;
             }
           });
           this.entities = res;
           // Replace all items
           value.forEach(entity => {
-            entity.type = 'item';
+            entity.collection = 'items';
             this.entities[entity.id] = entity;
           });
           resolve();
         });
       });
-      bookTypePromise = new Promise(resolve => {
-        this.bookActorSub = this.firestore.collection('books').doc(curBookId).collection('types').valueChanges().subscribe((value) => {
-          this.types = value;
+      bookRolePromise = new Promise(resolve => {
+        this.bookRoleSub = this.firestore.collection('books').doc(curBookId).collection('roles').valueChanges().subscribe((value) => {
+          this.roles = value;
           console.log(value);
+          // Remove all items
+          const res = {};
+          Object.values(this.entities).forEach((entity: any) => {
+            if (entity.collection !== 'roles') {
+              res[entity.id] = entity;
+            }
+          });
+          this.entities = res;
+          // Replace all items
+          value.forEach(entity => {
+            entity.collection = 'roles';
+            this.entities[entity.id] = entity;
+          });
           resolve();
         });
       });
@@ -539,7 +586,7 @@ export class BookService implements OnDestroy {
           await bookActorPromise;
           await bookPlacePromise;
           await bookItemPromise;
-          await bookTypePromise;
+          await bookRolePromise;
         }
         res();
       }).catch(err => reject(err));
@@ -553,7 +600,7 @@ export class BookService implements OnDestroy {
       this.bookActorSub.unsubscribe();
       this.bookPlaceSub.unsubscribe();
       this.bookItemSub.unsubscribe();
-      this.bookTypeSub.unsubscribe();
+      this.bookRoleSub.unsubscribe();
     }
   }
 
@@ -621,6 +668,8 @@ export class BookService implements OnDestroy {
     await this.popupService.loading();
     this.debug = debug;
     this.curChatId = chatId;
+    console.log(chatId);
+    console.log(this.curChatId);
     this.firestore.collection('books').doc(id).update({
       views: this.book.views + 1,
     });
@@ -643,7 +692,7 @@ export class BookService implements OnDestroy {
     this.userService.share(this.BOOK.shareMsg, this.BOOK.shareSubject, bookUrl);
   }
 
-  newEntity(collection: string, extraData = {}, id = ''): Promise<any> {
+  newEntity(collection: string, extraData = {}, id = '', target = '', targetCollection = ''): Promise<any> {
     return new Promise(async (res, rej) => {
       const alert = await this.alertController.create({
         header: this.BOOK.header[collection],
@@ -661,26 +710,49 @@ export class BookService implements OnDestroy {
             cssClass: 'secondary'
           }, {
             text: this.COMMON.confirm,
-            handler: (data: {id: string, name: string, color: string, roles: string[], variables: any[], actions: []}) => {
+            handler: (data: {id: string, places: [], name: string, key: string,
+              color: string, roles: string[], variables: {}, actions: {}}) => {
               if (data.name) {
                 data.id = id;
-                data.color = 'medium';
-                if (id === '') {
-                  data.id = this.firestore.createId();
-                }
-                if (collection === 'roles') {
-                  data.variables = [];
-                  data.actions = [];
-                } else {
-                  const role = data.name.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                const role = data.name.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
                   .replace(/[^\w\s]/gi, '').replace(/\s/g, '-');
+                data.color = 'medium';
+                if (collection === 'roles') {
+                  data.variables = {};
+                  data.actions = {};
+                  data.id = role;
+                  data.roles = [];
+                  const roles: string[] = this.entities[target].roles;
+                  if (!roles.includes(role)) {
+                    roles.push(role);
+                    this.firestore.collection('/books').doc(this.curBookId).collection(targetCollection).doc(target).update({roles});
+                    if (!this.entities[data.id]) {
+                      this.firestore.collection('/books').doc(this.curBookId).collection('roles').doc(data.id).set({
+                        id: data.id,
+                        name: data.id,
+                        color: 'medium',
+                        variables: {},
+                        actions: {}
+                      });
+                    }
+                  }
+                } else {
+                  if (id === '') {
+                    data.id = this.firestore.createId();
+                  }
+                  if (collection === 'places') {
+                    data.places = [];
+                  }
                   data.roles = [role];
-                  this.firestore.collection('/books').doc(this.curBookId).collection('roles').doc(data.id).set({
-                    id: this.firestore.createId(),
+                  data.key = role;
+                  data.variables = {};
+                  this.firestore.collection('/books').doc(this.curBookId).collection('roles').doc(role).set({
+                    id: role,
                     name: role,
+                    target: data.id,
                     color: 'medium',
-                    variables: [],
-                    actions: []
+                    variables: {},
+                    actions: {}
                   });
                 }
                 Object.keys(extraData)
@@ -696,6 +768,26 @@ export class BookService implements OnDestroy {
         ]
       });
       await alert.present();
+    });
+  }
+
+  removeRole(roleId): Promise<any> {
+    return new Promise(async (resolve) => {
+      for (const entityId of Object.keys(this.entities)) {
+        const entity: {roles: string[], collection: string} = this.entities[entityId];
+        if (entity.roles) {
+          for (let i = 0; i < entity.roles.length; i++) {
+            if (roleId === entity.roles[i]) {
+              entity.roles.splice(i, 1);
+              await this.firestore.collection('/books').doc(this.curBookId).collection(entity.collection)
+                                                       .doc(entityId).update({roles: entity.roles});
+              break;
+            }
+          }
+        }
+      }
+      await this.firestore.collection('/books').doc(this.curBookId).collection('roles').doc(roleId).delete();
+      resolve();
     });
   }
 
@@ -765,9 +857,22 @@ export class BookService implements OnDestroy {
     return res;
   }
 
+  getRoles(roleList: string[]) {
+    console.log(roleList);
+    const res = [];
+    Object.values(this.entities).forEach((entity: any) => {
+      if (entity.collection === 'roles' && roleList.includes(entity.name)) {
+        res.push(entity);
+      }
+    });
+    return res;
+  }
+
   async deleteEntity(id: string, collection: string) {
     const entity = this.entities[id];
     if (entity) {
+      console.log(entity);
+      console.log(entity.key !== undefined);
       console.log(entity);
       if (entity.avatar) {
         this.deleteMedia(entity.avatar);
@@ -779,18 +884,61 @@ export class BookService implements OnDestroy {
               this.deleteEntity(idItem, 'items');
             }
           }
+          if (entity.places) {
+            for (const idPlace of entity.places) {
+              const places: string[] = this.entities[idPlace].places;
+              for (let i = 0; i < places.length; i++) {
+                const p = places[i];
+                if (p === id) {
+                  places.splice(i, 1);
+                  break;
+                }
+              }
+              this.updateEntity(idPlace, 'places', {places});
+            }
+          }
           break;
-        case 'item':
+        case 'items':
           const place = this.entities[entity.pos];
           const items: string[] = place.items;
           while (items.indexOf(place) !== -1) {
             const itemIndex = items.indexOf(place);
             items.splice(itemIndex, 1);
           }
-          this.updateEntity(place.id, 'place', {items});
+          this.updateEntity(place.id, 'places', {items});
           break;
+        case 'actor':
+          this.eraseActorMessages(id);
+      }
+      if (entity.key) {
+        this.firestore.collection('/books').doc(this.curBookId).collection('roles').doc(entity.key).delete();
       }
       this.firestore.collection('/books').doc(this.curBookId).collection(collection).doc(id).delete();
     }
+  }
+
+  async eraseActorMessages(actorId: string) {
+    await this.popupService.loading();
+    const actor = this.entities[actorId];
+    const avatar = actor.avatar;
+    if (avatar) {
+      this.deleteMedia(avatar);
+    }
+    // On supprime tout ses messages
+    const chatSub = this.firestore.collection('/books').doc(this.curBookId).collection('chats').get().subscribe((val) => {
+      val.forEach(chat => {
+        const logs = [];
+        chat.data().logs.forEach(log => {
+          if (log.actor !== actorId) {
+            logs.push(log);
+          }
+        });
+        if (logs !== chat.data().logs) {
+          this.firestore.collection('/books').doc(this.curBookId).collection('chats').doc(chat.id).update({logs});
+        }
+      });
+      this.popupService.loadingDismiss();
+      chatSub.unsubscribe();
+    });
   }
 }

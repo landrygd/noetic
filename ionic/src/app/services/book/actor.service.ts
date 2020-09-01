@@ -56,37 +56,13 @@ export class ActorService implements OnDestroy {
   }
 
   addActor(actorName) {
-    const id = this.firestore.createId();
-    const actor = {
-      id,
-      name: actorName
-    };
-    this.firestore.collection('/books').doc(this.bookService.curBookId).collection('actors').doc(actor.id).set(actor);
-  }
-
-  async deleteActor(actorId: string) {
-    await this.popupService.loading();
-    if (this.getAvatarurl(actorId)) {
-      this.bookService.deleteMedia(this.getAvatarurl(actorId));
-    }
-    // On supprime l'acteur
-    this.firestore.collection('/books').doc(this.bookService.curBookId).collection('actors').doc(actorId).delete();
-    // On supprime tout ses messages
-    const chatSub = this.firestore.collection('/books').doc(this.bookService.curBookId).collection('chats').get().subscribe((val) => {
-      val.forEach(chat => {
-        const logs = [];
-        chat.data().logs.forEach(log => {
-          if (log.actor !== actorId) {
-            logs.push(log);
-          }
-        });
-        if (logs !== chat.data().logs) {
-          this.firestore.collection('/books').doc(this.bookService.curBookId).collection('chats').doc(chat.id).update({logs});
-        }
-      });
-      this.popupService.loadingDismiss();
-      chatSub.unsubscribe();
-    });
+    this.bookService.newEntity('actors');
+    // const id = this.firestore.createId();
+    // const actor = {
+    //   id,
+    //   name: actorName
+    // };
+    // this.firestore.collection('/books').doc(this.bookService.curBookId).collection('actors').doc(actor.id).set(actor);
   }
 
   getAvatarurl(actorId: string) {

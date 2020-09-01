@@ -5,7 +5,7 @@
         <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-buttons slot="end" *ngIf="entity">
+    <ion-buttons slot="end" *ngIf="bookService.entities[entity.id] as syncEntity">
       <ion-button (click)="changeColor()" expand="block" fill="clear" shape="round" *ngIf="isAuthor" [color]="color">
         <ion-icon slot="icon-only" name="color-palette"></ion-icon>
       </ion-button>
@@ -16,10 +16,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="entity">
+<ion-content *ngIf="bookService.entities[entity.id] as syncEntity">
   <div class="header"></div>
   <div class="flex">
-    <app-avatar [height]="150" [id]="entity.id" [type]="type" (click)="changeAvatar()"></app-avatar>
+    <app-avatar [height]="150" [id]="syncEntity.id" [collection]="collection" (click)="changeAvatar()"></app-avatar>
   </div>
   <ion-grid fixed class="ion-text-center">
     <ion-row>
@@ -27,13 +27,13 @@
         <ion-button (click)="changeName()" expand="block" fill="clear" shape="round" [color]="color" *ngIf="isAuthor">
           <ion-icon [name]="icon"></ion-icon>
           <ion-label>
-            <h1>{{entity.name}}</h1>
+            <h1>{{syncEntity.name}}</h1>
           </ion-label>
           <ion-icon name="pencil" slot="end"></ion-icon>
         </ion-button>
         <ion-text [color]="color" *ngIf="!isAuthor">
           <ion-icon [name]="icon"></ion-icon>
-          <h1>{{entity.name}}</h1>
+          <h1>{{syncEntity.name}}</h1>
         </ion-text>
       </ion-col>
     </ion-row>
@@ -41,35 +41,115 @@
       <ion-col>
         <ion-button (click)="changeDesc()" expand="block" color="medium" fill="clear" shape="round" *ngIf="isAuthor">
           <ion-label>
-            <p *ngIf="entity.desc">{{entity.desc}}</p>
-            <p *ngIf="!entity.desc">{{COMMON.nodesc | translate}}</p>
+            <p *ngIf="syncEntity.desc">{{syncEntity.desc}}</p>
+            <p *ngIf="!syncEntity.desc">{{'COMMON.nodesc' | translate}}</p>
           </ion-label>
           <ion-icon name="pencil" slot="end"></ion-icon>
         </ion-button>
         <ion-text color="medium" *ngIf="!isAuthor">
-          <p *ngIf="entity.desc">{{entity.desc}}</p>
-          <p *ngIf="!entity.desc">{{COMMON.nodesc | translate}}</p>
+          <p *ngIf="syncEntity.desc">{{syncEntity.desc}}</p>
+          <p *ngIf="!syncEntity.desc">{{'COMMON.nodesc' | translate}}</p>
         </ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="collection === 'places'">
+      <ion-col size="12">
+        <ion-card>
+          <ion-list>
+            <ion-item-divider>
+              <ion-icon slot="start" name="cube"></ion-icon>
+              <ion-label slot="start">{{'MODALS.ENTITY.items' | translate}}</ion-label>
+            </ion-item-divider>
+            <ion-item *ngFor="let item of bookService.entities | idToObjects: syncEntity.items" button (click)="showEntity(item.id, 'items')">
+              <app-avatar [id]="item.id" collection="items"></app-avatar>
+              <ion-label class="ion-margin-start" [color]="item.color">{{ item.name }}</ion-label>
+            </ion-item>
+            <ion-button (click)="addItem()" expand="full" fill="clear" shape="round">
+              <ion-icon name="add" slot="start"></ion-icon>
+              {{'MODALS.ENTITY.addItem' | translate}}
+            </ion-button>
+            <ion-item-divider>
+              <ion-icon slot="start" name="link"></ion-icon>
+              <ion-label slot="start">{{'MODALS.ENTITY.linkedPlaces' | translate}}</ion-label>
+            </ion-item-divider>
+            <ion-item *ngFor="let place of bookService.entities | idToObjects: syncEntity.places">
+              <app-avatar [id]="place.id" collection="places"></app-avatar>
+              <ion-label class="ion-margin-start" [color]="place.color">{{ place.name }}</ion-label>
+              <ion-button slot="end" (click)="deletePlace(place.id)" shape="round" fill="clear">
+                <ion-icon slot="icon-only" name="close"></ion-icon>
+              </ion-button>
+            </ion-item>
+            <ion-button (click)="addPlace()" expand="full" fill="clear" shape="round">
+              <ion-icon name="add" slot="start"></ion-icon>
+              {{'MODALS.ENTITY.addPlace' | translate}}
+            </ion-button>
+          </ion-list>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let role of bookService.entities | getRoles : entity.roles">
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header>
+            <ion-chip [color]="role.color" mode="ios" (click)="editRole(role.id)">
+              <ion-label>@{{role.name}}</ion-label>
+              <ion-icon *ngIf="syncEntity.key === role.id" name="key"></ion-icon>
+              <ion-icon *ngIf="syncEntity.key !== role.id" name="create"></ion-icon>
+            </ion-chip>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-item-divider>
+                <ion-icon slot="start"name="pricetag"></ion-icon>
+                <ion-label slot="start">{{'MODALS.ENTITY.variables' | translate}}</ion-label>
+              </ion-item-divider>
+              <ion-item *ngFor="let variable of role.variables | objectValues" lines="none">
+                <ion-label position="floating" [color]="role.color">{{variable.name}}</ion-label>
+                <ion-input type="text" [placeholder]="variable.default" [value]="entity.variables[variable.name]" [color]="role.color" (ionChange)="changeVariable(variable.name, $event.target.value)"></ion-input>
+                <ion-buttons slot="end">
+                  <ion-button slot="end" (click)="editVariable(role, variable)" expand="block" fill="clear" shape="round" color="medium">
+                    <ion-icon slot="icon-only" name="create"></ion-icon>
+                  </ion-button>
+                  <ion-button slot="end" (click)="deleteVariable(role, variable)" expand="block" fill="clear" shape="round" color="danger">
+                    <ion-icon slot="icon-only" name="trash"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+              </ion-item>
+              <ion-button (click)="addVariable(role)" expand="block" fill="clear" shape="round">
+                <ion-icon name="add" slot="start"></ion-icon>
+                {{'MODALS.ENTITY.addVariable' | translate}}
+              </ion-button>
+              <ion-item-divider>
+                <ion-icon slot="start" name="flash"></ion-icon>
+                <ion-label slot="start">{{'MODALS.ENTITY.actions' | translate}}</ion-label>
+              </ion-item-divider>
+              <ion-item *ngFor="let action of role.actions | objectValues" lines="none">
+                <ion-label position="floating" [color]="role.color">{{action.name}}</ion-label>
+                <ion-input *ngIf="bookService.entities[action.chat]" (click)="changeChat(role.id, action.name)" [disabled]="true" type="text" [value]="bookService.entities[action.chat].name"></ion-input>
+                <ion-input *ngIf="!bookService.entities[action.chat]" (click)="changeChat(role.id, action.name)" [disabled]="true" type="text" placeholder="Ajouter un tchat"></ion-input>
+                <ion-buttons slot="end">
+                  <ion-button (click)="editAction(role, action)" expand="block" fill="clear" shape="round" color="medium">
+                    <ion-icon slot="icon-only" name="create"></ion-icon>
+                  </ion-button>
+                  <ion-button (click)="deleteAction(role, action)" expand="block" fill="clear" shape="round" color="danger">
+                    <ion-icon slot="icon-only" name="trash"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
+              </ion-item>
+              <ion-button (click)="addAction(role)" expand="block" fill="clear" shape="round">
+                <ion-icon name="add" slot="start"></ion-icon>
+                {{'MODALS.ENTITY.addAction' | translate}}
+              </ion-button>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size="12">
-        <ion-chip color="primary" mode="ios" outline="true" *ngFor="let role of entity.roles">
-          <ion-label>@{{role}}</ion-label>
-        </ion-chip>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="type === 'place'">
-      <ion-col size="12">
-        <ion-list>
-          <ion-item *ngFor="let item of items" button (click)="showItem(item.id)">
-            <app-avatar [id]="item.id"></app-avatar>
-            <ion-label class="ion-margin-start" [color]="item.color">{{ item.name }}</ion-label>
-          </ion-item>
-          <ion-button (click)="addItem()" expand="full" fill="clear" shape="round">
-            {{'MODALS.ENTITY.addItem' | translate}}
-          </ion-button>
-        </ion-list>
+        <ion-button (click)="addRole()" expand="block" fill="clear" shape="round">
+          {{'MODALS.ENTITY.addRole' | translate}}
+        </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

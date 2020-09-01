@@ -27,7 +27,7 @@ export class PlacesPage implements OnInit {
   async showPlace(id: string) {
     const modal = await this.modalController.create({
     component: EntityModalComponent,
-    componentProps: {type: 'place', id}
+    componentProps: {collection: 'places', id}
     });
     await modal.present();
   }

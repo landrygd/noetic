@@ -2,3 +2,8 @@
   backdrop-filter: blur(5px) brightness(75%);
   min-height: 100%;
 }
+
+.actions {
+  max-height: 200px;
+  overflow-y: scroll;
+}

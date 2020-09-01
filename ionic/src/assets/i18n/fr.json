@@ -90,6 +90,7 @@
 	},
 	"COMMON": {
 		"warningDelete": "Etes vous sûr de vouloir supprimer cet objet?",
+		"edit": "Editer",
 		"name": "Nom",
 		"desc": "Description",
 		"id": "Identifiant",
@@ -125,7 +126,9 @@
     "yes": "Oui",
 		"leave": "Quitter",
 		"nodesc": "Pas de description",
-		"update": "Modifier"
+		"update": "Modifier",
+		"defaultValue": "Valeur par défaut",
+		"chatName": "Nom du tchat"
 	},
 	"COVER": {
 		"addTag": "Ajouter un tag",
@@ -154,7 +157,8 @@
 		"unratedComment": "Veuillez noter avant d'envoyer votre avis",
     "noSpace": "Veuillez enlever les espaces",
 		"fieldMissing": "Champ manquant",
-		"idIncorrect": "L'identifiant ne doit contenir que des chiffres, des lettres et les carractères - et _"
+		"idIncorrect": "L'identifiant ne doit contenir que des chiffres, des lettres et les carractères - et _",
+		"keyUneditable": "Impossible d'éditer un rôle clé"
   },
 	"GAME": {
 		"answer": "Choisir une réponse",
@@ -162,7 +166,8 @@
 		"maxChatError": "Un tchat ne peut être utilisé que 10 fois par minute maximum! Il sera ignoré pendant la lecture ce quotas dépassé.",
 		"maxLabelError": "Un label ne peut être utilisé que 10 fois par minute maximum! Il sera ignoré pendant la lecture ce quotas dépassé.",
 		"restartBook": "Recommencer le livre",
-		"restartBookWarning": "En recommençant ce livre, toutes vos sauvegardes seront perdues définitivement!"
+		"restartBookWarning": "En recommençant ce livre, toutes vos sauvegardes seront perdues définitivement!",
+		"go": "Aller"
 	},
 	"HOME": {
 		"about": "A propos",
@@ -207,7 +212,15 @@
       "id": "Identifiant"
 		},
 		"ENTITY": {
-			"addItem": "Ajouter un objet"
+			"addItem": "Ajouter un objet",
+			"addVariable": "Ajouter une variable",
+			"addAction": "Ajouter une action",
+			"addRole": "Ajouter un rôle",
+			"addPlace": "Ajouter un lieu",
+			"variables": "Variables",
+			"actions": "Actions",
+			"items": "Objets",
+			"linkedPlaces": "Lieux reliés"
 		},
 		"ACTOR": {
 			"changeColor": "Changer de couleur",
@@ -509,6 +522,14 @@
     "stopmusic": {
       "show": "Arrêter de jouer la musique §1",
       "desc": "Arrêter de jouer une musique"
+		},
+		"mode": {
+      "show": "Passer en mode §1",
+      "desc": "Changer de mode de jeu"
+		},
+		"place": {
+      "show": "Aller au lieu §1",
+      "desc": "Changer de lieu"
     },
     "unknowed": {
       "show": "Commande inconnue",

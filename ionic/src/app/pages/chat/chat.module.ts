@@ -14,6 +14,7 @@ import { LogEditComponent } from 'src/app/components/log-edit/log-edit.component
 import { CommandEntriesComponent } from 'src/app/components/modals/command-entries/command-entries.component';
 import { AudioListComponent } from 'src/app/components/modals/audio-list/audio-list.component';
 import { EntityModalComponent } from 'src/app/components/modals/entity-modal/entity-modal.component';
+import { IdFinderComponent } from 'src/app/components/modals/id-finder/id-finder.component';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import { EntityModalComponent } from 'src/app/components/modals/entity-modal/ent
     TutoPopoverComponent,
     LogEditComponent,
     CommandEntriesComponent,
-    AudioListComponent
+    AudioListComponent,
+    IdFinderComponent
   ]
 })
 export class ChatPageModule {}

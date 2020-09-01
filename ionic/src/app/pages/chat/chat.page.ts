@@ -331,7 +331,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   newActor() {
-    this.actorService.newActor();
+    this.bookService.newEntity('actors');
   }
 
   getClassFabActor(actor) {
@@ -351,6 +351,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   debug() {
+    console.log(this.chatService.curChatId);
     this.bookService.play(this.bookService.curBookId, this.chatService.curChatId, true);
   }
 

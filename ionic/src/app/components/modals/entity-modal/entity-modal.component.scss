@@ -10,3 +10,12 @@
   justify-content: center;
   margin-top: -10vh;
 }
+
+ion-row, ion-col, ion-button, ion-card-header {
+  margin: 0;
+  padding: 0
+}
+
+ion-card {
+  margin: 5px
+}

@@ -68,7 +68,9 @@ export class GamePage implements OnInit, OnDestroy {
 
   cptChatLabel: any = {};
 
-  settings: any = {};
+  settings: {
+    mode: string
+  } = {mode: 'next'};
 
   nomVar: string;
   nomVar1: string;
@@ -91,6 +93,10 @@ export class GamePage implements OnInit, OnDestroy {
   input = '';
 
   time = 0;
+
+  debug: boolean;
+
+  actions: {name: string, key: string, color: string, chat: string, type: string}[];
 
   constructor(
     public bookService: BookService,
@@ -136,10 +142,15 @@ export class GamePage implements OnInit, OnDestroy {
     this.question = false;
     this.paused = false;
     this.exited = false;
+    this.settings.mode = 'next';
     this.logs = [];
-    this.chatId = this.bookService.curChatId;
     this.bookId = this.bookService.curBookId;
-    this.chatId = this.bookService.book.main;
+    this.debug = this.bookService.debug;
+    if (!this.debug) {
+      this.chatId = this.bookService.book.main;
+    } else {
+      this.chatId = this.bookService.curChatId;
+    }
     if (this.userService.haveSave(this.bookId)) {
       await this.load();
       this.playChat(this.chatId, this.line);
@@ -151,6 +162,8 @@ export class GamePage implements OnInit, OnDestroy {
   }
 
   async playChat(chatId = 'main', line = 0) {
+    this.paused = false;
+    this.settings.mode = 'next';
     this.line = line;
     this.chat = this.chatService.getChat(chatId);
     this.chatLogs = this.chat.logs;
@@ -202,6 +215,14 @@ export class GamePage implements OnInit, OnDestroy {
                     this.gochat = this.arg;
                   }
                 }
+                break;
+              case 'mode':
+                this.settings.mode = this.args[0];
+                this.paused = true;
+                break;
+              case 'place':
+                this.place = this.roleToId(this.args[0]);
+                this.getActions();
                 break;
               case 'sound':
                 if (this.opts.includes('stop')) {
@@ -355,13 +376,33 @@ export class GamePage implements OnInit, OnDestroy {
       } else if (!this.ended) {
         if (this.autoPlay) {
           this.nextTimer = setTimeout(() => {
-            this.end();
+            if (this.bookService.entities[this.place]) {
+              this.settings.mode = 'action';
+              this.paused = true;
+            } else {
+              this.end();
+            }
           }, this.waitTime);
         } else {
-          this.end();
+          if (this.bookService.entities[this.place]) {
+            this.settings.mode = 'action';
+            this.paused = true;
+          } else {
+            this.end();
+          }
         }
       }
     }
+  }
+
+  roleToId(roleName: string) {
+    roleName = roleName.replace('@', '');
+    let res = '';
+    const entity = this.bookService.entities[roleName];
+    if (entity) {
+      res = entity.target;
+    }
+    return res;
   }
 
   toggleAuto() {
@@ -513,6 +554,54 @@ export class GamePage implements OnInit, OnDestroy {
       } else {
         this.autoScroll = true;
       }
+    });
+  }
+
+  getActions() {
+    this.actions = [];
+    let items = [];
+    let places = [];
+    if (this.place) {
+      if (this.bookService.entities[this.place]) {
+        items = this.bookService.entities[this.place].items;
+        places = this.bookService.entities[this.place].places;
+      }
+    }
+    if (items) {
+      for (const itemId of items) {
+        const item = this.bookService.entities[itemId];
+        if (item) {
+          const key = item.key;
+          for (const roleId of item.roles) {
+            const role: {actions: {name: string, chat: string, key: string, color: string, type: string}[]}
+                        = this.bookService.entities[roleId];
+            for (const action of Object.values(role.actions)) {
+              action.key = key;
+              action.color = this.bookService.entities[item.key].color;
+              action.type = 'chat';
+              this.actions.push(action);
+            }
+          }
+        }
+      }
+    }
+    if (places) {
+      for (const placeId of places) {
+        const place = this.bookService.entities[placeId];
+        const action = {
+          name: this.GAME.go,
+          chat: place.id,
+          type: 'go',
+          key: place.key,
+          color: place.color
+        };
+        this.actions.push(action);
+      }
+    }
+    console.log({
+      place: this.place,
+      actions: this.actions,
+      items
     });
   }
 
@@ -924,6 +1013,15 @@ export class GamePage implements OnInit, OnDestroy {
   enter(keyCode) {
     if (keyCode === 13) {
       this.send();
+    }
+  }
+
+  playAction(action) {
+    if (action.type === 'chat') {
+      this.playChat(action.chat);
+    } else if (action.type === 'go') {
+      this.place = action.chat;
+      this.getActions();
     }
   }
 }
