@@ -1,3 +1,4 @@
+import { GameService } from './../../services/game.service';
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { NavController, AlertController, ActionSheetController, IonContent } from '@ionic/angular';
 import { AngularFireDatabase } from '@angular/fire/database';
@@ -64,8 +65,6 @@ export class GamePage implements OnInit, OnDestroy {
 
   answers: string[];
 
-  variables: any = {};
-
   cptChatLabel: any = {};
 
   settings: {
@@ -110,7 +109,8 @@ export class GamePage implements OnInit, OnDestroy {
     private alertController: AlertController,
     private mediaService: MediaService,
     private actorService: ActorService,
-    private translator: TranslateService
+    private translator: TranslateService,
+    private gameService: GameService
     ) {
     }
 
@@ -156,7 +156,7 @@ export class GamePage implements OnInit, OnDestroy {
       this.playChat(this.chatId, this.line);
     } else {
       this.line = 0;
-      this.variables = {};
+      this.gameService.init();
       this.playChat(this.chatId);
     }
   }

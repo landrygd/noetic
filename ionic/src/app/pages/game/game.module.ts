@@ -1,3 +1,4 @@
+import { VariablesViewerComponent } from './../../components/modals/variables-viewer/variables-viewer.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -24,7 +25,8 @@ import { EntityModalComponent } from 'src/app/components/modals/entity-modal/ent
   declarations: [GamePage],
   entryComponents: [
     UploadComponent,
-    EntityModalComponent
+    EntityModalComponent,
+    VariablesViewerComponent
   ]
 })
 export class GamePageModule {}

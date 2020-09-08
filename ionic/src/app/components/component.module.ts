@@ -1,3 +1,4 @@
+import { VariablesViewerComponent } from './modals/variables-viewer/variables-viewer.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -27,7 +28,8 @@ import { IdFinderComponent } from './modals/id-finder/id-finder.component';
     TutoPopoverComponent,
     LogEditComponent,
     EntityModalComponent,
-    IdFinderComponent
+    IdFinderComponent,
+    VariablesViewerComponent
   ],
   imports: [
     CommonModule,
@@ -47,7 +49,8 @@ import { IdFinderComponent } from './modals/id-finder/id-finder.component';
     TutoPopoverComponent,
     LogEditComponent,
     EntityModalComponent,
-    IdFinderComponent
+    IdFinderComponent,
+    VariablesViewerComponent
   ]
 })
 
