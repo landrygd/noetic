@@ -6,6 +6,9 @@
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
+      <ion-button (click)="showVariables()" *ngIf="userService.connected">
+        <ion-icon slot="icon-only" name="bug"></ion-icon>
+      </ion-button>
       <ion-button (click)="save()" *ngIf="userService.connected">
         <ion-icon slot="icon-only" name="save"></ion-icon>
       </ion-button>

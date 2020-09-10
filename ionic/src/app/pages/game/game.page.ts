@@ -1,6 +1,6 @@
-import { GameService } from './../../services/game.service';
+import { VariablesViewerComponent } from './../../components/modals/variables-viewer/variables-viewer.component';
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { NavController, AlertController, ActionSheetController, IonContent } from '@ionic/angular';
+import { NavController, AlertController, ActionSheetController, IonContent, ModalController } from '@ionic/angular';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Subscription } from 'rxjs';
 import { BookService } from 'src/app/services/book.service';
@@ -63,6 +63,8 @@ export class GamePage implements OnInit, OnDestroy {
   places = {};
   place = '';
 
+  variables: any = {};
+
   answers: string[];
 
   cptChatLabel: any = {};
@@ -110,7 +112,7 @@ export class GamePage implements OnInit, OnDestroy {
     private mediaService: MediaService,
     private actorService: ActorService,
     private translator: TranslateService,
-    private gameService: GameService
+    private modalController: ModalController
     ) {
     }
 
@@ -156,7 +158,7 @@ export class GamePage implements OnInit, OnDestroy {
       this.playChat(this.chatId, this.line);
     } else {
       this.line = 0;
-      this.gameService.init();
+      this.variables = {};
       this.playChat(this.chatId);
     }
   }
@@ -415,55 +417,106 @@ export class GamePage implements OnInit, OnDestroy {
     return this.setVariable('get');
   }
 
-  setVariable(operator) {
-    if (this.isActor(this.args[0])) {
-      const value = this.varValue1;
-      const path = this.arg.split('$');
-      const actorId = this.actorService.getActorId(this.toActorName(path[0]));
-      const nomVar = path[1].split(' ')[0];
-      if (!this.actors[actorId]) {
-        this.actors[actorId] = {};
+  // setVariable(operator) {
+  //   if (this.isActor(this.args[0])) {
+  //     const value = this.varValue1;
+  //     const path = this.arg.split('$');
+  //     const actorId = this.actorService.getActorId(this.toActorName(path[0]));
+  //     const nomVar = path[1].split(' ')[0];
+  //     if (!this.actors[actorId]) {
+  //       this.actors[actorId] = {};
+  //     }
+  //     if (operator === 'set') {
+  //       this.actors[actorId][nomVar] = value;
+  //     } else if (operator === 'random') {
+  //       this.actors[actorId][nomVar] = this.getRandom();
+  //     }
+  //     if (!this.actors[actorId][nomVar]) {
+  //       this.actors[actorId][nomVar] = 0;
+  //     }
+  //     if (operator === 'add') {
+  //       this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) + Number(value);
+  //     } else if (operator === 'sub') {
+  //       this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) - Number(value);
+  //     } else if (operator === 'mul') {
+  //       this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) * Number(value);
+  //     } else if (operator === 'div') {
+  //       this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) / Number(value);
+  //     }
+  //     return this.actors[actorId][nomVar];
+  //   } else {
+  //     const value = this.varValue1;
+  //     if (operator === 'set') {
+  //       this.variables[this.nomVar] = value;
+  //     } else if (operator === 'random') {
+  //       this.variables[this.nomVar] = this.getRandom();
+  //     }
+  //     if (!this.haveVariable(this.nomVar)) {
+  //       this.variables[this.nomVar] = 0;
+  //     }
+  //     if (operator === 'add') {
+  //       this.variables[this.nomVar] = Number(this.variables[this.nomVar]) + Number(value);
+  //     } else if (operator === 'sub') {
+  //       this.variables[this.nomVar] = Number(this.variables[this.nomVar]) - Number(value);
+  //     } else if (operator === 'mul') {
+  //       this.variables[this.nomVar] = Number(this.variables[this.nomVar]) * Number(value);
+  //     } else if (operator === 'div') {
+  //       this.variables[this.nomVar] = Number(this.variables[this.nomVar]) / Number(value);
+  //     }
+  //     return this.variables[this.nomVar];
+  //   }
+
+  //   return null;
+  // }
+
+  setVariable(operator: string) {
+    const path = this.args[0];
+    const value = this.args[1];
+    let modif = this.variables;
+    path.split('.').forEach(p => {
+      modif = modif[p];
+    });
+
+    function jesaispas(chemin, newValue) {
+      let cache = g;
+      let result = chemin.split('.');
+      for(var i in result){
+        cache = cache[result[i]] ? cache[result[i]] : cache[result[i]] = {};
+        if(i==result.length) cache[result[i]] = newValue;
       }
-      if (operator === 'set') {
-        this.actors[actorId][nomVar] = value;
-      } else if (operator === 'random') {
-        this.actors[actorId][nomVar] = this.getRandom();
-      }
-      if (!this.actors[actorId][nomVar]) {
-        this.actors[actorId][nomVar] = 0;
-      }
-      if (operator === 'add') {
-        this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) + Number(value);
-      } else if (operator === 'sub') {
-        this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) - Number(value);
-      } else if (operator === 'mul') {
-        this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) * Number(value);
-      } else if (operator === 'div') {
-        this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) / Number(value);
-      }
-      return this.actors[actorId][nomVar];
-    } else {
-      const value = this.varValue1;
-      if (operator === 'set') {
-        this.variables[this.nomVar] = value;
-      } else if (operator === 'random') {
-        this.variables[this.nomVar] = this.getRandom();
-      }
-      if (!this.haveVariable(this.nomVar)) {
-        this.variables[this.nomVar] = 0;
-      }
-      if (operator === 'add') {
-        this.variables[this.nomVar] = Number(this.variables[this.nomVar]) + Number(value);
-      } else if (operator === 'sub') {
-        this.variables[this.nomVar] = Number(this.variables[this.nomVar]) - Number(value);
-      } else if (operator === 'mul') {
-        this.variables[this.nomVar] = Number(this.variables[this.nomVar]) * Number(value);
-      } else if (operator === 'div') {
-        this.variables[this.nomVar] = Number(this.variables[this.nomVar]) / Number(value);
-      }
-      return this.variables[this.nomVar];
+  }
+
+
+
+
+
+
+
+
+    switch (operator) {
+      case 'set':
+        modif = value;
+        break;
+      case 'add':
+        modif += value;
+        break;
+      case 'sub':
+        modif -= value;
+        break;
+      case 'mul':
+        modif *= value;
+        break;
+      case 'div':
+        modif /= value;
+        break;
+      case 'div':
+        modif /= value;
+        break;
+      case 'random':
+        modif = this.getRandom();
+        break;
     }
-    return null;
+    return modif;
   }
 
   toActorName(actorName: string): string {
@@ -1023,5 +1076,15 @@ export class GamePage implements OnInit, OnDestroy {
       this.place = action.chat;
       this.getActions();
     }
+  }
+
+  async showVariables() {
+    const modal = await this.modalController.create({
+    component: VariablesViewerComponent,
+    componentProps: { variables: this.variables }
+    });
+
+    await modal.present();
+
   }
 }
