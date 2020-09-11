@@ -177,7 +177,7 @@ export class GamePage implements OnInit, OnDestroy {
   }
 
   async playLog() {
-    console.log(this.curLog);
+
     if (!this.exited) {
       if (this.line < this.chatLogs.length) {
         this.gochat = '';
@@ -468,55 +468,36 @@ export class GamePage implements OnInit, OnDestroy {
 
   //   return null;
   // }
-
-  setVariable(operator: string) {
+  setVariable(operator) {
     const path = this.args[0];
     const value = this.args[1];
-    let modif = this.variables;
-    path.split('.').forEach(p => {
-      modif = modif[p];
-    });
-
-    function jesaispas(chemin, newValue) {
-      let cache = g;
-      let result = chemin.split('.');
-      for(var i in result){
-        cache = cache[result[i]] ? cache[result[i]] : cache[result[i]] = {};
-        if(i==result.length) cache[result[i]] = newValue;
+    let k = this.variables;
+    const  steps = path.split('.');
+    const last = steps.pop();
+    steps.forEach(e => (k[e] = k[e] || {}) && (k = k[e]));
+    if (value) {
+      switch (operator) {
+        case 'set':
+          k[last] = value;
+          break;
+        case 'add':
+          k[last] += value;
+          break;
+        case 'sub':
+          k[last] -= value;
+          break;
+        case 'mul':
+          k[last] *= value;
+          break;
+        case 'div':
+          k[last] /= value;
+          break;
+        case 'random':
+          k[last] = this.getRandom();
+          break;
       }
-  }
-
-
-
-
-
-
-
-
-    switch (operator) {
-      case 'set':
-        modif = value;
-        break;
-      case 'add':
-        modif += value;
-        break;
-      case 'sub':
-        modif -= value;
-        break;
-      case 'mul':
-        modif *= value;
-        break;
-      case 'div':
-        modif /= value;
-        break;
-      case 'div':
-        modif /= value;
-        break;
-      case 'random':
-        modif = this.getRandom();
-        break;
     }
-    return modif;
+    return k[last];
   }
 
   toActorName(actorName: string): string {
@@ -651,11 +632,6 @@ export class GamePage implements OnInit, OnDestroy {
         this.actions.push(action);
       }
     }
-    console.log({
-      place: this.place,
-      actions: this.actions,
-      items
-    });
   }
 
   getCommandValues(str: string) {
@@ -859,7 +835,7 @@ export class GamePage implements OnInit, OnDestroy {
     let cpt = 0;
     for (let i = this.line + 1; i < this.chatLogs.length; i++) {
       const log = this.chatLogs[i];
-      console.log(log);
+
       if (['/if', '/question'].includes(this.getCommand(log.msg))) {
         cpt += 1;
       }
@@ -870,7 +846,7 @@ export class GamePage implements OnInit, OnDestroy {
         if (cpt > 0) {
           cpt -= 1;
         } else {
-          console.log(res);
+
           return res;
         }
       }

@@ -213,7 +213,7 @@ export class BookService implements OnDestroy {
     for (const id of Object.keys(this.entities)) {
       const entity = this.entities[id];
       if (entity.collection === collection) {
-        console.log('MATCH');
+
         res[id] = entity;
       }
     }
@@ -227,7 +227,7 @@ export class BookService implements OnDestroy {
         res.push(object[item]);
       }
     });
-    console.log({object, exclude});
+
     return res;
   }
 
@@ -449,7 +449,7 @@ export class BookService implements OnDestroy {
   }
 
   getBook(bookId) {
-    console.log('REQUETE!');
+
     return this.firestore.collection('books').doc(bookId).valueChanges();
   }
 
@@ -522,7 +522,7 @@ export class BookService implements OnDestroy {
         this.bookPlaceSub = this.firestore.collection('books').doc(curBookId)
                                           .collection('places').valueChanges().subscribe((value: any) => {
           this.places = value;
-          console.log(value);
+
           // Remove all places
           const res = {};
           Object.values(this.entities).forEach((entity: any) => {
@@ -541,7 +541,7 @@ export class BookService implements OnDestroy {
       bookItemPromise = new Promise(resolve => {
         this.bookItemSub = this.firestore.collection('books').doc(curBookId).collection('items').valueChanges().subscribe((value: any) => {
           this.items = value;
-          console.log(value);
+
           // Remove all items
           const res = {};
           Object.values(this.entities).forEach((entity: any) => {
@@ -561,7 +561,7 @@ export class BookService implements OnDestroy {
       bookRolePromise = new Promise(resolve => {
         this.bookRoleSub = this.firestore.collection('books').doc(curBookId).collection('roles').valueChanges().subscribe((value) => {
           this.roles = value;
-          console.log(value);
+
           // Remove all items
           const res = {};
           Object.values(this.entities).forEach((entity: any) => {
@@ -606,7 +606,7 @@ export class BookService implements OnDestroy {
 
   setMainChat(chatId: string) {
     this.firestore.collection('/books').doc(this.curBookId).update({main: chatId})
-    .catch((err) => this.popupService.error(err)).then(() => console.log(this.book));
+    .catch((err) => this.popupService.error(err));
   }
 
   // uploadFile(type: string, file: any, id= this.userId) {
@@ -668,8 +668,8 @@ export class BookService implements OnDestroy {
     await this.popupService.loading();
     this.debug = debug;
     this.curChatId = chatId;
-    console.log(chatId);
-    console.log(this.curChatId);
+
+
     this.firestore.collection('books').doc(id).update({
       views: this.book.views + 1,
     });
@@ -853,12 +853,12 @@ export class BookService implements OnDestroy {
         res.push(entity);
       }
     });
-    console.log(res);
+
     return res;
   }
 
   getRoles(roleList: string[]) {
-    console.log(roleList);
+
     const res = [];
     Object.values(this.entities).forEach((entity: any) => {
       if (entity.collection === 'roles' && roleList.includes(entity.name)) {
@@ -871,9 +871,9 @@ export class BookService implements OnDestroy {
   async deleteEntity(id: string, collection: string) {
     const entity = this.entities[id];
     if (entity) {
-      console.log(entity);
-      console.log(entity.key !== undefined);
-      console.log(entity);
+
+
+
       if (entity.avatar) {
         this.deleteMedia(entity.avatar);
       }

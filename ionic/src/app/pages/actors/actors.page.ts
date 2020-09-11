@@ -18,7 +18,7 @@ export class ActorsPage implements OnInit {
     ) { }
 
   ngOnInit() {
-    console.log(this.bookService.actors);
+
   }
 
   async viewProfile(actorId: string) {
