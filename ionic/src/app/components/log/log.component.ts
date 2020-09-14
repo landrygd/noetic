@@ -16,7 +16,7 @@ import { LogEditComponent } from '../log-edit/log-edit.component';
 
 export class LogComponent implements OnInit {
 
-  @Input() log: {msg: string, actor: string};
+  @Input() msg: string;
   @Input() index = 0;
   @Input() selected = false;
   @Input() edit = false;
@@ -37,7 +37,6 @@ export class LogComponent implements OnInit {
   msgSlot = 'start';
 
   color = 'primary';
-  msg = '';
   name = '';
 
   button = '';
@@ -68,22 +67,22 @@ export class LogComponent implements OnInit {
       this.itemClass = 'editing-item';
       this.cardClass = 'editing-card';
     }
-    if (this.log.hasOwnProperty('actor')) {
-      this.actorId = this.log.actor;
-    } else {
-      if (!this.edit) {
-        this.narrator = 'narrator';
-      }
-    }
-    if (this.log.hasOwnProperty('msg')) {
-      this.msg = this.log.msg;
-      if (this.typing) {
-        setTimeout(() => this.endTyping(), (this.msg.length / this.speed) * 30000);
-      }
-      if (this.msg === '/finish') {
-        this.button = 'Quitter';
-        this.actionName = 'finish';
-      }
+    // if (this.log.hasOwnProperty('actor')) {
+    //   this.actorId = this.log.actor;
+    // } else {
+    //   if (!this.edit) {
+    //     this.narrator = 'narrator';
+    //   }
+    // }
+    // if (this.log.hasOwnProperty('msg')) {
+    //   this.msg = this.log.msg;
+    //   if (this.typing) {
+    //     setTimeout(() => this.endTyping(), (this.msg.length / this.speed) * 30000);
+    //   }
+    // }
+    if (this.msg === '/finish') {
+      this.button = 'Quitter';
+      this.actionName = 'finish';
     }
     this.ownPlayer = this.actorService.isOwnActor(this.actorId);
     if (this.ownPlayer) {

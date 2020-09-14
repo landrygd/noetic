@@ -715,46 +715,46 @@ export class UserService implements OnDestroy {
         this.topRatedSub.unsubscribe();
       }
     }
-    await this.getTopRated();
-    await this.getMostVue();
-    await this.getMostRecent();
+    // await this.getTopRated();
+    // await this.getMostVue();
+    // await this.getMostRecent();
   }
 
-  async getMostVue(): Promise<any> {
-    return new Promise(res => {
-      this.mostVueSub = this.firestore.collection(
-      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('views', 'desc').limit(20)
-      ).valueChanges().subscribe((values) => {
-        this.mostVueBooks = [];
-        values.forEach((val) => {
-          this.mostVueBooks.push(new Book(val));
-        });
-        res();
-      });
-    });
-  }
+  // async getMostVue(): Promise<any> {
+  //   return new Promise(res => {
+  //     this.mostVueSub = this.firestore.collection(
+  //     'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('views', 'desc').limit(20)
+  //     ).valueChanges().subscribe((values) => {
+  //       this.mostVueBooks = [];
+  //       values.forEach((val) => {
+  //         this.mostVueBooks.push(new Book(val));
+  //       });
+  //       res();
+  //     });
+  //   });
+  // }
 
-  async getTopRated(): Promise<any> {
-    return new Promise(res => {
-      this.topRatedSub = this.firestore.collection(
-      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('likes', 'desc').limit(20)
-      ).valueChanges().subscribe((val) => {
-        this.topRatedBooks = val;
-        res();
-      });
-    });
-  }
+  // async getTopRated(): Promise<any> {
+  //   return new Promise(res => {
+  //     this.topRatedSub = this.firestore.collection(
+  //     'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('likes', 'desc').limit(20)
+  //     ).valueChanges().subscribe((val) => {
+  //       this.topRatedBooks = val;
+  //       res();
+  //     });
+  //   });
+  // }
 
-  async getMostRecent(): Promise<any> {
-    return new Promise(res => {
-      this.mostRecentSub = this.firestore.collection(
-      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('date', 'desc').limit(20)
-      ).valueChanges().subscribe((val) => {
-        this.mostRecentBooks = val;
-        res();
-      });
-    });
-  }
+  // async getMostRecent(): Promise<any> {
+  //   return new Promise(res => {
+  //     this.mostRecentSub = this.firestore.collection(
+  //     'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('date', 'desc').limit(20)
+  //     ).valueChanges().subscribe((val) => {
+  //       this.mostRecentBooks = val;
+  //       res();
+  //     });
+  //   });
+  // }
 
   uploadBanner(file, userId = this.curUserId): Promise<void> {
     return new Promise((resolve, reject) => {

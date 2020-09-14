@@ -172,4 +172,12 @@ export class Book {
   addScript(script) {
     this.scripts.push(script);
   }
+
+  getScript(name): {name: string, content: string} {
+    return this.scripts.filter((value) => value.name = name)[0];
+  }
+
+  getEntities(type): Entity[] {
+    return this.entities.filter((value) => value.type = type);
+  }
 }

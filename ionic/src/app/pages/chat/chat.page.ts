@@ -351,7 +351,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   debug() {
-    this.bookService.play(this.bookService.curBookId, this.chatService.curChatId, true);
+    this.bookService.play(this.chatService.curChatId, true);
   }
 
   action(name) {

@@ -34,6 +34,13 @@ export class HomePage implements OnInit, OnDestroy {
 
   rgpd: any;
 
+  sections = [
+    {
+      attribute: 'views',
+      books: []
+    }
+  ];
+
   constructor(
     public userService: UserService,
     public bookService: BookService,
@@ -52,6 +59,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.storage.get('RGPD').then((val) => {
       this.rgpd = val;
     });
+    setTimeout(() => this.refresh('', true), 500);
   }
 
   ionViewWillEnter() {
@@ -72,11 +80,6 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.homeSub.unsubscribe();
     this.commonSub.unsubscribe();
-  }
-
-
-  ionViewDidEnter() {
-    setTimeout(() => this.refresh('', true), 500);
   }
 
   search() {
@@ -186,19 +189,22 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   refresh(event, noEvent= false) {
-    this.topRatedBooks = this.userService.topRatedBooks;
-    this.mostVueBooks = this.userService.mostVueBooks;
-    this.mostRecentBooks = this.userService.mostRecentBooks;
+    this.sections.forEach(async (section) => {
+      section.books = await this.bookService.getMostBooks(section.attribute);
+    });
+    // this.topRatedBooks = this.userService.topRatedBooks;
+    // this.mostVueBooks = this.userService.mostVueBooks;
+    // this.mostRecentBooks = this.userService.mostRecentBooks;
     if (!noEvent) {
       setTimeout(() => {
         event.target.complete();
       }, 500);
     }
-    setTimeout(() => {
-      if (this.mostRecentBooks.length === 0) {
-        this.refresh('', true);
-      }
-    }, 100);
+    // setTimeout(() => {
+    //   if (this.mostRecentBooks.length === 0) {
+    //     this.refresh('', true);
+    //   }
+    // }, 100);
   }
 
   async presentRgpd() {

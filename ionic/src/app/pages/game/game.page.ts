@@ -10,6 +10,7 @@ import { UserService } from 'src/app/services/user.service';
 import { MediaService } from 'src/app/services/media.service';
 import { ActorService } from 'src/app/services/book/actor.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Book } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-game',
@@ -17,22 +18,30 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./game.page.scss'],
 })
 export class GamePage implements OnInit, OnDestroy {
+  // bookId: string;
+  // sub: Subscription;
+  // chat: {
+  //   logs: any[];
+  //   name: string;
+  //   id: string;
+  // };
+  // actors = {};
+    // nomVar: string;
+  // nomVar1: string;
+  // nomVar2: string;
+  // varValue: any;
+  // varValue1: any;
+  // varValue2: any;
 
   @ViewChild(IonContent, { static: true }) content: IonContent;
+  @ViewChild('bg', {static: true, read: ElementRef}) bg: ElementRef;
 
-  bookId: string;
-  sub: Subscription;
+  book: Book;
+
+  script: string[] = [];
   line = -1;
-  chat: {
-    logs: any[];
-    name: string;
-    id: string;
-  };
-  chatLogs: any[] = [];
   logs: any[] = [];
-  chatId = 'main';
-  curHost = '';
-  actors = {};
+  scriptName = 'main';
   loopMinTime = 1000;
   question = false;
   labels: any;
@@ -41,20 +50,12 @@ export class GamePage implements OnInit, OnDestroy {
   paused = false;
   waitTime = 500;
   inputShowed = false;
-
   gochat = '';
-
   autoPlay = false;
-
   avatar = undefined;
-
   curLine = 0;
-
   speed = 1000; // CPS
-
   nextTimer: any;
-
-  curLog: any;
   msg: string;
   command: string;
   opts: any[] = [];
@@ -62,42 +63,23 @@ export class GamePage implements OnInit, OnDestroy {
   args: any[];
   places = {};
   place = '';
-
   variables: any = {};
-
   answers: string[];
-
   cptChatLabel: any = {};
-
   settings: {
     mode: string
   } = {mode: 'next'};
-
-  nomVar: string;
-  nomVar1: string;
-  nomVar2: string;
-  varValue: any;
-  varValue1: any;
-  varValue2: any;
-
   checkLabelRefresher: any;
-
   autoScroll = true;
-
-  @ViewChild('bg', {static: true, read: ElementRef}) bg: ElementRef;
+  input = '';
+  time = 0;
+  debug: boolean;
+  actions: {name: string, key: string, color: string, chat: string, type: string}[];
 
   commonSub: Subscription;
   gameSub: Subscription;
   COMMON: any;
   GAME: any;
-
-  input = '';
-
-  time = 0;
-
-  debug: boolean;
-
-  actions: {name: string, key: string, color: string, chat: string, type: string}[];
 
   constructor(
     public bookService: BookService,
@@ -136,39 +118,43 @@ export class GamePage implements OnInit, OnDestroy {
   }
 
   async play() {
+    this.book = this.bookService.book;
     this.checkLabelRefresher = setInterval(() => {
       this.cptChatLabel = {};
     }, 60000);
-    this.getWallpaper();
+    // this.getWallpaper();
     this.inputShowed = false;
     this.question = false;
     this.paused = false;
     this.exited = false;
     this.settings.mode = 'next';
     this.logs = [];
-    this.bookId = this.bookService.curBookId;
     this.debug = this.bookService.debug;
     if (!this.debug) {
-      this.chatId = this.bookService.book.setup.main;
+      this.scriptName = this.book.setup.main;
     } else {
-      this.chatId = this.bookService.curChatId;
+      this.scriptName = this.bookService.curChatId;
     }
-    if (this.userService.haveSave(this.bookId)) {
+    if (this.userService.haveSave(this.book.id)) {
       await this.load();
-      this.playChat(this.chatId, this.line);
+      this.playScript(this.scriptName, this.line);
     } else {
       this.line = 0;
       this.variables = {};
-      this.playChat(this.chatId);
+      this.playScript(this.scriptName);
     }
+    console.log({
+      book: this.book,
+      scriptName: this.scriptName
+    })
   }
 
-  async playChat(chatId = 'main', line = 0) {
+  async playScript(scriptName = 'main', line = 0) {
+    this.scriptName = scriptName;
     this.paused = false;
     this.settings.mode = 'next';
     this.line = line;
-    this.chat = this.chatService.getChat(chatId);
-    this.chatLogs = this.chat.logs;
+    this.script = this.book.getScript(this.scriptName).content.split('\n');
     this.labels = this.getLabels();
     this.mediaService.loadSounds(this.getChatSounds());
     this.mediaService.loadAmbiances(this.getChatAmbiances());
@@ -177,24 +163,22 @@ export class GamePage implements OnInit, OnDestroy {
   }
 
   async playLog() {
-
     if (!this.exited) {
-      if (this.line < this.chatLogs.length) {
+      if (this.line < this.script.length) {
         this.gochat = '';
         this.curLine = this.line + 1;
         this.time = 1000;
-        this.curLog = this.chatLogs[this.line];
-        this.msg = this.curLog.msg;
+        this.msg = this.script[this.line];
         if (this.msg.charAt(0) === '/') {
           this.time = -this.waitTime;
           if (this.msg.charAt(1) !== '/') {
             this.getCommandValues(this.msg);
-            this.nomVar = this.getVariableName(this.args[0]);
-            this.nomVar1 = this.getVariableName(this.args[1]);
-            this.nomVar2 = this.getVariableName(this.args[2]);
-            this.varValue = this.toVariable(this.args[0]);
-            this.varValue1 = this.toVariable(this.args[1]);
-            this.varValue2 = this.toVariable(this.args[2]);
+            // this.nomVar = this.getVariableName(this.args[0]);
+            // this.nomVar1 = this.getVariableName(this.args[1]);
+            // this.nomVar2 = this.getVariableName(this.args[2]);
+            // this.varValue = this.toVariable(this.args[0]);
+            // this.varValue1 = this.toVariable(this.args[1]);
+            // this.varValue2 = this.toVariable(this.args[2]);
             switch (this.command) {
               case 'go':
                 if (this.opts.includes('chat')) {
@@ -205,7 +189,7 @@ export class GamePage implements OnInit, OnDestroy {
                   }
                 } else {
                   if (this.labels.hasOwnProperty(this.arg)) {
-                    if (this.checkCptLabel(this.chat.id, this.arg)) {
+                    if (this.checkCptLabel(this.scriptName, this.arg)) {
                       this.curLine = this.labels[this.arg];
                     }
                   }
@@ -270,7 +254,7 @@ export class GamePage implements OnInit, OnDestroy {
                 }
                 break;
               case 'finish':
-                this.curLine = this.chatLogs.length;
+                this.curLine = this.script.length;
                 this.ended = true;
                 break;
               case 'alert':
@@ -310,9 +294,9 @@ export class GamePage implements OnInit, OnDestroy {
                 }
                 break;
               case 'if':
-                const endVal = this.varValue2;
-                const operator = this.varValue1;
-                const firstVal = this.varValue;
+                const endVal = this.toVariable(this.args[2]);
+                const operator = this.toVariable(this.args[1]);
+                const firstVal = this.toVariable(this.args[0]);
                 if (operator === '==') {
                   if (String(firstVal) !== String(endVal)) {
                     this.curLine = this.getNextEndIf();
@@ -360,16 +344,16 @@ export class GamePage implements OnInit, OnDestroy {
                 this.setVariable('random');
                 break;
               case 'control':
-                if (this.isActor(this.nomVar)) {
-                  this.actorService.setOwnActor(this.toActorName(this.nomVar));
+                if (this.isActor(this.getVariableName(this.args[0]))) {
+                  this.actorService.setOwnActor(this.toActorName(this.getVariableName(this.args[0])));
                 }
                 break;
               default:
             }
           }
         } else {
-          this.logs.push(this.curLog);
-          this.time = this.curLog.msg.length * 50;
+          this.logs.push(this.msg);
+          this.time = this.msg.length * 50;
         }
         const totalTime = this.time + this.waitTime;
         if ((this.autoPlay || totalTime === 0) && !this.paused) {
@@ -511,12 +495,12 @@ export class GamePage implements OnInit, OnDestroy {
   getRandom() {
     let min: number;
     let max: number;
-    if (this.varValue2) {
-      min = Math.floor(Number(this.varValue1));
-      max = Math.floor(Number(this.varValue2)) + 1;
+    if (this.toVariable(this.args[2])) {
+      min = Math.floor(Number(this.toVariable(this.args[1])));
+      max = Math.floor(Number(this.toVariable(this.args[2]))) + 1;
     } else {
       min = 0;
-      max = Math.floor(Number(this.varValue1)) + 1;
+      max = Math.floor(Number(this.toVariable(this.args[1]))) + 1;
     }
     const res = Math.floor(Math.random() * max) + min;
     return res;
@@ -539,11 +523,11 @@ export class GamePage implements OnInit, OnDestroy {
     }
   }
 
-  checkCptLabel(chatId = this.chat.id, labelName = 'main') {
-    if (this.cptChatLabel.hasOwnProperty(chatId)) {
-      if (this.cptChatLabel[chatId].hasOwnProperty(labelName)) {
-        this.cptChatLabel[chatId][labelName] += 1;
-        const cpt = this.cptChatLabel[chatId][labelName];
+  checkCptLabel(scriptName = this.scriptName, labelName = 'main') {
+    if (this.cptChatLabel.hasOwnProperty(scriptName)) {
+      if (this.cptChatLabel[scriptName].hasOwnProperty(labelName)) {
+        this.cptChatLabel[scriptName][labelName] += 1;
+        const cpt = this.cptChatLabel[scriptName][labelName];
         if (cpt >= 10) {
           if (labelName === 'main') {
             if (this.bookService.debug) {
@@ -562,10 +546,10 @@ export class GamePage implements OnInit, OnDestroy {
           }
         }
       } else {
-        this.cptChatLabel[chatId] = {[labelName]: 1};
+        this.cptChatLabel[scriptName] = {[labelName]: 1};
       }
     } else {
-      this.cptChatLabel[chatId] = {main: 1};
+      this.cptChatLabel[scriptName] = {main: 1};
     }
     return true;
   }
@@ -669,9 +653,9 @@ export class GamePage implements OnInit, OnDestroy {
 
   getLabels() {
     const res = {};
-    for (let i = 0; i < this.chatLogs.length; i++) {
-      const log = this.chatLogs[i];
-      const command: any[] = log.msg.split(' ');
+    for (let i = 0; i < this.script.length; i++) {
+      const log = this.script[i];
+      const command: any[] = log.split(' ');
       const labelCommand = command.shift();
       if (labelCommand === '/label') {
         const labelName = command.join(' ');
@@ -686,7 +670,7 @@ export class GamePage implements OnInit, OnDestroy {
     for (let i = 0; i < count; i++) {
       res.push(0);
     }
-    this.database.object('games/' + this.bookId + '/chat/' + this.bookService.curChatId).update({answers: res});
+    this.database.object('games/' + this.book.id + '/chat/' + this.bookService.curChatId).update({answers: res});
   }
 
   plus() {
@@ -696,26 +680,26 @@ export class GamePage implements OnInit, OnDestroy {
   save() {
     const save = {
       line: this.line,
-      chatId: this.chatId,
+      scriptName: this.scriptName,
       actor: this.actorService.ownActor,
       place: this.place,
       variables: this.variables,
-      actors: this.actors,
+      // actors: this.actors,
       places: this.places,
       settings: this.settings,
       lastChanges: Date.now()
     };
-    this.userService.addSave(this.bookId, save);
+    this.userService.addSave(this.book.id, save);
   }
 
   async load() {
-    const save = await this.userService.loadSave(this.bookId);
+    const save = await this.userService.loadSave(this.book.id);
     this.actorService.ownActor = save.actor;
     this.place = save.place;
     this.places = save.places;
     this.line = save.line;
-    this.actors = save.actors;
-    this.chatId = save.chatId;
+    // this.actors = save.actors;
+    this.scriptName = save.scriptName;
     this.variables = save.variables;
     this.settings = save.settings;
   }
@@ -740,9 +724,6 @@ export class GamePage implements OnInit, OnDestroy {
     this.mediaService.stopAmbiance();
     this.actorService.ownActor = '';
     this.exited = true;
-    if (!this.bookService.debug) {
-      this.bookService.unsyncBook();
-    }
     this.navCtrl.pop();
   }
 
@@ -802,19 +783,19 @@ export class GamePage implements OnInit, OnDestroy {
 
   getNextEndIf() {
     let cpt = 0;
-    for (let i = this.line + 1; i < this.chatLogs.length; i++) {
-      const log = this.chatLogs[i];
-      if (['/if', '/question'].includes(this.getCommand(log.msg))) {
+    for (let i = this.line + 1; i < this.script.length; i++) {
+      const log = this.script[i];
+      if (['/if', '/question'].includes(this.getCommand(log))) {
         cpt += 1;
       }
-      if (this.getCommand(log.msg) === '/end') {
+      if (this.getCommand(log) === '/end') {
         if (cpt > 0) {
           cpt -= 1;
         } else {
           return i + 1;
         }
       }
-      if (this.getCommand(log.msg) === '/else') {
+      if (this.getCommand(log) === '/else') {
         if (cpt <= 0) {
           return i + 1;
         }
@@ -833,16 +814,16 @@ export class GamePage implements OnInit, OnDestroy {
   getAnswers(): string[] {
     const res = [];
     let cpt = 0;
-    for (let i = this.line + 1; i < this.chatLogs.length; i++) {
-      const log = this.chatLogs[i];
+    for (let i = this.line + 1; i < this.script.length; i++) {
+      const log = this.script[i];
 
-      if (['/if', '/question'].includes(this.getCommand(log.msg))) {
+      if (['/if', '/question'].includes(this.getCommand(log))) {
         cpt += 1;
       }
-      if (this.getCommand(log.msg) === '/answer') {
-        res.push(this.getArg(log.msg));
+      if (this.getCommand(log) === '/answer') {
+        res.push(this.getArg(log));
       }
-      if (this.getCommand(log.msg) === '/end') {
+      if (this.getCommand(log) === '/end') {
         if (cpt > 0) {
           cpt -= 1;
         } else {
@@ -858,17 +839,17 @@ export class GamePage implements OnInit, OnDestroy {
 
   getNextAnswer() {
     let cpt = 0;
-    for (let i = this.line + 1; i < this.chatLogs.length; i++) {
-      const log = this.chatLogs[i];
-      if (this.getCommand(log.msg) === '/question') {
+    for (let i = this.line + 1; i < this.script.length; i++) {
+      const log = this.script[i];
+      if (this.getCommand(log) === '/question') {
         cpt += 1;
       }
-      if (this.getCommand(log.msg) === '/answer') {
+      if (this.getCommand(log) === '/answer') {
         if (cpt <= 0) {
           return i;
         }
       }
-      if (this.getCommand(log.msg) === '/end') {
+      if (this.getCommand(log) === '/end') {
         if (cpt > 0) {
           cpt -= 1;
         } else {
@@ -884,12 +865,12 @@ export class GamePage implements OnInit, OnDestroy {
     let answered = false;
     let type = 'text';
     if (this.opts.includes('type')) {
-      type = this.nomVar1;
+      type = this.getVariableName(this.args[1]);
     }
     await this.popupService.alertObj({
       inputs: [{
         name: 'res',
-        placeholder: this.nomVar,
+        placeholder: this.getVariableName(this.args[0]),
         type,
       }],
       buttons: [
@@ -900,7 +881,7 @@ export class GamePage implements OnInit, OnDestroy {
         }, {
           text: this.COMMON.ok,
           handler: (data) => {
-            this.variables[this.nomVar] = data.res;
+            this.variables[this.getVariableName(this.args[0])] = data.res;
             answered = true;
           }
         }
@@ -914,7 +895,7 @@ export class GamePage implements OnInit, OnDestroy {
   }
 
   send() {
-    this.variables[this.nomVar] = this.input;
+    this.variables[this.getVariableName(this.args[0])] = this.input;
     this.inputShowed = false;
     this.resume();
   }
@@ -958,27 +939,27 @@ export class GamePage implements OnInit, OnDestroy {
   }
 
   async restart() {
-    if (this.userService.haveSave(this.bookId)) {
-      await this.userService.deleteSave(this.bookId);
+    if (this.userService.haveSave(this.book.id)) {
+      await this.userService.deleteSave(this.book.id);
     }
     this.play();
   }
 
-  getWallpaper() {
-    if (this.bookService.book.banner) {
-      const wallpaper = this.bookService.book.banner;
-      if (wallpaper !== '' && wallpaper.substring(0, 4) !== 'http') {
-        const res = 'url(' + this.mediaService.getWallpaperURL(wallpaper) + ')';
-        this.bg.nativeElement.style.setProperty('--background', res + ' no-repeat center center / cover');
-      }
-    }
-  }
+  // getWallpaper() {
+  //   if (this.bookService.book.banner) {
+  //     const wallpaper = this.bookService.book.banner;
+  //     if (wallpaper !== '' && wallpaper.substring(0, 4) !== 'http') {
+  //       const res = 'url(' + this.mediaService.getWallpaperURL(wallpaper) + ')';
+  //       this.bg.nativeElement.style.setProperty('--background', res + ' no-repeat center center / cover');
+  //     }
+  //   }
+  // }
 
   getChatSounds() {
     const sounds: string[] = [];
-    this.chatLogs.forEach(log => {
-      if (this.getCommand(log.msg) === '/sound') {
-        sounds.push(this.getFirstArg(log.msg));
+    this.script.forEach(log => {
+      if (this.getCommand(log) === '/sound') {
+        sounds.push(this.getFirstArg(log));
       }
     });
     return sounds;
@@ -986,9 +967,9 @@ export class GamePage implements OnInit, OnDestroy {
 
   getChatMusics() {
     const sounds: string[] = [];
-    this.chatLogs.forEach(log => {
-      if (this.getCommand(log.msg) === '/music') {
-        const arg = this.getFirstArg(log.msg);
+    this.script.forEach(log => {
+      if (this.getCommand(log) === '/music') {
+        const arg = this.getFirstArg(log);
         if (arg !== '-stop') {
           sounds.push(arg);
         }
@@ -999,9 +980,9 @@ export class GamePage implements OnInit, OnDestroy {
 
   getChatAmbiances() {
     const sounds: string[] = [];
-    this.chatLogs.forEach(log => {
-      if (this.getCommand(log.msg) === '/ambiance') {
-        const arg = this.getFirstArg(log.msg);
+    this.script.forEach(log => {
+      if (this.getCommand(log) === '/ambiance') {
+        const arg = this.getFirstArg(log);
         if (arg !== '-stop') {
           sounds.push(arg);
         }
@@ -1033,7 +1014,7 @@ export class GamePage implements OnInit, OnDestroy {
           }, this.time + this.waitTime);
       } else {
           this.nextTimer = setTimeout(() => {
-            this.playChat(this.chatService.getChatIdByName(this.gochat));
+            this.playScript(this.chatService.getChatIdByName(this.gochat));
           }, this.time + this.waitTime);
       }
     }
@@ -1047,7 +1028,7 @@ export class GamePage implements OnInit, OnDestroy {
 
   playAction(action) {
     if (action.type === 'chat') {
-      this.playChat(action.chat);
+      this.playScript(action.chat);
     } else if (action.type === 'go') {
       this.place = action.chat;
       this.getActions();

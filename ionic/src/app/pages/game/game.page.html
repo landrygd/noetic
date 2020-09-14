@@ -23,7 +23,7 @@
   <div style="height: 100vh;"></div>
   <div>
     <ion-grid fixed *ngFor="let log of logs; index as i" class="ion-no-margin">
-      <app-log [actors]="actors" [variables]="variables" [log]="log" [edit]="false" [index]="i" [speed]="speed" typing="true" (action)="action($event)" (scroll)="scrollToBottom()"></app-log>
+      <app-log [variables]="variables" [msg]="msg" [edit]="false" [index]="i" [speed]="speed" typing="true" (action)="action($event)" (scroll)="scrollToBottom()"></app-log>
     </ion-grid>
   </div>
   <ion-fab vertical="bottom" horizontal="center" slot="fixed" *ngIf="!autoScroll">

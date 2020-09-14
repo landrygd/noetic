@@ -25,12 +25,12 @@ export class BookService implements OnDestroy {
 
   debug = false;
 
-  bookSub: Subscription;
-  bookChatSub: Subscription;
-  bookActorSub: Subscription;
-  bookPlaceSub: Subscription;
-  bookItemSub: Subscription;
-  bookRoleSub: Subscription;
+  // bookSub: Subscription;
+  // bookChatSub: Subscription;
+  // bookActorSub: Subscription;
+  // bookPlaceSub: Subscription;
+  // bookItemSub: Subscription;
+  // bookRoleSub: Subscription;
 
   chats: any[] = [];
   actors: any[] = [];
@@ -126,7 +126,6 @@ export class BookService implements OnDestroy {
   }
 
   showBook(book: Book) {
-    console.log(book);
     this.book = book;
     this.navCtrl.navigateForward('book/' + book.id);
   }
@@ -394,31 +393,78 @@ export class BookService implements OnDestroy {
     return this.book.banner !== undefined;
   }
 
-  getBook(bookId) {
-    return this.firestore.collection('books').doc(bookId).valueChanges();
-  }
+  // getBook(bookId) {
+  //   return this.firestore.collection('books').doc(bookId).valueChanges();
+  // }
 
   updateBookData(data, curBookId: string = this.curBookId) {
     this.booksCollection.doc(curBookId).update(data);
   }
 
-  loadBook(id): Promise<Book> {
-    return new Promise(async (resolve, reject) => {
-      this.storage.get(id).then((res) => {
-        this.book = new Book(res);
+  loadBook(book = this.book): Promise<Book> {
+    return new Promise(async (resolve) => {
+      this.storage.get(book.id).then((res) => {
+        const savedBook = new Book(res);
+        if (book.version <= savedBook.version) {
+          this.book = savedBook;
+        } else {
+          this.downloadBook();
+        }
+        resolve(book);
+      }).catch(async () => {
+        await this.downloadBook();
         resolve(this.book);
-      }).catch(() => {
-        this.firestore.collection('books').doc(id).get().toPromise().then((res) => {
-          this.book = new Book(res.data());
-          this.saveBook(this.book);
-          resolve(this.book);
-        }).catch((err) => reject(err));
       });
+    });
+  }
+
+  async downloadBook(url = this.book.downloadURL) {
+    this.book = await this.getBook(url);
+    this.saveBook(this.book);
+  }
+
+  async getBook(url: string): Promise<Book> {
+    return new Promise (async (resolve) => {
+      const blob = await this.getBlob(url);
+      // Conversion du blob en json
+      const reader = new FileReader();
+      reader.readAsText(blob);
+      reader.onloadend = () => {
+          const jsonString = reader.result.toString();
+          const book: Book = new Book(JSON.parse(jsonString));
+          resolve(book);
+      };
+    });
+  }
+
+  async getBlob(url: string): Promise<Blob> {
+    return new Promise (async (resolve) => {
+      // Téléchargement du blob
+      const blob = await fetch(url).then(r => r.blob());
+      resolve(blob);
     });
   }
 
   saveBook(book: Book) {
     this.storage.set(book.id, book);
+  }
+
+  async getMostBooks(attribute): Promise<any[]> {
+    if (!this.langs) {
+      this.langs = this.translator.getLangs();
+    }
+    return new Promise(res => {
+      this.firestore.collection(
+      'books', ref => ref.where('public', '==', true).where('language', 'in', this.langs).orderBy(attribute, 'desc').limit(20)
+      ).get().toPromise().then((collection) => {
+        const values = collection.docs;
+        const mostBooks = [];
+        values.forEach((val) => {
+          mostBooks.push(new Book(val.data()));
+        });
+        res(mostBooks);
+      });
+    });
   }
 
   // async syncBook2(curBookId = this.curBookId, cover: boolean = false): Promise<any> {
@@ -503,7 +549,8 @@ export class BookService implements OnDestroy {
   //       });
   //     });
   //     bookItemPromise = new Promise(resolve => {
-  //       this.bookItemSub = this.firestore.collection('books').doc(curBookId).collection('items').valueChanges().subscribe((value: any) => {
+  //       this.bookItemSub = this.firestore.collection('books')
+  //                          .doc(curBookId).collection('items').valueChanges().subscribe((value: any) => {
   //         this.items = value;
 
   //         // Remove all items
@@ -557,16 +604,16 @@ export class BookService implements OnDestroy {
   //   });
   // }
 
-  unsyncBook(cover = false) {
-    this.bookSub.unsubscribe();
-    if (!cover) {
-      this.bookChatSub.unsubscribe();
-      this.bookActorSub.unsubscribe();
-      this.bookPlaceSub.unsubscribe();
-      this.bookItemSub.unsubscribe();
-      this.bookRoleSub.unsubscribe();
-    }
-  }
+  // unsyncBook(cover = false) {
+  //   this.bookSub.unsubscribe();
+  //   if (!cover) {
+  //     this.bookChatSub.unsubscribe();
+  //     this.bookActorSub.unsubscribe();
+  //     this.bookPlaceSub.unsubscribe();
+  //     this.bookItemSub.unsubscribe();
+  //     this.bookRoleSub.unsubscribe();
+  //   }
+  // }
 
   setMainChat(chatId: string) {
     this.firestore.collection('/books').doc(this.curBookId).update({main: chatId})
@@ -624,17 +671,14 @@ export class BookService implements OnDestroy {
     return res;
   }
 
-  async play(id = this.curBookId, chatId = 'main', debug = false) {
+  async play(chatId = 'main', debug = false) {
     await this.popupService.loading();
     this.debug = debug;
     this.curChatId = chatId;
-
-
-    this.firestore.collection('books').doc(id).update({
+    this.firestore.collection('books').doc(this.book.id).update({
       views: this.book.views + 1,
     });
-    this.curBookId = id;
-    await this.loadBook(id);
+    await this.loadBook();
     this.popupService.loadingDismiss();
     this.navCtrl.navigateForward('/game');
   }

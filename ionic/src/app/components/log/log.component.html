@@ -1,17 +1,17 @@
-<ion-item [color]="getItemColor()" [class]="itemClass" *ngIf="!(log.msg.charAt(0) === '/'); else command" 
+<ion-item [color]="getItemColor()" [class]="itemClass" *ngIf="!(msg.charAt(0) === '/'); else command" 
           #ref button detail="false" lines="none">
   
   <!-- <ion-note style="margin: 5px;" slot="start">{{index}}</ion-note> -->
-  <div class="msgBox" slot="start" *ngIf="bookService.actorsById[log.actor] as actor; else card">
+  <!-- <div class="msgBox" slot="start" *ngIf="bookService.actorsById[log.actor] as actor; else card">
     <app-avatar *ngIf="!ownPlayer || edit" [enabled]="true" [id]="log.actor" class="ion-no-margin"></app-avatar>
     <ion-card [color]="actor.color" [slot]="msgSlot">
-      <p [class]="editClass" [innerHTML]="log.msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
+      <p [class]="editClass" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
       
     </ion-card>
-  </div>
+  </div> -->
   <ng-template #card>
     <ion-card [class]="'narrator ' + cardClass" style="background: lightyellow">
-      <p [class]="editClass" [innerHTML]="log.msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
+      <p [class]="editClass" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
     </ion-card>
   </ng-template>
   <ion-button slot="end" *ngIf="selected && edit" (click)="logEdit($event)" expand="block" fill="clear" shape="round" class="ion-no-padding">
@@ -20,8 +20,8 @@
 </ion-item>
 
 <ng-template #command>
-  <ion-item #ref button [color]="getItemColor()" detail="false" lines="none" [class]="itemClass" *ngIf="!isEnd(log.msg)">
-    <p slot="start" [innerHTML]="log.msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
+  <ion-item #ref button [color]="getItemColor()" detail="false" lines="none" [class]="itemClass" *ngIf="!isEnd(msg)">
+    <p slot="start" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
     <ion-button slot="end" *ngIf="selected && edit" (click)="logEdit($event)" expand="block" fill="clear" shape="round" class="ion-no-padding">
       <ion-icon name="ellipsis-vertical" [color]="getButtonColor()"></ion-icon>
     </ion-button>

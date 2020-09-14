@@ -160,7 +160,7 @@ export class CoverPage implements OnInit, OnDestroy {
   }
 
   play() {
-    this.bookService.play(this.bookService.book.id);
+    this.bookService.play();
   }
 
   edit() {
@@ -174,7 +174,6 @@ export class CoverPage implements OnInit, OnDestroy {
         this.haveCommentedSub.unsubscribe();
       }
     }
-    this.bookService.unsyncBook(true);
     this.bookService.curBookId = '';
   }
 

@@ -34,7 +34,6 @@ export class CardBookComponent implements OnInit, AfterViewInit {
     ) {}
 
   ngOnInit() {
-
     this.width = this.height * 9 / 16;
   }
 

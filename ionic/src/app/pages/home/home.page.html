@@ -59,17 +59,12 @@
     {{'HOME.mostVue' | translate}}
   </h2>
 
-  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostVueBooks; else loadingMostVue">
-    <ion-slide *ngFor="let book of mostVueBooks">
+  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngFor="let section of sections">
+    <ion-slide *ngFor="let book of section.books">
       <app-card-book [book]="book"></app-card-book>
     </ion-slide>
   </ion-slides>
-
-  <ng-template #loadingMostVue>
-    <div style="height: 300px; display: flex; align-content: center!important; align-items: center!important; justify-content: center;">
-      <ion-spinner name="bubbles"></ion-spinner>
-    </div>
-  </ng-template>
+  
 
   <!-- <h2 class="section">
     <ion-icon name="time"></ion-icon>

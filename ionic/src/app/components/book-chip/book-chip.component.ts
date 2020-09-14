@@ -17,7 +17,7 @@ export class BookChipComponent implements OnInit {
     ) {}
 
   ngOnInit() {
-    this.bookObservable = this.bookService.getBook(this.bookId);
+    // this.bookObservable = this.bookService.getBook(this.bookId);
   }
 
   openBook() {

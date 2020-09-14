@@ -16,7 +16,7 @@ export class BookEditorGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      if (this.bookService.curBookId) {
+      if (this.bookService.book) {
         return true;
       } else {
         this.navCtrl.navigateBack('/');

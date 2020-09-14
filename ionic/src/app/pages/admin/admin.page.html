@@ -8,12 +8,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item>
-      <ion-input type="text" placeholder="ID Livre" [(ngModel)]="bookId"></ion-input>
-      <ion-button slot="end" (click)="updateBook()" expand="block" fill="solid" shape="round" color="success">
-        Mettre à jour
-      </ion-button>
-    </ion-item>
-  </ion-list>
+  <ion-button style="margin: 400px" (click)="updateAllBook()" expand="block" fill="solid" shape="round" color="success">
+    Mettre à jour
+  </ion-button>
 </ion-content>
