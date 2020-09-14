@@ -95,27 +95,23 @@ export class AdminPage implements OnInit {
     });
     console.log('Roles maj');
     // Scripts
-    let scripts: any = await(await this.firestore.collection('books').doc(this.bookId).collection('chats').get().toPromise()).docs;
+    let scripts: any = (await this.firestore.collection('books').doc(this.bookId).collection('chats').get().toPromise()).docs;
+    const resultBooks = [];
     if (scripts.length === 0) {
       scripts = book.scripts.slice();
-      book.scripts = [];
       for (const script of scripts) {
         const logs = [];
         const content = script.content.split('\n');
-        await content.forEach(msg => logs.push({msg}));
-        const res: {name: string, content: string, logs: any[]} = script;
+        for (const msg of content) {
+          logs.push({msg});
+        }
+        const res = script;
         res.logs = logs;
-        console.log({
-          logs,
-          content,
-          res
-        });
-        book.scripts.push(res);
-        console.log(book.scripts);
+        resultBooks.push(res);
       }
-      scripts = book.scripts;
+      scripts = resultBooks;
     }
-    console.log(scripts);
+    book.scripts = [];
     scripts.forEach(async (value: any) => {
       if (value.id) {
         delete value.id;
@@ -144,6 +140,7 @@ export class AdminPage implements OnInit {
       delete value.logs;
       book.addScript(value);
     });
+    console.log(book);
     console.log('Script maj');
     // // Upload
     // const blob = new Blob([JSON.stringify(book, null, 2)], {type: 'application/json'});
