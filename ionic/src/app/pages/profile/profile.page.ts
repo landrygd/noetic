@@ -8,6 +8,7 @@ import { Observable, Subscription } from 'rxjs';
 import { SlidesService } from 'src/app/services/slides.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Book } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-profile',
@@ -50,6 +51,10 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getTraduction();
+  }
+
+  admin() {
+    this.navCtrl.navigateForward('admin');
   }
 
   getTraduction() {

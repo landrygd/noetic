@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, Directi
 import { AnimationService } from 'src/app/services/animation.service';
 import { Observable } from 'rxjs';
 import { BookService } from 'src/app/services/book.service';
+import { Book } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-card-book',
@@ -10,8 +11,7 @@ import { BookService } from 'src/app/services/book.service';
 })
 export class CardBookComponent implements OnInit, AfterViewInit {
 
-  @Input() bookId: string;
-  @Input() bookJSON: any;
+  @Input() book: Book;
 
   @Input() height = 200;
   width: number;
@@ -34,10 +34,7 @@ export class CardBookComponent implements OnInit, AfterViewInit {
     ) {}
 
   ngOnInit() {
-    if (!this.bookJSON) {
-      this.bookAsync = this.bookService.getBook(this.bookId);
-      this.async = true;
-    }
+
     this.width = this.height * 9 / 16;
   }
 
@@ -45,7 +42,7 @@ export class CardBookComponent implements OnInit, AfterViewInit {
     this.animation.fadeIn(this.ref);
   }
 
-  open(json) {
-    this.bookService.openCover(json.id);
+  open() {
+    this.bookService.showBook(this.book);
   }
 }

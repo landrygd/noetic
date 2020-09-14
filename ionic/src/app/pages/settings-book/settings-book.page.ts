@@ -51,25 +51,25 @@ export class SettingsBookPage implements OnInit, OnDestroy {
       this.commonSub.unsubscribe();
     }
 
-  async alertDelete() {
-    const alert = await this.alertController.create({
-      message: this.BOOKSETTINGS.deleteConfirm,
-      buttons: [
-        {
-          text: this.COMMON.cancel,
-          role: 'cancel',
-          cssClass: 'secondary'
-        }, {
-          text: this.BOOKSETTINGS.delete,
-          cssClass: 'danger',
-          handler: () => {
-            this.bookService.deleteBook();
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
+  // async alertDelete() {
+  //   const alert = await this.alertController.create({
+  //     message: this.BOOKSETTINGS.deleteConfirm,
+  //     buttons: [
+  //       {
+  //         text: this.COMMON.cancel,
+  //         role: 'cancel',
+  //         cssClass: 'secondary'
+  //       }, {
+  //         text: this.BOOKSETTINGS.delete,
+  //         cssClass: 'danger',
+  //         handler: () => {
+  //           this.bookService.deleteBook();
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   await alert.present();
+  // }
 
   async alertPublish() {
     const alert = await this.alertController.create({
@@ -127,24 +127,24 @@ export class SettingsBookPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async leave() {
-    const alert = await this.alertController.create({
-      message: this.BOOKSETTINGS.leaveBookConfirm,
-      buttons: [
-        {
-          text: this.COMMON.no,
-          role: 'cancel',
-          cssClass: 'secondary'
-        }, {
-          text: this.COMMON.yes,
-          handler: () => {
-            this.bookService.leaveBook();
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
+  // async leave() {
+  //   const alert = await this.alertController.create({
+  //     message: this.BOOKSETTINGS.leaveBookConfirm,
+  //     buttons: [
+  //       {
+  //         text: this.COMMON.no,
+  //         role: 'cancel',
+  //         cssClass: 'secondary'
+  //       }, {
+  //         text: this.COMMON.yes,
+  //         handler: () => {
+  //           this.bookService.leaveBook();
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   await alert.present();
+  // }
 
   async background() {
     const modal = await this.modalController.create({
@@ -161,9 +161,9 @@ export class SettingsBookPage implements OnInit, OnDestroy {
   }
 
 
-  delete() {
-    this.alertDelete();
-  }
+  // delete() {
+  //   this.alertDelete();
+  // }
 
   publish() {
     this.alertPublish();

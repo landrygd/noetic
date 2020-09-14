@@ -6,6 +6,7 @@ import { UserService } from 'src/app/services/user.service';
 import { BookService } from 'src/app/services/book.service';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
+import { Book } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-home',
@@ -19,9 +20,9 @@ export class HomePage implements OnInit, OnDestroy {
   mostRecentList: Observable<any>;
   topRatedList: Observable<any>;
 
-  mostVueBooks: any[];
-  topRatedBooks: any[];
-  mostRecentBooks: any[];
+  mostVueBooks: Book[];
+  topRatedBooks: Book[];
+  mostRecentBooks: Book[];
 
   userBookList: string[] = [];
 

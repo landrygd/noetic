@@ -103,18 +103,18 @@ export class UploadComponent implements OnInit, OnDestroy {
       case 'userAvatar':
         this.userService.uploadAvatar(this.file);
         break;
-      case 'actorAvatar':
-        this.bookService.uploadAvatar(this.file, this.fileId, 'actors');
-        break;
-      case 'itemAvatar':
-        this.bookService.uploadAvatar(this.file, this.fileId, 'items');
-        break;
-      case 'placeAvatar':
-        this.bookService.uploadAvatar(this.file, this.fileId, 'places');
-        break;
-      case 'roleAvatar':
-        this.bookService.uploadAvatar(this.file, this.fileId, 'roles');
-        break;
+      // case 'actorAvatar':
+      //   this.bookService.uploadAvatar(this.file, this.fileId, 'actors');
+      //   break;
+      // case 'itemAvatar':
+      //   this.bookService.uploadAvatar(this.file, this.fileId, 'items');
+      //   break;
+      // case 'placeAvatar':
+      //   this.bookService.uploadAvatar(this.file, this.fileId, 'places');
+      //   break;
+      // case 'roleAvatar':
+      //   this.bookService.uploadAvatar(this.file, this.fileId, 'roles');
+      //   break;
     }
     this.modalController.dismiss(this.file);
   }

@@ -196,18 +196,18 @@ export class EntityModalComponent implements OnInit, OnDestroy {
           text: this.COMMON.delete,
           handler: async () => {
             switch (this.collection) {
-              case 'actors':
-                await this.bookService.deleteEntity(this.id, 'actors');
-                break;
-              case 'items':
-                await this.bookService.deleteEntity(this.id, 'items');
-                break;
-              case 'places':
-                await this.bookService.deleteEntity(this.id, 'places');
-                break;
-              case 'roles':
-                await this.bookService.deleteEntity(this.id, 'roles');
-                break;
+              // case 'actors':
+              //   await this.bookService.deleteEntity(this.id, 'actors');
+              //   break;
+              // case 'items':
+              //   await this.bookService.deleteEntity(this.id, 'items');
+              //   break;
+              // case 'places':
+              //   await this.bookService.deleteEntity(this.id, 'places');
+              //   break;
+              // case 'roles':
+              //   await this.bookService.deleteEntity(this.id, 'roles');
+              //   break;
             }
             await this.dismiss();
           }

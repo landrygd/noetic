@@ -10,6 +10,9 @@
           </ion-button>   
         </ion-buttons>
         <ion-buttons slot="end">
+          <ion-button (click)="admin()" expand="block" fill="clear" shape="round" *ngIf="userService.userData['admin'] && tabs">
+            <ion-icon name="hammer" slot="icon-only" class="headerButton"></ion-icon>
+          </ion-button>
           <ion-button (click)="changeBanner()" *ngIf="ownProfile && tabs">
             <ion-icon name="camera" slot="icon-only" class="headerButton"></ion-icon>
           </ion-button>
@@ -78,9 +81,9 @@
         <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userService.books.length !== 0">
           <ion-slide>
           </ion-slide>
-          <ion-slide *ngFor="let bookId of userService.books">
-            <app-card-book [bookId]="bookId"></app-card-book>
-          </ion-slide>
+          <!-- <ion-slide *ngFor="let bookId of userService.books">
+            <app-card-book [book]="bookId"></app-card-book>
+          </ion-slide> -->
           <ion-slide>
           </ion-slide>
         </ion-slides>
@@ -92,9 +95,9 @@
       </h2>
     
       <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.list.length !== 0">
-        <ion-slide *ngFor="let bookId of userService.list">
-          <app-card-book [bookId]="bookId"></app-card-book>
-        </ion-slide>
+        <!-- <ion-slide *ngFor="let bookId of userService.list">
+          <app-card-book [book]="bookId"></app-card-book>
+        </ion-slide> -->
       </ion-slides>
     
       <h2 class="section" *ngIf="userService.followList.length !== 0">
@@ -103,9 +106,9 @@
       </h2>
 
       <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.followList.length !== 0">
-        <ion-slide *ngFor="let book of userService.followList">
-          <app-card-book [bookJSON]="book"></app-card-book>
-        </ion-slide>
+        <!-- <ion-slide *ngFor="let book of userService.followList">
+          <app-card-book [book]=""></app-card-book>
+        </ion-slide> -->
       </ion-slides>
     </div>
     <div *ngIf="!ownProfile">
@@ -117,9 +120,9 @@
         <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userService.curUserBooks.length !== 0">
           <ion-slide>
           </ion-slide>
-          <ion-slide *ngFor="let bookId of userService.curUserBooks">
+          <!-- <ion-slide *ngFor="let bookId of userService.curUserBooks">
             <app-card-book [bookId]="bookId"></app-card-book>
-          </ion-slide>
+          </ion-slide> -->
           <ion-slide>
           </ion-slide>
         </ion-slides>

@@ -31,20 +31,20 @@
     {{'HOME.saves' | translate}}
   </h2>
 
-  <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.savesId.length !== 0">
+  <!-- <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.savesId.length !== 0">
     <ion-slide *ngFor="let bookId of userService.savesId">
       <app-card-book [bookId]="bookId"></app-card-book>
     </ion-slide>
-  </ion-slides>
+  </ion-slides> -->
 
-  <h2 class="section">
+  <!-- <h2 class="section">
     <ion-icon name="star"></ion-icon>
     {{'HOME.topRated' | translate}}
   </h2>
 
   <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="topRatedBooks; else loadingTopRated">
     <ion-slide *ngFor="let book of topRatedBooks">
-      <app-card-book [bookJSON]="book"></app-card-book>
+      <app-card-book [book]="book"></app-card-book>
     </ion-slide>
   </ion-slides>
 
@@ -52,7 +52,7 @@
     <div style="height: 300px; display: flex; align-content: center!important; align-items: center!important; justify-content: center;">
       <ion-spinner name="bubbles"></ion-spinner>
     </div>
-  </ng-template>
+  </ng-template> -->
 
   <h2 class="section">
     <ion-icon name="eye"></ion-icon>
@@ -61,7 +61,7 @@
 
   <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostVueBooks; else loadingMostVue">
     <ion-slide *ngFor="let book of mostVueBooks">
-      <app-card-book [bookJSON]="book"></app-card-book>
+      <app-card-book [book]="book"></app-card-book>
     </ion-slide>
   </ion-slides>
 
@@ -71,14 +71,14 @@
     </div>
   </ng-template>
 
-  <h2 class="section">
+  <!-- <h2 class="section">
     <ion-icon name="time"></ion-icon>
     {{'HOME.mostRecent' | translate}}
   </h2>
 
   <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostRecentBooks; else loadingMostRecent">
     <ion-slide *ngFor="let book of mostRecentBooks">
-      <app-card-book [bookJSON]="book"></app-card-book>
+      <app-card-book [book]="book"></app-card-book>
     </ion-slide>
   </ion-slides>
 
@@ -87,4 +87,4 @@
       <ion-spinner name="bubbles"></ion-spinner>
     </div>
   </ng-template>
-</ion-content>
+</ion-content> -->

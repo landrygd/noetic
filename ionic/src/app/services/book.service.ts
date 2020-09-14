@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFirestoreCollection } from '@angular/fire/firestore/public_api';
 import { Observable, Subscription } from 'rxjs';
@@ -7,6 +7,8 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import { UserService } from './user.service';
 import { PopupService } from './popup.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Book } from '../classes/book';
+import { Storage } from '@ionic/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -17,28 +19,7 @@ export class BookService implements OnDestroy {
   curBookId: string;
   curChatId: string;
   langs: string[];
-  book: {
-    authors: string[],
-    cat: string,
-    cover: string,
-    date: number,
-    desc: string,
-    id: string,
-    lang: string,
-    stars: number,
-    starsAvg: number,
-    starsArray: any[],
-    tags: string[],
-    title: string,
-    titleLower: string,
-    verso: string,
-    views: number,
-    votes: number,
-    banner: string,
-    wallpaper: string,
-    public: boolean,
-    main: string
-  };
+  book: Book;
 
   isAuthor: boolean;
 
@@ -96,12 +77,12 @@ export class BookService implements OnDestroy {
   constructor(
     private firestore: AngularFirestore,
     private firestorage: AngularFireStorage,
-
     private alertController: AlertController,
     private navCtrl: NavController,
     public userService: UserService,
     private popupService: PopupService,
-    private translator: TranslateService
+    private translator: TranslateService,
+    private storage: Storage
   ) {
     this.booksCollection = this.firestore.collection('books');
     this.getTraduction();
@@ -139,9 +120,15 @@ export class BookService implements OnDestroy {
   async openBook(bookId) {
     await this.popupService.loading();
     this.curBookId = bookId;
-    await this.syncBook();
+    await this.loadBook(bookId);
     this.popupService.loadingDismiss();
     this.navCtrl.navigateForward('/tabs-book');
+  }
+
+  showBook(book: Book) {
+    console.log(book);
+    this.book = book;
+    this.navCtrl.navigateForward('book/' + book.id);
   }
 
   async openChat(chatId) {
@@ -151,19 +138,16 @@ export class BookService implements OnDestroy {
     this.popupService.loadingDismiss();
   }
 
-  async newBook(book, cover = '', bookId = this.firestore.createId()) {
+  async newBook(book: Book) {
     await this.popupService.loading(this.COMMON.loading, 'creation');
     // Ajouter l'id référant dans user
-    this.userService.addBookRef(bookId);
+    this.userService.addBookRef(book.id);
     // Créer le livre, l'ouvir et y ajouter un chat
-    this.firestore.collection('/books').doc(bookId).set(book).then(async () => {
+    this.firestore.collection('/books').doc(book.id).set(book.getCover()).then(async () => {
       // Upload le cover si une image est chargée
-      if (cover.charAt(0) !== '.') {
-        this.uploadCover(cover, bookId);
-      }
       await this.navCtrl.pop().then( async () => {
-        await this.openCover(bookId);
-        await this.openBook(bookId);
+        await this.showBook(book);
+        await this.openBook(book.id);
         await this.popupService.loadingDismiss('creation');
         this.addChat('main', true);
       }).catch((err) => this.popupService.error(err));
@@ -270,33 +254,33 @@ export class BookService implements OnDestroy {
     return false;
   }
 
-  uploadCover(file, bookId = this.curBookId) {
-    return new Promise((resolve, reject) => {
-      const path = 'books/' + bookId + '/cover.png';
-      this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
-        const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
-        await this.firestore.collection('books').doc(bookId).update({cover: ref});
-        resolve();
-      }).catch((err) => {
-        this.popupService.error(err);
-        reject();
-      });
-    });
-  }
+  // uploadCover(file, bookId = this.curBookId) {
+  //   return new Promise((resolve, reject) => {
+  //     const path = 'books/' + bookId + '/cover.png';
+  //     this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
+  //       const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
+  //       await this.firestore.collection('books').doc(bookId).update({cover: ref});
+  //       resolve();
+  //     }).catch((err) => {
+  //       this.popupService.error(err);
+  //       reject();
+  //     });
+  //   });
+  // }
 
-  uploadBanner(file, bookId = this.curBookId): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const path = 'books/' + bookId + '/banner.png';
-      this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
-        const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
-        await this.firestore.collection('books').doc(bookId).update({banner: ref});
-        resolve();
-      }).catch((err) => {
-        this.popupService.error(err);
-        reject();
-      });
-    });
-  }
+  // uploadBanner(file, bookId = this.curBookId): Promise<void> {
+  //   return new Promise((resolve, reject) => {
+  //     const path = 'books/' + bookId + '/banner.png';
+  //     this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
+  //       const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
+  //       await this.firestore.collection('books').doc(bookId).update({banner: ref});
+  //       resolve();
+  //     }).catch((err) => {
+  //       this.popupService.error(err);
+  //       reject();
+  //     });
+  //   });
+  // }
 
   async changeWallpaper(bookId, url: string) {
     await this.firestore.collection('books').doc(bookId).update({wallpaper: url});
@@ -329,63 +313,60 @@ export class BookService implements OnDestroy {
     return queryByTag;
   }
 
-  async deleteBook(bookId = this.curBookId) {
-    await this.popupService.loading();
-    this.navCtrl.navigateRoot('/tabs/profile');
-    // retirer book de la liste
-    this.userService.deleteBookRef(bookId);
-    // supprimer book
-    const bookRef = this.firestore.collection('/books').doc(bookId);
-    // S'il n'y a plus d'autheur, le livre est supprimé
-    if (this.book.authors.length === 1) {
-      this.unsyncBook();
-      // On supprime les sous-collections
-      const subCollections = ['chats', 'actors', 'comments', 'places', 'items', 'roles'];
-      for (const subCollection of subCollections) {
-        const data = await this.firestore.collection('books').doc(bookId).collection(subCollection).get().toPromise();
-        for (const doc of data.docs) {
-          if (doc.exists) {
-            await doc.ref.delete();
-          }
-        }
-      }
-      // On supprime les médias
-      if (this.haveCover()) {
-        this.firestorage.ref('books/' + bookId + '/cover.png').delete();
-      }
-      if (this.haveBanner()) {
-        this.firestorage.ref('books/' + bookId + '/banner.png').delete();
-      }
-      this.firestore.collection('books').doc(bookId).collection('medias').get().subscribe((data) => {
-        data.docs.forEach((doc) => {
-          // On supprime le média associé à la référence
-          const ref = doc.data().ref;
-          this.firestorage.ref(ref).delete();
-          doc.ref.delete();
-        });
-      });
-      // On supprime le document du livre
-      bookRef.delete();
-    } else {
-      this.removeAuthor(bookId);
-    }
-    this.popupService.loadingDismiss();
-  }
+  // TODO
+  // async deleteBook(bookId = this.curBookId) {
+  //   await this.popupService.loading();
+  //   this.navCtrl.navigateRoot('/tabs/profile');
+  //   // retirer book de la liste
+  //   this.userService.deleteBookRef(bookId);
+  //   // supprimer book
+  //   const bookRef = this.firestore.collection('/books').doc(bookId);
+  //   // S'il n'y a plus d'autheur, le livre est supprimé
+  //   this.unsyncBook();
+  //   // On supprime les sous-collections
+  //   const subCollections = ['chats', 'actors', 'comments', 'places', 'items', 'roles'];
+  //   for (const subCollection of subCollections) {
+  //     const data = await this.firestore.collection('books').doc(bookId).collection(subCollection).get().toPromise();
+  //     for (const doc of data.docs) {
+  //       if (doc.exists) {
+  //         await doc.ref.delete();
+  //       }
+  //     }
+  //   }
+  //   // On supprime les médias
+  //   if (this.haveCover()) {
+  //     this.firestorage.ref('books/' + bookId + '/cover.png').delete();
+  //   }
+  //   if (this.haveBanner()) {
+  //     this.firestorage.ref('books/' + bookId + '/banner.png').delete();
+  //   }
+  //   this.firestore.collection('books').doc(bookId).collection('medias').get().subscribe((data) => {
+  //     data.docs.forEach((doc) => {
+  //       // On supprime le média associé à la référence
+  //       const ref = doc.data().ref;
+  //       this.firestorage.ref(ref).delete();
+  //       doc.ref.delete();
+  //     });
+  //   });
+  //   // On supprime le document du livre
+  //   bookRef.delete();
+  //   this.popupService.loadingDismiss();
+  // }
 
   addMediaRef(url: string, ref: string, type: string, tag: string) {
     this.firestore.collection('books').doc(this.curBookId).collection('medias').add({url, ref, type, tag});
   }
 
-  deleteMedia(url: string) {
-    this.firestore.collection('books').doc(this.curBookId)
-                  .collection('medias', ref => ref.where('url', '==', url)).get().subscribe((val) => {
-      val.docs.forEach(doc => {
-        const ref = doc.data().ref;
-        this.firestorage.ref(ref).delete();
-        doc.ref.delete();
-      });
-    });
-  }
+  // deleteMedia(url: string) {
+  //   this.firestore.collection('books').doc(this.curBookId)
+  //                 .collection('medias', ref => ref.where('url', '==', url)).get().subscribe((val) => {
+  //     val.docs.forEach(doc => {
+  //       const ref = doc.data().ref;
+  //       this.firestorage.ref(ref).delete();
+  //       doc.ref.delete();
+  //     });
+  //   });
+  // }
 
   addAuthor(bookId, userId = this.userService.userId) {
     const bookRef = this.firestore.collection('books').doc(bookId);
@@ -405,26 +386,6 @@ export class BookService implements OnDestroy {
     });
   }
 
-  async removeAuthor(bookId, userId = this.userService.userId): Promise<number> {
-    let lenAuthors = 0;
-    const bookRef = this.firestore.collection('books').doc(bookId);
-    const bookPromise = new Promise (res => {
-      const bookSub = bookRef.get().subscribe((val) => {
-        const authors: string[] = val.data().authors;
-        const index = authors.indexOf(userId);
-        if (index > -1) {
-          authors.splice(index, 1);
-          bookRef.update({authors});
-        }
-        lenAuthors = authors.length;
-        bookSub.unsubscribe();
-        res();
-      });
-    });
-    await bookPromise;
-    return new Promise(result => result(lenAuthors));
-  }
-
   haveCover(): boolean {
     return this.book.cover.charAt(0) !== '.';
   }
@@ -433,23 +394,7 @@ export class BookService implements OnDestroy {
     return this.book.banner !== undefined;
   }
 
-  leaveBook() {
-    this.navCtrl.navigateRoot('/tabs/profile');
-    const authors = this.book.authors;
-    const index = authors.indexOf(this.userService.userId);
-    if (index > -1) {
-      authors.splice(index, 1);
-    }
-    // On supprime la ref du livre
-    this.userService.deleteBookRef(this.curBookId);
-    // On retire l'auteur
-    this.updateBookData({authors});
-    this.popupService.loadingDismiss();
-
-  }
-
   getBook(bookId) {
-
     return this.firestore.collection('books').doc(bookId).valueChanges();
   }
 
@@ -457,141 +402,160 @@ export class BookService implements OnDestroy {
     this.booksCollection.doc(curBookId).update(data);
   }
 
-  async syncBook(curBookId = this.curBookId, cover: boolean = false): Promise<any> {
-    let bookPromise: Promise<any>;
-    bookPromise = new Promise((res, reject) => {
-      this.bookSub = this.firestore.collection('books').doc(curBookId).valueChanges().subscribe((value: any) => {
-        if (value) {
-          this.book = value;
-          this.book.starsArray = new Array(Math.round(this.book.starsAvg));
-          this.isAuthor = this.book.authors.includes(this.userService.userId) && this.userService.connected;
-          res();
-        } else {
-          reject(this.BOOK.bookNotExistError);
-        }
+  loadBook(id): Promise<Book> {
+    return new Promise(async (resolve, reject) => {
+      this.storage.get(id).then((res) => {
+        this.book = new Book(res);
+        resolve(this.book);
+      }).catch(() => {
+        this.firestore.collection('books').doc(id).get().toPromise().then((res) => {
+          this.book = new Book(res.data());
+          this.saveBook(this.book);
+          resolve(this.book);
+        }).catch((err) => reject(err));
       });
-    });
-    let bookChatPromise: Promise<any>;
-    let bookActorPromise: Promise<any>;
-    let bookPlacePromise: Promise<any>;
-    let bookItemPromise: Promise<any>;
-    let bookRolePromise: Promise<any>;
-    if (!cover) {
-      bookChatPromise = new Promise(resolve => {
-        this.bookChatSub = this.firestore.collection('books').doc(curBookId).collection('chats').valueChanges().subscribe((value) => {
-          this.chats = value;
-          // Remove all places
-          const res = {};
-          Object.values(this.entities).forEach((entity: any) => {
-            if (entity.collection !== 'chats') {
-              res[entity.id] = entity;
-            }
-          });
-          this.entities = res;
-          value.forEach(entity => {
-            entity.collection = 'chats';
-            this.entities[entity.id] = entity;
-          });
-          resolve();
-        });
-      });
-      bookActorPromise = new Promise(resolve => {
-        this.bookActorSub = this.firestore.collection('books').doc(curBookId)
-                                          .collection('actors').valueChanges().subscribe((value: any) => {
-          this.actorsById = {};
-          this.actors = value;
-          value.forEach(actor => {
-            this.actorsById[actor.id] = actor;
-          });
-          // Remove all actors
-          const res = {};
-          Object.values(this.entities).forEach((entity: any) => {
-            if (entity.collection !== 'actors') {
-              res[entity.id] = entity;
-            }
-          });
-          this.entities = res;
-          value.forEach(entity => {
-            entity.collection = 'actors';
-            this.entities[entity.id] = entity;
-          });
-          resolve();
-        });
-      });
-      bookPlacePromise = new Promise(resolve => {
-        this.bookPlaceSub = this.firestore.collection('books').doc(curBookId)
-                                          .collection('places').valueChanges().subscribe((value: any) => {
-          this.places = value;
-
-          // Remove all places
-          const res = {};
-          Object.values(this.entities).forEach((entity: any) => {
-            if (entity.collection !== 'places') {
-              res[entity.id] = entity;
-            }
-          });
-          this.entities = res;
-          value.forEach(entity => {
-            entity.collection = 'places';
-            this.entities[entity.id] = entity;
-          });
-          resolve();
-        });
-      });
-      bookItemPromise = new Promise(resolve => {
-        this.bookItemSub = this.firestore.collection('books').doc(curBookId).collection('items').valueChanges().subscribe((value: any) => {
-          this.items = value;
-
-          // Remove all items
-          const res = {};
-          Object.values(this.entities).forEach((entity: any) => {
-            if (entity.collection !== 'items') {
-              res[entity.id] = entity;
-            }
-          });
-          this.entities = res;
-          // Replace all items
-          value.forEach(entity => {
-            entity.collection = 'items';
-            this.entities[entity.id] = entity;
-          });
-          resolve();
-        });
-      });
-      bookRolePromise = new Promise(resolve => {
-        this.bookRoleSub = this.firestore.collection('books').doc(curBookId).collection('roles').valueChanges().subscribe((value) => {
-          this.roles = value;
-
-          // Remove all items
-          const res = {};
-          Object.values(this.entities).forEach((entity: any) => {
-            if (entity.collection !== 'roles') {
-              res[entity.id] = entity;
-            }
-          });
-          this.entities = res;
-          // Replace all items
-          value.forEach(entity => {
-            entity.collection = 'roles';
-            this.entities[entity.id] = entity;
-          });
-          resolve();
-        });
-      });
-    }
-    return new Promise((res, reject) => {
-      bookPromise.then(async () => {
-        if (!cover) {
-          await bookChatPromise;
-          await bookActorPromise;
-          await bookPlacePromise;
-          await bookItemPromise;
-          await bookRolePromise;
-        }
-        res();
-      }).catch(err => reject(err));
     });
   }
+
+  saveBook(book: Book) {
+    this.storage.set(book.id, book);
+  }
+
+  // async syncBook2(curBookId = this.curBookId, cover: boolean = false): Promise<any> {
+  //   let bookPromise: Promise<any>;
+  //   bookPromise = new Promise((res, reject) => {
+  //     this.bookSub = this.firestore.collection('books').doc(curBookId).valueChanges().subscribe((value: any) => {
+  //       if (value) {
+  //         this.book = value;
+  //         this.book.starsArray = new Array(Math.round(this.book.starsAvg));
+  //         this.isAuthor = this.book.authors.includes(this.userService.userId) && this.userService.connected;
+  //         res();
+  //       } else {
+  //         reject(this.BOOK.bookNotExistError);
+  //       }
+  //     });
+  //   });
+  //   let bookChatPromise: Promise<any>;
+  //   let bookActorPromise: Promise<any>;
+  //   let bookPlacePromise: Promise<any>;
+  //   let bookItemPromise: Promise<any>;
+  //   let bookRolePromise: Promise<any>;
+  //   if (!cover) {
+  //     bookChatPromise = new Promise(resolve => {
+  //       this.bookChatSub = this.firestore.collection('books').doc(curBookId).collection('chats').valueChanges().subscribe((value) => {
+  //         this.chats = value;
+  //         // Remove all places
+  //         const res = {};
+  //         Object.values(this.entities).forEach((entity: any) => {
+  //           if (entity.collection !== 'chats') {
+  //             res[entity.id] = entity;
+  //           }
+  //         });
+  //         this.entities = res;
+  //         value.forEach(entity => {
+  //           entity.collection = 'chats';
+  //           this.entities[entity.id] = entity;
+  //         });
+  //         resolve();
+  //       });
+  //     });
+  //     bookActorPromise = new Promise(resolve => {
+  //       this.bookActorSub = this.firestore.collection('books').doc(curBookId)
+  //                                         .collection('actors').valueChanges().subscribe((value: any) => {
+  //         this.actorsById = {};
+  //         this.actors = value;
+  //         value.forEach(actor => {
+  //           this.actorsById[actor.id] = actor;
+  //         });
+  //         // Remove all actors
+  //         const res = {};
+  //         Object.values(this.entities).forEach((entity: any) => {
+  //           if (entity.collection !== 'actors') {
+  //             res[entity.id] = entity;
+  //           }
+  //         });
+  //         this.entities = res;
+  //         value.forEach(entity => {
+  //           entity.collection = 'actors';
+  //           this.entities[entity.id] = entity;
+  //         });
+  //         resolve();
+  //       });
+  //     });
+  //     bookPlacePromise = new Promise(resolve => {
+  //       this.bookPlaceSub = this.firestore.collection('books').doc(curBookId)
+  //                                         .collection('places').valueChanges().subscribe((value: any) => {
+  //         this.places = value;
+
+  //         // Remove all places
+  //         const res = {};
+  //         Object.values(this.entities).forEach((entity: any) => {
+  //           if (entity.collection !== 'places') {
+  //             res[entity.id] = entity;
+  //           }
+  //         });
+  //         this.entities = res;
+  //         value.forEach(entity => {
+  //           entity.collection = 'places';
+  //           this.entities[entity.id] = entity;
+  //         });
+  //         resolve();
+  //       });
+  //     });
+  //     bookItemPromise = new Promise(resolve => {
+  //       this.bookItemSub = this.firestore.collection('books').doc(curBookId).collection('items').valueChanges().subscribe((value: any) => {
+  //         this.items = value;
+
+  //         // Remove all items
+  //         const res = {};
+  //         Object.values(this.entities).forEach((entity: any) => {
+  //           if (entity.collection !== 'items') {
+  //             res[entity.id] = entity;
+  //           }
+  //         });
+  //         this.entities = res;
+  //         // Replace all items
+  //         value.forEach(entity => {
+  //           entity.collection = 'items';
+  //           this.entities[entity.id] = entity;
+  //         });
+  //         resolve();
+  //       });
+  //     });
+  //     bookRolePromise = new Promise(resolve => {
+  //       this.bookRoleSub = this.firestore.collection('books').doc(curBookId).collection('roles').valueChanges().subscribe((value) => {
+  //         this.roles = value;
+
+  //         // Remove all items
+  //         const res = {};
+  //         Object.values(this.entities).forEach((entity: any) => {
+  //           if (entity.collection !== 'roles') {
+  //             res[entity.id] = entity;
+  //           }
+  //         });
+  //         this.entities = res;
+  //         // Replace all items
+  //         value.forEach(entity => {
+  //           entity.collection = 'roles';
+  //           this.entities[entity.id] = entity;
+  //         });
+  //         resolve();
+  //       });
+  //     });
+  //   }
+  //   return new Promise((res, reject) => {
+  //     bookPromise.then(async () => {
+  //       if (!cover) {
+  //         await bookChatPromise;
+  //         await bookActorPromise;
+  //         await bookPlacePromise;
+  //         await bookItemPromise;
+  //         await bookRolePromise;
+  //       }
+  //       res();
+  //     }).catch(err => reject(err));
+  //   });
+  // }
 
   unsyncBook(cover = false) {
     this.bookSub.unsubscribe();
@@ -660,10 +624,6 @@ export class BookService implements OnDestroy {
     return res;
   }
 
-  async openCover(bookId: string) {
-    await this.navCtrl.navigateForward('book/' + bookId);
-  }
-
   async play(id = this.curBookId, chatId = 'main', debug = false) {
     await this.popupService.loading();
     this.debug = debug;
@@ -674,7 +634,7 @@ export class BookService implements OnDestroy {
       views: this.book.views + 1,
     });
     this.curBookId = id;
-    await this.syncBook();
+    await this.loadBook(id);
     this.popupService.loadingDismiss();
     this.navCtrl.navigateForward('/game');
   }
@@ -830,15 +790,15 @@ export class BookService implements OnDestroy {
     });
   }
 
-  uploadAvatar(file, id, collection) {
-    const path = 'books/' + this.curBookId + '/' + collection + '/' + id + '/avatar.png';
-    this.firestorage.ref(path).putString(file, 'data_url').then( () => {
-      this.firestorage.ref(path).getDownloadURL().subscribe((ref) => {
-        this.addMediaRef(ref, path, 'image', 'avatar');
-        this.firestore.collection('books').doc(this.curBookId).collection(collection).doc(id).update({avatar: ref});
-      });
-    }).catch((err) => this.popupService.error(err));
-  }
+  // uploadAvatar(file, id, collection) {
+  //   const path = 'books/' + this.curBookId + '/' + collection + '/' + id + '/avatar.png';
+  //   this.firestorage.ref(path).putString(file, 'data_url').then( () => {
+  //     this.firestorage.ref(path).getDownloadURL().subscribe((ref) => {
+  //       this.addMediaRef(ref, path, 'image', 'avatar');
+  //       this.firestore.collection('books').doc(this.curBookId).collection(collection).doc(id).update({avatar: ref});
+  //     });
+  //   }).catch((err) => this.popupService.error(err));
+  // }
 
   getEntitiesByValues(values: {}): any[] {
     const res = [];
@@ -868,77 +828,77 @@ export class BookService implements OnDestroy {
     return res;
   }
 
-  async deleteEntity(id: string, collection: string) {
-    const entity = this.entities[id];
-    if (entity) {
+  // async deleteEntity(id: string, collection: string) {
+  //   const entity = this.entities[id];
+  //   if (entity) {
 
 
 
-      if (entity.avatar) {
-        this.deleteMedia(entity.avatar);
-      }
-      switch (collection) {
-        case 'places':
-          if (entity.items) {
-            for (const idItem of entity.items) {
-              this.deleteEntity(idItem, 'items');
-            }
-          }
-          if (entity.places) {
-            for (const idPlace of entity.places) {
-              const places: string[] = this.entities[idPlace].places;
-              for (let i = 0; i < places.length; i++) {
-                const p = places[i];
-                if (p === id) {
-                  places.splice(i, 1);
-                  break;
-                }
-              }
-              this.updateEntity(idPlace, 'places', {places});
-            }
-          }
-          break;
-        case 'items':
-          const place = this.entities[entity.pos];
-          const items: string[] = place.items;
-          while (items.indexOf(place) !== -1) {
-            const itemIndex = items.indexOf(place);
-            items.splice(itemIndex, 1);
-          }
-          this.updateEntity(place.id, 'places', {items});
-          break;
-        case 'actor':
-          this.eraseActorMessages(id);
-      }
-      if (entity.key) {
-        this.firestore.collection('/books').doc(this.curBookId).collection('roles').doc(entity.key).delete();
-      }
-      this.firestore.collection('/books').doc(this.curBookId).collection(collection).doc(id).delete();
-    }
-  }
+  //     if (entity.avatar) {
+  //       this.deleteMedia(entity.avatar);
+  //     }
+  //     switch (collection) {
+  //       case 'places':
+  //         if (entity.items) {
+  //           for (const idItem of entity.items) {
+  //             this.deleteEntity(idItem, 'items');
+  //           }
+  //         }
+  //         if (entity.places) {
+  //           for (const idPlace of entity.places) {
+  //             const places: string[] = this.entities[idPlace].places;
+  //             for (let i = 0; i < places.length; i++) {
+  //               const p = places[i];
+  //               if (p === id) {
+  //                 places.splice(i, 1);
+  //                 break;
+  //               }
+  //             }
+  //             this.updateEntity(idPlace, 'places', {places});
+  //           }
+  //         }
+  //         break;
+  //       case 'items':
+  //         const place = this.entities[entity.pos];
+  //         const items: string[] = place.items;
+  //         while (items.indexOf(place) !== -1) {
+  //           const itemIndex = items.indexOf(place);
+  //           items.splice(itemIndex, 1);
+  //         }
+  //         this.updateEntity(place.id, 'places', {items});
+  //         break;
+  //       case 'actor':
+  //         this.eraseActorMessages(id);
+  //     }
+  //     if (entity.key) {
+  //       this.firestore.collection('/books').doc(this.curBookId).collection('roles').doc(entity.key).delete();
+  //     }
+  //     this.firestore.collection('/books').doc(this.curBookId).collection(collection).doc(id).delete();
+  //   }
+  // }
 
-  async eraseActorMessages(actorId: string) {
-    await this.popupService.loading();
-    const actor = this.entities[actorId];
-    const avatar = actor.avatar;
-    if (avatar) {
-      this.deleteMedia(avatar);
-    }
-    // On supprime tout ses messages
-    const chatSub = this.firestore.collection('/books').doc(this.curBookId).collection('chats').get().subscribe((val) => {
-      val.forEach(chat => {
-        const logs = [];
-        chat.data().logs.forEach(log => {
-          if (log.actor !== actorId) {
-            logs.push(log);
-          }
-        });
-        if (logs !== chat.data().logs) {
-          this.firestore.collection('/books').doc(this.curBookId).collection('chats').doc(chat.id).update({logs});
-        }
-      });
-      this.popupService.loadingDismiss();
-      chatSub.unsubscribe();
-    });
-  }
+  // async eraseActorMessages(actorId: string) {
+  //   await this.popupService.loading();
+  //   const actor = this.entities[actorId];
+  //   const avatar = actor.avatar;
+  //   if (avatar) {
+  //     this.deleteMedia(avatar);
+  //   }
+  //   // On supprime tout ses messages
+  //   const chatSub = this.firestore.collection('/books').doc(this.curBookId).collection('chats').get().subscribe((val) => {
+  //     val.forEach(chat => {
+  //       const logs = [];
+  //       chat.data().logs.forEach(log => {
+  //         if (log.actor !== actorId) {
+  //           logs.push(log);
+  //         }
+  //       });
+  //       if (logs !== chat.data().logs) {
+  //         this.firestore.collection('/books').doc(this.curBookId).collection('chats').doc(chat.id).update({logs});
+  //       }
+  //     });
+  //     this.popupService.loadingDismiss();
+  //     chatSub.unsubscribe();
+  //   });
+  // }
 }

@@ -189,15 +189,15 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     this.chatSub.unsubscribe();
   }
 
-  getWallpaper() {
-    if (this.bookService.book.wallpaper) {
-      const wallpaper = this.bookService.book.wallpaper;
-      if (wallpaper !== '' && wallpaper.substring(0, 4) !== 'http') {
-        const res = 'url(' + this.mediaService.getWallpaperURL(wallpaper) + ')';
-        this.bg.nativeElement.style.setProperty('--background', res + ' no-repeat center center / cover');
-      }
-    }
-  }
+  // getWallpaper() {
+  //   if (this.bookService.book.wallpaper) {
+  //     const wallpaper = this.bookService.book.wallpaper;
+  //     if (wallpaper !== '' && wallpaper.substring(0, 4) !== 'http') {
+  //       const res = 'url(' + this.mediaService.getWallpaperURL(wallpaper) + ')';
+  //       this.bg.nativeElement.style.setProperty('--background', res + ' no-repeat center center / cover');
+  //     }
+  //   }
+  // }
 
 
 

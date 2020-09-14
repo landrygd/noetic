@@ -34,8 +34,8 @@
     </div>
     <div class="subscribe">
       <ion-item style="--background: transparent; width: 200px;" *ngIf="bookService.isAuthor" lines="none">
-        <ion-icon class="ion-no-margin" color="primary" slot="start" *ngIf="bookService.book.cat !== 'undefined'" [src]="'assets/icon/svg/' + bookService.book.cat + '.svg'"></ion-icon>
-        <ion-select color="primary" class="ion-no-margin ion-no-padding" slot="end" [value]="bookService.book.cat" (ionChange)="changeCat($event.target.value)" okText="Choisir" cancelText="Annuler">
+        <ion-icon class="ion-no-margin" color="primary" slot="start" *ngIf="bookService.book.category !== 'undefined'" [src]="'assets/icon/svg/' + bookService.book.category + '.svg'"></ion-icon>
+        <ion-select color="primary" class="ion-no-margin ion-no-padding" slot="end" [value]="bookService.book.category" (ionChange)="changeCat($event.target.value)" okText="Choisir" cancelText="Annuler">
           <ion-select-option value="action">{{'CATEGORIES.action' | translate}}</ion-select-option>
           <ion-select-option value="adventure">{{'CATEGORIES.adventure' | translate}}</ion-select-option>
           <ion-select-option value="fanfiction">{{'CATEGORIES.fanfiction' | translate}}</ion-select-option>
@@ -52,21 +52,15 @@
         </ion-select>
       </ion-item>
       <div class="subscribe ion-no-margin" *ngIf="!bookService.isAuthor">
-        <ion-icon color="primary" *ngIf="bookService.book.cat !== 'undefined'" class="ion-margin-end" [src]="'assets/icon/svg/' + bookService.book.cat + '.svg'"></ion-icon>
+        <ion-icon color="primary" *ngIf="bookService.book.category !== 'undefined'" class="ion-margin-end" [src]="'assets/icon/svg/' + bookService.book.category + '.svg'"></ion-icon>
         <ion-text color="primary">
-          <p class="ion-no-margin">{{bookService.book.cat | category}}</p>
+          <p class="ion-no-margin">{{bookService.book.category | category}}</p>
         </ion-text>
       </div>
     </div>
     <div class="subscribe ion-no-margin">
       <p>
         {{bookService.book.views}}<ion-icon name="eye"></ion-icon>
-      </p>
-      <div class="stars">
-        <ion-icon name="star" *ngFor="let i of bookService.book.starsArray" color="primary"></ion-icon>
-      </div>
-      <p color="light" mode="ios">
-        {{bookService.book.votes}}<ion-icon name="chatbubble"></ion-icon>
       </p>
     </div>
     <div class="subscribe">
@@ -86,9 +80,9 @@
         </ion-fab-button>
       </div>
     </div>
-    <div class="subscribe">
-      <app-user-chip *ngFor="let author of bookService.book.authors" [userId]="author" ></app-user-chip>
-    </div>
+    <!-- <div class="subscribe">
+      <app-user-chip [userId]="bookService.book.author" ></app-user-chip>
+    </div> -->
     <div class="subscribe" *ngIf="bookService.isAuthor">
       <ion-button (click)="addTag()" expand="block" fill="clear" shape="round" color="medium">
         <ion-icon name="add"></ion-icon>
@@ -104,13 +98,13 @@
     <div>
       <ion-button (click)="changeDesc()" expand="block" color="medium" fill="clear" shape="round" *ngIf="bookService.isAuthor">
         <ion-text color="medium" class="ion-text-center">
-          <p>{{bookService.book.desc}}</p>
+          <p>{{bookService.book.description}}</p>
         </ion-text>
         <ion-icon name="pencil" slot="end"></ion-icon>
       </ion-button>
       <ion-text color="medium" *ngIf="!bookService.isAuthor">
         <ion-text color="medium" class="ion-text-center">
-          <p>{{bookService.book.desc}}</p>
+          <p>{{bookService.book.description}}</p>
         </ion-text>
       </ion-text>
     </div>
@@ -121,7 +115,7 @@
       {{'COVER.changeVerso' | translate}}
     </ion-button>
     <!-- Envoie des commentaires -->
-    <ion-card *ngIf="userService.connected && (!commented || editComment)" class="ion-padding-top ion-padding-bottom">
+    <!-- <ion-card *ngIf="userService.connected && (!commented || editComment)" class="ion-padding-top ion-padding-bottom">
       <ion-item lines="none">
         <app-user-avatar slot="start" [userId]="userService.userId"></app-user-avatar>
         <ion-buttons slot="start">
@@ -136,17 +130,14 @@
           <ion-icon slot="icon-only" name="send"></ion-icon>
         </ion-button>
       </ion-item>
-    </ion-card>
+    </ion-card> -->
     <!-- commentaire envoyé -->
-    <ion-card *ngIf="userService.connected && commented && !editComment" class="ion-padding-top ion-padding-bottom">
+    <!-- <ion-card *ngIf="userService.connected && commented && !editComment" class="ion-padding-top ion-padding-bottom">
       <ion-item lines="none">
         <app-user-avatar slot="start" [userId]="userService.userId"></app-user-avatar>
         <ion-label slot="start" color="primary">
           <ion-icon name="star" *ngFor="let star of [0,0,0,0,0]; index as i"></ion-icon>
         </ion-label>
-        <!-- <ion-note slot="end" class="ion-text-end">
-          {{comment.date.toString() | timeago}}
-        </ion-note> -->
       </ion-item>
       <ion-item lines="none">
         <ion-textarea disabled [(ngModel)]="comment.text" placeholder="Laisser un avis" (keypress)="enter($event.keyCode)" class="ion-no-padding"></ion-textarea>
@@ -154,9 +145,9 @@
           <ion-icon slot="icon-only" name="create"></ion-icon>
         </ion-button>
       </ion-item>
-    </ion-card>
+    </ion-card> -->
     <!-- liste des commentaires -->
-    <ion-grid fixed>
+    <!-- <ion-grid fixed>
       <ion-row *ngFor="let comment of commentService.comments; index as commentIndex">
         <ion-col>
           <app-user-avatar [userId]="comment.userId"></app-user-avatar>
@@ -168,9 +159,6 @@
                   {{user.name}}<br>
                   <ion-icon name="star" *ngFor="let i of starToArray(comment.rate)" color="primary"></ion-icon>
               </ion-label>
-              <!-- <ion-note slot="end" class="ion-text-end" *ngIf="comment.date">
-                {{comment.date.toString() | timeago}}
-              </ion-note> -->
             </ion-item>
             <ion-item lines="none">
               <p>
@@ -200,7 +188,7 @@
           </ion-card>
         </ion-col>
       </ion-row>
-    </ion-grid>
+    </ion-grid> -->
   </div>
 </ion-content>
 

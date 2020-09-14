@@ -38,7 +38,7 @@ export class CoverPage implements OnInit, OnDestroy {
 
   commented = false;
   lastRate = 0;
-  loading = true;
+  loading = false;
   editComment = false;
 
   ERRORS: any = {};
@@ -94,35 +94,28 @@ export class CoverPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-    const bookId = this.route.snapshot.paramMap.get('id');
-    this.curBookId = bookId;
-    if (this.bookService.curBookId !== bookId) {
-      this.bookService.curBookId = this.curBookId;
-      this.bookService.syncBook(this.curBookId, true)
-      .then(() => {
-        this.verso = this.bookService.book.verso.length > 0;
-        this.loading = false;
-        this.commentService.syncComments(this.bookService.book.id);
-        this.getBanner();
-        if (this.authService.connected) {
-          this.inList = this.userService.haveFromList(this.bookService.book.id);
-          this.haveCommentedSub = this.commentService.haveCommented(this.bookService.book.id).subscribe((value) => {
-            if (value.length !== 0) {
-              const comment: any = value[0].payload.doc.data();
-              this.comment = comment;
-              this.commented = true;
-              this.lastRate = this.comment.rate;
-            }
-          });
-        }
-      })
-      .catch((err) => {
-        this.navCtrl.navigateBack('tabs/home');
-        this.popupService.error(err);
-      });
-    } else {
-      this.loading = false;
-    }
+    // const bookId = this.route.snapshot.paramMap.get('id');
+    // this.curBookId = bookId;
+    // if (this.bookService.curBookId !== bookId) {
+    //   this.bookService.curBookId = this.curBookId;
+    //   this.verso = this.bookService.book.verso.length > 0;
+    //   this.loading = false;
+    //   this.commentService.syncComments(this.bookService.book.id);
+    //   this.getBanner();
+    //   if (this.authService.connected) {
+    //     this.inList = this.userService.haveFromList(this.bookService.book.id);
+    //     this.haveCommentedSub = this.commentService.haveCommented(this.bookService.book.id).subscribe((value) => {
+    //       if (value.length !== 0) {
+    //         const comment: any = value[0].payload.doc.data();
+    //         this.comment = comment;
+    //         this.commented = true;
+    //         this.lastRate = this.comment.rate;
+    //       }
+    //     });
+    //   }
+    // } else {
+    //   this.loading = false;
+    // }
   }
 
   async answer(userId) {
@@ -243,16 +236,16 @@ export class CoverPage implements OnInit, OnDestroy {
     this.comment.rate = index + 1;
   }
 
-  send() {
-    const date: number = Date.now();
-    this.comment.date = date;
-    if (this.comment.rate !== 0 ) {
-      this.commentService.addComment(this.comment, this.bookService.book.id, this.commented, this.lastRate);
-      this.toast(this.ERRORS.toastCommentSent);
-    } else {
-      this.toast(this.ERRORS.unratedComment);
-    }
-  }
+  // send() {
+  //   const date: number = Date.now();
+  //   this.comment.date = date;
+  //   if (this.comment.rate !== 0 ) {
+  //     this.commentService.addComment(this.comment, this.bookService.book.id, this.commented, this.lastRate);
+  //     this.toast(this.ERRORS.toastCommentSent);
+  //   } else {
+  //     this.toast(this.ERRORS.unratedComment);
+  //   }
+  // }
 
   addToList() {
     this.userService.addBookListRef(this.bookService.book.id);
@@ -274,20 +267,11 @@ export class CoverPage implements OnInit, OnDestroy {
     toast.present();
   }
 
-  starToArray(star) {
-    return new Array(star);
-  }
-
-  starAverageToArray() {
-    const size = Math.round(this.bookService.book.stars / Math.max(this.bookService.book.votes, 1));
-    return new Array(size);
-  }
-
-  enter(keyCode) {
-    if (keyCode === 13) {
-      this.send();
-    }
-  }
+  // enter(keyCode) {
+  //   if (keyCode === 13) {
+  //     this.send();
+  //   }
+  // }
 
   onClick() {}
 
@@ -342,7 +326,7 @@ export class CoverPage implements OnInit, OnDestroy {
           name: 'desc',
           type: 'text',
           placeholder: this.COVER.alertDescPlaceholder,
-          value: this.bookService.book.desc,
+          value: this.bookService.book.description,
         }
       ],
       buttons: [
@@ -399,7 +383,7 @@ export class CoverPage implements OnInit, OnDestroy {
       modal.onDidDismiss()
         .then((data) => {
           if (data.data) {
-            this.bookService.uploadCover(data.data);
+            // this.bookService.uploadCover(data.data);
           }
       });
       return await modal.present();
@@ -417,7 +401,7 @@ export class CoverPage implements OnInit, OnDestroy {
       modal.onDidDismiss()
         .then(async (data) => {
           if (data.data) {
-            await this.bookService.uploadBanner(data.data);
+            // await this.bookService.uploadBanner(data.data);
             this.getBanner();
           }
       });

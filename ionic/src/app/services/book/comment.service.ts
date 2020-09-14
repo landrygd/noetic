@@ -18,24 +18,24 @@ export class CommentService {
     private userService: UserService
   ) { }
 
-  addComment(comment, bookId, commented= false, lastRate= 0) {
-    let stars = this.bookService.book.stars + comment.rate;
-    let votes = this.bookService.book.votes;
-    if (commented) {
-      stars -= lastRate;
-    } else {
-      votes += 1 ;
-    }
-    const starsAvg = stars / Math.max(votes, 1);
-    this.firestore.collection('books').doc(bookId).update({
-      votes,
-      stars,
-      starsAvg
-    });
-    this.firestore.collection('books').doc(bookId).collection('comments').doc(this.userService.userId).set(comment);
-    // Enregistrement de la référence dans l'utilisateur
-    this.firestore.collection('users').doc(this.userService.userId).collection('comments').doc(bookId).set({});
-  }
+  // addComment(comment, bookId, commented= false, lastRate= 0) {
+  //   let stars = this.bookService.book.stars + comment.rate;
+  //   let votes = this.bookService.book.votes;
+  //   if (commented) {
+  //     stars -= lastRate;
+  //   } else {
+  //     votes += 1 ;
+  //   }
+  //   const starsAvg = stars / Math.max(votes, 1);
+  //   this.firestore.collection('books').doc(bookId).update({
+  //     votes,
+  //     stars,
+  //     starsAvg
+  //   });
+  //   this.firestore.collection('books').doc(bookId).collection('comments').doc(this.userService.userId).set(comment);
+  //   // Enregistrement de la référence dans l'utilisateur
+  //   this.firestore.collection('users').doc(this.userService.userId).collection('comments').doc(bookId).set({});
+  // }
 
   answerToComment(bookId, userId, answer) {
     this.firestore.collection('books').doc(bookId).collection('comments').doc(userId).update({answer});

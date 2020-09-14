@@ -10,6 +10,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { TraductionService } from './traductionService.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Book } from '../classes/book';
 
 @Injectable({
   providedIn: 'root'
@@ -61,7 +62,7 @@ export class UserService implements OnDestroy {
   usersCollection: AngularFirestoreCollection<any>;
   userDoc: AngularFirestoreDocument;
 
-  mostVueBooks: any[] = [];
+  mostVueBooks: Book[] = [];
   topRatedBooks: any[] = [];
   mostRecentBooks: any[] = [];
 
@@ -723,8 +724,11 @@ export class UserService implements OnDestroy {
     return new Promise(res => {
       this.mostVueSub = this.firestore.collection(
       'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('views', 'desc').limit(20)
-      ).valueChanges().subscribe((val) => {
-        this.mostVueBooks = val;
+      ).valueChanges().subscribe((values) => {
+        this.mostVueBooks = [];
+        values.forEach((val) => {
+          this.mostVueBooks.push(new Book(val));
+        });
         res();
       });
     });
@@ -733,7 +737,7 @@ export class UserService implements OnDestroy {
   async getTopRated(): Promise<any> {
     return new Promise(res => {
       this.topRatedSub = this.firestore.collection(
-      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('stars', 'desc').limit(20)
+      'books', ref => ref.where('public', '==', true).where('lang', 'in', this.langs).orderBy('likes', 'desc').limit(20)
       ).valueChanges().subscribe((val) => {
         this.topRatedBooks = val;
         res();

@@ -8,6 +8,7 @@ import { UserService } from 'src/app/services/user.service';
 import { PopupService } from 'src/app/services/popup.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { Book } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-new-book',
@@ -75,7 +76,7 @@ export class NewBookPage implements OnInit, OnDestroy {
   confirm() {
     const form = this.bookForm.value;
     const title: string = form.name;
-    const authors = [this.userService.userId];
+    const author = this.userService.userId;
 
     // Traitement des infos
     if (title.length < 3) {
@@ -98,25 +99,20 @@ export class NewBookPage implements OnInit, OnDestroy {
       return;
     }
 
-    const book = {
+    const bookOpts = {
       id: this.bookId,
-      title,
-      titleLower: title.toLowerCase(),
-      desc: form.desc,
-      stars: 0,
-      starsAvg: 0,
-      votes: 0,
-      views: 0,
+      name,
+      nameLower: title.toLowerCase(),
+      description: form.desc,
       tags: this.tags,
       cover: this.cover,
-      cat: form.cat,
+      category: form.cat,
       verso: form.verso,
       lang: this.traductionService.getCurLanguage(),
-      authors,
-      main: 'main',
-      date: Date.now()
+      author,
     };
-    this.bookService.newBook(book, this.cover, this.bookId);
+
+    this.bookService.newBook(new Book(bookOpts));
   }
 
   async changeCover() {

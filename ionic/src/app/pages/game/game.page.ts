@@ -149,7 +149,7 @@ export class GamePage implements OnInit, OnDestroy {
     this.bookId = this.bookService.curBookId;
     this.debug = this.bookService.debug;
     if (!this.debug) {
-      this.chatId = this.bookService.book.main;
+      this.chatId = this.bookService.book.setup.main;
     } else {
       this.chatId = this.bookService.curChatId;
     }
@@ -965,8 +965,8 @@ export class GamePage implements OnInit, OnDestroy {
   }
 
   getWallpaper() {
-    if (this.bookService.book.wallpaper) {
-      const wallpaper = this.bookService.book.wallpaper;
+    if (this.bookService.book.banner) {
+      const wallpaper = this.bookService.book.banner;
       if (wallpaper !== '' && wallpaper.substring(0, 4) !== 'http') {
         const res = 'url(' + this.mediaService.getWallpaperURL(wallpaper) + ')';
         this.bg.nativeElement.style.setProperty('--background', res + ' no-repeat center center / cover');

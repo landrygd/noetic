@@ -21,6 +21,6 @@ export class BookChipComponent implements OnInit {
   }
 
   openBook() {
-    this.bookService.openCover(this.bookId);
+    // this.bookService.showBook(this.bookId);
   }
 }

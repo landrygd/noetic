@@ -1,35 +1,12 @@
 <div #ref [style.height.px]="height" [style.width.px]="width" class="card">
-  <div *ngIf="!async; else asyncBook">
-    <div *ngIf="bookJSON as book">
-      <ion-card (click)="open(book)" button class="ion-no-margin">
-        <img alt="cover" [src]="book.cover" style="width: 100%"/>
-      </ion-card>
-      <ion-card class="ion-no-margin header">
-        <div class="center">
-          <p>{{book.title}}</p>
-        </div>
-      </ion-card>
+  <ion-card (click)="open()" button class="ion-no-margin">
+    <img alt="cover" [src]="book.cover" style="width: 100%"/>
+  </ion-card>
+  <ion-card class="ion-no-margin header">
+    <div class="center">
+      <p>{{book.title}}</p>
     </div>
-    
-  </div>
-  <ng-template #asyncBook>
-    <div *ngIf="bookAsync | async as book; else load">
-      <ion-card (click)="open(book)" button  class="ion-no-margin">
-        <img alt="cover" [src]="book.cover" style="width: 100%;" #image/>
-      </ion-card>
-      <ion-card class="ion-no-margin header">
-        <div class="center">
-          <p>{{book.title}}</p>
-        </div>
-      </ion-card>
-    </div>
-    
-    <ng-template #load>
-      <ion-card class="ion-no-margin">
-        <ion-skeleton-text animated style="width: 100%; height: 100%;" class="ion-no-margin"></ion-skeleton-text>
-      </ion-card>
-    </ng-template>
-  </ng-template>
+  </ion-card>
 </div>
 
 
