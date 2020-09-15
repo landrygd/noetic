@@ -191,9 +191,13 @@ export class AdminPage implements OnInit {
         });
       });
       console.log(book.title + ': ' + 'Médias supprimés');
-      book.entities.forEach((entity) => {
+      book.entities.forEach(async (entity) => {
         if (entity.img !== '') {
-          entity.img = '';
+          const mime = this.getBase64MimeType(entity.img);
+          if (mime !== 'image/jpeg') {
+            const jpeg = await this.pngToJpeg(entity.img);
+            entity.img = jpeg;
+          }
         }
       });
       console.log(book.title + ': ' + 'Médias uploadé et indexé');
@@ -201,7 +205,7 @@ export class AdminPage implements OnInit {
     });
   }
 
-  b64toBlob(b64Data, contentType = '', sliceSize = 512) {
+  b64toBlob(b64Data, contentType = 'image/jpeg', sliceSize = 512): Blob {
     const byteCharacters = atob(b64Data);
     const byteArrays = [];
 
@@ -221,7 +225,7 @@ export class AdminPage implements OnInit {
     return blob;
   }
 
-  base64MimeType(encoded) {
+  getBase64MimeType(encoded): string {
     let result = null;
     if (typeof encoded !== 'string') {
       return result;
@@ -233,19 +237,22 @@ export class AdminPage implements OnInit {
     return result;
   }
 
-  pngToJpeg(base64: string = this.base64) {
-    const canvas = this.canvas.nativeElement;
-    console.log('Conversion png en jpeg...')
-    const img = new Image();
-    img.src = base64;
-    img.onload = () => {
-      const context = canvas.getContext('2d');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      context.drawImage(img, 0, 0, img.width, img.height);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
-      console.log(dataUrl);
-    };
+  pngToJpeg(base64: string = this.base64): Promise<string> {
+    return new Promise((resolve) => {
+      const canvas = this.canvas.nativeElement;
+      console.log('Conversion png en jpeg...');
+      const img = new Image();
+      img.src = base64;
+      img.onload = () => {
+        const context = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        context.drawImage(img, 0, 0, img.width, img.height);
+        const jpegBase64 = canvas.toDataURL('image/jpeg', 0.5);
+        resolve(jpegBase64);
+      };
+      img.onerror = () => resolve(base64);
+    });
   }
 
   async getBlob(url: string): Promise<Blob> {
