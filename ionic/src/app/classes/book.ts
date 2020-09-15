@@ -46,6 +46,16 @@ export class Entity {
   }
 }
 
+export class Script {
+  name: string;
+  content: string;
+}
+
+export class Media {
+  name: string;
+  base64: string;
+}
+
 export class Book {
   // Cover
   id: string;
@@ -69,10 +79,10 @@ export class Book {
 
  // Content
   setup: {main: string};
-  scripts: {name: string, content: string}[];
+  scripts: Script[];
   entities: Entity[];
   roles: Role[];
-  medias: {name: string, base64: string}[];
+  medias: Media[];
 
   constructor(options = {}) {
     this.id = '';
@@ -179,5 +189,27 @@ export class Book {
 
   getEntities(type): Entity[] {
     return this.entities.filter((value) => value.type = type);
+  }
+
+  setEntity(entity: Entity) {
+    let i = 0;
+    for (i; i < this.entities.length; i++) {
+      const e = this.entities[i];
+      if (e.key === entity.key) {
+        break;
+      }
+    }
+    this.entities[i] = entity;
+  }
+
+  setScript(script: Script) {
+    let i = 0;
+    for (i; i < this.scripts.length; i++) {
+      const s = this.scripts[i];
+      if (s.name === script.name) {
+        break;
+      }
+    }
+    this.scripts[i] = script;
   }
 }
