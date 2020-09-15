@@ -8,7 +8,16 @@
 </ion-header>
 
 <ion-content>
-  <ion-button style="margin: 400px" (click)="updateAllBook()" expand="block" fill="solid" shape="round" color="success">
+  <ion-button (click)="updateAllBook()" expand="block" fill="solid" shape="round" color="success">
     Mettre à jour
   </ion-button>
 </ion-content>
+
+<ion-content>
+  <ion-textarea placeholder="Enter more information here..." [(ngModel)]="base64"></ion-textarea>
+  <ion-button (click)="pngToJpeg()" expand="block" fill="solid" shape="round" color="success">
+    Convertir
+  </ion-button>
+</ion-content>
+
+<canvas #myCanvas style="margin:auto"></canvas>
