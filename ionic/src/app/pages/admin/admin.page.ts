@@ -10,7 +10,7 @@ import { Book, Entity, Role } from 'src/app/classes/book';
 })
 export class AdminPage implements OnInit {
   @ViewChild('myCanvas', { read: ElementRef, static: true}) canvas: ElementRef<HTMLCanvasElement>;
-  bookId: string = 'GEgu51zOZepVCpeen16E';
+  bookId: string = 'tDQgOj0XWrEpSClmlzoX';
   base64: string;
 
   constructor(
@@ -22,13 +22,13 @@ export class AdminPage implements OnInit {
   }
 
   updateAllBook() {
+    console.log('Cliqué');
     this.firestore.collection('/books').get().toPromise().then(async (collection) => {
-      collection.docs.forEach((doc) => {
+      console.log('C\'est paaaarrrrtiiiiii!!');
+      for (const doc of collection.docs) {
         const id = doc.id;
-        if (doc.data().cat) {
-          this.updateBook(id);
-        }
-      });
+        await this.updateBook(id);
+      }
     });
   }
 
@@ -167,33 +167,30 @@ export class AdminPage implements OnInit {
       }
       // maj img et banner des entitées
       const bookEntities = book.entities;
-      bookEntities.forEach(async (entity) => {
+      for (const entity of bookEntities) {
         for (const att of ['img', 'banner']) {
           if (entity[att]) {
             if (entity[att] !== '' && entity[att].charAt(0) !== 'h') {
               const url: string = await this.uploadImage(entity[att], book.id, '@' + entity.key + '_' + att);
               const ent = entity;
               ent[att] = url;
-              book.setEntity(entity);
+              book.setEntity(ent);
             }
           }
         }
-      });
+      }
+      console.log(book);
       console.log(book.title + ': ' + 'Médias uploadé et indexé');
       // Upload
       const reference = this.firestorage.ref('books/' + bookId + '/book.json');
-      await reference.putString('');
-      const downloadURL = await reference.getDownloadURL().toPromise();
-      book.downloadURL = downloadURL;
       const blob = new Blob([JSON.stringify(book, null, 2)], {type: 'application/json'});
       await reference.put(blob);
+      const downloadURL = await reference.getDownloadURL().toPromise();
+      book.downloadURL = downloadURL;
       console.log(book.title + ': ' + 'Upload effectué');
       // Update Cover
       await this.firestore.collection('books').doc(bookId).set(book.getCover());
       console.log(book.title + ': ' + 'Cover mis à jour');
-      console.log(book);
-
-
 
       // On supprime les sous-collections sauf comments et medias
       // const subCollections = ['chats', 'actors', 'places', 'items', 'roles'];

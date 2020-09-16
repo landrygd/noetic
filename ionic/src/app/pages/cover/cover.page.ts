@@ -145,15 +145,15 @@ export class CoverPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async more() {
-    const alert = await this.alertController.create({
-      header: this.COVER.changeVerso,
-      message: this.bookService.book.verso,
-      buttons: [this.COMMON.ok]
-    });
+  // async more() {
+  //   const alert = await this.alertController.create({
+  //     header: this.COVER.changeVerso,
+  //     message: this.bookService.book.verso,
+  //     buttons: [this.COMMON.ok]
+  //   });
 
-    await alert.present();
-  }
+  //   await alert.present();
+  // }
 
   changeCat(cat) {
     this.bookService.updateBookData({cat});
@@ -344,32 +344,32 @@ export class CoverPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async changeVerso() {
-    const alert = await this.alertController.create({
-      header: this.COVER.changeVerso,
-      inputs: [
-        {
-          name: 'verso',
-          type: 'textarea',
-          placeholder: this.COVER.alertVersoPlaceholder,
-          value: this.bookService.book.verso,
-        }
-      ],
-      buttons: [
-        {
-          text: this.COMMON.cancel,
-          role: 'cancel',
-          cssClass: 'secondary'
-        }, {
-          text: this.COMMON.confirm,
-          handler: (data) => {
-            this.bookService.updateBookData({verso: data.verso});
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
+  // async changeVerso() {
+  //   const alert = await this.alertController.create({
+  //     header: this.COVER.changeVerso,
+  //     inputs: [
+  //       {
+  //         name: 'verso',
+  //         type: 'textarea',
+  //         placeholder: this.COVER.alertVersoPlaceholder,
+  //         value: this.bookService.book.verso,
+  //       }
+  //     ],
+  //     buttons: [
+  //       {
+  //         text: this.COMMON.cancel,
+  //         role: 'cancel',
+  //         cssClass: 'secondary'
+  //       }, {
+  //         text: this.COMMON.confirm,
+  //         handler: (data) => {
+  //           this.bookService.updateBookData({verso: data.verso});
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   await alert.present();
+  // }
 
   async changeCover() {
     if (this.bookService.isAuthor) {

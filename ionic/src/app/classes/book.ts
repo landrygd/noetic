@@ -65,7 +65,6 @@ export class Book {
   language: string;
   category: string;
   description: string;
-  verso: string;
   tags: string[];
   banner: string;
   cover: string;
@@ -91,7 +90,6 @@ export class Book {
     this.author = '';
     this.category = '';
     this.description = '';
-    this.verso = '';
     this.tags = [];
     this.banner = '';
     this.cover = '';
@@ -127,7 +125,6 @@ export class Book {
       language: this.language,
       category: this.category,
       description: this.description,
-      verso: this.verso,
       tags: this.tags,
       banner: this.banner,
       cover: this.cover,
