@@ -377,12 +377,15 @@ export class BookService implements OnDestroy {
 
   loadBook(book = this.book): Promise<Book> {
     return new Promise(async (resolve) => {
-      this.storage.get(book.id).then((res) => {
+      this.storage.get(book.id).then(async (res) => {
         const savedBook = new Book(res);
-        if (book.version <= savedBook.version) {
+        console.log('LOCAL BOOK');
+        console.log(savedBook);
+        if (book.version < savedBook.version) {
           this.book = savedBook;
+          console.log('LOAD');
         } else {
-          this.downloadBook();
+          await this.downloadBook();
         }
         resolve(book);
       }).catch(async () => {
@@ -393,7 +396,7 @@ export class BookService implements OnDestroy {
   }
 
   async downloadBook(url = this.book.downloadURL) {
-    this.book = await this.getBook(url);
+    this.book = new Book(await this.getBook(url));
     this.saveBook(this.book);
   }
 
@@ -419,7 +422,7 @@ export class BookService implements OnDestroy {
     });
   }
 
-  saveBook(book: Book) {
+  saveBook(book: Book = this.book) {
     this.storage.set(book.id, book);
   }
 

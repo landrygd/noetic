@@ -1,4 +1,4 @@
-<div #ref [style.height.px]="height" [style.width.px]="width" style="opacity: 0" class="card">
+<div #ref [style.height.px]="height" [style.width.px]="width" style="opacity: 0" class="card" (click)="loadBook()">
   <ion-card (click)="open()" button class="ion-no-margin">
     <ion-img alt="cover" [src]="book.cover" style="width: 100%" (ionError)="onImgLoadFailed()" *ngIf="!loadFailed" (ionImgDidLoad)="onImgLoaded()"></ion-img>
     <ion-img src="../../../assets/cover/cover1.png" *ngIf="loadFailed"></ion-img>

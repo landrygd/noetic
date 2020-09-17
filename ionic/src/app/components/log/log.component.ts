@@ -4,6 +4,7 @@ import { AnimationService } from 'src/app/services/animation.service';
 import { BookService } from 'src/app/services/book.service';
 import { PopoverController, Platform } from '@ionic/angular';
 import { LogEditComponent } from '../log-edit/log-edit.component';
+import { Entity } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-log',
@@ -21,6 +22,8 @@ export class LogComponent implements OnInit {
   @Input() typing = false;
   @Input() variables = {};
   @Input() actors = {};
+
+  actor: Entity;
 
   @ViewChild('ref', { read: ElementRef, static: true}) ref: ElementRef;
 
@@ -138,5 +141,10 @@ export class LogComponent implements OnInit {
 
   actionEmit(action: string) {
     this.action.emit(action);
+  }
+
+  getActor() {
+    const key = this.msg.split(':')[0].substring(1);
+    this.actor = this.bookService.book.getEntity(key);
   }
 }

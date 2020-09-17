@@ -56,6 +56,16 @@ export class Script {
   name: string;
   messages: string[];
 
+  constructor(options?) {
+    this.name = '';
+    this.messages = [];
+    Object.keys(options).forEach((key) => {
+      if (key in this) {
+        this[key] = options[key];
+      }
+    });
+  }
+
   getCommand(message: string) {
     return message.split(' ')[0];
   }
@@ -166,6 +176,25 @@ export class Book {
     this.medias = [];
     Object.keys(options).forEach((key) => {
       if (key in this) {
+        const res = [];
+        if (key === 'scripts') {
+          options[key].forEach(script => {
+            res.push(new Script(script));
+          });
+          options[key] = res;
+        }
+        if (key === 'entities') {
+          options[key].forEach(script => {
+            res.push(new Entity(script));
+          });
+          options[key] = res;
+        }
+        if (key === 'roles') {
+          options[key].forEach(script => {
+            res.push(new Role(script));
+          });
+          options[key] = res;
+        }
         this[key] = options[key];
       }
     });

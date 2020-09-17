@@ -36,9 +36,9 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   autoScroll = true;
   loaded = false;
   script: Script;
-  logs: string[];
+  messages: string[];
   lastClosed: number;
-  tabs: any[];
+  tabs: any[] = [];
 
   sound = false;
   music = false;
@@ -85,9 +85,11 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     this.shortcuts(event);
   }
 
-  async ngOnInit() {
+  ngOnInit() {
+    this.script = this.bookService.script;
     this.actors = this.bookService.book.getEntities('actor');
-    this.logs = this.script.messages;
+    this.messages = this.script.messages;
+    this.refresh();
     this.historyIndex = this.history.length;
     this.loaded = true;
     setTimeout(() => this.scrollToBottom(), 200);
@@ -232,30 +234,39 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     } else {
       if (this.edittingLog) {
         const index = this.selection[this.selection.length - 1] + 1;
-        this.logs.splice(index, 0, log);
+        this.messages.splice(index, 0, log);
         this.selection = [];
         this.edittingLog = false;
       } else {
         if (this.selection.length === 0) {
-          this.addHistoryAction({action: 'add', index: this.logs.length, logs: [log]});
-          this.logs.push(log);
+          this.addHistoryAction({action: 'add', index: this.messages.length, logs: [log]});
+          this.messages.push(log);
           if (this.text.indexOf('/if') === 0 || this.text.indexOf('/question') === 0) {
-            this.addHistoryAction({action: 'add', index: this.logs.length, logs: [{msg: '/end'}]});
-            this.logs.push('/end');
+            this.addHistoryAction({action: 'add', index: this.messages.length, logs: [{msg: '/end'}]});
+            this.messages.push('/end');
           }
         } else {
           const index = this.selection[this.selection.length - 1] + 1;
-          this.logs.splice(index, 0, log);
+          this.messages.splice(index, 0, log);
           this.selection = [this.selection[this.selection.length - 1] + 1];
         }
       }
     }
-    const res = this.script.getTabs();
-    this.lastClosed = res.lastClosed;
-    this.tabs = res.tabs;
+    this.refresh();
     setTimeout(() => this.scrollToBottom(), 50);
     setTimeout(() => this.text = '', 1);
     this.textarea = false;
+  }
+
+  refresh() {
+    this.script.messages = [...this.messages];
+    const res = this.script.getTabs();
+    this.lastClosed = res.lastClosed;
+    this.tabs = res.tabs;
+  }
+
+  save() {
+    this.bookService.saveBook();
   }
 
   select(event, index) {
@@ -509,7 +520,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     const min = this.selection[0];
     const max = min + this.selection.length;
     const res = [];
-    for (const log of this.logs.slice(min, max)) {
+    for (const log of this.messages.slice(min, max)) {
       res.push(JSON.stringify(log));
     }
     return res.join('%SEP%');
@@ -536,7 +547,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   delete(index = this.selection[0], length = this.selection.length) {
-    const res = this.logs;
+    const res = this.messages;
     const logs = res.slice(index, index + length);
     res.splice(index, length);
     this.addHistoryAction({action: 'delete', index, logs});
@@ -553,19 +564,20 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     }
     let min;
     if (this.selection === []) {
-      min = this.logs.length - 1;
+      min = this.messages.length - 1;
     } else {
       min = this.selection[this.selection.length - 1] + 1;
     }
-    const res = this.logs.slice();
+    const res = this.messages.slice();
     for (const log of logs) {
       res.splice(min, 0, log);
     }
-    this.addHistoryAction({action: 'add', index: this.logs.length, logs});
+    this.addHistoryAction({action: 'add', index: this.messages.length, logs});
     this.update(res);
   }
 
-  update(chat = this.logs) {
+  update(chat = this.messages) {
+    this.bookService.saveBook();
     // this.chatService.setChatLogs(chat);
   }
 
@@ -593,7 +605,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
           break;
         case 'delete':
           const logs = lastModif.logs.reverse();
-          const res = this.logs.slice();
+          const res = this.messages.slice();
           for (const log of logs) {
             res.splice(lastModif.index, 0, log);
           }
@@ -616,13 +628,9 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     this.text = this.script.messages[index];
   }
 
-  save() {
-    this.toast('la sauvegarde est automatique', 'top');
-  }
-
   selectAll() {
     this.selection = [];
-    for (let i = 0; i < this.logs.length; i++) {
+    for (let i = 0; i < this.messages.length; i++) {
       this.selection.push(i);
     }
   }

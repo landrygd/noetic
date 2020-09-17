@@ -50,4 +50,8 @@ export class CardBookComponent implements OnInit {
   onImgLoaded() {
     this.animation.fadeIn(this.ref);
   }
+
+  loadBook() {
+    this.bookService.loadBook(this.book);
+  }
 }

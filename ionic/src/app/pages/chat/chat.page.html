@@ -13,8 +13,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content #bg scrollEvents="true" (ionScrollEnd)="onScroll()" *ngIf="script">
-  <ion-virtual-scroll [items]="script.messages" approxItemHeight="50" *ngIf="script.messages.length > 0">
+<ion-content #bg scrollEvents="true" (ionScrollEnd)="onScroll()">
+  <ion-virtual-scroll [items]="script.messages" approxItemHeight="50" *ngIf="messages.length > 0">
     <ion-row *virtualItem="let msg; let i = index" [style.opacity]="getLogOpacity(i)">
       <ion-col size="0.1" *ngFor="let tab of tabs[i]" class="ion-no-padding">
         <div class="verticalLine" [ngStyle]="{ 'background-color': tabColor }"></div>
