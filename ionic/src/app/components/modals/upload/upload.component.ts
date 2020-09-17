@@ -3,11 +3,9 @@ import { ModalController } from '@ionic/angular';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { UserService } from 'src/app/services/user.service';
 import { BookService } from 'src/app/services/book.service';
-import { ActorService } from 'src/app/services/book/actor.service';
 import { PopupService } from 'src/app/services/popup.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { PlaceService } from 'src/app/services/book/place.service';
 
 @Component({
   selector: 'app-upload',
@@ -39,10 +37,8 @@ export class UploadComponent implements OnInit, OnDestroy {
     private modalController: ModalController,
     public userService: UserService,
     public bookService: BookService,
-    public actorService: ActorService,
     private popupService: PopupService,
     private translator: TranslateService,
-    private placeService: PlaceService
   ) { }
 
   async ngOnInit() {
@@ -97,7 +93,7 @@ export class UploadComponent implements OnInit, OnDestroy {
       this.userService.uploadAvatar(this.file);
     }
     if (this.type === 'actorAvatar') {
-      this.actorService.uploadAvatar(this.file, this.fileId);
+      // this.actorService.uploadAvatar(this.file, this.fileId);
     }
     switch (this.type) {
       case 'userAvatar':

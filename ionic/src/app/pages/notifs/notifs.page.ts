@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { NotifService } from 'src/app/services/user/notif.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -14,7 +13,6 @@ export class NotifsPage implements OnInit {
   ];
 
   constructor(
-    public notifService: NotifService,
     public userService: UserService
     ) { }
 
@@ -26,7 +24,7 @@ export class NotifsPage implements OnInit {
   }
 
   accept(notif) {
-    this.notifService.acceptInvitation(notif.user, notif.book);
+    // this.notifService.acceptInvitation(notif.user, notif.book);
     this.erase(notif);
   }
 
@@ -35,7 +33,7 @@ export class NotifsPage implements OnInit {
   }
 
   erase(notif) {
-    this.notifService.eraseNotif(notif.id);
+    // this.notifService.eraseNotif(notif.id);
   }
 
 }

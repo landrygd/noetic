@@ -1,6 +1,5 @@
 import { ModalController } from '@ionic/angular';
 import { BookService } from 'src/app/services/book.service';
-import { ActorService } from 'src/app/services/book/actor.service';
 import { Component, OnInit } from '@angular/core';
 import { EntityModalComponent } from 'src/app/components/modals/entity-modal/entity-modal.component';
 
@@ -11,20 +10,25 @@ import { EntityModalComponent } from 'src/app/components/modals/entity-modal/ent
 })
 export class ActorsPage implements OnInit {
 
+  actors: any[];
+
   constructor(
     public bookService: BookService,
-    private modalController: ModalController,
-    private actorService: ActorService
+    private modalController: ModalController
     ) { }
 
-  ngOnInit() {
+    ngOnInit() {
+      this.refresh();
+    }
 
-  }
+    refresh() {
+      this.actors = this.bookService.book.getEntities('actor');
+    }
 
-  async viewProfile(actorId: string) {
+  async viewProfile(key: string) {
     const modal = await this.modalController.create({
     component: EntityModalComponent,
-    componentProps: { id: actorId, collection: 'actors' }
+    componentProps: { key, collection: 'actors' }
     });
     await modal.present();
   }

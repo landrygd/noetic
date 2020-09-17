@@ -1,10 +1,7 @@
 import { Component, OnInit, Input, Output, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { AnimationService } from 'src/app/services/animation.service';
-import { ActorService } from 'src/app/services/book/actor.service';
-import { ChatService } from 'src/app/services/book/chat.service';
 import { BookService } from 'src/app/services/book.service';
-import { ThemeService } from 'src/app/services/theme.service';
 import { PopoverController, Platform } from '@ionic/angular';
 import { LogEditComponent } from '../log-edit/log-edit.component';
 
@@ -51,9 +48,7 @@ export class LogComponent implements OnInit {
   cardClass = 'not-editing-card';
 
   constructor(
-    private actorService: ActorService,
     public animation: AnimationService,
-    public chatService: ChatService,
     public bookService: BookService,
     private popoverController: PopoverController,
     private plat: Platform
@@ -84,7 +79,7 @@ export class LogComponent implements OnInit {
       this.button = 'Quitter';
       this.actionName = 'finish';
     }
-    this.ownPlayer = this.actorService.isOwnActor(this.actorId);
+    this.ownPlayer = true; // this.actorService.isOwnActor(this.actorId);
     if (this.ownPlayer) {
         this.msgSlot = 'end';
     }
@@ -117,7 +112,7 @@ export class LogComponent implements OnInit {
   }
 
   delete() {
-    this.chatService.deleteChatLog(this.index);
+    // this.chatService.deleteChatLog(this.index);
   }
 
   async logEdit(ev: any) {

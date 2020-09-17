@@ -37,7 +37,7 @@
       <ion-icon slot="start" name="flag"></ion-icon>
       <ion-label>{{'BOOKSETTINGS.mainChat' | translate}}</ion-label>
       <ion-select [value]="bookService.book.setup.main" [placeholder]="'BOOKSETTINGS.selectMainChat' | translate" (ionChange)="changeMainChat($event.detail.value)">
-        <ion-select-option [value]="chat.id" *ngFor="let chat of bookService.chats">{{chat.name}}</ion-select-option>
+        <ion-select-option [value]="script.name" *ngFor="let script of bookService.book.scripts">{{script.name}}</ion-select-option>
       </ion-select>
     </ion-item>
     <!-- <ion-item button (click)="delete()">

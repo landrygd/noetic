@@ -1,4 +1,3 @@
-import { PlaceService } from './../../services/book/place.service';
 import { Component, OnInit } from '@angular/core';
 import { BookService } from 'src/app/services/book.service';
 import { ModalController } from '@ionic/angular';
@@ -11,23 +10,31 @@ import { EntityModalComponent } from 'src/app/components/modals/entity-modal/ent
 })
 export class PlacesPage implements OnInit {
 
+  places: any[];
+
   constructor(
-    public placeService: PlaceService,
     public bookService: BookService,
     private modalController: ModalController
   ) { }
 
   ngOnInit() {
+    this.refresh();
+  }
+
+  refresh() {
+    this.places = this.bookService.book.getEntities('place');
+    console.log(this.places);
+    console.log(this.bookService.book);
   }
 
   newPlace() {
     this.bookService.newEntity('places', {items: []});
   }
 
-  async showPlace(id: string) {
+  async showPlace(key: string) {
     const modal = await this.modalController.create({
     component: EntityModalComponent,
-    componentProps: {collection: 'places', id}
+    componentProps: {collection: 'places', key}
     });
     await modal.present();
   }

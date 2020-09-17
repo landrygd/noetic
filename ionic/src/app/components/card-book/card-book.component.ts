@@ -9,7 +9,7 @@ import { Book } from 'src/app/classes/book';
   templateUrl: './card-book.component.html',
   styleUrls: ['./card-book.component.scss'],
 })
-export class CardBookComponent implements OnInit, AfterViewInit {
+export class CardBookComponent implements OnInit {
 
   @Input() book: Book;
 
@@ -27,6 +27,7 @@ export class CardBookComponent implements OnInit, AfterViewInit {
   desc: string;
   cover = '../../../assets/cover/cover1.png';
   async = false;
+  loadFailed = false;
 
   constructor(
     public bookService: BookService,
@@ -37,11 +38,16 @@ export class CardBookComponent implements OnInit, AfterViewInit {
     this.width = this.height * 9 / 16;
   }
 
-  ngAfterViewInit() {
-    this.animation.fadeIn(this.ref);
-  }
-
   open() {
     this.bookService.showBook(this.book);
+  }
+
+  onImgLoadFailed() {
+    this.loadFailed = true;
+    this.onImgLoaded();
+  }
+
+  onImgLoaded() {
+    this.animation.fadeIn(this.ref);
   }
 }

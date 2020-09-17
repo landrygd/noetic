@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController, ModalController, ToastController, NavController } from '@ionic/angular';
 import { SearchUserComponent } from 'src/app/components/modals/search-user/search-user.component';
 import { BookService } from 'src/app/services/book.service';
-import { NotifService } from 'src/app/services/user/notif.service';
 import { WallpapersSearchComponent } from 'src/app/components/modals/wallpapers-search/wallpapers-search.component';
 import { PopupService } from 'src/app/services/popup.service';
 import { UserService } from 'src/app/services/user.service';
@@ -26,7 +25,6 @@ export class SettingsBookPage implements OnInit, OnDestroy {
     public alertController: AlertController,
     public bookService: BookService,
     private toastController: ToastController,
-    public notifService: NotifService,
     public popupService: PopupService,
     public navController: NavController,
     private userService: UserService,
@@ -186,7 +184,7 @@ export class SettingsBookPage implements OnInit, OnDestroy {
       .then((data) => {
         const userId = data.data.userId;
         if (userId !== '') {
-          this.notifService.inviteBook(userId, this.bookService.curBookId);
+          // this.notifService.inviteBook(userId, this.bookService.curBookId);
           this.toast(this.BOOKSETTINGS.invitationSent);
         }
     });

@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{chatService.chat.name}}</ion-title>
+    <ion-title>{{script.name}}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="debug()" expand="block" fill="solid" color="primary" shape="round">
         {{'CHAT.test' | translate}}
@@ -13,10 +13,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content #bg scrollEvents="true" (ionScrollEnd)="onScroll()" *ngIf="chat">
-  <ion-virtual-scroll [items]="chat.logs" approxItemHeight="50" *ngIf="chat.logs.length > 0">
+<ion-content #bg scrollEvents="true" (ionScrollEnd)="onScroll()" *ngIf="script">
+  <ion-virtual-scroll [items]="script.messages" approxItemHeight="50" *ngIf="script.messages.length > 0">
     <ion-row *virtualItem="let msg; let i = index" [style.opacity]="getLogOpacity(i)">
-      <ion-col size="0.1" *ngFor="let tab of chatService.tabs[i]" class="ion-no-padding">
+      <ion-col size="0.1" *ngFor="let tab of tabs[i]" class="ion-no-padding">
         <div class="verticalLine" [ngStyle]="{ 'background-color': tabColor }"></div>
       </ion-col>
       <ion-col class="ion-no-margin colMsg">
@@ -26,7 +26,7 @@
     </ion-row>
   </ion-virtual-scroll>
 
-  <div style="width: 100%; height: 100%;" class="center" *ngIf="chat.logs.length === 0">
+  <div style="width: 100%; height: 100%;" class="center" *ngIf="script.messages.length === 0">
     <ion-text color="medium">
       <p> {{'CHAT.voidChat' | translate}}</p>
     </ion-text>
@@ -49,9 +49,9 @@
       <ion-fab-button (click)="manual()">
         <ion-icon name="terminal"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button (click)="settings()">
+      <!-- <ion-fab-button (click)="settings()">
         <ion-icon name="settings"></ion-icon>
-      </ion-fab-button>
+      </ion-fab-button> -->
     </ion-fab-list>
   </ion-fab>
 </ion-content>
@@ -69,13 +69,13 @@
     {{'CHAT.avaibleAmbiances' | translate}}
   </ion-button>
   <ion-toolbar style="padding: 5px">
-    <ion-button (click)="newActor()" expand="block" fill="clear" shape="round" *ngIf="bookService.actors.length === 0">
+    <ion-button (click)="newActor()" expand="block" fill="clear" shape="round" *ngIf="actors.length === 0">
       {{'CHAT.addActor' | translate}}
     </ion-button>
-    <ion-slides [options]="slides.avatarOpts" *ngIf="bookService.actors.length > 0">
-      <ion-slide *ngFor="let actor of bookService.actors">
-        <div [ngClass]="getClassFabActor(actor.id)">
-          <app-avatar (click)="setActor(actor.id)" [id]="actor.id"></app-avatar>
+    <ion-slides [options]="slides.avatarOpts" *ngIf="actors.length > 0">
+      <ion-slide *ngFor="let actor of actors">
+        <div [ngClass]="getClassFabActor(actor.key)">
+          <!-- <app-avatar (click)="setActor(actor.key)" [id]="actor.key"></app-avatar> -->
           <p class="note">{{actor.name}}</p>
         </div>
       </ion-slide>

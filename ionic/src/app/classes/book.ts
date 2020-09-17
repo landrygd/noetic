@@ -29,6 +29,9 @@ export class Entity {
   key: string;
   roles: string[];
   banner: string;
+  items: string[];
+  description: string;
+  places: string[];
 
   constructor(options?) {
     this.name = '';
@@ -38,6 +41,9 @@ export class Entity {
     this.key = '';
     this.roles = [];
     this.banner = '';
+    this.items = [];
+    this.places = [];
+    this.description = '';
     Object.keys(options).forEach((key) => {
       if (key in this) {
         this[key] = options[key];
@@ -48,7 +54,56 @@ export class Entity {
 
 export class Script {
   name: string;
-  content: string;
+  messages: string[];
+
+  getCommand(message: string) {
+    return message.split(' ')[0];
+  }
+
+  getTabs() {
+    let cpt = 0;
+    const tabs = [];
+    let before = 0;
+    for (const msg of this.messages) {
+      if (before > 0) {
+        cpt += before;
+        before -= 1;
+      }
+      if (['/question', '/if'].includes(this.getCommand(msg))) {
+        if (cpt < 5) {
+          before += 1;
+        }
+      }
+      if (this.getCommand(msg) === '/end') {
+        if (cpt > 0) {
+          cpt -= 1;
+        }
+      }
+      tabs.push(new Array(cpt));
+    }
+    let lastClosed = this.messages.length;
+    if (cpt > 0) {
+      // before = 0;
+      for (let i = this.messages.length - 1; i >= 0; i--) {
+        const msg = this.messages[i];
+        // if (before < 0) {
+        //   cpt += before;
+        //   before += 1;
+        // }
+        if (['/question', '/if'].includes(this.getCommand(msg))) {
+          cpt -= 1;
+        }
+        if (this.getCommand(msg) === '/end') {
+          cpt += 1;
+        }
+        if (cpt <= 0) {
+          lastClosed = i;
+          break;
+        }
+      }
+    }
+    return {tabs, lastClosed};
+  }
 }
 
 export class Media {
@@ -172,20 +227,20 @@ export class Book {
     return name;
   }
 
-  getEntity(key: string) {
-    return this.entities.filter((value) => value.key = key)[0];
+  getEntity(key: string): Entity {
+    return this.entities.filter((value) => value.key === key)[0];
   }
 
   addScript(script) {
     this.scripts.push(script);
   }
 
-  getScript(name): {name: string, content: string} {
-    return this.scripts.filter((value) => value.name = name)[0];
+  getScript(name): Script {
+    return this.scripts.filter((value) => value.name === name)[0];
   }
 
-  getEntities(type): Entity[] {
-    return this.entities.filter((value) => value.type = type);
+  getEntities(type: string): Entity[] {
+    return this.entities.filter((value) => value.type === type);
   }
 
   setEntity(entity: Entity) {
@@ -208,5 +263,31 @@ export class Book {
       }
     }
     this.scripts[i] = script;
+  }
+
+  isAuthor(userId): boolean {
+    return this.author === userId;
+  }
+
+  haveScript(name: string): boolean {
+    return this.scripts.filter((value) => value.name === name).length > 0;
+  }
+
+  deleteScript(name) {
+    for (let i = 0; i < this.scripts.length; i++) {
+      const script = this.scripts[i];
+      if (script.name === name) {
+        this.scripts.splice(i, 1);
+      }
+    }
+  }
+
+  deleteEntity(key) {
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+      if (entity.key === key) {
+        this.entities.splice(i, 1);
+      }
+    }
   }
 }

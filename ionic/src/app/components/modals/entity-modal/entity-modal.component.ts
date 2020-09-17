@@ -2,13 +2,12 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { UploadComponent } from '../upload/upload.component';
 import { Subscription } from 'rxjs';
 import { ModalController, AlertController, ActionSheetController } from '@ionic/angular';
-import { ActorService } from 'src/app/services/book/actor.service';
 import { BookService } from 'src/app/services/book.service';
 import { TranslateService } from '@ngx-translate/core';
-import { PlaceService } from 'src/app/services/book/place.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { PopupService } from 'src/app/services/popup.service';
 import { IdFinderComponent } from '../id-finder/id-finder.component';
+import { Entity } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-entity-modal',
@@ -17,7 +16,7 @@ import { IdFinderComponent } from '../id-finder/id-finder.component';
 })
 export class EntityModalComponent implements OnInit, OnDestroy {
   @Input() collection: string;
-  @Input() id: string;
+  @Input() key: string;
 
   ENTITY: any = {};
   PROFILE: any = {};
@@ -31,33 +30,17 @@ export class EntityModalComponent implements OnInit, OnDestroy {
 
   actor: any;
 
+  entity: Entity;
+
   isAuthor = false;
 
   icon: string;
-
-  entity: {
-      id: string,
-      name: string,
-      desc: string,
-      type: string,
-      roles: string[],
-      key: string,
-      color: string,
-      pos: string,
-      items: string[],
-      variables: {
-        type: string,
-        value: any
-      }[],
-      actions: any[]
-    };
   roles: any;
 
   items = [];
 
   constructor(
     private modalController: ModalController,
-    private actorService: ActorService,
     public bookService: BookService,
     private alertController: AlertController,
     private translator: TranslateService,
@@ -67,8 +50,6 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     ) {
       this.isAuthor = this.bookService.isAuthor;
     }
-
-  color: string;
 
   ngOnInit() {
     this.getTraduction();
@@ -91,9 +72,8 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
   update() {
-    this.entity = this.bookService.entities[this.id];
-    this.getColor(this.entity);
-    this.items = this.bookService.getEntitiesByValues({pos: this.id});
+    this.entity = this.bookService.book.getEntity(this.key);
+    this.items = this.entity.items;
     this.roles = this.bookService.getRoles(this.entity.roles);
     switch (this.collection) {
       case 'places':
@@ -117,11 +97,11 @@ export class EntityModalComponent implements OnInit, OnDestroy {
 
 
   changeName() {
-    this.bookService.updateFieldEntity(this.id, this.collection, ['name']);
+    // this.bookService.updateFieldEntity(this.key, this.collection, ['name']);
   }
 
   changeDesc() {
-    this.bookService.updateFieldEntity(this.id, this.collection, ['desc']);
+    // this.bookService.updateFieldEntity(this.key, this.collection, ['desc']);
   }
 
   async dismiss() {
@@ -148,7 +128,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
       component: UploadComponent,
       componentProps: {
         type,
-        fileId: this.id
+        fileId: this.key
       }
     });
     return await modal.present();
@@ -166,7 +146,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
         text: color,
         cssClass: color,
         handler: () => {
-          this.bookService.updateEntity(this.id, this.collection, {color}).then(() => this.update());
+          this.bookService.updateEntity(this.key, this.collection, {color}).then(() => this.update());
         }
       });
     }
@@ -197,16 +177,16 @@ export class EntityModalComponent implements OnInit, OnDestroy {
           handler: async () => {
             switch (this.collection) {
               // case 'actors':
-              //   await this.bookService.deleteEntity(this.id, 'actors');
+              //   await this.bookService.deleteEntity(this.key, 'actors');
               //   break;
               // case 'items':
-              //   await this.bookService.deleteEntity(this.id, 'items');
+              //   await this.bookService.deleteEntity(this.key, 'items');
               //   break;
               // case 'places':
-              //   await this.bookService.deleteEntity(this.id, 'places');
+              //   await this.bookService.deleteEntity(this.key, 'places');
               //   break;
               // case 'roles':
-              //   await this.bookService.deleteEntity(this.id, 'roles');
+              //   await this.bookService.deleteEntity(this.key, 'roles');
               //   break;
             }
             await this.dismiss();
@@ -217,25 +197,25 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  getColor(actor) {
-    if (actor.color) {
-      let color = actor.color;
-      if (color === 'light') {
-        color = 'dark';
-      }
-      this.color = color;
-    } else {
-      this.color = 'dark';
-    }
-  }
+  // getColor(actor) {
+  //   if (actor.color) {
+  //     let color = actor.color;
+  //     if (color === 'light') {
+  //       color = 'dark';
+  //     }
+  //     this.color = color;
+  //   } else {
+  //     this.color = 'dark';
+  //   }
+  // }
 
   addItem() {
     const id = this.firestore.createId();
-    this.bookService.newEntity('items', {pos: this.id}, id).then(async () => {
+    this.bookService.newEntity('items', {pos: this.key}, id).then(async () => {
       const items = this.entity.items;
       if (!this.items.includes(id)) {
         items.push(id);
-        await this.bookService.updateEntity(this.id, this.collection, {items});
+        await this.bookService.updateEntity(this.key, this.collection, {items});
       }
       this.update();
     });
@@ -424,7 +404,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
   addRole() {
-    this.bookService.newEntity('roles', {}, '', this.id, this.collection).then(() => this.update());
+    this.bookService.newEntity('roles', {}, '', this.key, this.collection).then(() => this.update());
   }
 
   removeRole(roleId) {
@@ -455,9 +435,9 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
   changeVariable(varName, varValue) {
-    const variables = this.bookService.entities[this.id].variables;
+    const variables = this.bookService.entities[this.key].variables;
     variables[varName] = varValue;
-    this.bookService.updateEntity(this.id, this.collection, {variables});
+    this.bookService.updateEntity(this.key, this.collection, {variables});
   }
 
   async changeChat(roleId, actionName) {
@@ -479,27 +459,27 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   async addPlace() {
     const modal = await this.modalController.create({
     component: IdFinderComponent,
-    componentProps: { collection  : 'places', exclude : [this.id] }
+    componentProps: { collection  : 'places', exclude : [this.key] }
     });
 
     modal.onDidDismiss().then((data: any) => {
       const place = data.data.id;
       if (place) {
-        let places: string[] = this.bookService.entities[this.id].places;
+        let places: string[] = this.bookService.entities[this.key].places;
         if (!places) {
           places = [];
         }
         if (!places.includes(place)) {
           places.push(place);
         }
-        this.bookService.updateEntity(this.id, 'places', {places});
+        this.bookService.updateEntity(this.key, 'places', {places});
 
         places = this.bookService.entities[place].places;
         if (!places) {
           places = [];
         }
-        if (!places.includes(this.id)) {
-          places.push(this.id);
+        if (!places.includes(this.key)) {
+          places.push(this.key);
         }
         this.bookService.updateEntity(place, 'places', {places});
       }
@@ -508,7 +488,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
   deletePlace(placeId: string) {
-    const places: string[] = this.bookService.entities[this.id].places;
+    const places: string[] = this.bookService.entities[this.key].places;
     for (let i = 0; i < places.length; i++) {
       const id = places[i];
       if (id === placeId) {
@@ -516,12 +496,12 @@ export class EntityModalComponent implements OnInit, OnDestroy {
         break;
       }
     }
-    this.bookService.updateEntity(this.id, 'places', {places});
+    this.bookService.updateEntity(this.key, 'places', {places});
 
     const places2: string[] = this.bookService.entities[placeId].places;
     for (let i = 0; i < places.length; i++) {
       const id = places[i];
-      if (id === this.id) {
+      if (id === this.key) {
         places.splice(i, 1);
         break;
       }

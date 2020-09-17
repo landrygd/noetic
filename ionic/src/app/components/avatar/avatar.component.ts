@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ActorService } from 'src/app/services/book/actor.service';
 import { ModalController } from '@ionic/angular';
 import { BookService } from 'src/app/services/book.service';
 import { EntityModalComponent } from '../modals/entity-modal/entity-modal.component';
+import { Entity } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-avatar',
@@ -12,35 +12,31 @@ import { EntityModalComponent } from '../modals/entity-modal/entity-modal.compon
 
 export class AvatarComponent implements OnInit {
 
-  @Input() id: string;
+  @Input() key: string;
   @Input() enabled = false;
   @Input() height = 40;
   @Input() collection = 'actors';
 
   actor: string;
 
+  entity: Entity;
+
   constructor(
-    public actorService: ActorService,
     public bookService: BookService,
     private modalController: ModalController
     ) {
   }
 
-  ngOnInit() {}
-
-  getColor(id: string) {
-    if (this.bookService.entities[id].color) {
-      return this.bookService.entities[id].color;
-    } else {
-      return 'medium';
-    }
+  ngOnInit() {
+    this.entity = this.bookService.book.getEntity(this.key);
   }
 
-  async viewProfile(id: string = this.id) {
+  async viewProfile() {
+    console.log(this.key);
     if (this.enabled) {
       const modal = await this.modalController.create({
       component: EntityModalComponent,
-      componentProps: { id, collection: this.collection }
+      componentProps: { key: this.key, collection: this.collection }
       });
       await modal.present();
     }

@@ -1,7 +1,7 @@
-<ion-fab-button size="small" [color]="getColor(id)" (click)="viewProfile()" *ngIf="bookService.entities[id] as entity" 
+<ion-fab-button size="small" [color]="entity.color" (click)="viewProfile()"
 [style.width.px]="height" [style.height.px]="height" [style.font-size.px]="height/2" class="ion-no-margin">
-  <ion-avatar *ngIf="entity.avatar" style="width: 100%; height: 100%;">
-    <img [alt]="getInitial(entity.name)" [src]="entity.avatar" style="width: 100%; height: 100%;"/>
+  <ion-avatar *ngIf="entity.img" style="width: 100%; height: 100%;">
+    <ion-img [src]="entity.img" [alt]="getInitial(entity.name)" style="width: 100%; height: 100%;"></ion-img>
   </ion-avatar>
-  <ion-label *ngIf="!entity.avatar">{{getInitial(entity.name)}}</ion-label>
+  <ion-label *ngIf="!entity.img">{{getInitial(entity.name)}}</ion-label>
 </ion-fab-button>

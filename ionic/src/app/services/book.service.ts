@@ -7,7 +7,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import { UserService } from './user.service';
 import { PopupService } from './popup.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Book } from '../classes/book';
+import { Book, Script } from '../classes/book';
 import { Storage } from '@ionic/storage';
 
 @Injectable({
@@ -32,17 +32,19 @@ export class BookService implements OnDestroy {
   // bookItemSub: Subscription;
   // bookRoleSub: Subscription;
 
-  chats: any[] = [];
-  actors: any[] = [];
-  places: any[] = [];
-  items: any[] = [];
-  roles: any[] = [];
+  // chats: any[] = [];
+  // actors: any[] = [];
+  // places: any[] = [];
+  // items: any[] = [];
+  // roles: any[] = [];
 
   BOOK: any;
   COMMON: any;
   ERRORS: any;
   bookTradSub: Subscription;
   commonSub: Subscription;
+
+  script: Script;
 
   actorsById: any = {};
   entities: {} = {}; // by id
@@ -130,66 +132,59 @@ export class BookService implements OnDestroy {
     this.navCtrl.navigateForward('book/' + book.id);
   }
 
-  async openChat(chatId) {
-    this.curChatId = chatId;
-    await this.popupService.loading();
-    await this.navCtrl.navigateForward('chat');
-    this.popupService.loadingDismiss();
+  openScript(scriptName) {
+    this.script = this.book.getScript(scriptName);
+    this.navCtrl.navigateForward('chat');
   }
 
-  async newBook(book: Book) {
-    await this.popupService.loading(this.COMMON.loading, 'creation');
-    // Ajouter l'id référant dans user
-    this.userService.addBookRef(book.id);
-    // Créer le livre, l'ouvir et y ajouter un chat
-    this.firestore.collection('/books').doc(book.id).set(book.getCover()).then(async () => {
-      // Upload le cover si une image est chargée
-      await this.navCtrl.pop().then( async () => {
-        await this.showBook(book);
-        await this.openBook(book.id);
-        await this.popupService.loadingDismiss('creation');
-        this.addChat('main', true);
-      }).catch((err) => this.popupService.error(err));
-      }
-    ).catch((err) => this.popupService.error(err));
-  }
+  // async newBook(book: Book) {
+  //   await this.popupService.loading(this.COMMON.loading, 'creation');
+  //   // Ajouter l'id référant dans user
+  //   this.userService.addBookRef(book.id);
+  //   // Créer le livre, l'ouvir et y ajouter un chat
+  //   this.firestore.collection('/books').doc(book.id).set(book.getCover()).then(async () => {
+  //     // Upload le cover si une image est chargée
+  //     await this.navCtrl.pop().then( async () => {
+  //       await this.showBook(book);
+  //       await this.openBook(book.id);
+  //       await this.popupService.loadingDismiss('creation');
+  //       this.addChat('main', true);
+  //     }).catch((err) => this.popupService.error(err));
+  //     }
+  //   ).catch((err) => this.popupService.error(err));
+  // }
 
-  async newChat() {
-    await this.popupService.loading();
-    const size = await this.getChatsSize();
-    await this.popupService.loadingDismiss();
-    if (!(size > 10000000)) {
-      const alert = await this.alertController.create({
-        header: this.BOOK.addChat,
-        inputs: [
-          {
-            name: 'name',
-            type: 'text',
-            placeholder: this.BOOK.chatName
-          }
-        ],
-        buttons: [
-          {
-            text: this.COMMON.cancel,
-            role: 'cancel',
-            cssClass: 'secondary'
-          }, {
-            text: this.COMMON.create,
-            handler: (data) => {
-              if (data.name) {
-                this.addChat(data.name);
-              } else {
-                this.popupService.toast(this.BOOK.chatNameError);
-              }
-            }
-          }
-        ]
-      });
-      await alert.present();
-    } else {
-      this.popupService.alert(this.BOOK.newChatError);
-    }
-  }
+  // async newChat() {
+  //   await this.popupService.loading();
+  //   await this.popupService.loadingDismiss();
+  //   const alert = await this.alertController.create({
+  //     header: this.BOOK.addChat,
+  //     inputs: [
+  //       {
+  //         name: 'name',
+  //         type: 'text',
+  //         placeholder: this.BOOK.chatName
+  //       }
+  //     ],
+  //     buttons: [
+  //       {
+  //         text: this.COMMON.cancel,
+  //         role: 'cancel',
+  //         cssClass: 'secondary'
+  //       }, {
+  //         text: this.COMMON.create,
+  //         handler: (data) => {
+  //           if (data.name) {
+  //             this.addChat(data.name);
+  //           } else {
+  //             this.popupService.toast(this.BOOK.chatNameError);
+  //           }
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   await alert.present();
+  // }
 
   getEntitiesCollection(collection) {
     const res = {};
@@ -214,44 +209,23 @@ export class BookService implements OnDestroy {
     return res;
   }
 
-  async getChatsSize() {
-    let size = 0;
-    this.chats.forEach(chat => {
-      chat.logs.forEach(log => {
-        size += log.msg.length;
-      });
-    });
-    return size;
-  }
-
-  addChat(chatName , main = false) {
-    if (chatName.toUpperCase() === 'MAIN' && !main) {
-      this.popupService.toast(this.BOOK.chatReservedNameError);
-      return;
-    }
-    if (this.haveChat(chatName)) {
-      this.popupService.toast(this.BOOK.chatUsedNameError);
-      return;
-    }
-    let id = 'main';
-    if (!main) {
-      id = this.firestore.createId();
-    }
-    if (!this.chats.includes(chatName)) {
-      this.firestore.collection('/books').doc(this.curBookId).collection('chats').doc(id).set({id, name: chatName, logs: []}).then(
-        () => this.openChat(id)
-      ).catch((err) => this.popupService.error(err));
-    }
-  }
-
-  haveChat(chatName: string): boolean {
-    for (const chat of this.chats) {
-      if (chat.name.toUpperCase() === chatName.toUpperCase()) {
-        return true;
-      }
-    }
-    return false;
-  }
+  // addScript(scriptName , main = false) {
+  //   if (scriptName.toUpperCase() === 'MAIN' && !main) {
+  //     this.popupService.toast(this.BOOK.chatReservedNameError);
+  //     return;
+  //   }
+  //   if (this.book.haveScript(scriptName)) {
+  //     this.popupService.toast(this.BOOK.chatUsedNameError);
+  //     return;
+  //   }
+  //   let id = 'main';
+  //   if (!main) {
+  //     id = this.firestore.createId();
+  //   }
+  //   if (!this.book.haveScript(scriptName)) {
+  //     // TODO
+  //   }
+  // }
 
   // uploadCover(file, bookId = this.curBookId) {
   //   return new Promise((resolve, reject) => {

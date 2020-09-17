@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BookService } from 'src/app/services/book.service';
 
 @Component({
@@ -6,24 +6,16 @@ import { BookService } from 'src/app/services/book.service';
   templateUrl: './story.page.html',
   styleUrls: ['./story.page.scss'],
 })
-export class StoryPage implements OnInit {
-
-  chats: any[];
-
+export class StoryPage {
   constructor(
     public bookService: BookService
-    ) {
-      this.chats = this.bookService.chats;
-  }
-
-  ngOnInit() {
-  }
+    ) {}
 
   addChat() {
-    this.bookService.newChat();
+    // this.bookService.newChat();
   }
 
-  openChat(chatId) {
-    this.bookService.openChat(chatId);
+  openScript(scriptName) {
+    this.bookService.openScript(scriptName);
   }
 }

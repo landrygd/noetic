@@ -4,10 +4,10 @@
 </ion-header>
 
 <ion-content>
-<ion-item *ngFor="let chat of bookService.chats" button details (click)="openChat(chat.id)">
-  <ion-icon slot="start" name="chatbox" *ngIf="chat.id !== bookService.book.setup.main"></ion-icon>
-  <ion-icon slot="start" name="flag" color="success" *ngIf="chat.id === bookService.book.setup.main"></ion-icon>
-  <ion-label>{{chat.name}}</ion-label>
+<ion-item *ngFor="let script of bookService.book.scripts" button details (click)="openScript(script.name)">
+  <ion-icon slot="start" name="chatbox" *ngIf="script.name !== bookService.book.setup.main"></ion-icon>
+  <ion-icon slot="start" name="flag" color="success" *ngIf="script.name === bookService.book.setup.main"></ion-icon>
+  <ion-label>{{script.name}}</ion-label>
 </ion-item>
 </ion-content>
 

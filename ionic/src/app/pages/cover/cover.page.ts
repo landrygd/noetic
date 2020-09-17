@@ -2,13 +2,13 @@ import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/co
 import { NavController, ToastController, AlertController, ModalController } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
 import { BookService } from 'src/app/services/book.service';
-import { CommentService } from 'src/app/services/book/comment.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { PopupService } from 'src/app/services/popup.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { Book } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-cover',
@@ -55,6 +55,8 @@ export class CoverPage implements OnInit, OnDestroy {
 
   verso = false;
 
+  book: Book = new Book();
+
   @ViewChild('banner', {static: true, read: ElementRef}) banner: ElementRef;
 
   constructor(
@@ -64,7 +66,6 @@ export class CoverPage implements OnInit, OnDestroy {
     public authService: AuthService,
     public userService: UserService,
     public bookService: BookService,
-    public commentService: CommentService,
     private modalController: ModalController,
     private popupService: PopupService,
     private route: ActivatedRoute,
@@ -94,6 +95,7 @@ export class CoverPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    this.book = this.bookService.book;
     // const bookId = this.route.snapshot.paramMap.get('id');
     // this.curBookId = bookId;
     // if (this.bookService.curBookId !== bookId) {
@@ -137,7 +139,7 @@ export class CoverPage implements OnInit, OnDestroy {
         }, {
           text: this.COMMON.send,
           handler: (data) => {
-            this.commentService.answerToComment(this.bookService.book.id, userId, data.answer);
+            // this.commentService.answerToComment(this.bookService.book.id, userId, data.answer);
           }
         }
       ]
@@ -168,12 +170,12 @@ export class CoverPage implements OnInit, OnDestroy {
   }
 
   back() {
-    this.commentService.unsyncComments();
-    if (this.haveCommentedSub) {
-      if (!this.haveCommentedSub.closed) {
-        this.haveCommentedSub.unsubscribe();
-      }
-    }
+    // this.commentService.unsyncComments();
+    // if (this.haveCommentedSub) {
+    //   if (!this.haveCommentedSub.closed) {
+    //     this.haveCommentedSub.unsubscribe();
+    //   }
+    // }
     this.bookService.curBookId = '';
   }
 

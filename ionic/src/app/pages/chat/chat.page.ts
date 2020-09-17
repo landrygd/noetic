@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild, AfterViewInit, ElementRef, OnDestroy, HostListener } from '@angular/core';
 import { ModalController, IonContent, ActionSheetController, AlertController,
          IonTextarea, PopoverController, Platform, ToastController } from '@ionic/angular';
-import { ChatService } from 'src/app/services/book/chat.service';
 import { PopupService } from 'src/app/services/popup.service';
 import { BookService } from 'src/app/services/book.service';
-import { ActorService } from 'src/app/services/book/actor.service';
 import { SlidesService } from 'src/app/services/slides.service';
 import { MediaService } from 'src/app/services/media.service';
 import { ManualComponent } from 'src/app/components/modals/manual/manual.component';
@@ -16,6 +14,7 @@ import { ThemeService } from 'src/app/services/theme.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import Commands from '../../../assets/json/commands.json';
 import { AudioListComponent } from 'src/app/components/modals/audio-list/audio-list.component';
+import { Entity, Script } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-chat',
@@ -30,24 +29,23 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   segment = 'actor';
   text = '';
-  chat: {
-    logs: any[];
-    name: string;
-    id: string;
-  };
   selection = [];
   avatar = 'assets/avatar/man.png';
   actor: string;
   textarea = false;
   autoScroll = true;
   loaded = false;
+  script: Script;
+  logs: string[];
+  lastClosed: number;
+  tabs: any[];
 
   sound = false;
   music = false;
   ambiance = false;
 
   edittingLog = false;
-  history: {action: string, index: number, logs: {msg: string, actor: string, id: string}[]}[] = [];
+  history: {action: string, index: number, logs: string[]}[] = [];
   historyIndex = -1;
 
   tuto: string[] = [];
@@ -58,20 +56,16 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   errorSub: Subscription;
   commonSub: Subscription;
   tutoSub: Subscription;
+  actors: Entity[];
 
   tabColor = '#000';
-
-  chatAsync: Observable<any>;
-  chatSub: Subscription;
 
   chatBarFocused = false;
 
   commands = [];
 
   constructor(
-    public chatService: ChatService,
     public bookService: BookService,
-    public actorService: ActorService,
     public modalCtrl: ModalController,
     public actionSheetController: ActionSheetController,
     public alertController: AlertController,
@@ -92,15 +86,12 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async ngOnInit() {
+    this.actors = this.bookService.book.getEntities('actor');
+    this.logs = this.script.messages;
     this.historyIndex = this.history.length;
-    this.chatService.syncChat(this.bookService.curChatId);
     this.loaded = true;
     setTimeout(() => this.scrollToBottom(), 200);
     this.getTraduction();
-    this.chatSub = this.firestore.collection('books').doc(this.bookService.curBookId)
-                                     .collection('chats').doc(this.chatService.curChatId).valueChanges().subscribe((chat: any) => {
-                                       this.chat = chat;
-    });
     this.commands = [];
     Object.keys(Commands).forEach((key) => {
       this.commands.push(Commands[key]);
@@ -186,7 +177,6 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     this.tutoSub.unsubscribe();
     this.errorSub.unsubscribe();
     this.commonSub.unsubscribe();
-    this.chatSub.unsubscribe();
   }
 
   // getWallpaper() {
@@ -233,33 +223,36 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   send() {
-    const log: any = {
-      msg: this.text,
-    };
-    if (this.actor && log.msg.charAt(0) !== '/') {
-      log.actor = this.actor;
+    let log: string = this.text;
+    if (this.actor && log.charAt(0) !== '/') {
+      log = '@' + this.actor + ': ' + this.text;
     }
-    if ((log.msg.substring(0, 7).toLowerCase() === '/l main' || log.msg.substring(0, 11).toLowerCase() === '/label main')) {
+    if ((log.substring(0, 7).toLowerCase() === '/l main' || log.substring(0, 11).toLowerCase() === '/label main')) {
       this.popup.alert(this.ERRORS.invalidLabelName);
     } else {
       if (this.edittingLog) {
-        this.chatService.editChatLog(log, this.selection[0]);
+        const index = this.selection[this.selection.length - 1] + 1;
+        this.logs.splice(index, 0, log);
         this.selection = [];
         this.edittingLog = false;
       } else {
         if (this.selection.length === 0) {
-          this.addHistoryAction({action: 'add', index: this.chat.logs.length, logs: [log]});
-          this.chatService.addChatLog(log);
+          this.addHistoryAction({action: 'add', index: this.logs.length, logs: [log]});
+          this.logs.push(log);
           if (this.text.indexOf('/if') === 0 || this.text.indexOf('/question') === 0) {
-            this.addHistoryAction({action: 'add', index: this.chat.logs.length, logs: [{msg: '/end'}]});
-            this.chatService.addChatLog({msg: '/end'});
+            this.addHistoryAction({action: 'add', index: this.logs.length, logs: [{msg: '/end'}]});
+            this.logs.push('/end');
           }
         } else {
-          this.chatService.addChatLog(log, this.selection[this.selection.length - 1] + 1);
+          const index = this.selection[this.selection.length - 1] + 1;
+          this.logs.splice(index, 0, log);
           this.selection = [this.selection[this.selection.length - 1] + 1];
         }
       }
     }
+    const res = this.script.getTabs();
+    this.lastClosed = res.lastClosed;
+    this.tabs = res.tabs;
     setTimeout(() => this.scrollToBottom(), 50);
     setTimeout(() => this.text = '', 1);
     this.textarea = false;
@@ -319,15 +312,15 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getLogOpacity(index) {
-    if (index > this.chatService.lastClosed) {
+    if (index > this.lastClosed) {
       return 0.5;
     }
     return 1;
   }
 
 
-  deleteChat() {
-    this.chatService.deleteChat();
+  deleteScript() {
+    this.bookService.book.deleteScript(this.script.name);
   }
 
   newActor() {
@@ -351,41 +344,41 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   debug() {
-    this.bookService.play(this.chatService.curChatId, true);
+    this.bookService.play(this.script.name, true);
   }
 
   action(name) {
     this.popup.toast(this.ERRORS.buttonsNotAvaible);
   }
 
-  renameChat() {
-    this.chatService.renameChat();
-  }
+  // renameChat() {
+  //   this.script.rename.renameChat();
+  // }
 
-  async settings() {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Paramètres',
-      buttons: [{
-        text: this.COMMON.delete,
-        role: 'destructive',
-        icon: 'trash',
-        handler: () => {
-          this.deleteChat();
-        }
-      }, {
-        text: this.COMMON.rename,
-        icon: 'create',
-        handler: () => {
-          this.renameChat();
-        }
-      }, {
-        text: this.COMMON.cancel,
-        icon: 'close',
-        role: 'cancel'
-      }]
-    });
-    await actionSheet.present();
-  }
+  // async settings() {
+  //   const actionSheet = await this.actionSheetController.create({
+  //     header: 'Paramètres',
+  //     buttons: [{
+  //       text: this.COMMON.delete,
+  //       role: 'destructive',
+  //       icon: 'trash',
+  //       handler: () => {
+  //         this.deleteChat();
+  //       }
+  //     }, {
+  //       text: this.COMMON.rename,
+  //       icon: 'create',
+  //       handler: () => {
+  //         this.renameChat();
+  //       }
+  //     }, {
+  //       text: this.COMMON.cancel,
+  //       icon: 'close',
+  //       role: 'cancel'
+  //     }]
+  //   });
+  //   await actionSheet.present();
+  // }
 
   async manual(type = '') {
     const modal = await this.modalCtrl.create({
@@ -516,7 +509,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     const min = this.selection[0];
     const max = min + this.selection.length;
     const res = [];
-    for (const log of this.chat.logs.slice(min, max)) {
+    for (const log of this.logs.slice(min, max)) {
       res.push(JSON.stringify(log));
     }
     return res.join('%SEP%');
@@ -543,7 +536,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   delete(index = this.selection[0], length = this.selection.length) {
-    const res = this.chat.logs;
+    const res = this.logs;
     const logs = res.slice(index, index + length);
     res.splice(index, length);
     this.addHistoryAction({action: 'delete', index, logs});
@@ -560,20 +553,20 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     }
     let min;
     if (this.selection === []) {
-      min = this.chat.logs.length - 1;
+      min = this.logs.length - 1;
     } else {
       min = this.selection[this.selection.length - 1] + 1;
     }
-    const res = this.chat.logs.slice();
+    const res = this.logs.slice();
     for (const log of logs) {
       res.splice(min, 0, log);
     }
-    this.addHistoryAction({action: 'add', index: this.chat.logs.length, logs});
+    this.addHistoryAction({action: 'add', index: this.logs.length, logs});
     this.update(res);
   }
 
-  update(chat = this.chat.logs) {
-    this.chatService.setChatLogs(chat);
+  update(chat = this.logs) {
+    // this.chatService.setChatLogs(chat);
   }
 
   addHistoryAction(value) {
@@ -600,7 +593,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
           break;
         case 'delete':
           const logs = lastModif.logs.reverse();
-          const res = this.chat.logs.slice();
+          const res = this.logs.slice();
           for (const log of logs) {
             res.splice(lastModif.index, 0, log);
           }
@@ -620,10 +613,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   edit() {
     this.edittingLog = true;
     const index = this.selection[0];
-    this.text = this.chatService.chatLogs[index].msg;
-    if (this.chatService.chatLogs[index].actor) {
-      this.actor = this.chatService.chatLogs[index].actor;
-    }
+    this.text = this.script.messages[index];
   }
 
   save() {
@@ -632,7 +622,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   selectAll() {
     this.selection = [];
-    for (let i = 0; i < this.chat.logs.length; i++) {
+    for (let i = 0; i < this.logs.length; i++) {
       this.selection.push(i);
     }
   }

@@ -112,7 +112,7 @@ export class NewBookPage implements OnInit, OnDestroy {
       author,
     };
 
-    this.bookService.newBook(new Book(bookOpts));
+    // this.bookService.newBook(new Book(bookOpts));
   }
 
   async changeCover() {

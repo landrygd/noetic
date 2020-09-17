@@ -1,12 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ActorService } from '../services/book/actor.service';
 
 @Pipe({
   name: 'variables'
 })
 export class VariablesPipe implements PipeTransform {
 
-  constructor(private actorService: ActorService) {}
+  constructor() {}
 
   transform(value: string, variables: any, actors: any): any {
     const ponctuation = /(~|`|[?]|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g;
@@ -24,7 +23,8 @@ export class VariablesPipe implements PipeTransform {
       } else if (word.charAt(0) === '@') {
         const subwords = word.split('$');
         const actorName =  this.toVariable(subwords[0]);
-        const actorId =  this.actorService.getActorId(actorName);
+        // TODO
+        const actorId =  ''; // this.actorService.getActorId(actorName);
         if (subwords.length === 1) {
           res.push(this.toChip(actorName, 'person'));
         } else {

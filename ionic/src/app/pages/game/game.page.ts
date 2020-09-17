@@ -4,11 +4,9 @@ import { NavController, AlertController, ActionSheetController, IonContent, Moda
 import { AngularFireDatabase } from '@angular/fire/database';
 import { Subscription } from 'rxjs';
 import { BookService } from 'src/app/services/book.service';
-import { ChatService } from 'src/app/services/book/chat.service';
 import { PopupService } from 'src/app/services/popup.service';
 import { UserService } from 'src/app/services/user.service';
 import { MediaService } from 'src/app/services/media.service';
-import { ActorService } from 'src/app/services/book/actor.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Book } from 'src/app/classes/book';
 
@@ -38,6 +36,7 @@ export class GamePage implements OnInit, OnDestroy {
 
   book: Book;
 
+  ownActor: string;
   script: string[] = [];
   line = -1;
   logs: any[] = [];
@@ -83,7 +82,6 @@ export class GamePage implements OnInit, OnDestroy {
 
   constructor(
     public bookService: BookService,
-    public chatService: ChatService,
     public navCtrl: NavController,
     public database: AngularFireDatabase,
     public alertCtrl: AlertController,
@@ -92,7 +90,6 @@ export class GamePage implements OnInit, OnDestroy {
     public userService: UserService,
     private alertController: AlertController,
     private mediaService: MediaService,
-    private actorService: ActorService,
     private translator: TranslateService,
     private modalController: ModalController
     ) {
@@ -146,7 +143,7 @@ export class GamePage implements OnInit, OnDestroy {
     console.log({
       book: this.book,
       scriptName: this.scriptName
-    })
+    });
   }
 
   async playScript(scriptName = 'main', line = 0) {
@@ -154,7 +151,8 @@ export class GamePage implements OnInit, OnDestroy {
     this.paused = false;
     this.settings.mode = 'next';
     this.line = line;
-    this.script = this.book.getScript(this.scriptName).content.split('\n');
+    this.script = this.book.getScript(this.scriptName).messages;
+    console.log(this.script);
     this.labels = this.getLabels();
     this.mediaService.loadSounds(this.getChatSounds());
     this.mediaService.loadAmbiances(this.getChatAmbiances());
@@ -169,6 +167,7 @@ export class GamePage implements OnInit, OnDestroy {
         this.curLine = this.line + 1;
         this.time = 1000;
         this.msg = this.script[this.line];
+        console.log(this.msg);
         if (this.msg.charAt(0) === '/') {
           this.time = -this.waitTime;
           if (this.msg.charAt(1) !== '/') {
@@ -182,8 +181,8 @@ export class GamePage implements OnInit, OnDestroy {
             switch (this.command) {
               case 'go':
                 if (this.opts.includes('chat')) {
-                  if (this.chatService.haveChat(this.arg)) {
-                    if (this.checkCptLabel(this.chatService.getChatIdByName(this.arg))) {
+                  if (this.book.haveScript(this.arg)) {
+                    if (this.checkCptLabel(this.arg)) {
                       this.gochat = this.arg;
                     }
                   }
@@ -196,8 +195,8 @@ export class GamePage implements OnInit, OnDestroy {
                 }
                 break;
               case 'chat':
-                if (this.chatService.haveChat(this.arg)) {
-                  if (this.checkCptLabel(this.chatService.getChatIdByName(this.arg))) {
+                if (this.book.haveScript(this.arg)) {
+                  if (this.checkCptLabel(this.arg)) {
                     this.gochat = this.arg;
                   }
                 }
@@ -345,7 +344,7 @@ export class GamePage implements OnInit, OnDestroy {
                 break;
               case 'control':
                 if (this.isActor(this.getVariableName(this.args[0]))) {
-                  this.actorService.setOwnActor(this.toActorName(this.getVariableName(this.args[0])));
+                  this.ownActor = this.toActorName(this.getVariableName(this.args[0]));
                 }
                 break;
               default:
@@ -681,7 +680,7 @@ export class GamePage implements OnInit, OnDestroy {
     const save = {
       line: this.line,
       scriptName: this.scriptName,
-      actor: this.actorService.ownActor,
+      actor: this.ownActor,
       place: this.place,
       variables: this.variables,
       // actors: this.actors,
@@ -694,7 +693,7 @@ export class GamePage implements OnInit, OnDestroy {
 
   async load() {
     const save = await this.userService.loadSave(this.book.id);
-    this.actorService.ownActor = save.actor;
+    this.ownActor = save.actor;
     this.place = save.place;
     this.places = save.places;
     this.line = save.line;
@@ -722,7 +721,7 @@ export class GamePage implements OnInit, OnDestroy {
     clearInterval(this.checkLabelRefresher);
     this.mediaService.stopMusic();
     this.mediaService.stopAmbiance();
-    this.actorService.ownActor = '';
+    this.ownActor = '';
     this.exited = true;
     this.navCtrl.pop();
   }
@@ -1014,7 +1013,7 @@ export class GamePage implements OnInit, OnDestroy {
           }, this.time + this.waitTime);
       } else {
           this.nextTimer = setTimeout(() => {
-            this.playScript(this.chatService.getChatIdByName(this.gochat));
+            this.playScript(this.gochat);
           }, this.time + this.waitTime);
       }
     }
