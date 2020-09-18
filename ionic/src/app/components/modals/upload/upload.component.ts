@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { UserService } from 'src/app/services/user.service';
@@ -13,6 +13,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['upload.component.scss'],
 })
 export class UploadComponent implements OnInit, OnDestroy {
+
+  @ViewChild('myCanvas', { read: ElementRef, static: true}) canvas: ElementRef<HTMLCanvasElement>;
 
   COMMON: any = {};
   UPLOAD: any = {};
@@ -71,8 +73,13 @@ export class UploadComponent implements OnInit, OnDestroy {
     this.imageChangedEvent = event;
     this.imported = true;
   }
-  imageCropped(event: ImageCroppedEvent) {
+
+  async imageCropped(event: ImageCroppedEvent) {
+    const mime = this.getBase64MimeType(event.base64);
     this.file = event.base64;
+    if (mime !== 'image/jpeg') {
+      this.file = await this.pngToJpeg(event.base64);
+    }
   }
   imageLoaded() {
     // show cropper
@@ -96,9 +103,9 @@ export class UploadComponent implements OnInit, OnDestroy {
       // this.actorService.uploadAvatar(this.file, this.fileId);
     }
     switch (this.type) {
-      case 'userAvatar':
-        this.userService.uploadAvatar(this.file);
-        break;
+      // case 'userAvatar':
+      //   this.userService.uploadAvatar(this.file);
+      //   break;
       // case 'actorAvatar':
       //   this.bookService.uploadAvatar(this.file, this.fileId, 'actors');
       //   break;
@@ -113,5 +120,35 @@ export class UploadComponent implements OnInit, OnDestroy {
       //   break;
     }
     this.modalController.dismiss(this.file);
+  }
+
+  pngToJpeg(base64: string): Promise<string> {
+    return new Promise((resolve) => {
+      const canvas = this.canvas.nativeElement;
+      console.log('Conversion png en jpeg...');
+      const img = new Image();
+      img.src = base64;
+      img.onload = () => {
+        const context = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        context.drawImage(img, 0, 0, img.width, img.height);
+        const jpegBase64 = canvas.toDataURL('image/jpeg', 0.5);
+        resolve(jpegBase64);
+      };
+      img.onerror = () => resolve(base64);
+    });
+  }
+
+  getBase64MimeType(encoded): string {
+    let result = null;
+    if (typeof encoded !== 'string') {
+      return result;
+    }
+    const mime = encoded.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+    if (mime && mime.length) {
+      result = mime[1];
+    }
+    return result;
   }
 }

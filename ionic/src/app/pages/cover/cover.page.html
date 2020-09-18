@@ -68,10 +68,10 @@
         <ion-icon name="play"></ion-icon>
         {{'COMMON.read' | translate}}
       </ion-button>
-      <ion-fab-button (click)="edit()" *ngIf="book.isAuthor(userService.userId)" color="light" style="height: 45px; width: 45px;">
+      <ion-fab-button (click)="edit()" *ngIf="bookService.isAuthor" color="light" style="height: 45px; width: 45px;">
         <ion-icon name="create"></ion-icon>
       </ion-fab-button>
-      <div *ngIf="!book.isAuthor(userService.userId) && userService.connected">
+      <div *ngIf="!bookService.isAuthor && userService.connected">
         <ion-fab-button (click)="addToList()" *ngIf="!inList" color="light" style="height: 45px; width: 45px;">
           <ion-icon name="add"></ion-icon>
         </ion-fab-button>

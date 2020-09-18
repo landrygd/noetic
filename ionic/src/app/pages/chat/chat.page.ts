@@ -252,6 +252,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     }
+    this.update();
     this.refresh();
     setTimeout(() => this.scrollToBottom(), 50);
     setTimeout(() => this.text = '', 1);
@@ -551,7 +552,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     const logs = res.slice(index, index + length);
     res.splice(index, length);
     this.addHistoryAction({action: 'delete', index, logs});
-    this.update(res);
+    this.update();
     this.selection = [];
   }
 
@@ -573,12 +574,13 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
       res.splice(min, 0, log);
     }
     this.addHistoryAction({action: 'add', index: this.messages.length, logs});
-    this.update(res);
+    this.update();
   }
 
-  update(chat = this.messages) {
+  update() {
+    this.script.messages = this.messages;
+    this.bookService.book.setScript(this.script);
     this.bookService.saveBook();
-    // this.chatService.setChatLogs(chat);
   }
 
   addHistoryAction(value) {
@@ -609,7 +611,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
           for (const log of logs) {
             res.splice(lastModif.index, 0, log);
           }
-          this.update(res);
+          this.update();
           break;
       }
     }

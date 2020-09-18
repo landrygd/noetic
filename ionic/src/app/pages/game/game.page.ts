@@ -140,10 +140,6 @@ export class GamePage implements OnInit, OnDestroy {
       this.variables = {};
       this.playScript(this.scriptName);
     }
-    console.log({
-      book: this.book,
-      scriptName: this.scriptName
-    });
   }
 
   async playScript(scriptName = 'main', line = 0) {
@@ -152,7 +148,6 @@ export class GamePage implements OnInit, OnDestroy {
     this.settings.mode = 'next';
     this.line = line;
     this.script = this.book.getScript(this.scriptName).messages;
-    console.log(this.script);
     this.labels = this.getLabels();
     this.mediaService.loadSounds(this.getChatSounds());
     this.mediaService.loadAmbiances(this.getChatAmbiances());
@@ -167,7 +162,6 @@ export class GamePage implements OnInit, OnDestroy {
         this.curLine = this.line + 1;
         this.time = 1000;
         this.msg = this.script[this.line];
-        console.log(this.msg);
         if (this.msg.charAt(0) === '/') {
           this.time = -this.waitTime;
           if (this.msg.charAt(1) !== '/') {

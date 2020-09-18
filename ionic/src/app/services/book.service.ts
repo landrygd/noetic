@@ -20,10 +20,8 @@ export class BookService implements OnDestroy {
   curChatId: string;
   langs: string[];
   book: Book;
-
-  isAuthor: boolean;
-
   debug = false;
+  isAuthor: boolean;
 
   // bookSub: Subscription;
   // bookChatSub: Subscription;
@@ -122,13 +120,16 @@ export class BookService implements OnDestroy {
   async openBook(bookId) {
     await this.popupService.loading();
     this.curBookId = bookId;
-    await this.loadBook(bookId);
     this.popupService.loadingDismiss();
     this.navCtrl.navigateForward('/tabs-book');
   }
 
-  showBook(book: Book) {
+  async showBook(book: Book) {
     this.book = book;
+    this.isAuthor = this.book.author === this.userService.userId;
+    if (this.isAuthor) {
+      this.book = await this.loadBook();
+    }
     this.navCtrl.navigateForward('book/' + book.id);
   }
 
@@ -227,33 +228,36 @@ export class BookService implements OnDestroy {
   //   }
   // }
 
-  // uploadCover(file, bookId = this.curBookId) {
-  //   return new Promise((resolve, reject) => {
-  //     const path = 'books/' + bookId + '/cover.png';
-  //     this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
-  //       const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
-  //       await this.firestore.collection('books').doc(bookId).update({cover: ref});
-  //       resolve();
-  //     }).catch((err) => {
-  //       this.popupService.error(err);
-  //       reject();
-  //     });
-  //   });
-  // }
+  uploadCover(file: string) {
+    return new Promise((resolve, reject) => {
+      const path = 'books/' + this.book.id + '/cover.jpeg';
+      this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
+        const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
+        console.log(ref);
+        this.book.cover = ref;
+        this.uploadBook();
+        resolve();
+      }).catch((err) => {
+        this.popupService.error(err);
+        reject();
+      });
+    });
+  }
 
-  // uploadBanner(file, bookId = this.curBookId): Promise<void> {
-  //   return new Promise((resolve, reject) => {
-  //     const path = 'books/' + bookId + '/banner.png';
-  //     this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
-  //       const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
-  //       await this.firestore.collection('books').doc(bookId).update({banner: ref});
-  //       resolve();
-  //     }).catch((err) => {
-  //       this.popupService.error(err);
-  //       reject();
-  //     });
-  //   });
-  // }
+  uploadBanner(file): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const path = 'books/' + this.book.id + '/banner.jpeg';
+      this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
+        const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
+        this.book.banner = ref;
+        this.uploadBook();
+        resolve();
+      }).catch((err) => {
+        this.popupService.error(err);
+        reject();
+      });
+    });
+  }
 
   async changeWallpaper(bookId, url: string) {
     await this.firestore.collection('books').doc(bookId).update({wallpaper: url});
@@ -308,10 +312,10 @@ export class BookService implements OnDestroy {
   //   }
   //   // On supprime les médias
   //   if (this.haveCover()) {
-  //     this.firestorage.ref('books/' + bookId + '/cover.png').delete();
+  //     this.firestorage.ref('books/' + bookId + '/cover.jpeg').delete();
   //   }
   //   if (this.haveBanner()) {
-  //     this.firestorage.ref('books/' + bookId + '/banner.png').delete();
+  //     this.firestorage.ref('books/' + bookId + '/banner.jpeg').delete();
   //   }
   //   this.firestore.collection('books').doc(bookId).collection('medias').get().subscribe((data) => {
   //     data.docs.forEach((doc) => {
@@ -377,27 +381,27 @@ export class BookService implements OnDestroy {
 
   loadBook(book = this.book): Promise<Book> {
     return new Promise(async (resolve) => {
+      let result: Book;
       this.storage.get(book.id).then(async (res) => {
         const savedBook = new Book(res);
-        console.log('LOCAL BOOK');
-        console.log(savedBook);
-        if (book.version < savedBook.version) {
-          this.book = savedBook;
-          console.log('LOAD');
+        if (book.version <= savedBook.version) {
+          result = new Book(savedBook);
         } else {
-          await this.downloadBook();
+          result = await this.downloadBook();
         }
-        resolve(book);
+        resolve(result);
       }).catch(async () => {
-        await this.downloadBook();
-        resolve(this.book);
+        result = await this.downloadBook();
+        resolve(result);
       });
     });
   }
 
-  async downloadBook(url = this.book.downloadURL) {
-    this.book = new Book(await this.getBook(url));
-    this.saveBook(this.book);
+  async downloadBook(url = this.book.downloadURL): Promise<Book> {
+
+    const book: Book = new Book(await this.getBook(url));
+    this.saveBook(book);
+    return book;
   }
 
   async getBook(url: string): Promise<Book> {
@@ -422,7 +426,11 @@ export class BookService implements OnDestroy {
     });
   }
 
-  saveBook(book: Book = this.book) {
+  async saveBook(book: Book = this.book) {
+    if (book.scripts.length === 0) {
+      this.book = await this.loadBook();
+      book = this.book;
+    }
     this.storage.set(book.id, book);
   }
 
@@ -442,6 +450,22 @@ export class BookService implements OnDestroy {
         res(mostBooks);
       });
     });
+  }
+
+  async uploadBook() {
+    // Sauvegarde
+    this.book.version += 1;
+    console.log(this.book);
+    await this.saveBook();
+    // Upload
+    const reference = this.firestorage.ref('books/' + this.book.id + '/book.json');
+    const blob = new Blob([JSON.stringify(this.book, null, 2)], {type: 'application/json'});
+    await reference.put(blob);
+    const downloadURL = await reference.getDownloadURL().toPromise();
+    this.book.downloadURL = downloadURL;
+    console.log(this.book.title + ': ' + 'Upload effectué');
+    // Update Cover
+    await this.firestore.collection('books').doc(this.book.id).set(this.book.getCover());
   }
 
   // async syncBook2(curBookId = this.curBookId, cover: boolean = false): Promise<any> {
@@ -600,10 +624,10 @@ export class BookService implements OnDestroy {
   // uploadFile(type: string, file: any, id= this.userId) {
   //   let path = '';
   //   if (type == 'userAvatar') {
-  //     path = 'users/'+ id +'/avatar.png';
+  //     path = 'users/'+ id +'/avatar.jpeg';
   //   }
   //   if (type === 'cover') {
-  //     path = 'books/'+ id +'/cover.png';
+  //     path = 'books/'+ id +'/cover.jpeg';
   //   }
   //   this.firestorage.ref(path).putString(file, 'data_url').then( () => {
   //     if (type === 'userAvatar') {
@@ -655,7 +679,7 @@ export class BookService implements OnDestroy {
     this.firestore.collection('books').doc(this.book.id).update({
       views: this.book.views + 1,
     });
-    await this.loadBook();
+    this.book = await this.loadBook();
     this.popupService.loadingDismiss();
     this.navCtrl.navigateForward('/game');
   }
@@ -812,7 +836,7 @@ export class BookService implements OnDestroy {
   }
 
   // uploadAvatar(file, id, collection) {
-  //   const path = 'books/' + this.curBookId + '/' + collection + '/' + id + '/avatar.png';
+  //   const path = 'books/' + this.curBookId + '/' + collection + '/' + id + '/avatar.jpeg';
   //   this.firestorage.ref(path).putString(file, 'data_url').then( () => {
   //     this.firestorage.ref(path).getDownloadURL().subscribe((ref) => {
   //       this.addMediaRef(ref, path, 'image', 'avatar');

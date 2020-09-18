@@ -23,8 +23,8 @@ export class PlacesPage implements OnInit {
 
   refresh() {
     this.places = this.bookService.book.getEntities('place');
-    console.log(this.places);
-    console.log(this.bookService.book);
+
+
   }
 
   newPlace() {

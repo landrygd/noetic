@@ -96,6 +96,8 @@ export class CoverPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.book = this.bookService.book;
+    this.getBanner();
+    console.log(this.book);
     // const bookId = this.route.snapshot.paramMap.get('id');
     // this.curBookId = bookId;
     // if (this.bookService.curBookId !== bookId) {
@@ -384,7 +386,7 @@ export class CoverPage implements OnInit, OnDestroy {
       modal.onDidDismiss()
         .then((data) => {
           if (data.data) {
-            // this.bookService.uploadCover(data.data);
+            this.bookService.uploadCover(data.data);
           }
       });
       return await modal.present();
@@ -402,7 +404,7 @@ export class CoverPage implements OnInit, OnDestroy {
       modal.onDidDismiss()
         .then(async (data) => {
           if (data.data) {
-            // await this.bookService.uploadBanner(data.data);
+            await this.bookService.uploadBanner(data.data);
             this.getBanner();
           }
       });

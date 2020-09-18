@@ -223,19 +223,6 @@ export class AdminPage implements OnInit {
     });
   }
 
-  async uploadImage(base64: string, bookId: string, imgName: string): Promise<string> {
-    const mime = this.getBase64MimeType(base64);
-    let jpegBase64 = base64;
-    if (mime !== 'image/jpeg') {
-      jpegBase64 = await this.pngToJpeg(base64);
-    }
-    console.log({jpegBase64, base64});
-    const jpeg = this.b64toBlob(jpegBase64);
-    const ref = this.firestorage.ref('books/' + bookId + '/' + imgName + '.jpeg');
-    await ref.put(jpeg);
-    return await ref.getDownloadURL().toPromise();
-  }
-
   b64toBlob(dataURI, contentType = 'image/jpeg', sliceSize = 512): Blob {
     const byteCharacters = atob(dataURI.split(',')[1]);
     const byteArrays = [];
@@ -284,6 +271,19 @@ export class AdminPage implements OnInit {
       };
       img.onerror = () => resolve(base64);
     });
+  }
+
+  async uploadImage(base64: string, bookId: string, imgName: string): Promise<string> {
+    const mime = this.getBase64MimeType(base64);
+    let jpegBase64 = base64;
+    if (mime !== 'image/jpeg') {
+      jpegBase64 = await this.pngToJpeg(base64);
+    }
+    console.log({jpegBase64, base64});
+    const jpeg = this.b64toBlob(jpegBase64);
+    const ref = this.firestorage.ref('books/' + bookId + '/' + imgName + '.jpeg');
+    await ref.put(jpeg);
+    return await ref.getDownloadURL().toPromise();
   }
 
   async getBlob(url: string): Promise<Blob> {

@@ -294,10 +294,6 @@ export class Book {
     this.scripts[i] = script;
   }
 
-  isAuthor(userId): boolean {
-    return this.author === userId;
-  }
-
   haveScript(name: string): boolean {
     return this.scripts.filter((value) => value.name === name).length > 0;
   }
