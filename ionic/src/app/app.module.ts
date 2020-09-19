@@ -34,6 +34,7 @@ import { MediaService } from './services/media.service';
 import { Facebook } from '@ionic-native/facebook/ngx';
 import { Globalization } from '@ionic-native/globalization/ngx';
 import { TimeagoModule } from 'ngx-timeago';
+import { PipesModule } from './pipes/pipes.module';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyDAZRFBAHjrS8Ww03U95mMhX1-AD9rPDGo',
@@ -75,6 +76,7 @@ export function createTranslateLoader(http: HttpClient) {
     }),
   ],
   providers: [
+    // tslint:disable-next-line: deprecation
     Globalization,
     Facebook,
     GooglePlus,

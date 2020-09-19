@@ -20,7 +20,7 @@ import { TypeToIconPipe } from './type-to-icon.pipe';
     ObjectValuesPipe,
     GetRolesPipe,
     IdToObjectsPipe,
-    TypeToIconPipe
+    TypeToIconPipe,
   ],
   imports: [
     CommonModule
@@ -34,7 +34,8 @@ import { TypeToIconPipe } from './type-to-icon.pipe';
     ObjectValuesPipe,
     GetRolesPipe,
     IdToObjectsPipe,
-    TypeToIconPipe
+    TypeToIconPipe,
   ]
 })
-export class PipesModule { }
+
+export class PipesModule {}

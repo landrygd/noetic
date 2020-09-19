@@ -228,14 +228,15 @@ export class BookService implements OnDestroy {
   //   }
   // }
 
-  uploadCover(file: string) {
+  uploadCoverImg(file: string) {
     return new Promise((resolve, reject) => {
       const path = 'books/' + this.book.id + '/cover.jpeg';
       this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
         const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
         console.log(ref);
         this.book.cover = ref;
-        this.uploadBook();
+        this.saveBook();
+        this.uploadCover();
         resolve();
       }).catch((err) => {
         this.popupService.error(err);
@@ -250,13 +251,45 @@ export class BookService implements OnDestroy {
       this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
         const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
         this.book.banner = ref;
-        this.uploadBook();
+        this.saveBook();
+        this.uploadCover();
         resolve();
       }).catch((err) => {
         this.popupService.error(err);
         reject();
       });
     });
+  }
+
+  uploadCover() {
+    this.firestore.collection('books').doc(this.book.id).set(this.book.getCover());
+  }
+
+  uploadEntityImg(file: string, imgType: 'img' | 'banner', entity: Entity): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const path = 'books/' + this.book.id + '/@' + entity.key + '_' + imgType + '.jpeg';
+      this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
+        const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
+        entity[imgType] = ref;
+        this.book.setEntity(entity);
+        this.saveBook();
+        resolve();
+      }).catch((err) => {
+        this.popupService.error(err);
+        reject();
+      });
+    });
+  }
+
+  async deleteEntity(entity: Entity) {
+    if (entity.img !==  '') {
+      await this.firestorage.ref('books/' + this.book.id + '/@' + entity.key + '_img.jpeg').delete().toPromise();
+    }
+    if (entity.banner !==  '') {
+      await this.firestorage.ref('books/' + this.book.id + '/@' + entity.key + '_banner.jpeg').delete().toPromise();
+    }
+    this.book.deleteRole(entity.key);
+    this.book.deleteEntity(entity.key);
   }
 
   async changeWallpaper(bookId, url: string) {
@@ -465,7 +498,7 @@ export class BookService implements OnDestroy {
     this.book.downloadURL = downloadURL;
     console.log(this.book.title + ': ' + 'Upload effectué');
     // Update Cover
-    await this.firestore.collection('books').doc(this.book.id).set(this.book.getCover());
+    this.uploadCover();
   }
 
   // async syncBook2(curBookId = this.curBookId, cover: boolean = false): Promise<any> {

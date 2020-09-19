@@ -53,6 +53,10 @@ export class UploadComponent implements OnInit, OnDestroy {
       this.ratio = 16 / 9;
       this.width = 1280;
     }
+    if (this.type === 'avatar') {
+      this.ratio = 1;
+      this.width = 200;
+    }
   }
 
   getTraduction() {
@@ -99,33 +103,12 @@ export class UploadComponent implements OnInit, OnDestroy {
     if (this.type === 'userAvatar') {
       this.userService.uploadAvatar(this.file);
     }
-    if (this.type === 'actorAvatar') {
-      // this.actorService.uploadAvatar(this.file, this.fileId);
-    }
-    switch (this.type) {
-      // case 'userAvatar':
-      //   this.userService.uploadAvatar(this.file);
-      //   break;
-      // case 'actorAvatar':
-      //   this.bookService.uploadAvatar(this.file, this.fileId, 'actors');
-      //   break;
-      // case 'itemAvatar':
-      //   this.bookService.uploadAvatar(this.file, this.fileId, 'items');
-      //   break;
-      // case 'placeAvatar':
-      //   this.bookService.uploadAvatar(this.file, this.fileId, 'places');
-      //   break;
-      // case 'roleAvatar':
-      //   this.bookService.uploadAvatar(this.file, this.fileId, 'roles');
-      //   break;
-    }
     this.modalController.dismiss(this.file);
   }
 
   pngToJpeg(base64: string): Promise<string> {
     return new Promise((resolve) => {
       const canvas = this.canvas.nativeElement;
-      console.log('Conversion png en jpeg...');
       const img = new Image();
       img.src = base64;
       img.onload = () => {

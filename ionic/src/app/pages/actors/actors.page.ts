@@ -17,13 +17,13 @@ export class ActorsPage implements OnInit {
     private modalController: ModalController
     ) { }
 
-    ngOnInit() {
-      this.refresh();
-    }
+  ngOnInit() {
+    this.refresh();
+  }
 
-    refresh() {
-      this.actors = this.bookService.book.getEntities('actor');
-    }
+  refresh() {
+    this.actors = this.bookService.book.getEntities('actor');
+  }
 
   async viewProfile(key: string) {
     const modal = await this.modalController.create({
@@ -31,9 +31,12 @@ export class ActorsPage implements OnInit {
     componentProps: { entity: this.bookService.book.getEntity(key) }
     });
     await modal.present();
+    await modal.onDidDismiss();
+    this.refresh();
   }
 
-  newActor() {
-    this.bookService.newEntity('actor');
+  async newActor() {
+    await this.bookService.newEntity('actor');
+    this.refresh();
   }
 }

@@ -6,6 +6,9 @@
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
+      <ion-button (click)="changeBanner()" expand="block" fill="clear" shape="round" *ngIf="isAuthor" [color]="entity.color">
+        <ion-icon slot="icon-only" name="camera"></ion-icon>
+      </ion-button>
       <ion-button (click)="changeColor()" expand="block" fill="clear" shape="round" *ngIf="isAuthor" [color]="entity.color">
         <ion-icon slot="icon-only" name="color-palette"></ion-icon>
       </ion-button>
@@ -17,7 +20,7 @@
 </ion-header>
 
 <ion-content>
-  <div class="header"></div>
+  <div class="header" [style.backgroundImage]="background"></div>
   <div class="flex">
     <app-avatar [height]="150" [entity]="entity" (click)="changeAvatar()"></app-avatar>
   </div>

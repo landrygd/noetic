@@ -27,7 +27,6 @@ export class PlacesPage implements OnInit {
 
   async newPlace() {
     await this.bookService.newEntity('place');
-    console.log(this.bookService.book);
     this.refresh();
   }
 
@@ -37,5 +36,7 @@ export class PlacesPage implements OnInit {
     componentProps: { entity: this.bookService.book.getEntity(key) }
     });
     await modal.present();
+    await modal.onDidDismiss();
+    this.refresh();
   }
 }

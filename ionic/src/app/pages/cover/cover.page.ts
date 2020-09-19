@@ -385,7 +385,7 @@ export class CoverPage implements OnInit, OnDestroy {
       modal.onDidDismiss()
         .then((data) => {
           if (data.data) {
-            this.bookService.uploadCover(data.data);
+            this.bookService.uploadCoverImg(data.data);
           }
       });
       return await modal.present();

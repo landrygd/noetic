@@ -7,6 +7,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { PopupService } from 'src/app/services/popup.service';
 import { IdFinderComponent } from '../id-finder/id-finder.component';
 import { Entity, Role } from 'src/app/classes/book';
+import { UploadComponent } from '../upload/upload.component';
 
 @Component({
   selector: 'app-entity-modal',
@@ -20,6 +21,8 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   PROFILE: any = {};
   COMMON: any = {};
   ERRORS: any = {};
+
+  background = 'url("../../../../assets/banner.png")';
 
   errorsSub: Subscription;
   entitySub: Subscription;
@@ -41,13 +44,13 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     private alertController: AlertController,
     private translator: TranslateService,
     private actionSheetController: ActionSheetController,
-    private firestore: AngularFirestore,
     private popupService: PopupService
     ) {
       this.isAuthor = this.bookService.isAuthor;
     }
 
   ngOnInit() {
+    console.log(this.entity);
     this.getTraduction();
     this.update();
   }
@@ -68,11 +71,13 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
   update() {
+    if (this.entity.banner !== '') {
+      this.background = this.entity.banner;
+    }
     if (this.entity.extra.items) {
       this.items = this.entity.extra.items;
     }
     this.roles = this.bookService.book.getRoles(this.entity.roles);
-    console.log(this.roles);
     switch (this.entity.type) {
       case 'place':
         this.icon = 'location';
@@ -160,29 +165,31 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
   async changeAvatar() {
-    // let type: string;
-    // switch (this.collection) {
-    //   case 'actor':
-    //     type = 'actorAvatar';
-    //     break;
-    //   case 'item':
-    //     type = 'itemAvatar';
-    //     break;
-    //   case 'place':
-    //     type = 'placeAvatar';
-    //     break;
-    //   case 'role':
-    //     type = 'roleAvatar';
-    //     break;
-    // }
-    // const modal = await this.modalController.create({
-    //   component: UploadComponent,
-    //   componentProps: {
-    //     type,
-    //     fileId: this.key
-    //   }
-    // });
-    // return await modal.present();
+    const modal = await this.modalController.create({
+      component: UploadComponent,
+      componentProps: {
+        type: 'avatar'
+      }
+    });
+    await modal.present();
+    modal.onDidDismiss().then((data: any) => {
+      const file = data.data.name;
+      this.bookService.uploadEntityImg(file, 'img', this.entity);
+    });
+  }
+
+  async changeBanner() {
+    const modal = await this.modalController.create({
+      component: UploadComponent,
+      componentProps: {
+        type: 'banner'
+      }
+    });
+    await modal.present();
+    modal.onDidDismiss().then((data: any) => {
+      const file = data.data.name;
+      this.bookService.uploadEntityImg(file, 'banner', this.entity);
+    });
   }
 
   async changeColor() {
@@ -227,7 +234,9 @@ export class EntityModalComponent implements OnInit, OnDestroy {
         }, {
           text: this.COMMON.delete,
           handler: async () => {
-            await this.dismiss();
+            await this.bookService.deleteEntity(this.entity);
+            await this.bookService.saveBook();
+            this.dismiss();
           }
         }
       ]
@@ -480,7 +489,6 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     modal.onDidDismiss().then((data: any) => {
       const script = data.data.name;
       if (script) {
-        console.log(script);
         action.value = script;
         role.setAction(action);
         this.bookService.book.setRole(role);
