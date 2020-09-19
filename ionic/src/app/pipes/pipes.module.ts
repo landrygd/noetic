@@ -7,7 +7,7 @@ import { ToHtmlPipe } from './to-html.pipe';
 import { ObjectValuesPipe } from './object-values.pipe';
 import { GetRolesPipe } from './get-roles.pipe';
 import { IdToObjectsPipe } from './id-to-objects.pipe';
-import { CollectionToIconPipe } from './collection-to-icon.pipe';
+import { TypeToIconPipe } from './type-to-icon.pipe';
 
 
 @NgModule({
@@ -20,7 +20,7 @@ import { CollectionToIconPipe } from './collection-to-icon.pipe';
     ObjectValuesPipe,
     GetRolesPipe,
     IdToObjectsPipe,
-    CollectionToIconPipe
+    TypeToIconPipe
   ],
   imports: [
     CommonModule
@@ -34,7 +34,7 @@ import { CollectionToIconPipe } from './collection-to-icon.pipe';
     ObjectValuesPipe,
     GetRolesPipe,
     IdToObjectsPipe,
-    CollectionToIconPipe
+    TypeToIconPipe
   ]
 })
 export class PipesModule { }

@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { UploadComponent } from '../upload/upload.component';
 import { Subscription } from 'rxjs';
 import { ModalController, AlertController, ActionSheetController } from '@ionic/angular';
 import { BookService } from 'src/app/services/book.service';
@@ -7,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { PopupService } from 'src/app/services/popup.service';
 import { IdFinderComponent } from '../id-finder/id-finder.component';
-import { Entity } from 'src/app/classes/book';
+import { Entity, Role } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-entity-modal',
@@ -15,8 +14,7 @@ import { Entity } from 'src/app/classes/book';
   styleUrls: ['./entity-modal.component.scss'],
 })
 export class EntityModalComponent implements OnInit, OnDestroy {
-  @Input() collection: string;
-  @Input() key: string;
+  @Input() entity: Entity;
 
   ENTITY: any = {};
   PROFILE: any = {};
@@ -29,8 +27,6 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   commonSub: Subscription;
 
   actor: any;
-
-  entity: Entity;
 
   isAuthor = false;
 
@@ -72,21 +68,22 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
   update() {
-    this.entity = this.bookService.book.getEntity(this.key);
-    this.items = this.entity.items;
-    this.roles = this.bookService.getRoles(this.entity.roles);
-    switch (this.collection) {
-      case 'places':
+    if (this.entity.extra.items) {
+      this.items = this.entity.extra.items;
+    }
+    this.roles = this.bookService.book.getRoles(this.entity.roles);
+    console.log(this.roles);
+    switch (this.entity.type) {
+      case 'place':
         this.icon = 'location';
         break;
-      case 'actors':
+      case 'actor':
         this.icon = 'person';
         break;
-      case 'items':
+      case 'item':
         this.icon = 'cube';
         break;
     }
-    console.log(this.roles);
   }
 
   ngOnDestroy() {
@@ -96,12 +93,66 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
 
-  changeName() {
-    // this.bookService.updateFieldEntity(this.key, this.collection, ['name']);
+  async changeName() {
+    const alert = await this.alertController.create({
+      inputs: [
+        {
+          name: 'name',
+          type: 'text',
+          placeholder: this.COMMON.name,
+          value: this.entity.name
+        }
+      ],
+      buttons: [
+        {
+          text: this.COMMON.cancel,
+          role: 'cancel',
+        }, {
+          text: this.COMMON.confirm,
+          handler: (data) => {
+            if (data.name) {
+              this.entity.name = data.name;
+              this.saveEntity();
+            } else {
+              this.popupService.error(this.ERRORS.fieldMissing);
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
-  changeDesc() {
-    // this.bookService.updateFieldEntity(this.key, this.collection, ['desc']);
+  async changeDesc() {
+    const alert = await this.alertController.create({
+      inputs: [
+        {
+          name: 'description',
+          type: 'text',
+          placeholder: this.COMMON.desc,
+          value: this.entity.description
+        }
+      ],
+      buttons: [
+        {
+          text: this.COMMON.cancel,
+          role: 'cancel',
+        }, {
+          text: this.COMMON.confirm,
+          handler: (data) => {
+            if (data.description) {
+              this.entity.description = data.description;
+              this.saveEntity();
+            } else {
+              this.popupService.error(this.ERRORS.fieldMissing);
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async dismiss() {
@@ -109,29 +160,29 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
   async changeAvatar() {
-    let type: string;
-    switch (this.collection) {
-      case 'actor':
-        type = 'actorAvatar';
-        break;
-      case 'item':
-        type = 'itemAvatar';
-        break;
-      case 'place':
-        type = 'placeAvatar';
-        break;
-      case 'role':
-        type = 'roleAvatar';
-        break;
-    }
-    const modal = await this.modalController.create({
-      component: UploadComponent,
-      componentProps: {
-        type,
-        fileId: this.key
-      }
-    });
-    return await modal.present();
+    // let type: string;
+    // switch (this.collection) {
+    //   case 'actor':
+    //     type = 'actorAvatar';
+    //     break;
+    //   case 'item':
+    //     type = 'itemAvatar';
+    //     break;
+    //   case 'place':
+    //     type = 'placeAvatar';
+    //     break;
+    //   case 'role':
+    //     type = 'roleAvatar';
+    //     break;
+    // }
+    // const modal = await this.modalController.create({
+    //   component: UploadComponent,
+    //   componentProps: {
+    //     type,
+    //     fileId: this.key
+    //   }
+    // });
+    // return await modal.present();
   }
 
   async changeColor() {
@@ -146,7 +197,8 @@ export class EntityModalComponent implements OnInit, OnDestroy {
         text: color,
         cssClass: color,
         handler: () => {
-          this.bookService.updateEntity(this.key, this.collection, {color}).then(() => this.update());
+          this.entity.color = color;
+          this.saveEntity();
         }
       });
     }
@@ -175,20 +227,6 @@ export class EntityModalComponent implements OnInit, OnDestroy {
         }, {
           text: this.COMMON.delete,
           handler: async () => {
-            switch (this.collection) {
-              // case 'actors':
-              //   await this.bookService.deleteEntity(this.key, 'actors');
-              //   break;
-              // case 'items':
-              //   await this.bookService.deleteEntity(this.key, 'items');
-              //   break;
-              // case 'places':
-              //   await this.bookService.deleteEntity(this.key, 'places');
-              //   break;
-              // case 'roles':
-              //   await this.bookService.deleteEntity(this.key, 'roles');
-              //   break;
-            }
             await this.dismiss();
           }
         }
@@ -209,16 +247,15 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   //   }
   // }
 
-  addItem() {
-    const id = this.firestore.createId();
-    this.bookService.newEntity('items', {pos: this.key}, id).then(async () => {
-      const items = this.entity.items;
-      if (!this.items.includes(id)) {
-        items.push(id);
-        await this.bookService.updateEntity(this.key, this.collection, {items});
-      }
-      this.update();
-    });
+  saveEntity() {
+    this.bookService.book.setEntity(this.entity);
+    this.bookService.saveBook();
+    this.update();
+  }
+
+  async addItem() {
+    await this.bookService.newEntity('item', {pos: this.entity.key});
+    this.update();
   }
 
   async showEntity(entityId: string, collection) {
@@ -230,44 +267,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     modal.onDidDismiss().then(() => this.update());
   }
 
-  async addVariable(role) {
-    const alert = await this.alertController.create({
-      header: this.ENTITY.addVariable,
-      inputs: [
-        {
-          name: 'name',
-          type: 'text',
-          placeholder: this.COMMON.name
-        },
-        {
-          name: 'default',
-          type: 'text',
-          placeholder: this.COMMON.defaultValue
-        }
-      ],
-      buttons: [
-        {
-          text: this.COMMON.cancel,
-          role: 'cancel',
-        }, {
-          text: this.COMMON.confirm,
-          handler: (data) => {
-            if (data.name && data.default) {
-              const variables = role.variables;
-              variables[data.name] = data;
-              this.bookService.updateEntity(role.id, 'roles', {variables});
-            } else {
-              this.popupService.error(this.ERRORS.fieldMissing);
-            }
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-
-  async editVariable(role, variable) {
+  async editVariable(role: Role, variable) {
     const alert = await this.alertController.create({
       header: this.COMMON.edit,
       inputs: [
@@ -292,13 +292,10 @@ export class EntityModalComponent implements OnInit, OnDestroy {
           text: this.COMMON.confirm,
           handler: (data) => {
             if (data.name && data.default) {
-              const variables: any = role.variables;
-              if (data.name !== variable.name) {
-                delete variables[variable.name];
-                variables[data.name] = {};
-              }
-              variables[data.name] = data;
-              this.bookService.updateEntity(role.id, 'roles', {variables});
+              role.setVariable(data);
+              this.bookService.book.setRole(role);
+              this.bookService.saveBook();
+              this.update();
             } else {
               this.popupService.error(this.ERRORS.fieldMissing);
             }
@@ -310,23 +307,58 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async deleteVariable(role, variable) {
-    const Rvariables: any[] = role.variables;
-    delete Rvariables[variable.name];
-    for (const entityId of Object.keys(this.bookService.entities)) {
-      const entity = this.bookService.entities[entityId];
-      const variables = entity.variables;
-      if (variables) {
-        if (variables[variable.name]) {
-          delete variables[variable.name];
-          this.bookService.updateEntity(entity.id, entity.collection, {variables});
-        }
+  async deleteVariable(role: Role, variableName: string) {
+    this.bookService.book.entities.forEach((entity) => {
+      if (entity.haveVariable(variableName)) {
+        entity.deleteVariable(variableName);
+        this.bookService.book.setEntity(entity);
       }
-    }
-    this.bookService.updateEntity(role.id, 'roles', {variables: Rvariables});
+    });
+    role.deleteVariable(variableName);
+    this.bookService.book.setRole(role);
+    this.bookService.saveBook();
+    this.update();
   }
 
-  async addAction(role) {
+  async addVariable(role: Role) {
+    const alert = await this.alertController.create({
+      header: this.ENTITY.addVariable,
+      inputs: [
+        {
+          name: 'name',
+          type: 'text',
+          placeholder: this.COMMON.name
+        },
+        {
+          name: 'value',
+          type: 'text',
+          placeholder: this.COMMON.defaultValue
+        }
+      ],
+      buttons: [
+        {
+          text: this.COMMON.cancel,
+          role: 'cancel',
+        }, {
+          text: this.COMMON.confirm,
+          handler: (data) => {
+            if (data.name && data.value) {
+              role.addVariable(data);
+              this.bookService.book.setRole(role);
+              this.bookService.saveBook();
+              this.update();
+            } else {
+              this.popupService.error(this.ERRORS.fieldMissing);
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async addAction(role: Role) {
     const alert = await this.alertController.create({
       header: this.ENTITY.addAction,
       inputs: [
@@ -342,13 +374,13 @@ export class EntityModalComponent implements OnInit, OnDestroy {
           role: 'cancel',
         }, {
           text: this.COMMON.confirm,
-          handler: (data) => {
-            console.log(role);
+          handler: (data: {name: string, value: any}) => {
             if (data.name) {
-              data.chat = '';
-              const actions = role.actions;
-              actions[data.name] = data;
-              this.bookService.updateEntity(role.id, 'roles', {actions});
+              data.value = '';
+              role.addAction(data);
+              this.bookService.book.setRole(role);
+              this.bookService.saveBook();
+              this.update();
             } else {
               this.popupService.error(this.ERRORS.fieldMissing);
             }
@@ -360,7 +392,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async editAction(role, action) {
+  async editAction(role: Role, action) {
     const alert = await this.alertController.create({
       header: this.COMMON.edit,
       inputs: [
@@ -379,13 +411,10 @@ export class EntityModalComponent implements OnInit, OnDestroy {
           text: this.COMMON.confirm,
           handler: (data) => {
             if (data.name) {
-              const actions: any = role.actions;
-              if (data.name !== action.name) {
-                delete actions[action.name];
-                actions[data.name] = {};
-              }
-              actions[data.name] = data;
-              this.bookService.updateEntity(role.id, 'roles', {actions});
+              role.setAction(data);
+              this.bookService.book.setRole(new Role(role));
+              this.bookService.saveBook();
+              this.update();
             } else {
               this.popupService.error(this.ERRORS.fieldMissing);
             }
@@ -397,18 +426,21 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async deleteAction(role, action) {
-    const actions: any[] = role.actions;
-    delete actions[action.name];
-    this.bookService.updateEntity(role.id, 'roles', {actions});
+  async deleteAction(role: Role, actionName: string) {
+    role.deleteAction(actionName);
+    this.bookService.book.setRole(role);
+    this.bookService.saveBook();
+    this.update();
   }
 
-  addRole() {
-    this.bookService.newEntity('roles', {}, '', this.key, this.collection).then(() => this.update());
+  async addRole() {
+    await this.bookService.newRole();
+    this.update();
   }
 
-  removeRole(roleId) {
-    this.bookService.removeRole(roleId).then(() => this.update());
+  removeRole(roleName) {
+    this.bookService.book.deleteRole(roleName);
+    this.update();
   }
 
   async editRole(roleId) {
@@ -435,22 +467,25 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
   changeVariable(varName, varValue) {
-    const variables = this.bookService.entities[this.key].variables;
-    variables[varName] = varValue;
-    this.bookService.updateEntity(this.key, this.collection, {variables});
+    this.entity.setVariable({name: varName, value: varValue});
+    this.saveEntity();
   }
 
-  async changeChat(roleId, actionName) {
+  async changeScript(role: Role, action: {name: string, value: string}) {
     const modal = await this.modalController.create({
     component: IdFinderComponent,
-    componentProps: { collection  : 'chats' }
+    componentProps: { type: 'script' }
     });
 
     modal.onDidDismiss().then((data: any) => {
-      if (data.data.id) {
-        const actions = this.bookService.entities[roleId].actions;
-        actions[actionName].chat = data.data.id;
-        this.bookService.updateEntity(roleId, 'roles', {actions});
+      const script = data.data.name;
+      if (script) {
+        console.log(script);
+        action.value = script;
+        role.setAction(action);
+        this.bookService.book.setRole(role);
+        this.bookService.saveBook();
+        this.update();
       }
     });
     await modal.present();
@@ -459,53 +494,31 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   async addPlace() {
     const modal = await this.modalController.create({
     component: IdFinderComponent,
-    componentProps: { collection  : 'places', exclude : [this.key] }
+    componentProps: { collection  : 'places', exclude : [this.entity.key] }
     });
 
     modal.onDidDismiss().then((data: any) => {
-      const place = data.data.id;
-      if (place) {
-        let places: string[] = this.bookService.entities[this.key].places;
-        if (!places) {
-          places = [];
-        }
-        if (!places.includes(place)) {
-          places.push(place);
-        }
-        this.bookService.updateEntity(this.key, 'places', {places});
-
-        places = this.bookService.entities[place].places;
-        if (!places) {
-          places = [];
-        }
-        if (!places.includes(this.key)) {
-          places.push(this.key);
-        }
-        this.bookService.updateEntity(place, 'places', {places});
+      const placeKey = data.data.id;
+      if (placeKey) {
+        this.entity.addExtra('places', placeKey);
+        this.bookService.book.setEntity(this.entity);
+        const targetPlace = this.bookService.book.getEntity(placeKey);
+        targetPlace.addExtra('places', this.entity.key);
+        this.bookService.book.setEntity(targetPlace);
+        this.bookService.saveBook();
+        this.update();
       }
     });
     await modal.present();
   }
 
-  deletePlace(placeId: string) {
-    const places: string[] = this.bookService.entities[this.key].places;
-    for (let i = 0; i < places.length; i++) {
-      const id = places[i];
-      if (id === placeId) {
-        places.splice(i, 1);
-        break;
-      }
-    }
-    this.bookService.updateEntity(this.key, 'places', {places});
-
-    const places2: string[] = this.bookService.entities[placeId].places;
-    for (let i = 0; i < places.length; i++) {
-      const id = places[i];
-      if (id === this.key) {
-        places.splice(i, 1);
-        break;
-      }
-    }
-    this.bookService.updateEntity(placeId, 'places', {places});
+  deletePlace(placeKey: string) {
+    this.entity.deleteExtra('places', placeKey);
+    this.bookService.book.setEntity(this.entity);
+    const targetPlace = this.bookService.book.getEntity(placeKey);
+    targetPlace.deleteExtra('places', this.entity.key);
+    this.bookService.book.setEntity(this.entity);
+    this.bookService.saveBook();
+    this.update();
   }
 }

@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { Role } from '../classes/book';
 import { BookService } from '../services/book.service';
 
 @Pipe({
@@ -6,11 +7,11 @@ import { BookService } from '../services/book.service';
 })
 export class GetRolesPipe implements PipeTransform {
 
-  constructor() {}
+  constructor(private bookService: BookService) {}
 
-  transform(entities: {}, roles: string[]): any {
-    const res: any[] = [];
-    roles.forEach((roleName) => res.push(entities[roleName]));
+  transform(roles: string[]): Role[] {
+    const res: Role[] = [];
+    roles.forEach((roleName) => res.push(this.bookService.book.getRole(roleName)));
     return res;
   }
 

@@ -3,7 +3,7 @@
   
   <!-- <ion-note style="margin: 5px;" slot="start">{{index}}</ion-note> -->
   <div class="msgBox" slot="start" *ngIf="actor; else card">
-    <app-avatar *ngIf="!ownPlayer || edit" [enabled]="true" [key]="actor.key" class="ion-no-margin"></app-avatar>
+    <app-avatar *ngIf="!ownPlayer || edit" [enabled]="true" [entity]="actor" class="ion-no-margin"></app-avatar>
     <ion-card [color]="actor.color" [slot]="msgSlot">
       <p [class]="editClass" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
       

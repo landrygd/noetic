@@ -1,15 +1,13 @@
 export class Role {
-  name: string;
   color: string;
-  key: string;
+  name: string;
   roles: string[];
   variables: {name: string, value: any}[];
   actions: {name: string, value: any}[];
 
   constructor(options?) {
-    this.name = '';
     this.color = 'medium';
-    this.key = '';
+    this.name = '';
     this.roles = [];
     this.variables = [];
     this.actions = [];
@@ -18,6 +16,46 @@ export class Role {
         this[key] = options[key];
       }
     });
+  }
+
+  // DELETERS
+  deleteVariable(name: string) {
+    const index = this.variables.findIndex((v) => v.name === name);
+    this.variables.splice(index, 1);
+  }
+
+  deleteAction(name: string) {
+    const index = this.actions.findIndex((a) => a.name === name);
+    this.actions.splice(index, 1);
+  }
+
+  // GETTERS
+  getVariable(name): {name: string, value: any} {
+    return this.variables.filter((value) => value.name === name)[0];
+  }
+
+  getAction(name): {name: string, value: any} {
+    return this.actions.filter((value) => value.name === name)[0];
+  }
+
+  // SETTERS
+  setVariable(variable: {name: string, value: any}) {
+    const index = this.variables.findIndex((value) => value.name === variable.name);
+    index === -1 ? this.addVariable(variable) : this.variables[index] = variable;
+  }
+
+  setAction(action: {name: string, value: any}) {
+    const index = this.actions.findIndex((value) => value.name === action.name);
+    index === -1 ? this.addAction(action) : this.actions[index] = action;
+  }
+
+  // ADDERS
+  addVariable(variable: {name: string, value: any}) {
+    this.variables.push(variable);
+  }
+
+  addAction(action: {name: string, value: any}) {
+    this.actions.push(action);
   }
 }
 
@@ -29,26 +67,71 @@ export class Entity {
   key: string;
   roles: string[];
   banner: string;
-  items: string[];
   description: string;
-  places: string[];
+  variables: any;
+  // {
+  //   variable1: 10;
+  //   variable2: "Coucou";
+  // }
+  extra: any;
+  // {
+  //   items: string[];
+  //   places: string[];
+  // }
 
   constructor(options?) {
     this.name = '';
     this.type = '';
-    this.color = '';
+    this.color = 'medium';
     this.img = '';
     this.key = '';
     this.roles = [];
     this.banner = '';
-    this.items = [];
-    this.places = [];
+    this.extra = {};
+    this.variables = {};
     this.description = '';
     Object.keys(options).forEach((key) => {
       if (key in this) {
         this[key] = options[key];
       }
     });
+  }
+
+  haveVariable(name: string) {
+    return this.variables.findIndex((v) => v.name === name) !== -1;
+  }
+
+  // DELETERS
+  deleteVariable(name: string) {
+    delete this.variables[name];
+  }
+
+  deleteExtra(collection: string, key: string) {
+    const index = this.extra[collection].indexOf(key);
+    this.extra[collection].splice(index, 1);
+  }
+
+  // GETTERS
+  getVariable(name): {name: string, value: any} {
+    return this.variables[name];
+  }
+
+  // SETTERS
+  setVariable(variable: {name: string, value: any}) {
+    this.variables[variable.name] = variable.value;
+  }
+
+  // ADDERS
+  addVariable(variable: {name: string, value: any}) {
+    this.variables[variable.name] = variable.value;
+  }
+
+  addExtra(collection: string, key: string) {
+    if (this.extra[collection]) {
+      this.extra[collection].push(key);
+    } else {
+      this.extra[collection] = [key];
+    }
   }
 }
 
@@ -222,17 +305,21 @@ export class Book {
     };
   }
 
+  haveScript(name: string): boolean {
+    return this.scripts.filter((value) => value.name === name).length > 0;
+  }
+
+  // ADDERS
+
   addEntity(entity: Entity) {
     const name = entity.name;
-    if (!entity.key) {
-      const key = this.addRole(name);
-      entity.key = key;
-      entity.roles = [key];
-    }
+    const key = this.addRole(name);
+    entity.key = key;
+    entity.roles = [key];
     this.entities.push(entity);
   }
 
-  addRole(name: string, opts?: Role): string {
+  addRole(name: string, opts?): string {
     this.roles.sort((a, b) => ('' + a.name).localeCompare(b.name));
     name = name.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
                   .replace(/[^\w\s]/gi, '').replace(/\s/g, '-');
@@ -251,18 +338,15 @@ export class Book {
       }
     }
     const res = new Role({name});
-    Object.assign(res, opts);
     this.roles.push(res);
     return name;
-  }
-
-  getEntity(key: string): Entity {
-    return this.entities.filter((value) => value.key === key)[0];
   }
 
   addScript(script) {
     this.scripts.push(script);
   }
+
+  // GETTERS
 
   getScript(name): Script {
     return this.scripts.filter((value) => value.name === name)[0];
@@ -272,47 +356,49 @@ export class Book {
     return this.entities.filter((value) => value.type === type);
   }
 
+  getEntity(key: string): Entity {
+    return this.entities.filter((value) => value.key === key)[0];
+  }
+
+  getRole(name: string): Role {
+    return this.roles.filter((value) => value.name === name)[0];
+  }
+
+  getRoles(roles: string[]): Role[] {
+    return this.roles.filter((value) => roles.includes(value.name));
+  }
+
+  // SETTERS
+
   setEntity(entity: Entity) {
-    let i = 0;
-    for (i; i < this.entities.length; i++) {
-      const e = this.entities[i];
-      if (e.key === entity.key) {
-        break;
-      }
-    }
-    this.entities[i] = entity;
+    const index = this.entities.findIndex((e) => e.key === entity.key);
+    index === -1 ? this.addEntity(entity) : this.entities[index] = entity;
   }
 
   setScript(script: Script) {
-    let i = 0;
-    for (i; i < this.scripts.length; i++) {
-      const s = this.scripts[i];
-      if (s.name === script.name) {
-        break;
-      }
-    }
-    this.scripts[i] = script;
+    const index = this.scripts.findIndex((s) => s.name === script.name);
+    index === -1 ? this.addScript(script) : this.scripts[index] = script;
   }
 
-  haveScript(name: string): boolean {
-    return this.scripts.filter((value) => value.name === name).length > 0;
+  setRole(role: Role) {
+    const index = this.roles.findIndex((r) => r.name === role.name);
+    index === -1 ? this.addRole(role.name, role) : this.roles[index] = role;
   }
+
+  // DELETERS
 
   deleteScript(name) {
-    for (let i = 0; i < this.scripts.length; i++) {
-      const script = this.scripts[i];
-      if (script.name === name) {
-        this.scripts.splice(i, 1);
-      }
-    }
+    const index = this.scripts.findIndex((s) => s.name === name);
+    this.scripts.splice(index, 1);
   }
 
   deleteEntity(key) {
-    for (let i = 0; i < this.entities.length; i++) {
-      const entity = this.entities[i];
-      if (entity.key === key) {
-        this.entities.splice(i, 1);
-      }
-    }
+    const index = this.entities.findIndex((e) => e.key === key);
+    this.entities.splice(index, 1);
+  }
+
+  deleteRole(name) {
+    const index = this.roles.findIndex((e) => e.name === name);
+    this.roles.splice(index, 1);
   }
 }

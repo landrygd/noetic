@@ -6,7 +6,7 @@
 <ion-content>
   <ion-virtual-scroll [items]="places">
     <ion-item *virtualItem="let place" button (click)="showPlace(place.key)">
-      <app-avatar [enabled]="false" [key]="place.key" type="place" class="ion-no-margin" slot="start"></app-avatar>
+      <app-avatar [enabled]="false" [entity]="place" class="ion-no-margin" slot="start"></app-avatar>
       <ion-label class="ion-margin-start" [color]="place.color">{{place.name}}</ion-label>
     </ion-item>
   </ion-virtual-scroll>

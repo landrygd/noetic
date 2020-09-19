@@ -12,14 +12,11 @@ import { Entity } from 'src/app/classes/book';
 
 export class AvatarComponent implements OnInit {
 
-  @Input() key: string;
   @Input() enabled = false;
   @Input() height = 40;
-  @Input() collection = 'actors';
+  @Input() entity;
 
   actor: string;
-
-  entity: Entity;
 
   constructor(
     public bookService: BookService,
@@ -28,15 +25,13 @@ export class AvatarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.entity = this.bookService.book.getEntity(this.key);
   }
 
   async viewProfile() {
-    console.log(this.key);
     if (this.enabled) {
       const modal = await this.modalController.create({
       component: EntityModalComponent,
-      componentProps: { key: this.key, collection: this.collection }
+      componentProps: { entity: this.entity }
       });
       await modal.present();
     }

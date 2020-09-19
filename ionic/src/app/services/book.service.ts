@@ -7,7 +7,7 @@ import { AngularFireStorage } from '@angular/fire/storage';
 import { UserService } from './user.service';
 import { PopupService } from './popup.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Book, Script } from '../classes/book';
+import { Book, Entity, Script } from '../classes/book';
 import { Storage } from '@ionic/storage';
 
 @Injectable({
@@ -697,10 +697,10 @@ export class BookService implements OnDestroy {
     this.userService.share(this.BOOK.shareMsg, this.BOOK.shareSubject, bookUrl);
   }
 
-  newEntity(collection: string, extraData = {}, id = '', target = '', targetCollection = ''): Promise<any> {
+  newEntity(type: string, extraData = {}): Promise<any> {
     return new Promise(async (res, rej) => {
       const alert = await this.alertController.create({
-        header: this.BOOK.header[collection],
+        header: this.BOOK.header[type],
         inputs: [
           {
             name: 'name',
@@ -715,54 +715,11 @@ export class BookService implements OnDestroy {
             cssClass: 'secondary'
           }, {
             text: this.COMMON.confirm,
-            handler: (data: {id: string, places: [], name: string, key: string,
-              color: string, roles: string[], variables: {}, actions: {}}) => {
+            handler: (data: Entity) => {
               if (data.name) {
-                data.id = id;
-                const role = data.name.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                  .replace(/[^\w\s]/gi, '').replace(/\s/g, '-');
-                data.color = 'medium';
-                if (collection === 'roles') {
-                  data.variables = {};
-                  data.actions = {};
-                  data.id = role;
-                  data.roles = [];
-                  const roles: string[] = this.entities[target].roles;
-                  if (!roles.includes(role)) {
-                    roles.push(role);
-                    this.firestore.collection('/books').doc(this.curBookId).collection(targetCollection).doc(target).update({roles});
-                    if (!this.entities[data.id]) {
-                      this.firestore.collection('/books').doc(this.curBookId).collection('roles').doc(data.id).set({
-                        id: data.id,
-                        name: data.id,
-                        color: 'medium',
-                        variables: {},
-                        actions: {}
-                      });
-                    }
-                  }
-                } else {
-                  if (id === '') {
-                    data.id = this.firestore.createId();
-                  }
-                  if (collection === 'places') {
-                    data.places = [];
-                  }
-                  data.roles = [role];
-                  data.key = role;
-                  data.variables = {};
-                  this.firestore.collection('/books').doc(this.curBookId).collection('roles').doc(role).set({
-                    id: role,
-                    name: role,
-                    target: data.id,
-                    color: 'medium',
-                    variables: {},
-                    actions: {}
-                  });
-                }
-                Object.keys(extraData)
-                  .forEach(key => data[key] = extraData[key]);
-                this.firestore.collection('/books').doc(this.curBookId).collection(collection).doc(data.id).set(data);
+                const entity = new Entity(Object.assign(data, extraData));
+                entity.type = type;
+                this.book.addEntity(entity);
                 res();
               } else {
                 this.popupService.toast(this.ERRORS.fieldMissing);
@@ -776,64 +733,97 @@ export class BookService implements OnDestroy {
     });
   }
 
-  removeRole(roleId): Promise<any> {
-    return new Promise(async (resolve) => {
-      for (const entityId of Object.keys(this.entities)) {
-        const entity: {roles: string[], collection: string} = this.entities[entityId];
-        if (entity.roles) {
-          for (let i = 0; i < entity.roles.length; i++) {
-            if (roleId === entity.roles[i]) {
-              entity.roles.splice(i, 1);
-              await this.firestore.collection('/books').doc(this.curBookId).collection(entity.collection)
-                                                       .doc(entityId).update({roles: entity.roles});
-              break;
+  newRole(): Promise<any> {
+    return new Promise(async (res, rej) => {
+      const alert = await this.alertController.create({
+        header: this.BOOK.header.role,
+        inputs: [
+          {
+            name: 'name',
+            type: 'text',
+            placeholder: this.COMMON.name,
+          },
+        ],
+        buttons: [
+          {
+            text: this.COMMON.cancel,
+            role: 'cancel',
+            cssClass: 'secondary'
+          }, {
+            text: this.COMMON.confirm,
+            handler: (data: Entity) => {
+              if (data.name) {
+                this.book.addRole(data.name);
+              } else {
+                this.popupService.toast(this.ERRORS.fieldMissing);
+                rej();
+              }
             }
           }
-        }
-      }
-      await this.firestore.collection('/books').doc(this.curBookId).collection('roles').doc(roleId).delete();
-      resolve();
+        ]
+      });
+      await alert.present();
     });
   }
 
-  async updateFieldEntity(id, collection, fields: string[]) {
-    const inputs = [];
-    for (const field of fields) {
-      inputs.push({
-        name: field,
-        type: 'text',
-        placeholder: this.COMMON[field],
-      }, );
-    }
-    const alert = await this.alertController.create({
-      header: this.COMMON.update,
-      inputs,
-      buttons: [
-        {
-          text: this.COMMON.cancel,
-          role: 'cancel',
-          cssClass: 'secondary'
-        }, {
-          text: this.COMMON.confirm,
-          handler: (data) => {
-            if (data) {
-              this.updateEntity(id, collection, data);
-            } else {
-              this.popupService.toast(this.ERRORS.fieldMissing);
-            }
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
+  // removeRole(roleId): Promise<any> {
+  //   return new Promise(async (resolve) => {
+  //     for (const entityId of Object.keys(this.entities)) {
+  //       const entity: {roles: string[], collection: string} = this.entities[entityId];
+  //       if (entity.roles) {
+  //         for (let i = 0; i < entity.roles.length; i++) {
+  //           if (roleId === entity.roles[i]) {
+  //             entity.roles.splice(i, 1);
+  //             await this.firestore.collection('/books').doc(this.curBookId).collection(entity.collection)
+  //                                                      .doc(entityId).update({roles: entity.roles});
+  //             break;
+  //           }
+  //         }
+  //       }
+  //     }
+  //     await this.firestore.collection('/books').doc(this.curBookId).collection('roles').doc(roleId).delete();
+  //     resolve();
+  //   });
+  // }
 
-  updateEntity(id, collection, data): Promise<any> {
-    return new Promise((res, rej) => {
-      this.firestore.collection('/books').doc(this.curBookId).collection(collection)
-                                         .doc(id).update(data).then(() => res()).catch(() => rej());
-    });
-  }
+  // async updateFieldEntity(id, collection, fields: string[]) {
+  //   const inputs = [];
+  //   for (const field of fields) {
+  //     inputs.push({
+  //       name: field,
+  //       type: 'text',
+  //       placeholder: this.COMMON[field],
+  //     }, );
+  //   }
+  //   const alert = await this.alertController.create({
+  //     header: this.COMMON.update,
+  //     inputs,
+  //     buttons: [
+  //       {
+  //         text: this.COMMON.cancel,
+  //         role: 'cancel',
+  //         cssClass: 'secondary'
+  //       }, {
+  //         text: this.COMMON.confirm,
+  //         handler: (data) => {
+  //           if (data) {
+  //             this.updateEntity(id, collection, data);
+  //           } else {
+  //             this.popupService.toast(this.ERRORS.fieldMissing);
+  //           }
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   await alert.present();
+  // }
+
+  // updateEntity(id, collection, data): Promise<any> {
+  //   return new Promise((res, rej) => {
+  //     this.firestore.collection('/books').doc(this.curBookId).collection(collection)
+  //                                        .doc(id).update(data).then(() => res()).catch(() => rej());
+  //   });
+  // }
 
   // uploadAvatar(file, id, collection) {
   //   const path = 'books/' + this.curBookId + '/' + collection + '/' + id + '/avatar.jpeg';
@@ -861,18 +851,6 @@ export class BookService implements OnDestroy {
 
     return res;
   }
-
-  getRoles(roleList: string[]) {
-
-    const res = [];
-    Object.values(this.entities).forEach((entity: any) => {
-      if (entity.collection === 'roles' && roleList.includes(entity.name)) {
-        res.push(entity);
-      }
-    });
-    return res;
-  }
-
   // async deleteEntity(id: string, collection: string) {
   //   const entity = this.entities[id];
   //   if (entity) {

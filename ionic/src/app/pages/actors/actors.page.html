@@ -6,7 +6,7 @@
 <ion-content>
   <ion-virtual-scroll [items]="actors">
     <ion-item *virtualItem="let actor" button (click)="viewProfile(actor.key)">
-      <app-avatar [enabled]="false" [key]="actor.key" class="ion-no-margin" slot="start"></app-avatar>
+      <app-avatar [enabled]="false" [entity]="actor" class="ion-no-margin" slot="start"></app-avatar>
       <ion-label class="ion-margin-start" [color]="actor.color">{{actor.name}}</ion-label>
     </ion-item>
   </ion-virtual-scroll>

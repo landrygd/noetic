@@ -357,11 +357,11 @@
 		},
 		"BOOK": {
 			"header": {
-				"places": "Créer un nouveau lieu",
-				"actors": "Créer un nouvel acteur",
-				"types": "Créer un nouveau type",
-				"chats": "Créer un nouveau tchat",
-				"items": "Créer un nouvel objet"
+				"place": "Créer un nouveau lieu",
+				"actor": "Créer un nouvel acteur",
+				"type": "Créer un nouveau type",
+				"chat": "Créer un nouveau tchat",
+				"item": "Créer un nouvel objet"
 			},
 			"addChat": "Ajouter un tchat",
 			"authorAlreadyError": "Vous êtes déjà auteur de ce livre",

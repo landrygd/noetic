@@ -19,7 +19,7 @@
 <ion-content>
   <div class="header"></div>
   <div class="flex">
-    <app-avatar [height]="150" [key]="entity.key" [collection]="collection" (click)="changeAvatar()"></app-avatar>
+    <app-avatar [height]="150" [entity]="entity" (click)="changeAvatar()"></app-avatar>
   </div>
   <ion-grid fixed class="ion-text-center">
     <ion-row>
@@ -52,7 +52,7 @@
         </ion-text>
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="collection === 'places'">
+    <ion-row *ngIf="entity.type === 'place'">
       <ion-col size="12">
         <ion-card>
           <ion-list>
@@ -87,14 +87,14 @@
         </ion-card>
       </ion-col>
     </ion-row>
-    <ion-row *ngFor="let role of bookService.entities | getRoles : entity.roles">
+    <ion-row *ngFor="let role of roles">
       <ion-col size="12">
         <ion-card>
           <ion-card-header>
-            <ion-chip [color]="role.color" mode="ios" (click)="editRole(role.id)">
+            <ion-chip [color]="role.color" mode="ios" (click)="editRole(role.name)">
               <ion-label>@{{role.name}}</ion-label>
-              <ion-icon *ngIf="entity.key === role.id" name="key"></ion-icon>
-              <ion-icon *ngIf="entity.key !== role.id" name="create"></ion-icon>
+              <ion-icon *ngIf="entity.key === role.name" name="key"></ion-icon>
+              <ion-icon *ngIf="entity.key !== role.name" name="create"></ion-icon>
             </ion-chip>
           </ion-card-header>
           <ion-card-content>
@@ -103,9 +103,9 @@
                 <ion-icon slot="start"name="pricetag"></ion-icon>
                 <ion-label slot="start">{{'MODALS.ENTITY.variables' | translate}}</ion-label>
               </ion-item-divider>
-              <ion-item *ngFor="let variable of role.variables | objectValues" lines="none">
+              <ion-item *ngFor="let variable of role.variables" lines="none">
                 <ion-label position="floating" [color]="role.color">{{variable.name}}</ion-label>
-                <!-- <ion-input type="text" [placeholder]="variable.default" [value]="entity.variables[variable.name]" [color]="role.color" (ionChange)="changeVariable(variable.name, $event.target.value)"></ion-input> -->
+                <ion-input type="text" [placeholder]="variable.value" [value]="entity.variables[variable.name]" [color]="role.color" (ionChange)="changeVariable(variable.name, $event.target.value)"></ion-input>
                 <ion-buttons slot="end">
                   <ion-button slot="end" (click)="editVariable(role, variable)" expand="block" fill="clear" shape="round" color="medium">
                     <ion-icon slot="icon-only" name="create"></ion-icon>
@@ -123,10 +123,10 @@
                 <ion-icon slot="start" name="flash"></ion-icon>
                 <ion-label slot="start">{{'MODALS.ENTITY.actions' | translate}}</ion-label>
               </ion-item-divider>
-              <ion-item *ngFor="let action of role.actions | objectValues" lines="none">
+              <ion-item *ngFor="let action of role.actions" lines="none">
                 <ion-label position="floating" [color]="role.color">{{action.name}}</ion-label>
-                <ion-input *ngIf="bookService.entities[action.chat]" (click)="changeChat(role.id, action.name)" [disabled]="true" type="text" [value]="bookService.entities[action.chat].name"></ion-input>
-                <ion-input *ngIf="!bookService.entities[action.chat]" (click)="changeChat(role.id, action.name)" [disabled]="true" type="text" placeholder="Ajouter un tchat"></ion-input>
+                <ion-input *ngIf="action.value" (click)="changeScript(role, action)" [disabled]="true" type="text" [value]="action.value"></ion-input>
+                <ion-input *ngIf="!action.value" (click)="changeScript(role, action)" [disabled]="true" type="text" placeholder="Ajouter un tchat"></ion-input>
                 <ion-buttons slot="end">
                   <ion-button (click)="editAction(role, action)" expand="block" fill="clear" shape="round" color="medium">
                     <ion-icon slot="icon-only" name="create"></ion-icon>

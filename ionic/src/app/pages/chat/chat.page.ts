@@ -336,7 +336,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   newActor() {
-    this.bookService.newEntity('actors');
+    this.bookService.newEntity('actor');
   }
 
   getClassFabActor(actor) {

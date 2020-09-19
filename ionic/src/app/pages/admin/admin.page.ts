@@ -10,7 +10,7 @@ import { Book, Entity, Role, Script } from 'src/app/classes/book';
 })
 export class AdminPage implements OnInit {
   @ViewChild('myCanvas', { read: ElementRef, static: true}) canvas: ElementRef<HTMLCanvasElement>;
-  bookId: string = 'tDQgOj0XWrEpSClmlzoX';
+  bookId = 'tDQgOj0XWrEpSClmlzoX';
   base64: string;
 
   constructor(

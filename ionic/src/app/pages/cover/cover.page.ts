@@ -97,7 +97,6 @@ export class CoverPage implements OnInit, OnDestroy {
   ionViewWillEnter() {
     this.book = this.bookService.book;
     this.getBanner();
-    console.log(this.book);
     // const bookId = this.route.snapshot.paramMap.get('id');
     // this.curBookId = bookId;
     // if (this.bookService.curBookId !== bookId) {

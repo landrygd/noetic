@@ -6,8 +6,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ObjectValuesPipe implements PipeTransform {
 
   transform(value: any, ...args: any[]): any {
-    console.log(value);
-    console.log(Object.values(value));
     return Object.values(value);
   }
 

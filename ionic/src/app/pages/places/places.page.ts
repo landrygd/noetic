@@ -23,18 +23,18 @@ export class PlacesPage implements OnInit {
 
   refresh() {
     this.places = this.bookService.book.getEntities('place');
-
-
   }
 
-  newPlace() {
-    this.bookService.newEntity('places', {items: []});
+  async newPlace() {
+    await this.bookService.newEntity('place');
+    console.log(this.bookService.book);
+    this.refresh();
   }
 
   async showPlace(key: string) {
     const modal = await this.modalController.create({
     component: EntityModalComponent,
-    componentProps: {collection: 'places', key}
+    componentProps: { entity: this.bookService.book.getEntity(key) }
     });
     await modal.present();
   }

@@ -5,8 +5,8 @@
 </ion-header>
 <ion-content>
   <ion-list>
-    <ion-item *ngFor="let result of results" button details (click)="dismiss({id: result.id})">
-      <ion-icon slot="start" [name]="collection | collectionToIcon"></ion-icon>
+    <ion-item *ngFor="let result of results" button details (click)="dismiss({key: result.key, name: result.name})">
+      <ion-icon slot="start" [name]="type | typeToIcon"></ion-icon>
       <ion-label>{{result.name}}</ion-label>
     </ion-item>
   </ion-list>

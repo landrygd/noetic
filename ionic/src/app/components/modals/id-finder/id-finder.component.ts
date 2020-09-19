@@ -9,7 +9,7 @@ import { ModalController } from '@ionic/angular';
 })
 export class IdFinderComponent implements OnInit {
 
-  @Input() collection: string;
+  @Input() type: string;
   @Input() exclude: string[] = [];
 
   results: any[];
@@ -25,8 +25,10 @@ export class IdFinderComponent implements OnInit {
 
   onSearchChange(filter) {
     this.results = [];
-    const collection = this.bookService.getEntitiesCollection(this.collection);
-    const entities: {name: string}[] = this.bookService.objectToList(collection, this.exclude);
+    let entities: any[] = this.bookService.book.scripts;
+    if (this.type !== 'script') {
+      entities = this.bookService.book.getEntities(this.type);
+    }
     if (filter === '') {
       this.results = entities;
     } else {

@@ -28,12 +28,12 @@ export class ActorsPage implements OnInit {
   async viewProfile(key: string) {
     const modal = await this.modalController.create({
     component: EntityModalComponent,
-    componentProps: { key, collection: 'actors' }
+    componentProps: { entity: this.bookService.book.getEntity(key) }
     });
     await modal.present();
   }
 
   newActor() {
-    this.bookService.newEntity('actors');
+    this.bookService.newEntity('actor');
   }
 }
