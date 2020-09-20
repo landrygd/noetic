@@ -8,7 +8,7 @@ export class VariablesPipe implements PipeTransform {
   constructor() {}
 
   transform(value: string, variables: any, actors: any): any {
-    const ponctuation = /(~|`|[?]|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g;
+    const ponctuation = /(~|`|[?]|!|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|>|\?|\/|\\|\||\+|=)/g;
     value = value.replace(ponctuation, ' $1');
     const words = value.split(' ');
     const res = [];
@@ -21,25 +21,23 @@ export class VariablesPipe implements PipeTransform {
           res.push(this.toChip(word.substring(1, word.length), 'pricetag'));
         }
       } else if (word.charAt(0) === '@') {
-        const subwords = word.split('$');
+        const subwords = word.split('.');
         const actorName =  this.toVariable(subwords[0]);
-        // TODO
-        const actorId =  ''; // this.actorService.getActorId(actorName);
         if (subwords.length === 1) {
           res.push(this.toChip(actorName, 'person'));
         } else {
           const nomVar = subwords[1];
-          if (actors.hasOwnProperty(actorId)) {
-            res.push(actors[actorId][nomVar]);
+          if (actors.hasOwnProperty(actorName)) {
+            res.push(actors[actorName][nomVar]);
           } else {
-            res.push(this.toChip(nomVar, 'pricetag') + ' de ' + this.toChip(actorName, 'person'));
+            res.push(this.toChip(nomVar + ' (' + actorName + ')', 'pricetag'));
           }
         }
       } else {
         res.push(word);
       }
     }
-    const result = res.join(' ').replace(/[ ](~|`|[?]|!|@|#|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|\.|>|\?|\/|\\|\||-|_|\+|=)/g, '$1');
+    const result = res.join(' ').replace(/[ ](~|`|[?]|!|$|%|^|&|\*|\(|\)|{|}|\[|\]|;|:|\"|'|<|,|>|\?|\/|\\|\||\+|=)/g, '$1');
     return result;
   }
   bubbleIcon(text) {

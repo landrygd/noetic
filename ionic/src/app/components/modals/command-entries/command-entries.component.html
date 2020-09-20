@@ -21,6 +21,9 @@
       <ion-button *ngIf="input.type == 'ambiance'" (click)="audio('ambiance')" expand="block" fill="clear" shape="round" slot="end">
         {{'MODALS.MANUAL.ambiance' | translate}}
       </ion-button>
+      <ion-button *ngIf="input.type == 'background'" (click)="background()" expand="block" fill="clear" shape="round" slot="end">
+        {{'MODALS.MANUAL.background' | translate}}
+      </ion-button>
     </ion-item>
   </ion-list>
 </form>

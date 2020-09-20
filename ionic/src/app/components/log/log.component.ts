@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, ElementRef, ViewChild, OnChanges } from '@angular/core';
 import { EventEmitter } from '@angular/core';
 import { AnimationService } from 'src/app/services/animation.service';
 import { BookService } from 'src/app/services/book.service';
@@ -12,9 +12,9 @@ import { Entity } from 'src/app/classes/book';
   styleUrls: ['./log.component.scss'],
 })
 
-export class LogComponent implements OnInit {
+export class LogComponent implements OnInit, OnChanges {
 
-  @Input() msg: string;
+  @Input() message: string;
   @Input() index = 0;
   @Input() selected = false;
   @Input() edit = false;
@@ -22,6 +22,8 @@ export class LogComponent implements OnInit {
   @Input() typing = false;
   @Input() variables = {};
   @Input() actors = {};
+
+  msg: string;
 
   actor: Entity;
 
@@ -58,6 +60,15 @@ export class LogComponent implements OnInit {
     ) {}
 
   ngOnInit() {
+    this.refresh();
+  }
+
+  ngOnChanges() {
+    this.getActor();
+  }
+
+  refresh() {
+    this.getActor();
     this.variablesJSON = this.variables;
     this.actorsJSON = this.actors;
     if (this.edit) {
@@ -65,24 +76,11 @@ export class LogComponent implements OnInit {
       this.itemClass = 'editing-item';
       this.cardClass = 'editing-card';
     }
-    // if (this.log.hasOwnProperty('actor')) {
-    //   this.actorId = this.log.actor;
-    // } else {
-    //   if (!this.edit) {
-    //     this.narrator = 'narrator';
-    //   }
-    // }
-    // if (this.log.hasOwnProperty('msg')) {
-    //   this.msg = this.log.msg;
-    //   if (this.typing) {
-    //     setTimeout(() => this.endTyping(), (this.msg.length / this.speed) * 30000);
-    //   }
-    // }
     if (this.msg === '/finish') {
       this.button = 'Quitter';
       this.actionName = 'finish';
     }
-    this.ownPlayer = true; // this.actorService.isOwnActor(this.actorId);
+    this.ownPlayer = false;
     if (this.ownPlayer) {
         this.msgSlot = 'end';
     }
@@ -144,7 +142,13 @@ export class LogComponent implements OnInit {
   }
 
   getActor() {
-    const key = this.msg.split(':')[0].substring(1);
+    const msgArray = this.message.split(':');
+    const key = msgArray.shift().substring(1);
     this.actor = this.bookService.book.getEntity(key);
+    if (this.actor) {
+      this.msg = msgArray.join(':').trim();
+    } else {
+      this.msg = this.message;
+    }
   }
 }

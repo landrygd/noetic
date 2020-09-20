@@ -49,25 +49,45 @@ export class SettingsBookPage implements OnInit, OnDestroy {
       this.commonSub.unsubscribe();
     }
 
-  // async alertDelete() {
-  //   const alert = await this.alertController.create({
-  //     message: this.BOOKSETTINGS.deleteConfirm,
-  //     buttons: [
-  //       {
-  //         text: this.COMMON.cancel,
-  //         role: 'cancel',
-  //         cssClass: 'secondary'
-  //       }, {
-  //         text: this.BOOKSETTINGS.delete,
-  //         cssClass: 'danger',
-  //         handler: () => {
-  //           this.bookService.deleteBook();
-  //         }
-  //       }
-  //     ]
-  //   });
-  //   await alert.present();
-  // }
+  async alertDelete() {
+    const alert = await this.alertController.create({
+      message: this.BOOKSETTINGS.deleteConfirm,
+      buttons: [
+        {
+          text: this.COMMON.cancel,
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: this.BOOKSETTINGS.delete,
+          cssClass: 'danger',
+          handler: () => {
+            this.bookService.deleteBook();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async update() {
+    const alert = await this.alertController.create({
+      message: this.BOOKSETTINGS.updateConfirm,
+      buttons: [
+        {
+          text: this.COMMON.cancel,
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: this.COMMON.update,
+          cssClass: 'danger',
+          handler: () => {
+            this.bookService.uploadBook();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
 
   async alertPublish() {
     const alert = await this.alertController.create({
@@ -125,43 +145,9 @@ export class SettingsBookPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  // async leave() {
-  //   const alert = await this.alertController.create({
-  //     message: this.BOOKSETTINGS.leaveBookConfirm,
-  //     buttons: [
-  //       {
-  //         text: this.COMMON.no,
-  //         role: 'cancel',
-  //         cssClass: 'secondary'
-  //       }, {
-  //         text: this.COMMON.yes,
-  //         handler: () => {
-  //           this.bookService.leaveBook();
-  //         }
-  //       }
-  //     ]
-  //   });
-  //   await alert.present();
-  // }
-
-  async background() {
-    const modal = await this.modalController.create({
-    component: WallpapersSearchComponent,
-    });
-    await modal.present();
-    modal.onDidDismiss()
-    .then((data) => {
-      if (data.data) {
-      const wallpaper = data.data.name;
-      this.bookService.changeWallpaper(this.bookService.curBookId, wallpaper);
-      }
-    });
+  delete() {
+    this.alertDelete();
   }
-
-
-  // delete() {
-  //   this.alertDelete();
-  // }
 
   publish() {
     this.alertPublish();
@@ -200,6 +186,7 @@ export class SettingsBookPage implements OnInit, OnDestroy {
   }
 
   changeMainChat(chatId) {
-    this.bookService.setMainChat(chatId);
+    this.bookService.book.setup.main = chatId;
+    this.bookService.saveBook();
   }
 }

@@ -39,7 +39,7 @@ export class GamePage implements OnInit, OnDestroy {
   ownActor: string;
   script: string[] = [];
   line = -1;
-  logs: any[] = [];
+  logs: string[] = [];
   scriptName = 'main';
   loopMinTime = 1000;
   question = false;
@@ -336,6 +336,9 @@ export class GamePage implements OnInit, OnDestroy {
               case 'random':
                 this.setVariable('random');
                 break;
+              case 'background':
+                this.setWallpaper(this.args[0]);
+                break;
               case 'control':
                 if (this.isActor(this.getVariableName(this.args[0]))) {
                   this.ownActor = this.toActorName(this.getVariableName(this.args[0]));
@@ -449,7 +452,12 @@ export class GamePage implements OnInit, OnDestroy {
     const path = this.args[0];
     const value = this.args[1];
     let k = this.variables;
-    const  steps = path.split('.');
+    let steps: string[] = path.split('.');
+    if (steps[0].charAt(0) === '@') {
+      steps = steps.slice(0, 2);
+    } else {
+      steps = [steps[0]];
+    }
     const last = steps.pop();
     steps.forEach(e => (k[e] = k[e] || {}) && (k = k[e]));
     if (value) {
@@ -707,7 +715,7 @@ export class GamePage implements OnInit, OnDestroy {
   end() {
     this.ended = true;
     this.logs.push(
-      {msg: '/finish'}
+      '/finish'
     );
   }
 
@@ -759,8 +767,8 @@ export class GamePage implements OnInit, OnDestroy {
     let header = this.GAME.answer;
     const lastLog = this.logs[this.logs.length - 1];
     if (lastLog !== undefined) {
-      if (lastLog.msg.charAt(0) !== '/') {
-        header = lastLog.msg.substring(0, 30);
+      if (lastLog.charAt(0) !== '/') {
+        header = lastLog.substring(0, 30);
       }
     }
     const actionSheet = await this.actionSheetController.create({
@@ -938,15 +946,12 @@ export class GamePage implements OnInit, OnDestroy {
     this.play();
   }
 
-  // getWallpaper() {
-  //   if (this.bookService.book.banner) {
-  //     const wallpaper = this.bookService.book.banner;
-  //     if (wallpaper !== '' && wallpaper.substring(0, 4) !== 'http') {
-  //       const res = 'url(' + this.mediaService.getWallpaperURL(wallpaper) + ')';
-  //       this.bg.nativeElement.style.setProperty('--background', res + ' no-repeat center center / cover');
-  //     }
-  //   }
-  // }
+  setWallpaper(wallpaperName) {
+    if (wallpaperName !== '' && wallpaperName.substring(0, 4) !== 'http') {
+      const res = 'url(' + this.mediaService.getWallpaperURL(wallpaperName) + ')';
+      this.bg.nativeElement.style.setProperty('--background', res + ' no-repeat center center / cover');
+    }
+  }
 
   getChatSounds() {
     const sounds: string[] = [];

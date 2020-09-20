@@ -50,7 +50,6 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     }
 
   ngOnInit() {
-    console.log(this.entity);
     this.getTraduction();
     this.update();
   }
@@ -72,7 +71,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
 
   update() {
     if (this.entity.banner !== '') {
-      this.background = this.entity.banner;
+      this.updateBanner();
     }
     if (this.entity.extra.items) {
       this.items = this.entity.extra.items;
@@ -89,6 +88,10 @@ export class EntityModalComponent implements OnInit, OnDestroy {
         this.icon = 'cube';
         break;
     }
+  }
+
+  updateBanner() {
+    this.background = 'url(' + this.entity.banner + ')';
   }
 
   ngOnDestroy() {
@@ -173,7 +176,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     });
     await modal.present();
     modal.onDidDismiss().then((data: any) => {
-      const file = data.data.name;
+      const file = data.data;
       this.bookService.uploadEntityImg(file, 'img', this.entity);
     });
   }
@@ -186,9 +189,10 @@ export class EntityModalComponent implements OnInit, OnDestroy {
       }
     });
     await modal.present();
-    modal.onDidDismiss().then((data: any) => {
-      const file = data.data.name;
-      this.bookService.uploadEntityImg(file, 'banner', this.entity);
+    modal.onDidDismiss().then(async (data: any) => {
+      const file = data.data;
+      await this.bookService.uploadEntityImg(file, 'banner', this.entity);
+      this.updateBanner();
     });
   }
 
@@ -502,7 +506,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   async addPlace() {
     const modal = await this.modalController.create({
     component: IdFinderComponent,
-    componentProps: { collection  : 'places', exclude : [this.entity.key] }
+    componentProps: { type  : 'place', exclude : [this.entity.key] }
     });
 
     modal.onDidDismiss().then((data: any) => {

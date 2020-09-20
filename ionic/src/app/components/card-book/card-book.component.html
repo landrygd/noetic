@@ -1,11 +1,58 @@
-<div #ref [style.height.px]="height" [style.width.px]="width" style="opacity: 0" class="card">
-  <ion-card (click)="open()" button class="ion-no-margin">
-    <ion-img alt="cover" [src]="book.cover" style="width: 100%" (ionError)="onImgLoadFailed()" *ngIf="!loadFailed" (ionImgDidLoad)="onImgLoaded()"></ion-img>
-    <ion-img src="../../../assets/cover/cover1.png" *ngIf="loadFailed"></ion-img>
-  </ion-card>
-  <ion-card class="ion-no-margin header">
-    <div class="center">
-      <p>{{book.title}}</p>
+<div #ref style="opacity: 0;">
+  <!-- <div #ref [style.height.px]="height" [style.width.px]="width" style="opacity: 0" class="card">
+    <ion-card (click)="open()" button class="ion-no-margin">
+      <ion-img alt="cover" [src]="book.cover" style="width: 100%" (ionError)="onImgLoadFailed()" *ngIf="!loadFailed" (ionImgDidLoad)="onImgLoaded()"></ion-img>
+      <ion-img src="../../../assets/cover/cover1.png" *ngIf="loadFailed"></ion-img>
+    </ion-card>
+    <ion-card class="ion-no-margin header">
+      <div class="center">
+        <p>{{book.title}}</p>
+      </div>
+    </ion-card>
+  </div> -->
+
+  <div #ref style="width: 300px; height: 200px;" class="card" *ngIf="!loading; else largeLoading">
+    <ion-card style="position: absolute; width: 100px; z-index: 2; top: 0; left: 5px">
+      <ion-card (click)="open()" button class="ion-no-margin">
+        <ion-img alt="cover" [src]="book.cover" style="width: 100%;" (ionError)="onImgLoadFailed()" *ngIf="!loadFailed" (ionImgDidLoad)="onImgLoaded()"></ion-img>
+        <ion-img src="../../../assets/cover/cover1.png" *ngIf="loadFailed"></ion-img>
+      </ion-card>
+    </ion-card>
+    <ion-card style="width: 300px; height: 155px; position: absolute; top: 40px; left: 5px; margin: 0;">
+      <div style="text-align: start; padding-left: 120px; display: flex; flex-wrap: wrap; justify-content: flex-start; height: 100%; align-content: center;">
+        <ion-card-header style="padding: 0;">
+          <ion-card-title style="font-size: 18px;">{{book.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content style="padding: 0;">
+          <div *ngIf="book.description.length > 70; else short">
+            {{book.description.substring(0,60)}}...
+          </div>
+          <ng-template #short>
+            {{book.description}}
+          </ng-template>
+          <br>
+          <ion-badge style="max-width: 70px; overflow: hidden; text-overflow: ellipsis;" color="medium" mode="ios" *ngFor="let tag of book.tags.slice(0,2)">{{tag}}</ion-badge>
+        </ion-card-content>
+      </div>
+    </ion-card>
+  </div>
+
+  <ng-template #largeLoading>
+    <div style="width: 300px; height: 200px;" class="card">
+      <ion-card style="position: absolute; width: 100px; height: 177px; z-index: 2; top: 0; left: 5px">
+        <ion-skeleton-text animated style="width: 100%; height: 100%"></ion-skeleton-text>
+      </ion-card>
+      <div style="text-align: start; padding-left: 120px; display: flex; flex-wrap: wrap; justify-content: flex-start; height: 100%; align-content: center;">
+        <ion-card style="width: 300px; height: 155px; position: absolute; top: 40px; left: 5px; margin: 0;">
+          <ion-card-header style="padding: 0;">
+            <ion-skeleton-text animated style="width: 50px; height: 18px;"></ion-skeleton-text>
+          </ion-card-header>
+          <ion-card-content style="padding: 0;">
+            <ion-skeleton-text animated style="width: 100px; height: 14px;"></ion-skeleton-text>
+            <ion-skeleton-text animated style="width: 80px; height: 14px;"></ion-skeleton-text>
+          </ion-card-content>
+        </ion-card>
+      </div>
     </div>
-  </ion-card>
+  </ng-template>
 </div>

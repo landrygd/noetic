@@ -20,7 +20,7 @@
         <div class="verticalLine" [ngStyle]="{ 'background-color': tabColor }"></div>
       </ion-col>
       <ion-col class="ion-no-margin colMsg">
-        <app-log button class="ion-no-margin" [msg]="msg" [index]="i"
+        <app-log button class="ion-no-margin" [message]="msg" [index]="i"
         [edit]="true" [selected]="isLogSelected(i)" (action)="actionLog($event)" (click)="select($event, i);$event.stopPropagation();"></app-log>
       </ion-col>
     </ion-row>
@@ -49,9 +49,9 @@
       <ion-fab-button (click)="manual()">
         <ion-icon name="terminal"></ion-icon>
       </ion-fab-button>
-      <!-- <ion-fab-button (click)="settings()">
-        <ion-icon name="settings"></ion-icon>
-      </ion-fab-button> -->
+      <ion-fab-button (click)="export()">
+        <ion-icon name="download"></ion-icon>
+      </ion-fab-button>
     </ion-fab-list>
   </ion-fab>
 </ion-content>
@@ -59,30 +59,33 @@
 
 
 <ion-footer>
-  <ion-button (click)="showAudio('sound')" expand="block" fill="solid" shape="round" *ngIf="sound">
+  <ion-button (click)="showAudio('sound')" expand="block" fill="solid" shape="round" *ngIf="command === '/sound'">
     {{'CHAT.avaibleSounds' | translate}}
   </ion-button>
-  <ion-button (click)="showAudio('music')" expand="block" fill="solid" shape="round" *ngIf="music">
+  <ion-button (click)="showAudio('music')" expand="block" fill="solid" shape="round" *ngIf="command === '/music'">
     {{'CHAT.avaibleMusics' | translate}}
   </ion-button>
-  <ion-button (click)="showAudio('ambiance')" expand="block" fill="solid" shape="round" *ngIf="ambiance">
+  <ion-button (click)="showAudio('ambiance')" expand="block" fill="solid" shape="round" *ngIf="command === '/ambiance'">
     {{'CHAT.avaibleAmbiances' | translate}}
   </ion-button>
-  <ion-toolbar style="padding: 5px">
+  <ion-button (click)="showBackground()" expand="block" fill="solid" shape="round" *ngIf="command === '/background'">
+    {{'CHAT.avaibleBackgrounds' | translate}}
+  </ion-button>
+  <ion-toolbar>
     <ion-button (click)="newActor()" expand="block" fill="clear" shape="round" *ngIf="actors.length === 0">
       {{'CHAT.addActor' | translate}}
     </ion-button>
     <ion-slides [options]="slides.avatarOpts" *ngIf="actors.length > 0">
-      <ion-slide *ngFor="let actor of actors">
+      <ion-slide *ngFor="let actor of actors" style="padding: 7px">
         <div [ngClass]="getClassFabActor(actor.key)">
-          <!-- <app-avatar (click)="setActor(actor.key)" [id]="actor.key"></app-avatar> -->
-          <p class="note">{{actor.name}}</p>
+          <app-avatar (click)="setActor(actor.key)" [entity]="actor"></app-avatar>
+          <!-- <p class="note">{{actor.name}}</p> -->
         </div>
       </ion-slide>
     </ion-slides>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-textarea #chatBar (ionBlur)="onChatBarBlurred()" (ionFocus)="onChatBarFocused()" [disabled]='textarea' rows="1" [(ngModel)]='text' [placeholder]="'CHAT.enterMessage' | translate" (ionInput)="changeMsg()" (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
+    <ion-textarea style="margin: 0" #chatBar (ionBlur)="onChatBarBlurred()" (ionFocus)="onChatBarFocused()" [disabled]='textarea' rows="1" [(ngModel)]='text' [placeholder]="'CHAT.enterMessage' | translate" (ionInput)="changeMsg()" (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
     <ion-buttons slot="end">
       <ion-button (click)="send()" expand="block" fill="clear" shape="round" color="primary">
         <ion-icon slot="icon-only" name="send" ></ion-icon>

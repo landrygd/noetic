@@ -138,22 +138,24 @@ export class BookService implements OnDestroy {
     this.navCtrl.navigateForward('chat');
   }
 
-  // async newBook(book: Book) {
-  //   await this.popupService.loading(this.COMMON.loading, 'creation');
-  //   // Ajouter l'id référant dans user
-  //   this.userService.addBookRef(book.id);
-  //   // Créer le livre, l'ouvir et y ajouter un chat
-  //   this.firestore.collection('/books').doc(book.id).set(book.getCover()).then(async () => {
-  //     // Upload le cover si une image est chargée
-  //     await this.navCtrl.pop().then( async () => {
-  //       await this.showBook(book);
-  //       await this.openBook(book.id);
-  //       await this.popupService.loadingDismiss('creation');
-  //       this.addChat('main', true);
-  //     }).catch((err) => this.popupService.error(err));
-  //     }
-  //   ).catch((err) => this.popupService.error(err));
-  // }
+  async newBook(book: Book = this.book) {
+    await this.popupService.loading(this.COMMON.loading, 'creation');
+    book.addScript(new Script({name: 'main'}));
+    this.book = book;
+    this.saveBook();
+    // Ajouter l'id référant dans user
+    this.userService.addBookRef(book.id);
+    // Créer le livre, l'ouvir et y ajouter un chat
+    this.firestore.collection('/books').doc(book.id).set(book.getCover()).then(async () => {
+      // Upload le cover si une image est chargée
+      await this.navCtrl.pop().then( async () => {
+        await this.showBook(book);
+        await this.openBook(book.id);
+        await this.popupService.loadingDismiss('creation');
+      }).catch((err) => this.popupService.error(err));
+      }
+    ).catch((err) => this.popupService.error(err));
+  }
 
   // async newChat() {
   //   await this.popupService.loading();
@@ -228,16 +230,15 @@ export class BookService implements OnDestroy {
   //   }
   // }
 
-  uploadCoverImg(file: string) {
+  uploadCoverImg(file: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const path = 'books/' + this.book.id + '/cover.jpeg';
       this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
         const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
-        console.log(ref);
         this.book.cover = ref;
         this.saveBook();
         this.uploadCover();
-        resolve();
+        resolve(ref);
       }).catch((err) => {
         this.popupService.error(err);
         reject();
@@ -262,7 +263,7 @@ export class BookService implements OnDestroy {
   }
 
   uploadCover() {
-    this.firestore.collection('books').doc(this.book.id).set(this.book.getCover());
+    this.firestore.collection('books').doc(this.book.id).update(this.book.getCover());
   }
 
   uploadEntityImg(file: string, imgType: 'img' | 'banner', entity: Entity): Promise<void> {
@@ -324,44 +325,37 @@ export class BookService implements OnDestroy {
   }
 
   // TODO
-  // async deleteBook(bookId = this.curBookId) {
-  //   await this.popupService.loading();
-  //   this.navCtrl.navigateRoot('/tabs/profile');
-  //   // retirer book de la liste
-  //   this.userService.deleteBookRef(bookId);
-  //   // supprimer book
-  //   const bookRef = this.firestore.collection('/books').doc(bookId);
-  //   // S'il n'y a plus d'autheur, le livre est supprimé
-  //   this.unsyncBook();
-  //   // On supprime les sous-collections
-  //   const subCollections = ['chats', 'actors', 'comments', 'places', 'items', 'roles'];
-  //   for (const subCollection of subCollections) {
-  //     const data = await this.firestore.collection('books').doc(bookId).collection(subCollection).get().toPromise();
-  //     for (const doc of data.docs) {
-  //       if (doc.exists) {
-  //         await doc.ref.delete();
-  //       }
-  //     }
-  //   }
-  //   // On supprime les médias
-  //   if (this.haveCover()) {
-  //     this.firestorage.ref('books/' + bookId + '/cover.jpeg').delete();
-  //   }
-  //   if (this.haveBanner()) {
-  //     this.firestorage.ref('books/' + bookId + '/banner.jpeg').delete();
-  //   }
-  //   this.firestore.collection('books').doc(bookId).collection('medias').get().subscribe((data) => {
-  //     data.docs.forEach((doc) => {
-  //       // On supprime le média associé à la référence
-  //       const ref = doc.data().ref;
-  //       this.firestorage.ref(ref).delete();
-  //       doc.ref.delete();
-  //     });
-  //   });
-  //   // On supprime le document du livre
-  //   bookRef.delete();
-  //   this.popupService.loadingDismiss();
-  // }
+  async deleteBook() {
+    if (this.book.author === this.userService.userId) {
+      await this.popupService.loading();
+      this.navCtrl.navigateRoot('/tabs/profile');
+      // retirer book de la liste
+      this.userService.deleteBookRef(this.book.id);
+      // supprimer book
+      const bookRef = this.firestore.collection('/books').doc(this.book.id);
+      // On supprime les sous-collections
+      const subCollections = ['comments'];
+      for (const subCollection of subCollections) {
+        const data = await this.firestore.collection('books').doc(this.book.id).collection(subCollection).get().toPromise();
+        for (const doc of data.docs) {
+          if (doc.exists) {
+            await doc.ref.delete();
+          }
+        }
+      }
+      // On supprime les médias
+      this.firestorage.ref('books/' + this.book.id).listAll().toPromise().then((data) => {
+        data.items.forEach(async (item) => {
+          await item.delete();
+        });
+      });
+      // On supprime la sauvegarde locale
+      this.storage.remove(this.book.id);
+      // On supprime le document du livre
+      bookRef.delete();
+      this.popupService.loadingDismiss();
+    }
+  }
 
   addMediaRef(url: string, ref: string, type: string, tag: string) {
     this.firestore.collection('books').doc(this.curBookId).collection('medias').add({url, ref, type, tag});
@@ -488,7 +482,6 @@ export class BookService implements OnDestroy {
   async uploadBook() {
     // Sauvegarde
     this.book.version += 1;
-    console.log(this.book);
     await this.saveBook();
     // Upload
     const reference = this.firestorage.ref('books/' + this.book.id + '/book.json');
@@ -496,7 +489,6 @@ export class BookService implements OnDestroy {
     await reference.put(blob);
     const downloadURL = await reference.getDownloadURL().toPromise();
     this.book.downloadURL = downloadURL;
-    console.log(this.book.title + ': ' + 'Upload effectué');
     // Update Cover
     this.uploadCover();
   }

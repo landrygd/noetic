@@ -7,18 +7,18 @@
 		"invitationSent": "Invitation envoyée",
 		"invite": "Inviter un ami à coopérer",
 		"leave": "Se retirer du livre",
-		"leaveBookConfirm": "Etes vous sûr de vouloir vous retirer des auteurs de ce livre?",
 		"policyConfirm": "J'ai respecté la charte",
 		"policyError": "Vous devez accepter les règles de la charte de Noetic",
 		"publish": "Publier ce livre",
-		"publishConfirm": "Etes vous sûr de rendre ce livre publique? Son contenu doit respecter les règles de la charte de Noetic",
+		"publishConfirm": "Etes vous sûr de rendre ce livre publique?",
 		"seePolicy": "Voir la charte",
 		"stopPublishingConfirm": "Etes vous sûr de rendre ce livre privé?",
 		"tuto": "Recommencer le tutoriel",
 		"tutoReactivated": "Tutoriel réactivé",
     "unPublish": "Arrêter de publier ce livre",
     "mainChat": "Tchat principal",
-    "selectMainChat": "sélectionner le tchat principal"
+		"selectMainChat": "sélectionner le tchat principal",
+		"updateConfirm": "Etes vous sûr de publier cette version du livre?"
 	},
 	"BOOKTABS": {
     "story": "Scénario",
@@ -81,6 +81,7 @@
 		"avaibleMusics": "Voir les musiques disponibles",
 		"avaibleSounds": "Voir les sons disponibles",
 		"enterMessage": "Entrez un message...",
+		"avaibleBackgrounds": "Voir les arrière-plans disponibles",
 		"tools": "Outils",
 		"actors": "Acteurs",
     "commands": "Commandes",
@@ -126,9 +127,12 @@
     "yes": "Oui",
 		"leave": "Quitter",
 		"nodesc": "Pas de description",
-		"update": "Modifier",
+		"change": "Modifier",
+		"update": "Mettre à jour",
 		"defaultValue": "Valeur par défaut",
-		"chatName": "Nom du tchat"
+		"chatName": "Nom du tchat",
+		"vues": "vues",
+		"likes": "aiment"
 	},
 	"COVER": {
 		"addTag": "Ajouter un tag",
@@ -174,8 +178,8 @@
 		"aboutApp": "A propos de l'application",
 		"aboutBlockup": "A propos de Blockup",
 		"chart": "Charte de Noetic",
-		"mostRecent": "Les plus récents",
-		"mostVue": "Les plus vues",
+		"creationDate": "Les plus récents",
+		"views": "Les plus vues",
 		"noeticSite": "Site de Noetic",
 		"policy": "Politique de confidentialité",
 		"popupRGPD": "En poursuivant votre navigation sur ce site, vous acceptez l’utilisation de cookies pour vous proposer du contenu ciblé adapté à vos centres d’intérêts et réaliser des statistiques de visites.",
@@ -184,7 +188,7 @@
 		"saves": "Mes sauvegardes",
 		"search": "Chercher une histoire",
 		"share": "Partager l'application",
-		"topRated": "Les mieux notés"
+		"likes": "Les mieux notés"
 	},
 	"LANGUAGES": {
 		"arabic": "Arabe",
@@ -228,6 +232,7 @@
 		},
 		"MANUAL": {
 			"ambiance": "Chercher une ambiance",
+			"background": "Chercher un arrière-plan",
 			"command": "Chercher une commande",
 			"music": "Chercher une musique",
 			"sound": "Chercher un bruitage",
@@ -260,7 +265,8 @@
 				"message": "Message",
 				"answer": "Réponse",
 				"addanswer": "Ajouter une réponse",
-				"operator": "Opérateur"
+				"operator": "Opérateur",
+				"background": "arrière-plan"
 			},
 			"opts": {
 				"stop": "Arrêter",
@@ -530,6 +536,14 @@
 		"place": {
       "show": "Aller au lieu §1",
       "desc": "Changer de lieu"
+		},
+		"background": {
+      "show": "Changer l'arrière-plan à §1",
+      "desc": "Changer d'arrière-plan"
+    },
+    "cursor": {
+      "show": "Insérer un message ici",
+      "desc": "Insérer un message"
     },
     "unknowed": {
       "show": "Commande inconnue",

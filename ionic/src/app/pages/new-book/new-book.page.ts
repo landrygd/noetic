@@ -99,20 +99,17 @@ export class NewBookPage implements OnInit, OnDestroy {
       return;
     }
 
-    const bookOpts = {
-      id: this.bookId,
-      name,
-      nameLower: title.toLowerCase(),
-      description: form.desc,
-      tags: this.tags,
-      cover: this.cover,
-      category: form.cat,
-      verso: form.verso,
-      lang: this.traductionService.getCurLanguage(),
-      author,
-    };
+    this.bookService.book = new Book();
+    this.bookService.book.id = this.bookId;
+    this.bookService.book.title = title;
+    this.bookService.book.titleLower = title.toLowerCase();
+    this.bookService.book.description = form.desc;
+    this.bookService.book.cover = this.cover;
+    this.bookService.book.category = form.cat;
+    this.bookService.book.language = this.traductionService.getCurLanguage();
+    this.bookService.book.author = author;
 
-    // this.bookService.newBook(new Book(bookOpts));
+    this.bookService.newBook();
   }
 
   async changeCover() {
@@ -124,9 +121,9 @@ export class NewBookPage implements OnInit, OnDestroy {
       }
     });
     modal.onDidDismiss()
-      .then((data) => {
+      .then(async (data) => {
         if (data.data) {
-          this.cover = data.data;
+          this.cover = await this.bookService.uploadCoverImg(data.data);
           this.coverSize = '';
           setTimeout(() => this.coverSize = 'cover', 50);
         }

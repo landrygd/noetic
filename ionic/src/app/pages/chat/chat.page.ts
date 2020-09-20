@@ -15,6 +15,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import Commands from '../../../assets/json/commands.json';
 import { AudioListComponent } from 'src/app/components/modals/audio-list/audio-list.component';
 import { Entity, Script } from 'src/app/classes/book';
+import { WallpapersSearchComponent } from 'src/app/components/modals/wallpapers-search/wallpapers-search.component';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-chat',
@@ -40,11 +42,8 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   lastClosed: number;
   tabs: any[] = [];
 
-  sound = false;
-  music = false;
-  ambiance = false;
+  command = '';
 
-  edittingLog = false;
   history: {action: string, index: number, logs: string[]}[] = [];
   historyIndex = -1;
 
@@ -89,7 +88,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     this.script = this.bookService.script;
     this.actors = this.bookService.book.getEntities('actor');
     this.messages = this.script.messages;
-    this.refresh();
+    this.getTabs();
     this.historyIndex = this.history.length;
     this.loaded = true;
     setTimeout(() => this.scrollToBottom(), 200);
@@ -139,19 +138,52 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
             break;
         }
       } else if (event.shiftKey) {
+        console.log(event.key);
         switch (event.key) {
-          case 'E':
-            this.edit();
+          case 'ArrowUp':
+            const indexUp = Math.max(this.selection[0] - 1, 0);
+            if (!this.selection.includes(indexUp)) {
+              this.selection.push(indexUp);
+              this.selection.sort();
+            }
+            break;
+          case 'ArrowDown':
+            const indexDown = Math.min(this.selection[this.selection.length - 1] + 1, this.messages.length - 1);
+            if (!this.selection.includes(indexDown)) {
+              this.selection.push(indexDown);
+              this.selection.sort();
+            }
             break;
         }
       } else {
         switch (event.key) {
+          case 'ArrowUp':
+            this.selection = [Math.max(this.selection[0] - 1, 0)];
+            break;
+          case 'ArrowDown':
+            this.selection = [Math.min(this.selection[0] + 1, this.messages.length - 1)];
+            break;
           case 'Backspace':
+            this.delete();
+            break;
+          case 'Delete':
             this.delete();
             break;
         }
       }
     }
+ }
+
+ async showBackground() {
+  const modal = await this.modalCtrl.create({
+    component: WallpapersSearchComponent
+  });
+  await modal.present();
+  const data = await modal.onDidDismiss();
+  if (data.data) {
+    const bg = data.data.name;
+    this.text = '/background ' + bg;
+  }
  }
 
  async toast(message, position) {
@@ -224,43 +256,60 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  send() {
-    let log: string = this.text;
-    if (this.actor && log.charAt(0) !== '/') {
-      log = '@' + this.actor + ': ' + this.text;
+  send(message: string = this.text, index = this.selection[0], undo = false) {
+    message = message.trim();
+    if (message.indexOf('/if') === 0) {
+      message += '\n/end';
     }
-    if ((log.substring(0, 7).toLowerCase() === '/l main' || log.substring(0, 11).toLowerCase() === '/label main')) {
-      this.popup.alert(this.ERRORS.invalidLabelName);
-    } else {
-      if (this.edittingLog) {
-        const index = this.selection[this.selection.length - 1] + 1;
-        this.messages.splice(index, 0, log);
-        this.selection = [];
-        this.edittingLog = false;
+    if (message.indexOf('/question') === 0) {
+      const answers = message.replace('/question', '').split(';');
+      answers.forEach((answer) => {
+        answer = answer.trim();
+        message += '\n/answer ' + answer;
+      });
+      message += '\n/end';
+    }
+    const logs: string[] = message.split('\n');
+    if (!undo) {
+      this.addHistoryAction({action: 'add', index, logs});
+    }
+    logs.forEach((log) => {
+      // if (this.actor && log.charAt(0) !== '/') {
+      //   log = '@' + this.actor + ': ' + log;
+      // }
+      if ((log.substring(0, 7).toLowerCase() === '/l main' || log.substring(0, 11).toLowerCase() === '/label main')) {
+        this.popup.alert(this.ERRORS.invalidLabelName);
       } else {
-        if (this.selection.length === 0) {
-          this.addHistoryAction({action: 'add', index: this.messages.length, logs: [log]});
-          this.messages.push(log);
-          if (this.text.indexOf('/if') === 0 || this.text.indexOf('/question') === 0) {
-            this.addHistoryAction({action: 'add', index: this.messages.length, logs: [{msg: '/end'}]});
-            this.messages.push('/end');
+        if (this.selection.length !== 0) {
+          if (this.messages[index] === '/cursor') {
+            this.messages.splice(index + 1, 0, '/cursor');
           }
+          this.messages.splice(index, 1, log);
+          this.selection = [index + 1];
+          // this.edittingLog = false;
         } else {
-          const index = this.selection[this.selection.length - 1] + 1;
-          this.messages.splice(index, 0, log);
-          this.selection = [this.selection[this.selection.length - 1] + 1];
+          this.messages.push(log);
+          // } else {
+          //   this.messages.splice(index, 0, log);
+          //   this.selection = [this.selection[this.selection.length - 1] + 1];
+          // }
         }
       }
-    }
+    });
     this.update();
-    this.refresh();
+    this.getTabs();
     setTimeout(() => this.scrollToBottom(), 50);
-    setTimeout(() => this.text = '', 1);
+    setTimeout(() => {
+      if (this.actor) {
+        this.text = '@' + this.actor + ': ';
+      } else {
+        this.text = '';
+      }
+    }, 1);
     this.textarea = false;
   }
 
-  refresh() {
-    this.script.messages = [...this.messages];
+  getTabs() {
     const res = this.script.getTabs();
     this.lastClosed = res.lastClosed;
     this.tabs = res.tabs;
@@ -279,14 +328,40 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
           return;
         } else {
           if (!(this.selection.includes(index))) {
+            const lastIndex = this.selection[0];
             this.selection = [index];
+            if (this.messages[index] !== '/cursor') {
+              if (lastIndex < index) {
+                index -= 1;
+                this.selection = [index];
+              }
+              const lastCursor = this.messages.indexOf('/cursor');
+              if (lastCursor !== -1) {
+                this.messages.splice(lastCursor, 1);
+              }
+              this.messages.splice(index + 1, 0, '/cursor');
+            }
+            // const indexLastCursor = this.messages.indexOf('/cursor');
+            // if (indexLastCursor !== index + 1) {
+            //   this.messages[indexLastCursor] = '/cursor_OLD';
+            //   this.messages.splice(index + 1, 0, '/cursor');
+            //   this.messages.splice(this.messages.indexOf('/cursor_OLD'), 1);
+            // }
+            this.update();
+            this.edit();
             return;
           }
         }
       }
+      this.removeCursor();
       this.selection = [];
       this.text = '';
     }
+  }
+
+  removeCursor() {
+    this.messages.splice(this.messages.indexOf('/cursor'), 1);
+    this.update();
   }
 
   getMajSelection(x2): any[] {
@@ -316,10 +391,19 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setActor(id) {
+    const match = /^@[a-zA-Z0-9]*:[ ]*/gi;
     if (id === this.actor) {
       this.actor = undefined;
+      if (this.text.match(match)) {
+        this.text = this.text.replace(match, '');
+      }
     } else {
       this.actor = id;
+      if (this.text.match(match)) {
+        this.text = this.text.replace(match, '@' + id + ': ');
+      } else {
+        this.text = '@' + id + ': ' + this.text;
+      }
     }
   }
 
@@ -361,6 +445,11 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   action(name) {
     this.popup.toast(this.ERRORS.buttonsNotAvaible);
+  }
+
+  export() {
+    const blob = new Blob([this.messages.join('\n')], {type: 'text/plain;charset=utf-8'});
+    saveAs(blob, this.script.name + '.noe');
   }
 
   // renameChat() {
@@ -468,17 +557,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   changeMsg() {
     setTimeout(() => {
-      const command = this.text.split(' ')[0];
-      this.sound = false;
-      this.music = false;
-      this.ambiance = false;
-      if (command === '/sound') {
-        this.sound = true;
-      } else if (command === '/music') {
-        this.music = true;
-      } else if (command === '/ambiance') {
-        this.ambiance = true;
-      }
+      this.command = this.text.split(' ')[0];
       setTimeout(() => {
         this.scrollToBottom();
       }, 100);
@@ -547,12 +626,15 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     this.delete();
   }
 
-  delete(index = this.selection[0], length = this.selection.length) {
-    const res = this.messages;
+  delete(index = this.selection[0], length = this.selection.length, undo = false) {
+    const res = this.messages.slice();
     const logs = res.slice(index, index + length);
     res.splice(index, length);
-    this.addHistoryAction({action: 'delete', index, logs});
-    this.update();
+    this.messages = res;
+    if (!undo) {
+      this.addHistoryAction({action: 'delete', index, logs});
+    }
+    this.removeCursor();
     this.selection = [];
   }
 
@@ -573,12 +655,13 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     for (const log of logs) {
       res.splice(min, 0, log);
     }
+    this.messages = res;
     this.addHistoryAction({action: 'add', index: this.messages.length, logs});
     this.update();
   }
 
   update() {
-    this.script.messages = this.messages;
+    this.script.messages = this.messages.slice();
     this.bookService.book.setScript(this.script);
     this.bookService.saveBook();
   }
@@ -603,15 +686,17 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
       }
       switch (action) {
         case 'add':
-          this.delete(lastModif.index, lastModif.logs.length);
+          this.delete(lastModif.index, lastModif.logs.length, true);
           break;
         case 'delete':
-          const logs = lastModif.logs.reverse();
-          const res = this.messages.slice();
-          for (const log of logs) {
-            res.splice(lastModif.index, 0, log);
-          }
-          this.update();
+          this.send(lastModif.logs.join('\n'), lastModif.index, true);
+          // const logs = lastModif.logs.reverse();
+          // const res = this.messages.slice();
+          // for (const log of logs) {
+          //   res.splice(lastModif.index, 0, log);
+          // }
+          // this.messages = res;
+          // this.update();
           break;
       }
     }
@@ -625,12 +710,25 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   edit() {
-    this.edittingLog = true;
     const index = this.selection[0];
-    this.text = this.script.messages[index];
+    this.text = this.script.messages[index].slice();
+    if (this.text === '/cursor') {
+      this.text = '';
+    }
+    this.setLogActorId();
+  }
+
+  setLogActorId(log: string = this.text) {
+    const match = /^@[a-zA-Z0-9]*:/gi;
+    if (log.match(match)) {
+      const msgArray = log.split(':');
+      const key = msgArray.shift().substring(1);
+      this.actor = key;
+    }
   }
 
   selectAll() {
+    this.removeCursor();
     this.selection = [];
     for (let i = 0; i < this.messages.length; i++) {
       this.selection.push(i);

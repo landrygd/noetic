@@ -9,30 +9,22 @@
 
 <ion-content>
   <ion-list>
-    <ion-item button (click)="publish()" *ngIf="!bookService.book.public">
+    <ion-item button (click)="update()">
       <ion-icon slot="start" name="share" color="primary"></ion-icon>
+      <ion-label color="primary">{{'COMMON.update' | translate}}</ion-label>
+    </ion-item>
+    <ion-item button (click)="publish()" *ngIf="!bookService.book.public">
+      <ion-icon slot="start" name="eye-off" color="primary"></ion-icon>
       <ion-label color="primary">{{'BOOKSETTINGS.publish' | translate}}</ion-label>
     </ion-item>
     <ion-item button (click)="unpublish()" *ngIf="bookService.book.public">
-      <ion-icon slot="start" name="share"></ion-icon>
+      <ion-icon slot="start" name="eye"></ion-icon>
       <ion-label>{{'BOOKSETTINGS.unPublish' | translate}}</ion-label>
     </ion-item>
     <ion-item button (click)="tuto()">
       <ion-icon slot="start" name="help"></ion-icon>
       <ion-label>{{'BOOKSETTINGS.tuto' | translate}}</ion-label>
     </ion-item>
-    <ion-item button (click)="background()">
-      <ion-icon slot="start" name="image"></ion-icon>
-      <ion-label>{{'BOOKSETTINGS.background' | translate}}</ion-label>
-    </ion-item>
-    <ion-item button (click)="invite()">
-      <ion-icon slot="start" name="person-add"></ion-icon>
-      <ion-label>{{'BOOKSETTINGS.invite' | translate}}</ion-label>
-    </ion-item>
-    <!-- <ion-item button (click)="leave()" *ngIf="bookService.book.authors.length > 1">
-      <ion-icon slot="start" name="exit" color="danger"></ion-icon>
-      <ion-label color="danger">{{'BOOKSETTINGS.leave' | translate}}</ion-label>
-    </ion-item> -->
     <ion-item>
       <ion-icon slot="start" name="flag"></ion-icon>
       <ion-label>{{'BOOKSETTINGS.mainChat' | translate}}</ion-label>
@@ -40,9 +32,9 @@
         <ion-select-option [value]="script.name" *ngFor="let script of bookService.book.scripts">{{script.name}}</ion-select-option>
       </ion-select>
     </ion-item>
-    <!-- <ion-item button (click)="delete()">
+    <ion-item button (click)="delete()">
       <ion-icon slot="start" name="trash" color="danger"></ion-icon>
       <ion-label color="danger">{{'BOOKSETTINGS.delete' | translate}}</ion-label>
-    </ion-item> -->
+    </ion-item>
   </ion-list>
 </ion-content>

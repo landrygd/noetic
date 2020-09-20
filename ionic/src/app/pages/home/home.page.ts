@@ -34,12 +34,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   rgpd: any;
 
-  sections = [
-    {
-      attribute: 'views',
-      books: []
-    }
-  ];
+  sections: {attribute: string; books: Book[]}[];
 
   constructor(
     public userService: UserService,
@@ -59,7 +54,15 @@ export class HomePage implements OnInit, OnDestroy {
     this.storage.get('RGPD').then((val) => {
       this.rgpd = val;
     });
-    setTimeout(() => this.refresh('', true), 500);
+    // setTimeout(() => this.refresh('', true), 500);
+    this.sections = this.initSections();
+    this.sections.forEach((section) => {
+      for (let i = 0; i < 2; i++) {
+        section.books.push(new Book());
+      }
+    });
+    console.log(this.sections);
+    this.refresh('', true);
   }
 
   ionViewWillEnter() {
@@ -68,6 +71,22 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
+  initSections(): any {
+    return [
+      {
+        attribute: 'views',
+        books: []
+      },
+      {
+        attribute: 'likes',
+        books: []
+      },
+      {
+        attribute: 'creationDate',
+        books: []
+      }
+    ];
+  }
   getTraduction() {
     this.homeSub = this.translator.get('HOME').subscribe((val) => {
       this.HOME = val;
@@ -189,9 +208,12 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   refresh(event, noEvent= false) {
-    this.sections.forEach(async (section) => {
+    const sections = this.initSections();
+    sections.forEach(async (section) => {
       section.books = await this.bookService.getMostBooks(section.attribute);
     });
+    this.sections = sections;
+    console.log(this.sections);
     // this.topRatedBooks = this.userService.topRatedBooks;
     // this.mostVueBooks = this.userService.mostVueBooks;
     // this.mostRecentBooks = this.userService.mostRecentBooks;

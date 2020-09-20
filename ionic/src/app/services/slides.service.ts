@@ -216,6 +216,52 @@ export class SlidesService {
     }
   };
 
+  largeOpts: any = {
+    slidesPerView: 1.2,
+    spaceBetween: 20,
+    breakpoints: {
+      300: {
+        slidesPerView: 1.2,
+      },
+      400: {
+        slidesPerView: 1.5,
+      },
+      500: {
+        slidesPerView: 1.8,
+      },
+      600: {
+        slidesPerView: 2.2,
+      },
+      700: {
+        slidesPerView: 2.5,
+      },
+      800: {
+        slidesPerView: 2.8,
+      },
+      900: {
+        slidesPerView: 3.2,
+      },
+      1000: {
+        slidesPerView: 3.5,
+      },
+      1100: {
+        slidesPerView: 3.8,
+      },
+      1200: {
+        slidesPerView: 4.2,
+      },
+      1300: {
+        slidesPerView: 4.5,
+      },
+      1400: {
+        slidesPerView: 4.8,
+      },
+      1500: {
+        slidesPerView: 5.2,
+      },
+    }
+  };
+
   avatarOpts: any = {
     slidesPerView: 10.5,
     breakpoints: {

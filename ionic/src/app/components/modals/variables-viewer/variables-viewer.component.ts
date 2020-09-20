@@ -19,10 +19,6 @@ export class VariablesViewerComponent implements OnInit {
 
   ngOnInit() {
     this.getVariable('');
-
-
-
-
   }
 
   isGlobalVariable(key: string): boolean {

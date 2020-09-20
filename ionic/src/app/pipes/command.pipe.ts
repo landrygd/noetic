@@ -69,10 +69,10 @@ export class CommandPipe implements PipeTransform {
     this.args = [];
     this.opts = [];
     for (const word of words) {
-      let subword = word;
-      if (word.length > 7) {
-        subword = word.substring(0, 7) + '...';
-      }
+      const subword = word;
+      // if (word.length > 7) {
+      //   subword = word.substring(0, 7) + '...';
+      // }
       if (word.charAt(0) === '-' && opt) {
         this.opts.push(word.slice(1));
       } else {
@@ -86,9 +86,9 @@ export class CommandPipe implements PipeTransform {
         }
       }
     }
-    if (this.arg.length > 7) {
-      this.arg = this.arg.substring(0, 7) + '...';
-    }
+    // if (this.arg.length > 7) {
+    //   this.arg = this.arg.substring(0, 7) + '...';
+    // }
     return;
   }
 

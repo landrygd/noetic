@@ -223,6 +223,17 @@
       }
     ]
   },
+  "background": {
+    "icon": "image",
+    "name": "background",
+    "cat": "appearance",
+    "args": [
+      {
+        "name": "background",
+        "type": "background"
+      }
+    ]
+  },
   "ambiance": {
     "icon": "ear",
     "name": "ambiance",
@@ -310,5 +321,10 @@
     "icon": "settings",
     "name": "end",
     "cat": "control"
+  },
+  "cursor": {
+    "icon": "add",
+    "name": "cursor",
+    "cat": "shadow"
   }
 }

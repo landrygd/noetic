@@ -48,6 +48,9 @@ ion-item {
 
 .editing-item {
   height: 50px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .narrator {

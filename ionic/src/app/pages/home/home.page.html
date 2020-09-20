@@ -26,10 +26,15 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <h2 class="section" *ngIf="userService.savesId.length !== 0">
+  <div class="header" [style.backgroundImage]="'url(' + book.banner + ')'" *ngIf="sections[0].books[0] as book">
+    <app-card-book style="position: relative;" [book]="book"></app-card-book>
+  </div>
+  
+
+  <!-- <h2 class="section" *ngIf="userService.savesId.length !== 0">
     <ion-icon name="save"></ion-icon>
     {{'HOME.saves' | translate}}
-  </h2>
+  </h2> -->
 
   <!-- <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.savesId.length !== 0">
     <ion-slide *ngFor="let bookId of userService.savesId">
@@ -54,16 +59,20 @@
     </div>
   </ng-template> -->
 
-  <h2 class="section">
-    <ion-icon name="eye"></ion-icon>
-    {{'HOME.mostVue' | translate}}
-  </h2>
-
-  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngFor="let section of sections">
-    <ion-slide *ngFor="let book of section.books">
-      <app-card-book [book]="book"></app-card-book>
-    </ion-slide>
-  </ion-slides>
+  <ion-list>
+    <div *ngFor="let section of sections">
+      <h2 class="section">
+        {{'HOME.' + section.attribute | translate}}
+      </h2>
+      <ion-slides class="slides" [options]="slides.largeOpts" class="ion-no-margin">
+        <ion-slide *ngFor="let book of section.books">
+          <app-card-book [book]="book"></app-card-book>
+        </ion-slide>
+      </ion-slides>
+    </div>
+  </ion-list>
+  
+  
   
 
   <!-- <h2 class="section">

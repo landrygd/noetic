@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AudioListComponent } from '../audio-list/audio-list.component';
+import { WallpapersSearchComponent } from '../wallpapers-search/wallpapers-search.component';
 
 @Component({
   selector: 'app-command-entries',
@@ -59,4 +60,16 @@ export class CommandEntriesComponent implements OnInit {
       this.output.patchValue({[type]: data.data});
     }
   }
+
+  async background() {
+    const modal = await this.modalController.create({
+      component: WallpapersSearchComponent
+    });
+    await modal.present();
+    const data = await modal.onDidDismiss();
+    if (data.data) {
+      const background = data.data.name;
+      this.output.patchValue({background});
+    }
+   }
 }

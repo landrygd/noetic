@@ -12,11 +12,11 @@
         <ion-label>Variables globales</ion-label>
       </ion-item-divider>
       <div *ngFor="let variable of globalVariables">
-        <ion-item *ngIf="isObject(variable)" (click)="getVariable(path + '.' + variable.name)" button detail>
-          <ion-label slot="start">{{variable.name}}</ion-label>
-        </ion-item>
+        <!-- <ion-item *ngIf="isObject(variable)" (click)="getVariable(path + '.' + variable.name)" button detail>
+          <ion-label>{{variable.name}}</ion-label>
+        </ion-item> -->
         <ion-item *ngIf="!isObject(variable)">
-          <ion-label slot="start">{{variable.name}}</ion-label>
+          <ion-label>{{variable.name}}</ion-label>
           <ion-label>{{variable.value}}</ion-label>
         </ion-item>
       </div>
@@ -29,10 +29,8 @@
         <ion-label>Rôles</ion-label>
       </ion-item-divider>
   
-      <ion-item *ngFor="let role of roles" button detail>
-        <ion-label>
-          {{role}}
-        </ion-label>
+      <ion-item *ngFor="let role of roles" button detail (click)="getVariable(path + '.' + role)" button detail>
+        <ion-label>{{role}}</ion-label>
       </ion-item>
     </ion-item-group>
   </ion-list>
@@ -45,9 +43,9 @@
       <ion-label>{{path}}</ion-label>
     </ion-item-divider>
     <div *ngFor="let variable of subVariables">
-      <ion-item *ngIf="isObject(variable)" (click)="getVariable(path + '.' + variable.name)" button detail>
+      <!-- <ion-item *ngIf="isObject(variable)" (click)="getVariable(path + '.' + variable.name)" button detail>
         <ion-label slot="start">{{variable.name}}</ion-label>
-      </ion-item>
+      </ion-item> -->
       <ion-item *ngIf="!isObject(variable)">
         <ion-label slot="start">{{variable.name}}</ion-label>
         <ion-label>{{variable.value}}</ion-label>

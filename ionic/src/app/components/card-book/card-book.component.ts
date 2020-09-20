@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, Directive } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, Directive, OnChanges } from '@angular/core';
 import { AnimationService } from 'src/app/services/animation.service';
 import { Observable } from 'rxjs';
 import { BookService } from 'src/app/services/book.service';
@@ -9,7 +9,7 @@ import { Book } from 'src/app/classes/book';
   templateUrl: './card-book.component.html',
   styleUrls: ['./card-book.component.scss'],
 })
-export class CardBookComponent implements OnInit {
+export class CardBookComponent implements OnInit, OnChanges {
 
   @Input() book: Book;
 
@@ -34,8 +34,15 @@ export class CardBookComponent implements OnInit {
     public animation: AnimationService
     ) {}
 
+  ngOnChanges() {
+    if (this.book.title !== '') {
+      this.loading = false;
+    }
+  }
+
   ngOnInit() {
     this.width = this.height * 9 / 16;
+    this.animation.fadeIn(this.ref);
   }
 
   open() {
@@ -48,6 +55,7 @@ export class CardBookComponent implements OnInit {
   }
 
   onImgLoaded() {
+    this.loading = false;
     this.animation.fadeIn(this.ref);
   }
 }

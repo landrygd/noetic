@@ -140,7 +140,7 @@ export class Script {
   messages: string[];
 
   constructor(options?) {
-    this.name = '';
+    this.name = 'main';
     this.messages = [];
     Object.keys(options).forEach((key) => {
       if (key in this) {
@@ -284,7 +284,7 @@ export class Book {
   }
 
   getCover() {
-    return {
+    const obj = {
       id: this.id,
       title: this.title,
       titleLower: this.titleLower,
@@ -303,6 +303,11 @@ export class Book {
       public: this.public,
       downloadURL: this.downloadURL
     };
+    if (this.version > 1) {
+      delete obj.views;
+      delete obj.likes;
+    }
+    return obj;
   }
 
   haveScript(name: string): boolean {
