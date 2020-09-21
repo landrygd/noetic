@@ -159,7 +159,8 @@ export class CoverPage implements OnInit, OnDestroy {
   // }
 
   changeCat(cat) {
-    this.bookService.updateBookData({cat});
+    this.book.category = cat;
+    this.bookService.saveBook();
   }
 
   play() {
@@ -206,7 +207,8 @@ export class CoverPage implements OnInit, OnDestroy {
               const tags = this.bookService.book.tags;
               const tag: string = data.tag;
               tags.push(tag.toLowerCase());
-              this.bookService.updateBookData({tags});
+              this.bookService.book.tags = tags;
+              this.bookService.saveBook();
             }
           }
         ]
@@ -224,7 +226,8 @@ export class CoverPage implements OnInit, OnDestroy {
   removeTag(index) {
     const tags = this.bookService.book.tags;
     tags.splice(index, 1);
-    this.bookService.updateBookData({tags});
+    this.bookService.book.tags = tags;
+    this.bookService.saveBook();
   }
 
   getStarColor(index) {
@@ -285,66 +288,79 @@ export class CoverPage implements OnInit, OnDestroy {
     this.selectedAnswer = -1;
   }
 
-  async changeTitle() {
-    const alert = await this.alertController.create({
-      header: this.COVER.alertTitleHeader,
-      inputs: [
-        {
-          name: 'title',
-          type: 'text',
-          placeholder: this.COVER.alertTitlePlaceholder,
-          value: this.bookService.book.title,
-        }
-      ],
-      buttons: [
-        {
-          text: this.COMMON.cancel,
-          role: 'cancel',
-          cssClass: 'secondary'
-        }, {
-          text: this.COMMON.confirm,
-          handler: (data) => {
-            const title: string = data.title;
-            if (title.length < 3) {
-              this.popupService.alert(this.ERRORS.title3CarMin);
-              return;
-            } else if (title.length > 40) {
-              this.popupService.alert(this.ERRORS.title40CarMax);
-              return;
-            }
-            this.bookService.updateBookData({title, titleLower: title.toLowerCase()});
-          }
-        }
-      ]
-    });
-    await alert.present();
+  async changeTitle(value: string) {
+    this.bookService.book.title = value;
+    this.bookService.saveBook();
+    // const alert = await this.alertController.create({
+    //   header: this.COVER.alertTitleHeader,
+    //   inputs: [
+    //     {
+    //       name: 'title',
+    //       type: 'text',
+    //       placeholder: this.COVER.alertTitlePlaceholder,
+    //       value: this.bookService.book.title,
+    //     }
+    //   ],
+    //   buttons: [
+    //     {
+    //       text: this.COMMON.cancel,
+    //       role: 'cancel',
+    //       cssClass: 'secondary'
+    //     }, {
+    //       text: this.COMMON.confirm,
+    //       handler: (data) => {
+    //         const title: string = data.title;
+    //         if (title.length < 3) {
+    //           this.popupService.alert(this.ERRORS.title3CarMin);
+    //           return;
+    //         } else if (title.length > 40) {
+    //           this.popupService.alert(this.ERRORS.title40CarMax);
+    //           return;
+    //         }
+    //         this.bookService.book.title = title;
+    //         this.bookService.book.titleLower = title.toLowerCase();
+    //         this.bookService.saveBook();
+    //       }
+    //     }
+    //   ]
+    // });
+    // await alert.present();
   }
 
-  async changeDesc() {
-    const alert = await this.alertController.create({
-      header: this.COVER.changeDesc,
-      inputs: [
-        {
-          name: 'desc',
-          type: 'text',
-          placeholder: this.COVER.alertDescPlaceholder,
-          value: this.bookService.book.description,
-        }
-      ],
-      buttons: [
-        {
-          text: this.COMMON.cancel,
-          role: 'cancel',
-          cssClass: 'secondary'
-        }, {
-          text: this.COMMON.confirm,
-          handler: (data) => {
-            this.bookService.updateBookData({desc: data.desc});
-          }
-        }
-      ]
+  async changeDesc(value: string) {
+    this.bookService.book.description = value;
+    this.bookService.saveBook();
+    // const alert = await this.alertController.create({
+    //   header: this.COVER.changeDesc,
+    //   inputs: [
+    //     {
+    //       name: 'desc',
+    //       type: 'text',
+    //       placeholder: this.COVER.alertDescPlaceholder,
+    //       value: this.bookService.book.description,
+    //     }
+    //   ],
+    //   buttons: [
+    //     {
+    //       text: this.COMMON.cancel,
+    //       role: 'cancel',
+    //       cssClass: 'secondary'
+    //     }, {
+    //       text: this.COMMON.confirm,
+    //       handler: (data) => {
+            
+    //       }
+    //     }
+    //   ]
+    // });
+    // await alert.present();
+  }
+
+  color() {
+    this.popupService.selectColor().then((color) => {
+      this.book.color = color;
+      this.bookService.saveBook();
     });
-    await alert.present();
   }
 
   // async changeVerso() {

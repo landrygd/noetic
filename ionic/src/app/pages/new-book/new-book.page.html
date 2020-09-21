@@ -21,10 +21,10 @@
               <ion-col class="ion-text-center">
                 <form [formGroup]="bookForm" (ngSubmit)="confirm()">
                   <ion-item class="glass" lines="none">
-                    <ion-input required formControlName="name" type="text" placeholder="Entrez un titre"></ion-input>
+                    <ion-input required formControlName="name" type="text" [placeholder]="'NEWBOOK.title' | translate"></ion-input>
                   </ion-item>
                   <ion-item class="glass" lines="none">
-                    <ion-input required formControlName="desc" type="text" placeholder="Entrez une courte description"></ion-input>
+                    <ion-input required formControlName="desc" type="text" [placeholder]="'NEWBOOK.description' | translate"></ion-input>
                   </ion-item>
                   <ion-item class="glass" lines="none">
                     <ion-label>{{'COMMON.category' | translate}}</ion-label>
@@ -45,7 +45,7 @@
                     </ion-select>
                   </ion-item>
                   <ion-item class="glass" lines="none">
-                    <ion-input formControlName="tag" type="text" placeholder="Ajouter un tag (facultatif)" (keypress)="enter($event.keyCode)"></ion-input>
+                    <ion-input formControlName="tag" type="text" [placeholder]="'NEWBOOK.tag' | translate" (keypress)="enter($event.keyCode)"></ion-input>
                     <ion-button (click)="addTag()" expand="block" fill="solid" shape="round" slot="end">
                       <ion-icon slot="icon-only" name="add"></ion-icon>
                     </ion-button>

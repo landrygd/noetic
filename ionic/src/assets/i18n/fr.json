@@ -292,7 +292,10 @@
 		"tagMaxError": "Il ne doit pas y avoir plus de 5 tags",
 		"titleMaxError": "Le titre doit faire moins de 40 caractères",
 		"titleMinError": "Le titre doit faire au moins plus de 3 caractères",
-		"versoMaxError": "Le verso doit faire moins de 2000 caractères"
+    "versoMaxError": "Le verso doit faire moins de 2000 caractères",
+    "description": "Entrer une description",
+    "title": "Entrer un titre",
+    "tag": "Ajouter un tag"
 	},
 	"NOTIFS": {
 		"acceptInvWriting": "a accepté votre invitation sur le livre",

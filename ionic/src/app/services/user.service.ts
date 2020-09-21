@@ -1,3 +1,4 @@
+import { User } from './../classes/user';
 import { Injectable, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { NavController, Platform, AlertController } from '@ionic/angular';
@@ -31,17 +32,7 @@ export class UserService implements OnDestroy {
   bookSub: Subscription;
   list: any[] = [];
   listSub: Subscription;
-  userData: {
-    name: string,
-    nameLower: string,
-    lang: string,
-    searchlangs: string[],
-    id: string,
-    avatar: string,
-    bio: string,
-    first: boolean,
-    tuto: boolean
-  };
+  userData: User;
   lang: string;
   userNotifs: any[];
   userNotifsSub: Subscription;
@@ -212,7 +203,7 @@ export class UserService implements OnDestroy {
     // await this.popupService.loading(this.COMMON.loading, 'sync');
     this.userSub = this.firestore.collection('users').doc(this.userId).valueChanges().subscribe((value: any) => {
       if (value) {
-        this.userData = value;
+        this.userData = new User(value);
         if (!this.connected) {
           this.connected = true;
           // this.popupService.loadingDismiss('sync');

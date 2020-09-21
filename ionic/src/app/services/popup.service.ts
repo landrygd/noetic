@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { AlertController, ToastController, LoadingController } from '@ionic/angular';
+import { AlertController, ToastController, LoadingController, ActionSheetController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
@@ -19,7 +19,8 @@ export class PopupService implements OnDestroy {
     private alertController: AlertController,
     private toastController: ToastController,
     private loadingController: LoadingController,
-    private translator: TranslateService
+    private translator: TranslateService,
+    private actionSheetController: ActionSheetController
     ) {
       this.getTraduction();
     }
@@ -95,5 +96,38 @@ export class PopupService implements OnDestroy {
     });
     await alert.present();
     this.loader.dismiss();
+  }
+
+  selectColor(): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      const colors =
+      ['red', 'pink', 'purple', 'deep-purple', 'indigo',
+      'blue', 'light-blue', 'cyan', 'teal', 'green',
+      'light-green', 'lime', 'yellow', 'amber', 'orange',
+      'deep-orange', 'brown', 'grey', 'blue-grey', 'white', 'black'];
+      const buttons = [];
+      for (const color of colors) {
+        buttons.push({
+          text: color,
+          cssClass: color,
+          handler: () => {
+            resolve(color);
+          }
+        });
+      }
+      buttons.push({
+        text: this.COMMON.cancel,
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          reject();
+        }
+      });
+      const actionSheet = await this.actionSheetController.create({
+        buttons,
+        mode: 'md'
+      });
+      await actionSheet.present();
+    });
   }
 }

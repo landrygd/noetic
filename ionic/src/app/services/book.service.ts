@@ -402,14 +402,14 @@ export class BookService implements OnDestroy {
   //   return this.firestore.collection('books').doc(bookId).valueChanges();
   // }
 
-  updateBookData(data, curBookId: string = this.curBookId) {
-    this.booksCollection.doc(curBookId).update(data);
-  }
+  // updateBookData(data, curBookId: string = this.curBookId) {
+  //   this.booksCollection.doc(curBookId).update(data);
+  // }
 
   loadBook(book = this.book): Promise<Book> {
     return new Promise(async (resolve) => {
       let result: Book;
-      this.storage.get(book.id).then(async (res) => {
+      this.storage.get('BOOK_' + book.id).then(async (res) => {
         const savedBook = new Book(res);
         if (book.version <= savedBook.version) {
           result = new Book(savedBook);
@@ -458,7 +458,7 @@ export class BookService implements OnDestroy {
       this.book = await this.loadBook();
       book = this.book;
     }
-    this.storage.set(book.id, book);
+    this.storage.set('BOOK_' + book.id, book);
   }
 
   async getMostBooks(attribute): Promise<any[]> {

@@ -223,6 +223,7 @@ export class Book {
   lastModificationDate: number;
   public: boolean;
   downloadURL: string;
+  color: string;
 
  // Content
   setup: {main: string};
@@ -245,6 +246,7 @@ export class Book {
     this.views = 0;
     this.version = 0;
     this.language = 'en';
+    this.color = 'primary';
     this.creationDate = new Date().getTime();
     this.lastModificationDate = new Date().getTime();
     this.public = false;

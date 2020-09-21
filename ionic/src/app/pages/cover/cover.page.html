@@ -6,6 +6,9 @@
           <ion-back-button (click)="back()" defaultHref="tabs/home" class="headerButton"></ion-back-button>
         </ion-buttons>
         <ion-buttons slot="end">
+          <ion-button (click)="color()" fill="clear" shape="round" *ngIf="bookService.isAuthor">
+            <ion-icon slot="icon-only" name="color-palette" class="headerButton"></ion-icon>
+          </ion-button>
           <ion-button (click)="report()" fill="clear" shape="round" *ngIf="!bookService.isAuthor">
             <ion-icon slot="icon-only" name="flag" class="headerButton"></ion-icon>
           </ion-button>
@@ -24,18 +27,23 @@
       </ion-card>
     </div>
     <div>
-      <ion-button (click)="changeTitle()" expand="block" color="dark" fill="clear" shape="round" *ngIf="bookService.isAuthor">
+      <ion-textarea style="text-align: center; margin: auto; padding: 10px 20px; max-width: 400px;" 
+                    [readonly]="!bookService.isAuthor" 
+                    [value]="bookService.book.title" 
+                    [rows]="1"
+                    (ionChange)="changeTitle($event.target.value)"></ion-textarea>
+      <!-- <ion-button (click)="changeTitle()" expand="block" color="dark" fill="clear" shape="round" *ngIf="bookService.isAuthor">
         <h1 class="ion-text-center ion-no-margin">{{bookService.book.title}}</h1>
         <ion-icon name="pencil" slot="end"></ion-icon>
       </ion-button>
       <ion-text color="dark" *ngIf="!bookService.isAuthor">
         <h1 class="ion-text-center ion-no-margin">{{bookService.book.title}}</h1>
-      </ion-text>
+      </ion-text> -->
     </div>
     <div class="subscribe">
       <ion-item style="--background: transparent; width: 200px;" *ngIf="bookService.isAuthor" lines="none">
-        <ion-icon class="ion-no-margin" color="primary" slot="start" *ngIf="bookService.book.category !== 'undefined'" [src]="'assets/icon/svg/' + bookService.book.category + '.svg'"></ion-icon>
-        <ion-select color="primary" class="ion-no-margin ion-no-padding" slot="end" [value]="bookService.book.category" (ionChange)="changeCat($event.target.value)" okText="Choisir" cancelText="Annuler">
+        <ion-icon class="ion-no-margin" [color]="book.color" slot="start" *ngIf="bookService.book.category !== 'undefined'" [src]="'assets/icon/svg/' + bookService.book.category + '.svg'"></ion-icon>
+        <ion-select class="ion-no-margin ion-no-padding" slot="end" [value]="bookService.book.category" (ionChange)="changeCat($event.target.value)" okText="Choisir" cancelText="Annuler">
           <ion-select-option value="action">{{'CATEGORIES.action' | translate}}</ion-select-option>
           <ion-select-option value="adventure">{{'CATEGORIES.adventure' | translate}}</ion-select-option>
           <ion-select-option value="fanfiction">{{'CATEGORIES.fanfiction' | translate}}</ion-select-option>
@@ -64,7 +72,7 @@
       </p>
     </div>
     <div class="subscribe">
-      <ion-button (click)="play()" expand="block" fill="solid" shape="round">
+      <ion-button (click)="play()" expand="block" fill="solid" shape="round" [color]="book.color">
         <ion-icon name="play"></ion-icon>
         {{'COMMON.read' | translate}}
       </ion-button>
@@ -90,23 +98,28 @@
       </ion-button>
     </div>
     <div class="subscribe">
-      <ion-badge color="primary" mode="ios" *ngFor="let tag of bookService.book.tags; index as i" class="ion-margin-start">
+      <ion-badge [color]="book.color" mode="ios" *ngFor="let tag of bookService.book.tags; index as i" class="ion-margin-start">
         {{tag}}
         <ion-icon name="close-circle" (click)="removeTag(i)" *ngIf="bookService.isAuthor"></ion-icon>
       </ion-badge>
     </div>
     <div>
-      <ion-button (click)="changeDesc()" expand="block" color="medium" fill="clear" shape="round" *ngIf="bookService.isAuthor">
+      <!-- <ion-button expand="block" color="medium" fill="clear" shape="round" *ngIf="bookService.isAuthor">
         <ion-text color="medium" class="ion-text-center">
-          <p>{{bookService.book.description}}</p>
+          <p></p>
         </ion-text>
         <ion-icon name="pencil" slot="end"></ion-icon>
-      </ion-button>
-      <ion-text color="medium" *ngIf="!bookService.isAuthor">
+      </ion-button> -->
+      <ion-textarea style="text-align: center; margin: auto; padding: 10px 20px; max-width: 400px;" 
+                    [readonly]="!bookService.isAuthor" 
+                    [value]="bookService.book.description" 
+                    [rows]="bookService.book.description.length / 40 + 1"
+                    (ionChange)="changeDesc($event.target.value)"></ion-textarea>
+      <!-- <ion-text color="medium" *ngIf="!bookService.isAuthor">
         <ion-text color="medium" class="ion-text-center">
           <p>{{bookService.book.description}}</p>
         </ion-text>
-      </ion-text>
+      </ion-text> -->
     </div>
     <!-- <ion-button (click)="more()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor && verso">
       {{'COVER.more' | translate}}

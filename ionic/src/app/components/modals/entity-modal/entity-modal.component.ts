@@ -196,34 +196,11 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     });
   }
 
-  async changeColor() {
-    const colors =
-    ['red', 'pink', 'purple', 'deep-purple', 'indigo',
-    'blue', 'light-blue', 'cyan', 'teal', 'green',
-    'light-green', 'lime', 'yellow', 'amber', 'orange',
-    'deep-orange', 'brown', 'grey', 'blue-grey', 'white', 'black'];
-    const buttons = [];
-    for (const color of colors) {
-      buttons.push({
-        text: color,
-        cssClass: color,
-        handler: () => {
-          this.entity.color = color;
-          this.saveEntity();
-        }
-      });
-    }
-    buttons.push({
-      text: this.COMMON.cancel,
-      icon: 'close',
-      role: 'cancel',
-      handler: () => {}
+  changeColor() {
+    this.popupService.selectColor().then((color) => {
+      this.entity.color = color;
+      this.saveEntity();
     });
-    const actionSheet = await this.actionSheetController.create({
-      buttons,
-      mode: 'md'
-    });
-    await actionSheet.present();
   }
 
   async delete() {
