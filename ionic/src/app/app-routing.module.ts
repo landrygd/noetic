@@ -105,7 +105,11 @@ const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./pages/admin/admin.module').then( m => m.AdminPageModule)
+  },  {
+    path: 'comments',
+    loadChildren: () => import('./pages/comments/comments.module').then( m => m.CommentsPageModule)
   }
+
 
 ];
 @NgModule({

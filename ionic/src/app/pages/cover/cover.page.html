@@ -35,31 +35,12 @@
                     [value]="bookService.book.title" 
                     [rows]="1"
                     (ionChange)="changeTitle($event.target.value)"></ion-textarea>
-      <!-- <ion-button (click)="changeTitle()" expand="block" color="dark" fill="clear" shape="round" *ngIf="bookService.isAuthor">
-        <h1 class="ion-text-center ion-no-margin">{{bookService.book.title}}</h1>
-        <ion-icon name="pencil" slot="end"></ion-icon>
-      </ion-button>
-      <ion-text color="dark" *ngIf="!bookService.isAuthor">
-        <h1 class="ion-text-center ion-no-margin">{{bookService.book.title}}</h1>
-      </ion-text> -->
     </div>
     <div class="subscribe">
       <ion-item style="--background: transparent; width: 200px;" *ngIf="bookService.isAuthor" lines="none">
         <ion-icon class="ion-no-margin" [color]="book.color" slot="start" *ngIf="bookService.book.category !== 'undefined'" [src]="'assets/icon/svg/' + bookService.book.category + '.svg'"></ion-icon>
         <ion-select class="ion-no-margin ion-no-padding" slot="end" [value]="bookService.book.category" (ionChange)="changeCat($event.target.value)" okText="Choisir" cancelText="Annuler">
-          <ion-select-option value="action">{{'CATEGORIES.action' | translate}}</ion-select-option>
-          <ion-select-option value="adventure">{{'CATEGORIES.adventure' | translate}}</ion-select-option>
-          <ion-select-option value="fanfiction">{{'CATEGORIES.fanfiction' | translate}}</ion-select-option>
-          <ion-select-option value="fantastic">{{'CATEGORIES.fantastic' | translate}}</ion-select-option>
-          <ion-select-option value="fiction">{{'CATEGORIES.fiction' | translate}}</ion-select-option>
-          <ion-select-option value="horror">{{'CATEGORIES.horror' | translate}}</ion-select-option>
-          <ion-select-option value="humor">{{'CATEGORIES.humor' | translate}}</ion-select-option>
-          <ion-select-option value="mystery">{{'CATEGORIES.mystery' | translate}}</ion-select-option>
-          <ion-select-option value="nonfiction">{{'CATEGORIES.nonfiction' | translate}}</ion-select-option>
-          <ion-select-option value="romance">{{'CATEGORIES.romance' | translate}}</ion-select-option>
-          <ion-select-option value="scifi">{{'CATEGORIES.scifi' | translate}}</ion-select-option>
-          <ion-select-option value="thriller">{{'CATEGORIES.thriller' | translate}}</ion-select-option>
-          <ion-select-option value="undefined">{{'CATEGORIES.undefined' | translate}}</ion-select-option>
+          <ion-select-option *ngFor="let category of bookService.categories" [value]="category">{{'CATEGORIES.' + category | translate}}</ion-select-option>
         </ion-select>
       </ion-item>
       <div class="subscribe ion-no-margin" *ngIf="!bookService.isAuthor">
@@ -91,9 +72,9 @@
         </ion-fab-button>
       </div>
     </div>
-    <!-- <div class="subscribe">
+    <div class="subscribe">
       <app-user-chip [userId]="bookService.book.author" ></app-user-chip>
-    </div> -->
+    </div>
     <div class="subscribe" *ngIf="bookService.isAuthor">
       <ion-button (click)="addTag()" expand="block" fill="clear" shape="round" color="medium">
         <ion-icon name="add"></ion-icon>
@@ -107,12 +88,6 @@
       </ion-badge>
     </div>
     <div>
-      <!-- <ion-button expand="block" color="medium" fill="clear" shape="round" *ngIf="bookService.isAuthor">
-        <ion-text color="medium" class="ion-text-center">
-          <p></p>
-        </ion-text>
-        <ion-icon name="pencil" slot="end"></ion-icon>
-      </ion-button> -->
       <ion-textarea style="text-align: center; margin: auto; padding: 10px 20px; max-width: 400px;"
                     [placeholder]="'COMMON.nodesc' | translate"
                     [maxlength]="300"
@@ -121,57 +96,19 @@
                     [value]="bookService.book.description" 
                     [rows]="bookService.book.description.length / 40 + 1"
                     (ionChange)="changeDesc($event.target.value)"></ion-textarea>
-      <!-- <ion-text color="medium" *ngIf="!bookService.isAuthor">
-        <ion-text color="medium" class="ion-text-center">
-          <p>{{bookService.book.description}}</p>
-        </ion-text>
-      </ion-text> -->
     </div>
-    <!-- <ion-button (click)="more()" expand="block" fill="clear" shape="round" *ngIf="!bookService.isAuthor && verso">
-      {{'COVER.more' | translate}}
-    </ion-button>
-    <ion-button (click)="changeVerso()" expand="block" fill="clear" shape="round" *ngIf="bookService.isAuthor">
-      {{'COVER.changeVerso' | translate}}
-    </ion-button> -->
-    <!-- Envoie des commentaires -->
-    <!-- <ion-card *ngIf="userService.connected && (!commented || editComment)" class="ion-padding-top ion-padding-bottom">
-      <ion-item lines="none">
-        <app-user-avatar slot="start" [userId]="userService.userId"></app-user-avatar>
-        <ion-buttons slot="start">
-          <ion-button *ngFor="let star of [0,0,0,0,0]; index as i" [color]="getStarColor(i)" (click)="setRate(i)">
-            <ion-icon slot="icon-only" name="star"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-item>
-      <ion-item lines="none">
-        <ion-textarea [(ngModel)]="comment.text" placeholder="Laisser un avis" (keypress)="enter($event.keyCode)" class="ion-no-padding"></ion-textarea>
+    <ion-list>
+      <ion-item *ngIf="userService.connected">
+        <app-user-avatar slot="start" [user]="userService.userData"></app-user-avatar>
+        <ion-textarea type="text" [(ngModel)]="comment" [placeholder]="'COVER.sendComment' | translate"></ion-textarea>
         <ion-button (click)="send()" expand="block" fill="clear" shape="round" slot="end">
           <ion-icon slot="icon-only" name="send"></ion-icon>
         </ion-button>
       </ion-item>
-    </ion-card> -->
-    <!-- commentaire envoyé -->
-    <!-- <ion-card *ngIf="userService.connected && commented && !editComment" class="ion-padding-top ion-padding-bottom">
-      <ion-item lines="none">
-        <app-user-avatar slot="start" [userId]="userService.userId"></app-user-avatar>
-        <ion-label slot="start" color="primary">
-          <ion-icon name="star" *ngFor="let star of [0,0,0,0,0]; index as i"></ion-icon>
-        </ion-label>
-      </ion-item>
-      <ion-item lines="none">
-        <ion-textarea disabled [(ngModel)]="comment.text" placeholder="Laisser un avis" (keypress)="enter($event.keyCode)" class="ion-no-padding"></ion-textarea>
-        <ion-button (click)="editComment = true" expand="block" fill="clear" shape="round" slot="end">
-          <ion-icon slot="icon-only" name="create"></ion-icon>
-        </ion-button>
-      </ion-item>
-    </ion-card> -->
-    <!-- liste des commentaires -->
-    <ion-list>
-      <ion-item *ngFor="let comment of comments; index as commentIndex">
-        <app-user-avatar slot="start" [user]="comment.user"></app-user-avatar>
-        <ion-label position="floating" [color]="comment.user.color">{{comment.user.name}} <ion-note>{{comment.date | date}}</ion-note></ion-label>
-        <ion-input type="text" disabled="true" [value]="comment.text"></ion-input>
-      </ion-item>
+      <app-comment *ngFor="let comment of comments" [comment]="comment"></app-comment>
+      <ion-button (click)="showComments()" expand="block" fill="clear" shape="round">
+        {{'COMMON.more' | translate}}
+      </ion-button>
     </ion-list>
   </div>
 </ion-content>

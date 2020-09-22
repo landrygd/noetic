@@ -387,7 +387,18 @@ export class UserService implements OnDestroy {
   }
 
   async getUser(userId: string): Promise<User> {
-    return new User(await this.usersCollection.doc(userId).get().toPromise());
+    return new User((await this.usersCollection.doc(userId).get().toPromise()).data());
+  }
+
+  async getUsers(usersId: string[]): Promise<User[]> {
+    usersId = usersId.slice(0, 10);
+    const users: User[] = [];
+    await this.firestore.collection('users', ref => ref.where('id', 'in', usersId)).get().toPromise().then((collection) => {
+      collection.docs.forEach((doc: any) => {
+        users.push(new User(doc.data()));
+      });
+    });
+    return users;
   }
 
   searchUser(filter: string): Observable<any> {

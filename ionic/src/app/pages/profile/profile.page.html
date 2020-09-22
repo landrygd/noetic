@@ -29,7 +29,7 @@
       </ion-toolbar>
     </div>
     <div class="flex">
-      <app-user-avatar [page]="true" [userId]="user.id" [width]="'150px'" (click)="changeAvatar(user.id)"></app-user-avatar>
+      <app-user-avatar [page]="true" [user]="user" [width]="'150px'" (click)="changeAvatar(user.id)"></app-user-avatar>
     </div>
     <ion-grid fixed class="ion-text-center">
       <ion-row>
@@ -81,9 +81,9 @@
         <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userService.books.length !== 0">
           <ion-slide>
           </ion-slide>
-          <!-- <ion-slide *ngFor="let bookId of userService.books">
-            <app-card-book [book]="bookId"></app-card-book>
-          </ion-slide> -->
+          <ion-slide *ngFor="let bookId of userService.books">
+            <app-card-book [id]="bookId"></app-card-book>
+          </ion-slide>
           <ion-slide>
           </ion-slide>
         </ion-slides>
@@ -95,9 +95,9 @@
       </h2>
     
       <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.list.length !== 0">
-        <!-- <ion-slide *ngFor="let bookId of userService.list">
-          <app-card-book [book]="bookId"></app-card-book>
-        </ion-slide> -->
+        <ion-slide *ngFor="let bookId of userService.list">
+          <app-card-book [id]="bookId"></app-card-book>
+        </ion-slide>
       </ion-slides>
     
       <h2 class="section" *ngIf="userService.followList.length !== 0">
@@ -120,9 +120,9 @@
         <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userService.curUserBooks.length !== 0">
           <ion-slide>
           </ion-slide>
-          <!-- <ion-slide *ngFor="let bookId of userService.curUserBooks">
-            <app-card-book [bookId]="bookId"></app-card-book>
-          </ion-slide> -->
+          <ion-slide *ngFor="let bookId of userService.curUserBooks">
+            <app-card-book [id]="bookId"></app-card-book>
+          </ion-slide>
           <ion-slide>
           </ion-slide>
         </ion-slides>

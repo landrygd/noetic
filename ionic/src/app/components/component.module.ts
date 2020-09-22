@@ -16,6 +16,7 @@ import { TutoPopoverComponent } from './tuto-popover/tuto-popover.component';
 import { LogEditComponent } from './log-edit/log-edit.component';
 import { EntityModalComponent } from './modals/entity-modal/entity-modal.component';
 import { IdFinderComponent } from './modals/id-finder/id-finder.component';
+import { CommentComponent } from './comment/comment.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { IdFinderComponent } from './modals/id-finder/id-finder.component';
     LogEditComponent,
     EntityModalComponent,
     IdFinderComponent,
-    VariablesViewerComponent
+    VariablesViewerComponent,
+    CommentComponent
   ],
   imports: [
     CommonModule,
@@ -50,7 +52,8 @@ import { IdFinderComponent } from './modals/id-finder/id-finder.component';
     LogEditComponent,
     EntityModalComponent,
     IdFinderComponent,
-    VariablesViewerComponent
+    VariablesViewerComponent,
+    CommentComponent
   ]
 })
 

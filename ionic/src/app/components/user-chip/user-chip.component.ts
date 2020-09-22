@@ -20,7 +20,7 @@ export class UserChipComponent implements OnInit {
     ) {}
 
   ngOnInit() {
-    this.userObservable = this.userService.getUser(this.userId);
+    this.userObservable = this.userService.getAsyncUser(this.userId);
   }
 
   openProfile() {

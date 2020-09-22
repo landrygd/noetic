@@ -109,7 +109,7 @@
 		"error": "Erreur",
 		"examples": "Exemples",
 		"loading": "Chargement en cours...",
-		"more": "En savoir plus",
+		"more": "Voir plus",
 		"next": "Suivant",
 		"no": "Non",
 		"notifs": "Notifications",
@@ -150,7 +150,8 @@
 		"seeAuthorAnswer": "Voir la réponse du créateur",
 		"toastAddedToList": "Ajouté à la liste",
 		"toastCommentSent": "Commentaire envoyé",
-		"toastRemovedFromList": "Retiré de la liste"
+		"toastRemovedFromList": "Retiré de la liste",
+		"sendComment": "Envoyer un commentaire"
 	},
 	"ERRORS": {
 		"5TagsMax": "Impossible d'avoir plus de 5 tags pour un même livre.",

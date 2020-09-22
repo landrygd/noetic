@@ -12,6 +12,7 @@ import { Book } from 'src/app/classes/book';
 export class CardBookComponent implements OnInit, OnChanges {
 
   @Input() book: Book;
+  @Input() id: string;
 
   @Input() height = 200;
   width: number;
@@ -35,12 +36,13 @@ export class CardBookComponent implements OnInit, OnChanges {
     ) {}
 
   ngOnChanges() {
-    if (this.book.title !== '') {
-      this.loading = false;
-    }
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    if (this.id) {
+      this.book = await this.bookService.getBook(this.id);
+    }
+    this.loading = false;
     this.width = this.height * 9 / 16;
     this.animation.fadeIn(this.ref);
   }
@@ -56,6 +58,5 @@ export class CardBookComponent implements OnInit, OnChanges {
 
   onImgLoaded() {
     this.loading = false;
-    this.animation.fadeIn(this.ref);
   }
 }

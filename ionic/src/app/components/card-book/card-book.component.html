@@ -1,16 +1,4 @@
 <div #ref style="opacity: 0;">
-  <!-- <div #ref [style.height.px]="height" [style.width.px]="width" style="opacity: 0" class="card">
-    <ion-card (click)="open()" button class="ion-no-margin">
-      <ion-img alt="cover" [src]="book.cover" style="width: 100%" (ionError)="onImgLoadFailed()" *ngIf="!loadFailed" (ionImgDidLoad)="onImgLoaded()"></ion-img>
-      <ion-img src="../../../assets/cover/cover1.png" *ngIf="loadFailed"></ion-img>
-    </ion-card>
-    <ion-card class="ion-no-margin header">
-      <div class="center">
-        <p>{{book.title}}</p>
-      </div>
-    </ion-card>
-  </div> -->
-
   <div #ref style="width: 300px; height: 200px;" class="card" *ngIf="!loading; else largeLoading">
     <ion-card style="position: absolute; width: 100px; z-index: 2; top: 0; left: 5px">
       <ion-card (click)="open()" button class="ion-no-margin">
@@ -48,8 +36,6 @@
             <ion-skeleton-text animated style="width: 50px; height: 18px;"></ion-skeleton-text>
           </ion-card-header>
           <ion-card-content style="padding: 0;">
-            <ion-skeleton-text animated style="width: 100px; height: 14px;"></ion-skeleton-text>
-            <ion-skeleton-text animated style="width: 80px; height: 14px;"></ion-skeleton-text>
           </ion-card-content>
         </ion-card>
       </div>

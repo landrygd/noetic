@@ -10,6 +10,7 @@ import { PopupService } from './popup.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Book, Entity, Script } from '../classes/book';
 import { Storage } from '@ionic/storage';
+import { Comment } from '../classes/comment';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,12 @@ export class BookService implements OnDestroy {
   book: Book;
   debug = false;
   isAuthor: boolean;
+  comments: Comment[];
+
+  categories = [
+    'action', 'adventure', 'fanfiction', 'fantastic', 'fiction', 'horror',
+    'humor', 'mystery', 'nonfiction', 'romance', 'scifi', 'thriller', 'undefined'
+  ];
 
   // bookSub: Subscription;
   // bookChatSub: Subscription;
@@ -358,6 +365,12 @@ export class BookService implements OnDestroy {
     }
   }
 
+  sendComment(text: string) {
+    this.firestore.collection('books').doc(this.book.id).collection('comments').doc(this.userService.userData.id).set(
+      {text, date: Date.now(), userId: this.userService.userId}
+      );
+  }
+
   addMediaRef(url: string, ref: string, type: string, tag: string) {
     this.firestore.collection('books').doc(this.curBookId).collection('medias').add({url, ref, type, tag});
   }
@@ -399,9 +412,9 @@ export class BookService implements OnDestroy {
     return this.book.banner !== undefined;
   }
 
-  // getBook(bookId) {
-  //   return this.firestore.collection('books').doc(bookId).valueChanges();
-  // }
+  async getBook(bookId): Promise<Book> {
+    return new Book((await this.firestore.collection('books').doc(bookId).get().toPromise()).data());
+  }
 
   // updateBookData(data, curBookId: string = this.curBookId) {
   //   this.booksCollection.doc(curBookId).update(data);
@@ -716,25 +729,36 @@ export class BookService implements OnDestroy {
     });
   }
 
-  getComments(bookId = this.book.id): Promise<{date: number, text: string; user: User, answer: string}[]> {
+  getComments(bookId = this.book.id): Promise<Comment[]> {
     return new Promise ((resolve, reject) => {
       this.firestore.collection('books').doc(bookId)
-                    .collection('comments')
+                    .collection('comments', ref => ref.orderBy('date', 'desc').limit(10))
                     .get().toPromise().then(async (data) => {
         const comments = [];
-        console.log(data.docs);
+        const usersId = [];
         for (const doc of data.docs) {
-          console.log(doc.data());
           const comment = doc.data();
-          this.userService.getUser(comment.userId).then((d) => console.log(d));
-          // console.log(user);
-          // comment.user = new User(user);
-          // // delete comment.userId;
-          // console.log(comment);
-          // console.log(comments);
-          // comments.push(comment);
+          usersId.push(comment.userId);
         }
-        resolve(comments);
+        const users: User[] = await this.userService.getUsers(usersId);
+        for (const doc of data.docs) {
+          const comment = doc.data();
+          comment.user = users.filter(ref => ref.id === comment.userId)[0];
+          delete comment.userId;
+          comments.push(new Comment(comment));
+        }
+        this.comments = comments;
+        resolve(comments.slice(0, 3));
+      }).catch((err) => reject(err));
+    });
+  }
+
+  getComment(bookId = this.book.id): Promise<string> {
+    return new Promise ((resolve, reject) => {
+      this.firestore.collection('books').doc(bookId)
+                    .collection('comments').doc(this.userService.userData.id)
+                    .get().toPromise().then(async (data) => {
+        resolve(data.data().text);
       }).catch((err) => reject(err));
     });
   }

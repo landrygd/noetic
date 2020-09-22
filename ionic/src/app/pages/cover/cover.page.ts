@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { Book } from 'src/app/classes/book';
+import { Comment } from 'src/app/classes/comment';
 
 @Component({
   selector: 'app-cover',
@@ -24,17 +25,7 @@ export class CoverPage implements OnInit, OnDestroy {
 
   inList = false;
 
-  comment: {
-    userId: string,
-    text: string,
-    rate: number,
-    date: number
-  } = {
-    userId: this.userService.userId,
-    text: '',
-    rate: 0,
-    date: 0
-  };
+  comment = '';
 
   commented = false;
   lastRate = 0;
@@ -59,7 +50,7 @@ export class CoverPage implements OnInit, OnDestroy {
 
   @ViewChild('banner', {static: true, read: ElementRef}) banner: ElementRef;
 
-  comments: {date: number, text: string; user: User; answer: string}[] = [];
+  comments: Comment[] = [];
 
   constructor(
     public navCtrl: NavController,
@@ -104,14 +95,11 @@ export class CoverPage implements OnInit, OnDestroy {
       await this.bookService.getCover(bookId).then(async (book: Book) => {
         this.bookService.book = book;
         this.book = book;
-        console.log('BOOK');
       }).catch(() => {
         this.navCtrl.navigateRoot('/');
       });
     }
-    console.log('COMMENT');
-    this.comments = await this.bookService.getComments();
-    console.log(this.comments);
+    this.refreshComments();
     this.loading = false;
     this.getBanner();
     // if (this.bookService.curBookId !== bookId) {
@@ -176,6 +164,10 @@ export class CoverPage implements OnInit, OnDestroy {
   changeCat(cat) {
     this.book.category = cat;
     this.bookService.saveBook();
+  }
+
+  showComments() {
+    this.navCtrl.navigateForward('comments');
   }
 
   play() {
@@ -245,37 +237,28 @@ export class CoverPage implements OnInit, OnDestroy {
     this.bookService.saveBook();
   }
 
-  getStarColor(index) {
-    if (index < this.comment.rate) {
-      return 'primary';
+  send() {
+    if (this.comment !== '') {
+      this.bookService.sendComment(this.comment);
+      this.toast(this.COVER.toastCommentSent);
+      this.refreshComments();
     }
-    return 'medium';
   }
 
-  setRate(index) {
-    this.comment.rate = index + 1;
+  async refreshComments() {
+    this.comments = await this.bookService.getComments();
+    this.comment = await this.bookService.getComment();
   }
-
-  // send() {
-  //   const date: number = Date.now();
-  //   this.comment.date = date;
-  //   if (this.comment.rate !== 0 ) {
-  //     this.commentService.addComment(this.comment, this.bookService.book.id, this.commented, this.lastRate);
-  //     this.toast(this.ERRORS.toastCommentSent);
-  //   } else {
-  //     this.toast(this.ERRORS.unratedComment);
-  //   }
-  // }
 
   addToList() {
     this.userService.addBookListRef(this.bookService.book.id);
-    this.toast(this.ERRORS.toastAddedToList);
+    this.toast(this.COVER.toastAddedToList);
     this.inList = true;
   }
 
   removeFromList() {
     this.userService.deleteBookListRef(this.bookService.book.id);
-    this.toast(this.ERRORS.toastRemovedFromList);
+    this.toast(this.COVER.toastRemovedFromList);
     this.inList = false;
   }
 

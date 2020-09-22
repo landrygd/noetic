@@ -12,7 +12,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AudioListComponent } from './audio-list/audio-list.component';
 
 
-
 @NgModule({
   declarations: [
     UploadComponent,
