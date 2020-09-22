@@ -67,6 +67,7 @@ export function createTranslateLoader(http: HttpClient) {
     ImageCropperModule,
     ComponentModule,
     HttpClientModule,
+    TimeagoModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

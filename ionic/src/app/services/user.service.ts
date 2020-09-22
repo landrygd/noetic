@@ -198,7 +198,7 @@ export class UserService implements OnDestroy {
 
   async syncUserData(userId: string) {
     this.userId = userId;
-    this.user = this.getUser();
+    this.user = this.getAsyncUser();
     this.userDoc = this.usersCollection.doc(this.userId);
     // await this.popupService.loading(this.COMMON.loading, 'sync');
     this.userSub = this.firestore.collection('users').doc(this.userId).valueChanges().subscribe((value: any) => {
@@ -256,7 +256,7 @@ export class UserService implements OnDestroy {
         resolve();
       } else {
         this.checkUserExist(curUserId).then(() => {
-          this.curUser = this.getUser(curUserId);
+          this.curUser = this.getAsyncUser(curUserId);
           resolve();
         }).catch(() => reject());
       }
@@ -382,10 +382,13 @@ export class UserService implements OnDestroy {
     return this.userDoc.collection('list').valueChanges();
   }
 
-  getUser(curUserId: string = this.userId): Observable<unknown> {
-    return this.usersCollection.doc(curUserId).valueChanges();
+  getAsyncUser(userId: string = this.userId): Observable<unknown> {
+    return this.usersCollection.doc(userId).valueChanges();
   }
 
+  async getUser(userId: string): Promise<User> {
+    return new User(await this.usersCollection.doc(userId).get().toPromise());
+  }
 
   searchUser(filter: string): Observable<any> {
     const queryByName = this.firestore.collection(

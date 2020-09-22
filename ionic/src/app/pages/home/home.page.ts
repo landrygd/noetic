@@ -61,7 +61,6 @@ export class HomePage implements OnInit, OnDestroy {
         section.books.push(new Book());
       }
     });
-    console.log(this.sections);
     this.refresh('', true);
   }
 
@@ -213,7 +212,6 @@ export class HomePage implements OnInit, OnDestroy {
       section.books = await this.bookService.getMostBooks(section.attribute);
     });
     this.sections = sections;
-    console.log(this.sections);
     // this.topRatedBooks = this.userService.topRatedBooks;
     // this.mostVueBooks = this.userService.mostVueBooks;
     // this.mostRecentBooks = this.userService.mostRecentBooks;

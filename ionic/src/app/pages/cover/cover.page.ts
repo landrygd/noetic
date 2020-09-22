@@ -1,3 +1,4 @@
+import { User } from './../../classes/user';
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { NavController, ToastController, AlertController, ModalController } from '@ionic/angular';
 import { UserService } from 'src/app/services/user.service';
@@ -58,7 +59,7 @@ export class CoverPage implements OnInit, OnDestroy {
 
   @ViewChild('banner', {static: true, read: ElementRef}) banner: ElementRef;
 
-  comments: {date: number, text: string; userId: string; answer: string}[] = [];
+  comments: {date: number, text: string; user: User; answer: string}[] = [];
 
   constructor(
     public navCtrl: NavController,
@@ -103,11 +104,14 @@ export class CoverPage implements OnInit, OnDestroy {
       await this.bookService.getCover(bookId).then(async (book: Book) => {
         this.bookService.book = book;
         this.book = book;
-        this.comments = await this.bookService.getComments();
+        console.log('BOOK');
       }).catch(() => {
         this.navCtrl.navigateRoot('/');
       });
     }
+    console.log('COMMENT');
+    this.comments = await this.bookService.getComments();
+    console.log(this.comments);
     this.loading = false;
     this.getBanner();
     // if (this.bookService.curBookId !== bookId) {

@@ -1,3 +1,4 @@
+import { User } from './../classes/user';
 import { Injectable, OnDestroy } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFirestoreCollection } from '@angular/fire/firestore/public_api';
@@ -715,12 +716,25 @@ export class BookService implements OnDestroy {
     });
   }
 
-  getComments(bookId = this.book.id): Promise<{date: number, text: string; userId: string}[]> {
+  getComments(bookId = this.book.id): Promise<{date: number, text: string; user: User, answer: string}[]> {
     return new Promise ((resolve, reject) => {
-      this.firestore.collection('books').doc(bookId).collection('').get().toPromise().then((data) => {
-        const books = [];
-        data.docs.forEach((doc) => books.push(doc.data()));
-        resolve(books);
+      this.firestore.collection('books').doc(bookId)
+                    .collection('comments')
+                    .get().toPromise().then(async (data) => {
+        const comments = [];
+        console.log(data.docs);
+        for (const doc of data.docs) {
+          console.log(doc.data());
+          const comment = doc.data();
+          this.userService.getUser(comment.userId).then((d) => console.log(d));
+          // console.log(user);
+          // comment.user = new User(user);
+          // // delete comment.userId;
+          // console.log(comment);
+          // console.log(comments);
+          // comments.push(comment);
+        }
+        resolve(comments);
       }).catch((err) => reject(err));
     });
   }
