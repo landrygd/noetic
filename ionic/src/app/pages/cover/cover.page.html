@@ -27,7 +27,10 @@
       </ion-card>
     </div>
     <div>
-      <ion-textarea style="text-align: center; margin: auto; padding: 10px 20px; max-width: 400px;" 
+      <ion-textarea style="text-align: center; margin: auto; padding: 0; max-width: 400px; font-size: 24px;" 
+                    [maxlength]="30"
+                    [minlength]="3"
+                    inputmode="text"
                     [readonly]="!bookService.isAuthor" 
                     [value]="bookService.book.title" 
                     [rows]="1"
@@ -110,7 +113,10 @@
         </ion-text>
         <ion-icon name="pencil" slot="end"></ion-icon>
       </ion-button> -->
-      <ion-textarea style="text-align: center; margin: auto; padding: 10px 20px; max-width: 400px;" 
+      <ion-textarea style="text-align: center; margin: auto; padding: 10px 20px; max-width: 400px;"
+                    [placeholder]="'COMMON.nodesc' | translate"
+                    [maxlength]="300"
+                    inputmode="text"
                     [readonly]="!bookService.isAuthor" 
                     [value]="bookService.book.description" 
                     [rows]="bookService.book.description.length / 40 + 1"
@@ -160,48 +166,42 @@
       </ion-item>
     </ion-card> -->
     <!-- liste des commentaires -->
-    <!-- <ion-grid fixed>
-      <ion-row *ngFor="let comment of commentService.comments; index as commentIndex">
-        <ion-col>
+    <ion-list>
+      <ion-card class="ion-no-margin ion-padding-top ion-padding-bottom " *ngFor="let comment of comments; index as commentIndex" >
+        <ion-item lines="none">
           <app-user-avatar [userId]="comment.userId"></app-user-avatar>
-        </ion-col>
-        <ion-col size="10">
-          <ion-card class="ion-no-margin ion-padding-top ion-padding-bottom">
-            <ion-item lines="none">
-              <ion-label color="primary" slot="start" *ngIf="comment.user | async as user">
-                  {{user.name}}<br>
-                  <ion-icon name="star" *ngFor="let i of starToArray(comment.rate)" color="primary"></ion-icon>
-              </ion-label>
-            </ion-item>
-            <ion-item lines="none">
-              <p>
-                <ion-text color="medium">
-                  {{comment.text}}
-                </ion-text>
-              </p>
-            </ion-item>
-            <ion-button (click)="answer(comment.userId)" expand="block" fill="clear" shape="round" *ngIf="bookService.isAuthor">
-              {{'COVER.answer' | translate}}
-            </ion-button>
-            <ion-button (click)="showAnswer(commentIndex)" expand="block" fill="clear" shape="round" *ngIf="commentIndex !== selectedAnswer && comment.hasOwnProperty('answer')">
-              {{'COVER.seeAuthorAnswer' | translate}}
-            </ion-button>
-            <ion-button (click)="hideAnswer()" expand="block" fill="clear" shape="round" *ngIf="commentIndex === selectedAnswer">
-              {{'COVER.hideAuthorAnswer' | translate}}
-            </ion-button>
-          </ion-card>
-          <ion-card *ngIf="commentIndex === selectedAnswer">
-            <ion-card-content>
-              <p>
-                <ion-text color="medium">
-                  {{comment.answer}}
-                </ion-text>
-              </p>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid> -->
+          <ion-label color="primary" slot="start">
+              <!-- {{user.name}}<br> -->
+              <!-- <ion-icon name="star" *ngFor="let i of starToArray(comment.rate)" color="primary"></ion-icon> -->
+          </ion-label>
+        </ion-item>
+        <ion-item lines="none">
+          <p>
+            <ion-text color="medium">
+              {{comment.text}}
+            </ion-text>
+          </p>
+        </ion-item>
+        <ion-button (click)="answer(comment.userId)" expand="block" fill="clear" shape="round" *ngIf="bookService.isAuthor">
+          {{'COVER.answer' | translate}}
+        </ion-button>
+        <ion-button (click)="showAnswer(commentIndex)" expand="block" fill="clear" shape="round" *ngIf="commentIndex !== selectedAnswer && comment.hasOwnProperty('answer')">
+          {{'COVER.seeAuthorAnswer' | translate}}
+        </ion-button>
+        <ion-button (click)="hideAnswer()" expand="block" fill="clear" shape="round" *ngIf="commentIndex === selectedAnswer">
+          {{'COVER.hideAuthorAnswer' | translate}}
+        </ion-button>
+      </ion-card>
+      <ion-card *ngIf="commentIndex === selectedAnswer">
+        <ion-card-content>
+          <p>
+            <ion-text color="medium">
+              {{comment.answer}}
+            </ion-text>
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </ion-list>
   </div>
 </ion-content>
 

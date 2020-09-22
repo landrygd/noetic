@@ -424,14 +424,7 @@ export class BookService implements OnDestroy {
     });
   }
 
-  async downloadBook(url = this.book.downloadURL): Promise<Book> {
-
-    const book: Book = new Book(await this.getBook(url));
-    this.saveBook(book);
-    return book;
-  }
-
-  async getBook(url: string): Promise<Book> {
+  async downloadBook(url: string = this.book.downloadURL): Promise<Book> {
     return new Promise (async (resolve) => {
       const blob = await this.getBlob(url);
       // Conversion du blob en json
@@ -440,6 +433,7 @@ export class BookService implements OnDestroy {
       reader.onloadend = () => {
           const jsonString = reader.result.toString();
           const book: Book = new Book(JSON.parse(jsonString));
+          this.saveBook(book);
           resolve(book);
       };
     });
@@ -713,8 +707,22 @@ export class BookService implements OnDestroy {
     return this.firestore.collection('users').doc(userId).get();
   }
 
-  getBookById(bookId): Observable<any> {
-    return this.firestore.collection('books').doc(bookId).get();
+  getCover(bookId): Promise<Book> {
+    return new Promise ((resolve, reject) => {
+      this.firestore.collection('books').doc(bookId).get().toPromise().then((book) => {
+        resolve(new Book(book.data()));
+      }).catch((err) => reject(err));
+    });
+  }
+
+  getComments(bookId = this.book.id): Promise<{date: number, text: string; userId: string}[]> {
+    return new Promise ((resolve, reject) => {
+      this.firestore.collection('books').doc(bookId).collection('').get().toPromise().then((data) => {
+        const books = [];
+        data.docs.forEach((doc) => books.push(doc.data()));
+        resolve(books);
+      }).catch((err) => reject(err));
+    });
   }
 
   shareBook(bookId: string) {

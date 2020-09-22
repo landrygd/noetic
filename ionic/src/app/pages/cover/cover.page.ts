@@ -22,7 +22,6 @@ export class CoverPage implements OnInit, OnDestroy {
   selectedAnswer = -1;
 
   inList = false;
-  curBookId: string;
 
   comment: {
     userId: string,
@@ -38,7 +37,7 @@ export class CoverPage implements OnInit, OnDestroy {
 
   commented = false;
   lastRate = 0;
-  loading = false;
+  loading = true;
   editComment = false;
 
   ERRORS: any = {};
@@ -58,6 +57,8 @@ export class CoverPage implements OnInit, OnDestroy {
   book: Book = new Book();
 
   @ViewChild('banner', {static: true, read: ElementRef}) banner: ElementRef;
+
+  comments: {date: number, text: string; userId: string; answer: string}[] = [];
 
   constructor(
     public navCtrl: NavController,
@@ -94,11 +95,21 @@ export class CoverPage implements OnInit, OnDestroy {
     this.commonSub.unsubscribe();
   }
 
-  ionViewWillEnter() {
-    this.book = this.bookService.book;
+  async ionViewWillEnter() {
+    const bookId = this.route.snapshot.paramMap.get('id');
+    if (this.bookService.book) {
+      this.book = this.bookService.book;
+    } else {
+      await this.bookService.getCover(bookId).then(async (book: Book) => {
+        this.bookService.book = book;
+        this.book = book;
+        this.comments = await this.bookService.getComments();
+      }).catch(() => {
+        this.navCtrl.navigateRoot('/');
+      });
+    }
+    this.loading = false;
     this.getBanner();
-    // const bookId = this.route.snapshot.paramMap.get('id');
-    // this.curBookId = bookId;
     // if (this.bookService.curBookId !== bookId) {
     //   this.bookService.curBookId = this.curBookId;
     //   this.verso = this.bookService.book.verso.length > 0;
@@ -182,7 +193,7 @@ export class CoverPage implements OnInit, OnDestroy {
   }
 
   share() {
-    this.bookService.shareBook(this.curBookId);
+    this.bookService.shareBook(this.book.id);
   }
 
   async addTag() {
@@ -289,8 +300,10 @@ export class CoverPage implements OnInit, OnDestroy {
   }
 
   async changeTitle(value: string) {
-    this.bookService.book.title = value;
-    this.bookService.saveBook();
+    if (value.length > 3 && value.length <= 30) {
+      this.bookService.book.title = value;
+      this.bookService.saveBook();
+    }
     // const alert = await this.alertController.create({
     //   header: this.COVER.alertTitleHeader,
     //   inputs: [
@@ -328,8 +341,10 @@ export class CoverPage implements OnInit, OnDestroy {
   }
 
   async changeDesc(value: string) {
-    this.bookService.book.description = value;
-    this.bookService.saveBook();
+    if (value.length <= 300) {
+      this.bookService.book.description = value;
+      this.bookService.saveBook();
+    }
     // const alert = await this.alertController.create({
     //   header: this.COVER.changeDesc,
     //   inputs: [
@@ -348,7 +363,6 @@ export class CoverPage implements OnInit, OnDestroy {
     //     }, {
     //       text: this.COMMON.confirm,
     //       handler: (data) => {
-            
     //       }
     //     }
     //   ]
@@ -436,6 +450,6 @@ export class CoverPage implements OnInit, OnDestroy {
   }
 
   report() {
-    this.userService.report('book', this.curBookId);
+    this.userService.report('book', this.book.id);
   }
 }
