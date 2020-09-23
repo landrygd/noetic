@@ -12,7 +12,7 @@ export class StoryPage {
     ) {}
 
   addChat() {
-    // this.bookService.newChat();
+    this.bookService.newScript();
   }
 
   openScript(scriptName) {

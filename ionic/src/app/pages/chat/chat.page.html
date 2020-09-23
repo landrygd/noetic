@@ -85,7 +85,7 @@
     </ion-slides>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-textarea style="margin: 0" #chatBar (ionBlur)="onChatBarBlurred()" (ionFocus)="onChatBarFocused()" [disabled]='textarea' rows="1" [(ngModel)]='text' [placeholder]="'CHAT.enterMessage' | translate" (ionInput)="changeMsg()" (keypress)="enter($event.keyCode)" autoGrow="true"></ion-textarea>
+    <ion-textarea style="margin: 0" spellcheck="false" #chatBar (ionBlur)="onChatBarBlurred()" (ionFocus)="onChatBarFocused()" [disabled]='textarea' rows="1" [(ngModel)]='text' [placeholder]="'CHAT.enterMessage' | translate" (ionInput)="changeMsg()" (keypress)="enter($event.keyCode)"></ion-textarea>
     <ion-buttons slot="end">
       <ion-button (click)="send()" expand="block" fill="clear" shape="round" color="primary">
         <ion-icon slot="icon-only" name="send" ></ion-icon>

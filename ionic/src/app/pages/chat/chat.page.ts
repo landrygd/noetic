@@ -391,7 +391,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setActor(id) {
-    const match = /^@[a-zA-Z0-9]*:[ ]*/gi;
+    const match = /^@[a-zA-Z0-9_-]*:[ ]*/gi;
     if (id === this.actor) {
       this.actor = undefined;
       if (this.text.match(match)) {
@@ -419,8 +419,13 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     this.bookService.book.deleteScript(this.script.name);
   }
 
-  newActor() {
-    this.bookService.newEntity('actor');
+  async newActor() {
+    await this.bookService.newEntity('actor');
+    this.updateActors();
+  }
+
+  updateActors() {
+    this.actors = this.bookService.book.getEntities('actor');
   }
 
   getClassFabActor(actor) {
@@ -599,11 +604,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   getSelectionLogs() {
     const min = this.selection[0];
     const max = min + this.selection.length;
-    const res = [];
-    for (const log of this.messages.slice(min, max)) {
-      res.push(JSON.stringify(log));
-    }
-    return res.join('%SEP%');
+    return this.messages.slice(min, max).join('\n');
   }
 
   copy() {
@@ -639,24 +640,32 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async paste() {
-    const clipboard = await navigator.clipboard.readText();
-    const clipbordLogs = clipboard.split('%SEP%').reverse();
-    const logs: any[] = [];
-    for (const log of clipbordLogs) {
-      logs.push(JSON.parse(log));
-    }
+    // const clipbordLogs = clipboard.split('%SEP%').reverse();
+    // const logs: any[] = [];
+    // for (const log of clipbordLogs) {
+    //   logs.push(JSON.parse(log));
+    // }
+    // let min;
+    // if (this.selection === []) {
+    //   min = this.messages.length - 1;
+    // } else {
+    //   min = this.selection[this.selection.length - 1] + 1;
+    // }
+    // const res = this.messages.slice();
+    // for (const log of logs) {
+    //   res.splice(min, 0, log);
+    // }
+    // this.messages = res;
+    // this.addHistoryAction({action: 'add', index: this.messages.length, logs});
     let min;
     if (this.selection === []) {
       min = this.messages.length - 1;
     } else {
-      min = this.selection[this.selection.length - 1] + 1;
+      min = this.selection[0];
     }
-    const res = this.messages.slice();
-    for (const log of logs) {
-      res.splice(min, 0, log);
-    }
-    this.messages = res;
-    this.addHistoryAction({action: 'add', index: this.messages.length, logs});
+    console.log(this.selection);
+    const clipboard = await navigator.clipboard.readText();
+    this.send(clipboard, min);
     this.update();
   }
 
@@ -719,7 +728,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setLogActorId(log: string = this.text) {
-    const match = /^@[a-zA-Z0-9]*:/gi;
+    const match = /^@[a-zA-Z0-9]_-*:/gi;
     if (log.match(match)) {
       const msgArray = log.split(':');
       const key = msgArray.shift().substring(1);

@@ -1,0 +1,5 @@
+<ion-item>
+  <app-user-avatar slot="start" [user]="comment.user"></app-user-avatar>
+  <ion-label style="opacity: 1;" position="floating" [color]="comment.user.color">{{comment.user.name}} <ion-note>{{comment.date | date}}</ion-note></ion-label>
+  <ion-textarea type="text" readonly="true" [value]="comment.text"></ion-textarea>
+</ion-item>

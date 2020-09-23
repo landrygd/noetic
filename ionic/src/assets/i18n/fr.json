@@ -370,7 +370,7 @@
 				"place": "Créer un nouveau lieu",
 				"actor": "Créer un nouvel acteur",
 				"type": "Créer un nouveau type",
-				"chat": "Créer un nouveau tchat",
+				"script": "Créer un nouveau script",
 				"item": "Créer un nouvel objet"
 			},
 			"addChat": "Ajouter un tchat",

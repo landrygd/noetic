@@ -20,7 +20,7 @@ export class User {
     this.searchlangs = [];
     this.color = 'primary';
     this.first = false;
-    this.tuto = false;
+    this.tuto = true;
     Object.keys(options).forEach((key) => {
       if (key in this) {
         this[key] = options[key];

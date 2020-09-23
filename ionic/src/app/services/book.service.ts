@@ -791,6 +791,43 @@ export class BookService implements OnDestroy {
                 const entity = new Entity(Object.assign(data, extraData));
                 entity.type = type;
                 this.book.addEntity(entity);
+                this.saveBook();
+                res();
+              } else {
+                this.popupService.toast(this.ERRORS.fieldMissing);
+                rej();
+              }
+            }
+          }
+        ]
+      });
+      await alert.present();
+    });
+  }
+
+  newScript(): Promise<any> {
+    return new Promise(async (res, rej) => {
+      const alert = await this.alertController.create({
+        header: this.BOOK.header.script,
+        inputs: [
+          {
+            name: 'name',
+            type: 'text',
+            placeholder: this.COMMON.name,
+          },
+        ],
+        buttons: [
+          {
+            text: this.COMMON.cancel,
+            role: 'cancel',
+            cssClass: 'secondary'
+          }, {
+            text: this.COMMON.confirm,
+            handler: (data: Entity) => {
+              if (data.name) {
+                const script = new Script(data);
+                this.book.addScript(script);
+                this.saveBook();
                 res();
               } else {
                 this.popupService.toast(this.ERRORS.fieldMissing);
