@@ -8,7 +8,7 @@ import { PopupService } from 'src/app/services/popup.service';
 import { UserService } from 'src/app/services/user.service';
 import { MediaService } from 'src/app/services/media.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Book } from 'src/app/classes/book';
+import { Book, Entity } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-game',
@@ -36,6 +36,7 @@ export class GamePage implements OnInit, OnDestroy {
 
   book: Book;
 
+  // entities: Entity[] = [];
   ownActor: string;
   script: string[] = [];
   line = -1;
@@ -60,8 +61,7 @@ export class GamePage implements OnInit, OnDestroy {
   opts: any[] = [];
   arg: any;
   args: any[];
-  places = {};
-  place = '';
+  place: Entity;
   variables: any = {};
   answers: string[];
   cptChatLabel: any = {};
@@ -195,12 +195,14 @@ export class GamePage implements OnInit, OnDestroy {
                   }
                 }
                 break;
-              case 'mode':
-                this.settings.mode = this.args[0];
+              case 'action':
+                this.settings.mode = 'action';
                 this.paused = true;
                 break;
               case 'place':
-                this.place = this.roleToId(this.args[0]);
+                this.place = this.book.getEntity(this.args[0].slice(1));
+                console.log(this.args[0].slice(1));
+                console.log(this.place);
                 this.getActions();
                 break;
               case 'sound':
@@ -358,7 +360,7 @@ export class GamePage implements OnInit, OnDestroy {
       } else if (!this.ended) {
         if (this.autoPlay) {
           this.nextTimer = setTimeout(() => {
-            if (this.bookService.entities[this.place]) {
+            if (this.place) {
               this.settings.mode = 'action';
               this.paused = true;
             } else {
@@ -366,7 +368,7 @@ export class GamePage implements OnInit, OnDestroy {
             }
           }, this.waitTime);
         } else {
-          if (this.bookService.entities[this.place]) {
+          if (this.place) {
             this.settings.mode = 'action';
             this.paused = true;
           } else {
@@ -581,10 +583,8 @@ export class GamePage implements OnInit, OnDestroy {
     let items = [];
     let places = [];
     if (this.place) {
-      if (this.bookService.entities[this.place]) {
-        items = this.bookService.entities[this.place].items;
-        places = this.bookService.entities[this.place].places;
-      }
+      items = this.place.extra.items;
+      places = this.place.extra.places;
     }
     if (items) {
       for (const itemId of items) {
@@ -606,10 +606,10 @@ export class GamePage implements OnInit, OnDestroy {
     }
     if (places) {
       for (const placeId of places) {
-        const place = this.bookService.entities[placeId];
+        const place = this.book.getEntity(placeId);
         const action = {
           name: this.GAME.go,
-          chat: place.id,
+          chat: place.key,
           type: 'go',
           key: place.key,
           color: place.color
@@ -685,8 +685,7 @@ export class GamePage implements OnInit, OnDestroy {
       actor: this.ownActor,
       place: this.place,
       variables: this.variables,
-      // actors: this.actors,
-      places: this.places,
+      // entities: this.entities,
       settings: this.settings,
       lastChanges: Date.now()
     };
@@ -697,9 +696,7 @@ export class GamePage implements OnInit, OnDestroy {
     const save = await this.userService.loadSave(this.book.id);
     this.ownActor = save.actor;
     this.place = save.place;
-    this.places = save.places;
     this.line = save.line;
-    // this.actors = save.actors;
     this.scriptName = save.scriptName;
     this.variables = save.variables;
     this.settings = save.settings;
@@ -1028,7 +1025,7 @@ export class GamePage implements OnInit, OnDestroy {
     if (action.type === 'chat') {
       this.playScript(action.chat);
     } else if (action.type === 'go') {
-      this.place = action.chat;
+      this.place = this.book.getEntity(action.chat);
       this.getActions();
     }
   }

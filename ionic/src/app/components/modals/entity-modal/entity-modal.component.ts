@@ -36,7 +36,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   icon: string;
   roles: any;
 
-  items = [];
+  items: string[] = [];
 
   constructor(
     private modalController: ModalController,
@@ -244,7 +244,9 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
   async addItem() {
-    await this.bookService.newEntity('item', {pos: this.entity.key});
+    const itemKey = await this.bookService.newEntity('item', {pos: this.entity.key});
+    this.entity.addExtra('items', itemKey);
+    console.log(this.entity);
     this.update();
   }
 

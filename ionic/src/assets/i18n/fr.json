@@ -490,8 +490,8 @@
       "desc": "Attendre x secondes"
     },
     "input": {
-      "show": "Demmander une valeur pour §1",
-      "desc": "Demmander une valeur"
+      "show": "Demander une valeur pour §1",
+      "desc": "Demander une valeur"
     },
     "sound": {
       "show": "Jouer le son §1",
@@ -533,9 +533,9 @@
       "show": "Arrêter de jouer la musique §1",
       "desc": "Arrêter de jouer une musique"
 		},
-		"mode": {
-      "show": "Passer en mode §1",
-      "desc": "Changer de mode de jeu"
+		"action": {
+      "show": "Passer en mode action libre",
+      "desc": "Passer en mode action libre"
 		},
 		"place": {
       "show": "Aller au lieu §1",

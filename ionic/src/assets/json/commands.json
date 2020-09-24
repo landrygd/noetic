@@ -275,17 +275,6 @@
       }
     ]
   },
-  "mode": {
-    "icon": "repeat",
-    "name": "mode",
-    "cat": "control",
-    "args": [
-      {
-        "name": "name",
-        "type": "string"
-      }
-    ]
-  },
   "place": {
     "icon": "location",
     "name": "place",
@@ -303,18 +292,18 @@
     "cat": "control"
   },
   "stopsound": {
-    "icon": "chatbubble",
-    "name": "question",
+    "icon": "volume-mute",
+    "name": "stopsound",
     "cat": "control"
   },
   "stopambiance": {
-    "icon": "chatbubble",
-    "name": "question",
+    "icon": "volume-mute",
+    "name": "stopambiance",
     "cat": "control"
   },
   "stopmusic": {
-    "icon": "chatbubble",
-    "name": "question",
+    "icon": "volume-mute",
+    "name": "stopmusic",
     "cat": "control"
   },
   "end": {
@@ -326,5 +315,10 @@
     "icon": "add",
     "name": "cursor",
     "cat": "shadow"
+  },
+  "action": {
+    "icon": "flash",
+    "name": "action",
+    "cat": "control"
   }
 }

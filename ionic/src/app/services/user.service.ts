@@ -573,7 +573,7 @@ export class UserService implements OnDestroy {
   }
 
   haveTuto(): boolean {
-    return this.userData.hasOwnProperty('tuto');
+    return this.userData.tuto;
   }
 
   async addTuto() {

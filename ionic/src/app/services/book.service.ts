@@ -768,7 +768,7 @@ export class BookService implements OnDestroy {
     this.userService.share(this.BOOK.shareMsg, this.BOOK.shareSubject, bookUrl);
   }
 
-  newEntity(type: string, extraData = {}): Promise<any> {
+  newEntity(type: string, extraData = {}): Promise<string> {
     return new Promise(async (res, rej) => {
       const alert = await this.alertController.create({
         header: this.BOOK.header[type],
@@ -790,9 +790,9 @@ export class BookService implements OnDestroy {
               if (data.name) {
                 const entity = new Entity(Object.assign(data, extraData));
                 entity.type = type;
-                this.book.addEntity(entity);
+                const key = this.book.addEntity(entity);
                 this.saveBook();
-                res();
+                res(key);
               } else {
                 this.popupService.toast(this.ERRORS.fieldMissing);
                 rej();

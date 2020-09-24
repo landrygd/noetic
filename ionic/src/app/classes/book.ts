@@ -318,12 +318,13 @@ export class Book {
 
   // ADDERS
 
-  addEntity(entity: Entity) {
+  addEntity(entity: Entity): string {
     const name = entity.name;
     const key = this.addRole(name);
     entity.key = key;
     entity.roles = [key];
     this.entities.push(entity);
+    return key;
   }
 
   addRole(name: string, opts?): string {
@@ -359,8 +360,8 @@ export class Book {
     return this.scripts.filter((value) => value.name === name)[0];
   }
 
-  getEntities(type: string): Entity[] {
-    return this.entities.filter((value) => value.type === type);
+  getEntities(type: string, exclude: string[] = []): Entity[] {
+    return this.entities.filter((value) => value.type === type && !(value.key in exclude));
   }
 
   getEntity(key: string): Entity {

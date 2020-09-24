@@ -41,11 +41,11 @@
           {{'COMMON.next' | translate}}
         </ion-button>
       </ion-col>
-      <ion-col size="12" *ngIf="settings.mode === 'action'">
+      <ion-col size="12" *ngIf="settings.mode === 'action' && place">
           <ion-list class="actions">
             <ion-list-header>
-              <ion-chip style="margin: auto;" [color]="bookService.entities[place].color">
-                <ion-label>@{{bookService.entities[place].key}}</ion-label>
+              <ion-chip style="margin: auto;" [color]="place.color">
+                <ion-label>@{{place.key}}</ion-label>
               </ion-chip>
             </ion-list-header>
             <ion-item button detail *ngFor="let action of actions" (click)="playAction(action)">
@@ -59,7 +59,7 @@
               </ion-chip>
             </ion-item>
           </ion-list>
-          <ion-searchbar placeholder="Chercher une action" inputmode="text" type="text" [debounce]="250"></ion-searchbar>
+          <!-- <ion-searchbar placeholder="Chercher une action" inputmode="text" type="text" [debounce]="250"></ion-searchbar> -->
       </ion-col>
       <!-- <ion-col size="4">
         <ion-item>
