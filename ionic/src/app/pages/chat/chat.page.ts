@@ -86,7 +86,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.script = this.bookService.script;
-    this.actors = this.bookService.book.getEntities('actor');
+    this.actors = this.bookService.book.getEntities(['actor']);
     this.messages = this.script.messages;
     this.getTabs();
     this.historyIndex = this.history.length;
@@ -433,7 +433,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   updateActors() {
-    this.actors = this.bookService.book.getEntities('actor');
+    this.actors = this.bookService.book.getEntities(['actor']);
   }
 
   getClassFabActor(actor) {

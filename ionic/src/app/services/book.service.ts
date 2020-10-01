@@ -94,6 +94,7 @@ export class BookService implements OnDestroy {
   ) {
     this.booksCollection = this.firestore.collection('books');
     this.getTraduction();
+    this.langs = this.translator.getLangs();
   }
 
   getTraduction() {
@@ -297,7 +298,6 @@ export class BookService implements OnDestroy {
     if (entity.banner !==  '') {
       await this.firestorage.ref('books/' + this.book.id + '/@' + entity.key + '_banner.jpeg').delete().toPromise();
     }
-    this.book.deleteRole(entity.key);
     this.book.deleteEntity(entity.key);
   }
 
@@ -470,9 +470,6 @@ export class BookService implements OnDestroy {
   }
 
   async getMostBooks(attribute): Promise<any[]> {
-    if (!this.langs) {
-      this.langs = this.translator.getLangs();
-    }
     return new Promise(res => {
       this.firestore.collection(
       'books', ref => ref.where('public', '==', true).where('language', 'in', this.langs).orderBy(attribute, 'desc').limit(20)
@@ -861,7 +858,11 @@ export class BookService implements OnDestroy {
             text: this.COMMON.confirm,
             handler: (data: Entity) => {
               if (data.name) {
-                this.book.addRole(data.name);
+                const entity = {
+                  name: data.name,
+                  type: 'role'
+                };
+                this.book.addEntity(new Entity(entity));
               } else {
                 this.popupService.toast(this.ERRORS.fieldMissing);
                 rej();

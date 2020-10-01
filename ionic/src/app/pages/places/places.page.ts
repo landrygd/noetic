@@ -22,7 +22,7 @@ export class PlacesPage implements OnInit {
   }
 
   refresh() {
-    this.places = this.bookService.book.getEntities('place');
+    this.places = this.bookService.book.getEntities(['place']);
   }
 
   async newPlace() {

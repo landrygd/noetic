@@ -3,11 +3,10 @@ import { Subscription } from 'rxjs';
 import { ModalController, AlertController, ActionSheetController } from '@ionic/angular';
 import { BookService } from 'src/app/services/book.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { PopupService } from 'src/app/services/popup.service';
 import { IdFinderComponent } from '../id-finder/id-finder.component';
-import { Entity, Role } from 'src/app/classes/book';
 import { UploadComponent } from '../upload/upload.component';
+import { Entity } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-entity-modal',
@@ -76,7 +75,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     if (this.entity.extra.items) {
       this.items = this.entity.extra.items;
     }
-    this.roles = this.bookService.book.getRoles(this.entity.roles);
+    this.roles = this.bookService.book.getEntities(this.entity.roles, 'key');
     switch (this.entity.type) {
       case 'place':
         this.icon = 'location';
@@ -259,7 +258,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     modal.onDidDismiss().then(() => this.update());
   }
 
-  async editVariable(role: Role, variable) {
+  async editVariable(role: Entity, variable) {
     const alert = await this.alertController.create({
       header: this.COMMON.edit,
       inputs: [
@@ -285,7 +284,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
           handler: (data) => {
             if (data.name && data.default) {
               role.setVariable(data);
-              this.bookService.book.setRole(role);
+              this.bookService.book.setEntity(role);
               this.bookService.saveBook();
               this.update();
             } else {
@@ -299,7 +298,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async deleteVariable(role: Role, variableName: string) {
+  async deleteVariable(role: Entity, variableName: string) {
     this.bookService.book.entities.forEach((entity) => {
       if (entity.haveVariable(variableName)) {
         entity.deleteVariable(variableName);
@@ -307,12 +306,12 @@ export class EntityModalComponent implements OnInit, OnDestroy {
       }
     });
     role.deleteVariable(variableName);
-    this.bookService.book.setRole(role);
+    this.bookService.book.setEntity(role);
     this.bookService.saveBook();
     this.update();
   }
 
-  async addVariable(role: Role) {
+  async addVariable(role: Entity) {
     const alert = await this.alertController.create({
       header: this.ENTITY.addVariable,
       inputs: [
@@ -336,7 +335,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
           handler: (data) => {
             if (data.name && data.value) {
               role.addVariable(data);
-              this.bookService.book.setRole(role);
+              this.bookService.book.setEntity(role);
               this.bookService.saveBook();
               this.update();
             } else {
@@ -350,7 +349,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async addAction(role: Role) {
+  async addAction(role: Entity) {
     const alert = await this.alertController.create({
       header: this.ENTITY.addAction,
       inputs: [
@@ -370,7 +369,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
             if (data.name) {
               data.value = '';
               role.addAction(data);
-              this.bookService.book.setRole(role);
+              this.bookService.book.setEntity(role);
               this.bookService.saveBook();
               this.update();
             } else {
@@ -384,7 +383,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async editAction(role: Role, action) {
+  async editAction(role: Entity, action) {
     const alert = await this.alertController.create({
       header: this.COMMON.edit,
       inputs: [
@@ -404,7 +403,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
           handler: (data) => {
             if (data.name) {
               role.setAction(data);
-              this.bookService.book.setRole(new Role(role));
+              this.bookService.book.setEntity(new Entity(role));
               this.bookService.saveBook();
               this.update();
             } else {
@@ -418,9 +417,9 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async deleteAction(role: Role, actionName: string) {
+  async deleteAction(role: Entity, actionName: string) {
     role.deleteAction(actionName);
-    this.bookService.book.setRole(role);
+    this.bookService.book.setEntity(role);
     this.bookService.saveBook();
     this.update();
   }
@@ -431,7 +430,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
   removeRole(roleName) {
-    this.bookService.book.deleteRole(roleName);
+    this.bookService.book.deleteEntity(roleName);
     this.update();
   }
 
@@ -463,7 +462,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     this.saveEntity();
   }
 
-  async changeScript(role: Role, action: {name: string, value: string}) {
+  async changeScript(role: Entity, action: {name: string, value: string}) {
     const modal = await this.modalController.create({
     component: IdFinderComponent,
     componentProps: { type: 'script' }
@@ -474,7 +473,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
       if (script) {
         action.value = script;
         role.setAction(action);
-        this.bookService.book.setRole(role);
+        this.bookService.book.setEntity(role);
         this.bookService.saveBook();
         this.update();
       }

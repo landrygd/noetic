@@ -22,7 +22,7 @@ export class ActorsPage implements OnInit {
   }
 
   refresh() {
-    this.actors = this.bookService.book.getEntities('actor');
+    this.actors = this.bookService.book.getEntities(['actor']);
   }
 
   async viewProfile(key: string) {

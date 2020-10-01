@@ -27,7 +27,7 @@ export class IdFinderComponent implements OnInit {
     this.results = [];
     let entities: any[] = this.bookService.book.scripts;
     if (this.type !== 'script') {
-      entities = this.bookService.book.getEntities(this.type, this.exclude);
+      entities = this.bookService.book.getEntities([this.type], 'type', this.exclude);
     }
     if (filter === '') {
       this.results = entities;

@@ -1,16 +1,32 @@
-export class Role {
-  color: string;
+export class Entity {
   name: string;
+  type: string;
+  color: string;
+  img: string;
+  key: string;
   roles: string[];
+  banner: string;
+  description: string;
   variables: {name: string, value: any}[];
   actions: {name: string, value: any}[];
+  extra: any;
+  // {
+  //   items: string[];
+  //   places: string[];
+  // }
 
   constructor(options?) {
-    this.color = 'medium';
     this.name = '';
+    this.type = '';
+    this.color = 'medium';
+    this.img = '';
+    this.key = '';
     this.roles = [];
+    this.banner = '';
     this.variables = [];
     this.actions = [];
+    this.description = '';
+    this.extra = {};
     Object.keys(options).forEach((key) => {
       if (key in this) {
         this[key] = options[key];
@@ -18,7 +34,16 @@ export class Role {
     });
   }
 
+  haveVariable(name: string) {
+    return this.variables.findIndex((v) => v.name === name) !== -1;
+  }
+
   // DELETERS
+  deleteExtra(collection: string, key: string) {
+    const index = this.extra[collection].indexOf(key);
+    this.extra[collection].splice(index, 1);
+  }
+
   deleteVariable(name: string) {
     const index = this.variables.findIndex((v) => v.name === name);
     this.variables.splice(index, 1);
@@ -38,6 +63,7 @@ export class Role {
     return this.actions.filter((value) => value.name === name)[0];
   }
 
+
   // SETTERS
   setVariable(variable: {name: string, value: any}) {
     const index = this.variables.findIndex((value) => value.name === variable.name);
@@ -50,88 +76,20 @@ export class Role {
   }
 
   // ADDERS
-  addVariable(variable: {name: string, value: any}) {
-    this.variables.push(variable);
-  }
-
-  addAction(action: {name: string, value: any}) {
-    this.actions.push(action);
-  }
-}
-
-export class Entity {
-  name: string;
-  type: string;
-  color: string;
-  img: string;
-  key: string;
-  roles: string[];
-  banner: string;
-  description: string;
-  variables: any;
-  // {
-  //   variable1: 10;
-  //   variable2: "Coucou";
-  // }
-  extra: any;
-  // {
-  //   items: string[];
-  //   places: string[];
-  // }
-
-  constructor(options?) {
-    this.name = '';
-    this.type = '';
-    this.color = 'medium';
-    this.img = '';
-    this.key = '';
-    this.roles = [];
-    this.banner = '';
-    this.extra = {};
-    this.variables = {};
-    this.description = '';
-    Object.keys(options).forEach((key) => {
-      if (key in this) {
-        this[key] = options[key];
-      }
-    });
-  }
-
-  haveVariable(name: string) {
-    return this.variables.findIndex((v) => v.name === name) !== -1;
-  }
-
-  // DELETERS
-  deleteVariable(name: string) {
-    delete this.variables[name];
-  }
-
-  deleteExtra(collection: string, key: string) {
-    const index = this.extra[collection].indexOf(key);
-    this.extra[collection].splice(index, 1);
-  }
-
-  // GETTERS
-  getVariable(name): {name: string, value: any} {
-    return this.variables[name];
-  }
-
-  // SETTERS
-  setVariable(variable: {name: string, value: any}) {
-    this.variables[variable.name] = variable.value;
-  }
-
-  // ADDERS
-  addVariable(variable: {name: string, value: any}) {
-    this.variables[variable.name] = variable.value;
-  }
-
   addExtra(collection: string, key: string) {
     if (this.extra[collection]) {
       this.extra[collection].push(key);
     } else {
       this.extra[collection] = [key];
     }
+  }
+
+  addVariable(variable: {name: string, value: any}) {
+    this.variables.push(variable);
+  }
+
+  addAction(action: {name: string, value: any}) {
+    this.actions.push(action);
   }
 }
 
@@ -229,7 +187,6 @@ export class Book {
   setup: {main: string};
   scripts: Script[];
   entities: Entity[];
-  roles: Role[];
   medias: Media[];
 
   constructor(options = {}) {
@@ -257,7 +214,6 @@ export class Book {
     };
     this.scripts = [];
     this.entities = [];
-    this.roles = [];
     this.medias = [];
     Object.keys(options).forEach((key) => {
       if (key in this) {
@@ -271,12 +227,6 @@ export class Book {
         if (key === 'entities') {
           options[key].forEach(script => {
             res.push(new Entity(script));
-          });
-          options[key] = res;
-        }
-        if (key === 'roles') {
-          options[key].forEach(script => {
-            res.push(new Role(script));
           });
           options[key] = res;
         }
@@ -317,37 +267,36 @@ export class Book {
   }
 
   // ADDERS
-
   addEntity(entity: Entity): string {
     const name = entity.name;
-    const key = this.addRole(name);
-    entity.key = key;
-    entity.roles = [key];
+    entity.key = this.getKey(entity);
+    entity.roles = [entity.key];
     this.entities.push(entity);
-    return key;
+    return entity.key;
   }
 
-  addRole(name: string, opts?): string {
-    this.roles.sort((a, b) => ('' + a.name).localeCompare(b.name));
-    name = name.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  getKey(entity: Entity): string {
+    this.entities.sort((a, b) => ('' + a.name).localeCompare(b.name));
+    let key = entity.name.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
                   .replace(/[^\w\s]/gi, '').replace(/\s/g, '-');
-    for (const role of this.roles) {
-      if (role.name === name) {
-        if (name.match(/#\d+$/)) {
-          name = name.replace(/#\d+$/, (n) => {
-            n = n.replace('#', '');
-            let rep = parseInt(n, 10);
-            ++rep;
-            return '#' + rep;
-          });
-        } else {
-          name = name + '#1';
+    if (entity.type === 'item') {
+      for (const ent of this.entities) {
+        const role = ent.key;
+        if (role === key) {
+          if (key.match(/#\d+$/)) {
+            key = key.replace(/#\d+$/, (n) => {
+              n = n.replace('#', '');
+              let rep = parseInt(n, 10);
+              ++rep;
+              return '#' + rep;
+            });
+          } else {
+            key = key + '#1';
+          }
         }
       }
     }
-    const res = new Role({name});
-    this.roles.push(res);
-    return name;
+    return key;
   }
 
   addScript(script) {
@@ -355,29 +304,19 @@ export class Book {
   }
 
   // GETTERS
-
   getScript(name): Script {
     return this.scripts.filter((value) => value.name === name)[0];
   }
 
-  getEntities(type: string, exclude: string[] = []): Entity[] {
-    return this.entities.filter((value) => value.type === type && !(value.key in exclude));
+  getEntities(values: string[], key: string = 'type', exclude: string[] = []): Entity[] {
+    return this.entities.filter((val) => values.includes(val[key])  && !(exclude.includes(val[key])));
   }
 
   getEntity(key: string): Entity {
     return this.entities.filter((value) => value.key === key)[0];
   }
 
-  getRole(name: string): Role {
-    return this.roles.filter((value) => value.name === name)[0];
-  }
-
-  getRoles(roles: string[]): Role[] {
-    return this.roles.filter((value) => roles.includes(value.name));
-  }
-
   // SETTERS
-
   setEntity(entity: Entity) {
     const index = this.entities.findIndex((e) => e.key === entity.key);
     index === -1 ? this.addEntity(entity) : this.entities[index] = entity;
@@ -388,13 +327,7 @@ export class Book {
     index === -1 ? this.addScript(script) : this.scripts[index] = script;
   }
 
-  setRole(role: Role) {
-    const index = this.roles.findIndex((r) => r.name === role.name);
-    index === -1 ? this.addRole(role.name, role) : this.roles[index] = role;
-  }
-
   // DELETERS
-
   deleteScript(name) {
     const index = this.scripts.findIndex((s) => s.name === name);
     this.scripts.splice(index, 1);
@@ -403,10 +336,5 @@ export class Book {
   deleteEntity(key) {
     const index = this.entities.findIndex((e) => e.key === key);
     this.entities.splice(index, 1);
-  }
-
-  deleteRole(name) {
-    const index = this.roles.findIndex((e) => e.name === name);
-    this.roles.splice(index, 1);
   }
 }

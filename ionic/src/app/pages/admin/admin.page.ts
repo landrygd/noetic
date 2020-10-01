@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
-import { Book, Entity, Role, Script } from 'src/app/classes/book';
+import { Book } from 'src/app/classes/book';
 
 @Component({
   selector: 'app-admin',
