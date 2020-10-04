@@ -21,7 +21,7 @@
       </ion-col>
       <ion-col class="ion-no-margin colMsg">
         <app-log button class="ion-no-margin" [message]="msg" [index]="i"
-        [edit]="true" [selected]="isLogSelected(i)" (action)="actionLog($event)" (click)="select($event, i);$event.stopPropagation();"></app-log>
+        [edit]="true" [selected]="isLogSelected(i)" (action)="actionLog($event)" (click)="select(i, $event);$event.stopPropagation();"></app-log>
       </ion-col>
     </ion-row>
   </ion-virtual-scroll>

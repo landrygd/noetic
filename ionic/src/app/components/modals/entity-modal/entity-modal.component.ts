@@ -35,7 +35,8 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   icon: string;
   roles: any;
 
-  items: string[] = [];
+  items: Entity[] = [];
+  places: Entity[] = [];
 
   constructor(
     private modalController: ModalController,
@@ -73,7 +74,10 @@ export class EntityModalComponent implements OnInit, OnDestroy {
       this.updateBanner();
     }
     if (this.entity.extra.items) {
-      this.items = this.entity.extra.items;
+      this.items = this.bookService.book.getEntities(this.entity.extra.items, 'key');
+    }
+    if (this.entity.extra.places) {
+      this.places = this.bookService.book.getEntities(this.entity.extra.places, 'key');
     }
     this.roles = this.bookService.book.getEntities(this.entity.roles, 'key');
     switch (this.entity.type) {
@@ -245,14 +249,13 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   async addItem() {
     const itemKey = await this.bookService.newEntity('item', {pos: this.entity.key});
     this.entity.addExtra('items', itemKey);
-    console.log(this.entity);
     this.update();
   }
 
-  async showEntity(entityId: string, collection) {
+  async showEntity(entity: Entity) {
     const modal = await this.modalController.create({
     component: EntityModalComponent,
-    componentProps: { id: entityId, collection }
+    componentProps: { entity }
     });
     await modal.present();
     modal.onDidDismiss().then(() => this.update());
@@ -425,7 +428,8 @@ export class EntityModalComponent implements OnInit, OnDestroy {
   }
 
   async addRole() {
-    await this.bookService.newRole();
+    const role = await this.bookService.newRole();
+    this.entity.addRole(role.key);
     this.update();
   }
 
@@ -457,8 +461,8 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  changeVariable(varName, varValue) {
-    this.entity.setVariable({name: varName, value: varValue});
+  changeVariable(entity: Entity, varName, varValue) {
+    entity.setVariable({name: varName, value: varValue});
     this.saveEntity();
   }
 
@@ -488,7 +492,7 @@ export class EntityModalComponent implements OnInit, OnDestroy {
     });
 
     modal.onDidDismiss().then((data: any) => {
-      const placeKey = data.data.id;
+      const placeKey = data.data.key;
       if (placeKey) {
         this.entity.addExtra('places', placeKey);
         this.bookService.book.setEntity(this.entity);

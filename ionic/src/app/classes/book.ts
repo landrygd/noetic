@@ -91,6 +91,12 @@ export class Entity {
   addAction(action: {name: string, value: any}) {
     this.actions.push(action);
   }
+
+  addRole(role: string) {
+    if (!this.roles.includes(role)) {
+      this.roles.push(role);
+    }
+  }
 }
 
 export class Script {

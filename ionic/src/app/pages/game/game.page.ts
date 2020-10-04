@@ -201,8 +201,6 @@ export class GamePage implements OnInit, OnDestroy {
                 break;
               case 'place':
                 this.place = this.book.getEntity(this.args[0].slice(1));
-                console.log(this.args[0].slice(1));
-                console.log(this.place);
                 this.getActions();
                 break;
               case 'sound':
@@ -580,35 +578,32 @@ export class GamePage implements OnInit, OnDestroy {
 
   getActions() {
     this.actions = [];
-    let items = [];
-    let places = [];
-    if (this.place) {
-      items = this.place.extra.items;
-      places = this.place.extra.places;
-    }
+    let items = this.place.extra.items;
+    let places = this.place.extra.places;
     if (items) {
-      for (const itemId of items) {
-        const item = this.bookService.entities[itemId];
-        if (item) {
-          const key = item.key;
-          for (const roleId of item.roles) {
-            const role: {actions: {name: string, chat: string, key: string, color: string, type: string}[]}
-                        = this.bookService.entities[roleId];
-            for (const action of Object.values(role.actions)) {
-              action.key = key;
-              action.color = this.bookService.entities[item.key].color;
-              action.type = 'chat';
-              this.actions.push(action);
-            }
+      items = this.book.getEntities(this.place.extra.items, 'key');
+      for (const item of items) {
+        const key = item.key;
+        for (const roleId of item.roles) {
+          const role: Entity = this.bookService.book.getEntity(roleId);
+          for (const action of Object.values(role.actions)) {
+            const res = {
+              name: action.name,
+              chat: key,
+              type: 'chat',
+              key: key,
+              color: role.color
+            };
+            this.actions.push(res);
           }
         }
       }
     }
     if (places) {
-      for (const placeId of places) {
-        const place = this.book.getEntity(placeId);
+      places = this.book.getEntities(this.place.extra.places, 'key');
+      for (const place of places) {
         const action = {
-          name: this.GAME.go,
+          name: 'go',
           chat: place.key,
           type: 'go',
           key: place.key,

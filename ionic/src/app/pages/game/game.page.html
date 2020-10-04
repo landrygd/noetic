@@ -22,7 +22,7 @@
 <ion-content padding #bg scrollEvents="true" (ionScrollEnd)="onScroll()">
   <div style="height: 100vh;"></div>
   <div>
-    <ion-grid fixed *ngFor="let log of logs; index as i" class="ion-no-margin">
+    <ion-grid fixed *ngFor="let log of logs; index as i" class="ion-no-margin" style="margin: auto; max-width: 800px;">
       <app-log [variables]="variables" [message]="log" [edit]="false" [index]="i" [speed]="speed" typing="true" (action)="action($event)" (scroll)="scrollToBottom()"></app-log>
     </ion-grid>
   </div>
@@ -37,9 +37,9 @@
   <ion-toolbar>
     <ion-row *ngIf="!question && !inputShowed && !ended; else event">
       <ion-col size="12" *ngIf="settings.mode === 'next'">
-        <ion-button (click)="next()" expand="block" fill="solid" shape="round">
-          {{'COMMON.next' | translate}}
-        </ion-button>
+        <ion-item button (click)="next()" color="primary">
+          <ion-label style="margin: auto; text-align: center;">{{'COMMON.next' | translate}}</ion-label>
+        </ion-item>
       </ion-col>
       <ion-col size="12" *ngIf="settings.mode === 'action' && place">
           <ion-list class="actions">

@@ -164,7 +164,7 @@
 		"fieldMissing": "Champ manquant",
 		"idIncorrect": "L'identifiant ne doit contenir que des chiffres, des lettres et les carractères - et _",
 		"keyUneditable": "Impossible d'éditer un rôle clé"
-  },
+  	},
 	"GAME": {
 		"answer": "Choisir une réponse",
 		"input": "Entrer du texte",

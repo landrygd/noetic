@@ -6,11 +6,10 @@
     <app-avatar *ngIf="!ownPlayer || edit" [enabled]="true" [entity]="actor" class="ion-no-margin"></app-avatar>
     <ion-card [color]="actor.color" [slot]="msgSlot">
       <p [class]="editClass" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
-      
     </ion-card>
   </div>
   <ng-template #card>
-    <ion-card [class]="'narrator ' + cardClass" style="background: lightyellow">
+    <ion-card [class]="'narrator ' + cardClass" color="medium">
       <p [class]="editClass" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
     </ion-card>
   </ng-template>

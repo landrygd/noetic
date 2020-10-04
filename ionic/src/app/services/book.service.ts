@@ -838,7 +838,7 @@ export class BookService implements OnDestroy {
     });
   }
 
-  newRole(): Promise<any> {
+  newRole(): Promise<Entity> {
     return new Promise(async (res, rej) => {
       const alert = await this.alertController.create({
         header: this.BOOK.header.role,
@@ -858,11 +858,12 @@ export class BookService implements OnDestroy {
             text: this.COMMON.confirm,
             handler: (data: Entity) => {
               if (data.name) {
-                const entity = {
+                const entity =  new Entity({
                   name: data.name,
                   type: 'role'
-                };
-                this.book.addEntity(new Entity(entity));
+                });
+                this.book.addEntity(entity);
+                res(entity)
               } else {
                 this.popupService.toast(this.ERRORS.fieldMissing);
                 rej();

@@ -145,6 +145,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
               this.selection.push(indexUp);
               this.selection.sort();
             }
+            this.edit();
             break;
           case 'ArrowDown':
             const indexDown = Math.min(this.selection[this.selection.length - 1] + 1, this.messages.length - 1);
@@ -152,15 +153,18 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
               this.selection.push(indexDown);
               this.selection.sort();
             }
+            this.edit();
             break;
         }
       } else {
         switch (event.key) {
           case 'ArrowUp':
             this.selection = [Math.max(this.selection[0] - 1, 0)];
+            this.edit();
             break;
           case 'ArrowDown':
             this.selection = [Math.min(this.selection[0] + 1, this.messages.length - 1)];
+            this.edit();
             break;
           case 'Backspace':
             this.delete();
@@ -322,39 +326,38 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     this.bookService.saveBook();
   }
 
-  select(event, index) {
+  select(index, event?) {
     const relativeX = event.clientX / event.target.clientWidth;
     if (relativeX < 0.9) {
       if (event) {
         if (event.shiftKey) {
           this.selection = this.getMajSelection(index);
           return;
-        } else {
-          if (!(this.selection.includes(index))) {
-            const lastIndex = this.selection[0];
-            this.selection = [index];
-            if (this.messages[index] !== '/cursor') {
-              if (lastIndex < index) {
-                index -= 1;
-                this.selection = [index];
-              }
-              const lastCursor = this.messages.indexOf('/cursor');
-              if (lastCursor !== -1) {
-                this.messages.splice(lastCursor, 1);
-              }
-              this.messages.splice(index + 1, 0, '/cursor');
-            }
-            // const indexLastCursor = this.messages.indexOf('/cursor');
-            // if (indexLastCursor !== index + 1) {
-            //   this.messages[indexLastCursor] = '/cursor_OLD';
-            //   this.messages.splice(index + 1, 0, '/cursor');
-            //   this.messages.splice(this.messages.indexOf('/cursor_OLD'), 1);
-            // }
-            this.update();
-            this.edit();
-            return;
-          }
         }
+      }
+      if (!(this.selection.includes(index))) {
+        const lastIndex = this.selection[0];
+        this.selection = [index];
+        if (this.messages[index] !== '/cursor') {
+          if (lastIndex < index) {
+            index -= 1;
+            this.selection = [index];
+          }
+          const lastCursor = this.messages.indexOf('/cursor');
+          if (lastCursor !== -1) {
+            this.messages.splice(lastCursor, 1);
+          }
+          this.messages.splice(index + 1, 0, '/cursor');
+        }
+        // const indexLastCursor = this.messages.indexOf('/cursor');
+        // if (indexLastCursor !== index + 1) {
+        //   this.messages[indexLastCursor] = '/cursor_OLD';
+        //   this.messages.splice(index + 1, 0, '/cursor');
+        //   this.messages.splice(this.messages.indexOf('/cursor_OLD'), 1);
+        // }
+        this.update();
+        this.edit();
+        return;
       }
       this.removeCursor();
       this.selection = [];

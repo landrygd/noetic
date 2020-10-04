@@ -2,11 +2,6 @@
   background: transparent;
 }
 
-ion-card {
-  padding: 5px;
-  margin: 0
-}
-
 ion-col {
   padding: 0;
 }
@@ -15,10 +10,11 @@ ion-badge {
   padding: 2px
 }
 
-
 ion-card {
+  padding: 10px;
   margin: 0 0 0 5px;
-  max-width: 60vw;
+  border-radius: 20px;
+  max-width: 80%;
   min-height: 44px;
   display: flex;
   align-items: center;
@@ -39,7 +35,7 @@ ion-item {
 }
 
 .not-editing-item {
-  width: 100vw;
+  width: 100%;
 }
 
 .editing-card {
