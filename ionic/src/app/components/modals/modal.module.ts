@@ -10,6 +10,7 @@ import { ManualComponent } from './manual/manual.component';
 import { CommandEntriesComponent } from './command-entries/command-entries.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AudioListComponent } from './audio-list/audio-list.component';
+import { GalleryComponent } from './gallery/gallery.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { AudioListComponent } from './audio-list/audio-list.component';
     WallpapersSearchComponent,
     ManualComponent,
     CommandEntriesComponent,
-    AudioListComponent
+    AudioListComponent,
+    GalleryComponent,
   ],
   imports: [
     CommonModule,
@@ -35,7 +37,8 @@ import { AudioListComponent } from './audio-list/audio-list.component';
     WallpapersSearchComponent,
     ManualComponent,
     CommandEntriesComponent,
-    AudioListComponent
+    AudioListComponent,
+    GalleryComponent
   ]
 })
 

@@ -9,7 +9,6 @@ import { GetRolesPipe } from './get-roles.pipe';
 import { IdToObjectsPipe } from './id-to-objects.pipe';
 import { TypeToIconPipe } from './type-to-icon.pipe';
 
-
 @NgModule({
   declarations: [
     CommandPipe,

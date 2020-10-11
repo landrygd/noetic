@@ -9,6 +9,7 @@ export class User {
   color: string;
   first: boolean;
   tuto: boolean;
+  premium = false;
 
   constructor(options?) {
     this.id = '';
@@ -26,5 +27,9 @@ export class User {
         this[key] = options[key];
       }
     });
+  }
+
+  isPremium() {
+    return this.premium;
   }
 }

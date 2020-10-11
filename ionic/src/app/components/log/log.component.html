@@ -1,19 +1,45 @@
-<ion-item [color]="getItemColor()" [class]="itemClass" *ngIf="!(msg.charAt(0) === '/'); else command" 
-          #ref button detail="false" lines="none">
-  
+<ion-item [color]="getItemColor()" [class]="itemClass" *ngIf="!(msg.charAt(0) === '/'); else command" #ref button
+  detail="false" lines="none">
+
   <!-- <ion-note style="margin: 5px;" slot="start">{{index}}</ion-note> -->
+  
   <div class="msgBox" slot="start" *ngIf="actor; else card">
     <app-avatar *ngIf="!ownPlayer || edit" [enabled]="true" [entity]="actor" class="ion-no-margin"></app-avatar>
-    <ion-card [color]="actor.color" [slot]="msgSlot">
-      <p [class]="editClass" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
-    </ion-card>
+    <div *ngIf="type === 'text'">
+      <ion-card [color]="actor.color" [slot]="msgSlot">
+        <p [class]="editClass" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
+      </ion-card>
+    </div>
+    <div *ngIf="type === 'image'">
+      <ion-card [color]="actor.color" style="padding: 0;" [slot]="msgSlot">
+        <img [src]="url" alt="image">
+      </ion-card>
+    </div>
+    <div *ngIf="type === 'youtube'">
+      <ion-card [class]="'narrator ' + cardClass" style="padding: 0;" [color]="actor.color" [slot]="msgSlot">
+        <iframe width="560" height="315" [src]="url" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </ion-card>
+    </div>
   </div>
   <ng-template #card>
-    <ion-card [class]="'narrator ' + cardClass" color="medium">
-      <p [class]="editClass" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
-    </ion-card>
+    <div *ngIf="type === 'text'" style="margin: auto;">
+      <ion-card [class]="'narrator ' + cardClass" color="medium">
+        <p [class]="editClass" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
+      </ion-card>
+    </div>
+    <div *ngIf="type === 'image'" style="margin: auto;">
+      <ion-card [class]="'narrator ' + cardClass" style="padding: 0;" color="medium">
+        <img [src]="url" alt="image">
+      </ion-card>
+    </div>
+    <div *ngIf="type === 'youtube'" style="margin: auto;">
+      <ion-card [class]="'narrator ' + cardClass" style="padding: 0;" color="medium">
+        <iframe width="560" height="315" [src]="url" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </ion-card>
+    </div>
   </ng-template>
-  <ion-button slot="end" *ngIf="selected && edit" (click)="logEdit($event)" expand="block" fill="clear" shape="round" class="ion-no-padding">
+  <ion-button slot="end" *ngIf="selected && edit" (click)="logEdit($event)" expand="block" fill="clear" shape="round"
+    class="ion-no-padding">
     <ion-icon name="ellipsis-vertical" [color]="getButtonColor()"></ion-icon>
   </ion-button>
 </ion-item>
@@ -21,11 +47,14 @@
 <ng-template #command>
   <ion-item #ref button [color]="getItemColor()" detail="false" lines="none" [class]="itemClass" *ngIf="!isEnd(msg)">
     <p slot="start" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
-    <ion-button slot="end" *ngIf="selected && edit" (click)="logEdit($event)" expand="block" fill="clear" shape="round" class="ion-no-padding">
+    <ion-button slot="end" *ngIf="selected && edit" (click)="logEdit($event)" expand="block" fill="clear"
+      shape="round" class="ion-no-padding">
       <ion-icon name="ellipsis-vertical" [color]="getButtonColor()"></ion-icon>
     </ion-button>
   </ion-item>
 </ng-template>
+
+
 
 <!-- OLD VERSION -->
 <!-- <ion-row lines="none" [ngClass]="getClass()" class="ion-no-margin" #ref style="width: 100vw;">

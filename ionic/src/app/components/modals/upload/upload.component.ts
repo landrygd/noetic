@@ -6,6 +6,7 @@ import { BookService } from 'src/app/services/book.service';
 import { PopupService } from 'src/app/services/popup.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { GalleryComponent } from '../gallery/gallery.component';
 
 @Component({
   selector: 'app-upload',
@@ -24,12 +25,14 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   @Input() type = '';
   @Input() fileId = '';
+  @Input() gallery = false;
 
   path = 'unknowed';
   userId: string;
   file: any;
   ratio = 1;
   width = 200;
+  free = false;
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
@@ -56,6 +59,11 @@ export class UploadComponent implements OnInit, OnDestroy {
     if (this.type === 'avatar') {
       this.ratio = 1;
       this.width = 200;
+    }
+    if (this.type === 'free') {
+      this.free = true;
+      this.ratio = 1;
+      this.width = 500;
     }
   }
 
@@ -133,5 +141,21 @@ export class UploadComponent implements OnInit, OnDestroy {
       result = mime[1];
     }
     return result;
+  }
+
+  async openGallery() {
+    const modal = await this.modalController.create({
+    component: GalleryComponent,
+    componentProps: { }
+    });
+    await modal.present();
+    const data = await modal.onDidDismiss()
+    if (data.data) {
+      setTimeout(() => this.dismiss({url: data.data.url}), 100);
+    }
+  }
+
+  dismiss(data?) {
+    this.modalController.dismiss(data);
   }
 }

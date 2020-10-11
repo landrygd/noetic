@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { NavController, IonSearchbar } from '@ionic/angular';
 import { SlidesService } from 'src/app/services/slides.service';
-import { AnimationService } from 'src/app/services/animation.service';
 import { BookService } from 'src/app/services/book.service';
 
 @Component({
@@ -25,12 +24,13 @@ export class BookSearchPage implements OnInit {
   books: any[] = [];
 
   loading = true;
+  category = "";
+  option = "likes";
 
   constructor(
     public bookService: BookService,
     private navCtrl: NavController,
     public slides: SlidesService,
-    private animation: AnimationService
     ) { }
 
   ngOnInit() {
@@ -38,6 +38,7 @@ export class BookSearchPage implements OnInit {
   }
 
   async search() {
+    this.category = "";
     let books = [];
     await this.searchByName().then((val) => books = books.concat(val));
     await this.searchByTag().then((val) => books = books.concat(val));
@@ -48,31 +49,26 @@ export class BookSearchPage implements OnInit {
   }
 
   searchByName(): Promise<any> {
-    return new Promise(res => {
-      if (!this.resultsByNameSub.closed) {
-        this.resultsByNameSub.unsubscribe();
-      }
-      this.resultsByName = this.bookService.searchByName(this.filter);
-      this.resultsByNameSub = this.resultsByName.subscribe((val) => {
-          res(val);
-      });
+    return new Promise((resolve) => {
+      resolve(this.bookService.searchByName(this.filter, this.option));
     });
   }
 
   searchByTag(): Promise<any> {
-    return new Promise(res => {
-      if (!this.resultsByTagSub.closed) {
-        this.resultsByTagSub.unsubscribe();
-      }
-      this.resultsByTag = this.bookService.searchByTag(this.filter);
-      this.resultsByTagSub = this.resultsByTag.subscribe((val) => {
-          res(val);
-      });
+    return new Promise(resolve => {
+      resolve(this.bookService.searchByTag(this.filter, this.option));
     });
+  }
+
+  async searchByCategory(category: string) {
+    this.books = await this.bookService.searchByCategory(category);
+    this.category = category;
+    console.log(this.category);
+    console.log(this.books);
+    this.loading = false;
   }
 
   cancel() {
     this.navCtrl.navigateBack('tabs/home');
   }
-
 }

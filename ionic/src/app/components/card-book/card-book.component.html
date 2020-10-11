@@ -6,22 +6,22 @@
         <ion-img src="../../../assets/cover/cover1.png" *ngIf="loadFailed"></ion-img>
       </ion-card>
     </ion-card>
-    <ion-card style="width: 300px; height: 155px; position: absolute; top: 40px; left: 5px; margin: 0;">
-      <div style="text-align: start; padding-left: 120px; display: flex; flex-wrap: wrap; justify-content: flex-start; height: 100%; align-content: center;">
-        <ion-card-header style="padding: 0;">
-          <ion-card-title style="font-size: 18px;">{{book.title}}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content style="padding: 0;">
-          <div *ngIf="book.description.length > 70; else short">
-            {{book.description.substring(0,60)}}...
-          </div>
-          <ng-template #short>
-            {{book.description}}
-          </ng-template>
-          <br>
-          <ion-badge style="max-width: 70px; overflow: hidden; text-overflow: ellipsis;" color="medium" mode="ios" *ngFor="let tag of book.tags.slice(0,2)">{{tag}}</ion-badge>
-        </ion-card-content>
-      </div>
+    <ion-card style="width: 300px; height: 155px; position: absolute; top: 40px; left: 5px; margin: 0;" color="light">
+        <div style="text-align: start; padding-left: 120px; display: flex; flex-wrap: wrap; justify-content: flex-start; height: 100%; align-content: center;">
+          <ion-card-header style="padding: 0;">
+            <ion-card-title style="font-size: 18px;">{{book.title}}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content style="padding: 0;">
+            <div *ngIf="book.description.length > 70; else short">
+              {{book.description.substring(0,60)}}...
+            </div>
+            <ng-template #short>
+              {{book.description}}
+            </ng-template>
+            <br>
+            <ion-badge style="max-width: 70px; overflow: hidden; text-overflow: ellipsis;" [color]="book.color" mode="ios" *ngFor="let tag of book.tags.slice(0,2)">{{tag}}</ion-badge>
+          </ion-card-content>
+        </div>
     </ion-card>
   </div>
 

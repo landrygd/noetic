@@ -11,8 +11,8 @@
       cropperMinHeight="200"
       style='height: 100%;'
       [imageChangedEvent]="imageChangedEvent"
-      [maintainAspectRatio]="true"
-      [containWithinAspectRatio]="true"
+      [maintainAspectRatio]="!free"
+      [containWithinAspectRatio]="!free"
       [aspectRatio]="ratio"
       format="jpeg"
       (imageCropped)="imageCropped($event)"
@@ -26,6 +26,14 @@
 </ion-content>
 
 <ion-footer *ngIf="COMMON && UPLOAD">
+  <ion-toolbar *ngIf="gallery">
+    <ion-buttons slot="start">
+      <ion-button (click)="openGallery()">
+        <ion-icon slot="start" name="images"></ion-icon>
+        Import from the gallery
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
   <ion-toolbar>
     <ion-item>
       <input type="file" (change)="fileChangeEvent($event)"/>

@@ -193,7 +193,6 @@ export class Book {
   setup: {main: string};
   scripts: Script[];
   entities: Entity[];
-  medias: Media[];
 
   constructor(options = {}) {
     this.id = '';
@@ -220,7 +219,6 @@ export class Book {
     };
     this.scripts = [];
     this.entities = [];
-    this.medias = [];
     Object.keys(options).forEach((key) => {
       if (key in this) {
         const res = [];
@@ -259,7 +257,8 @@ export class Book {
       creationDate: this.creationDate,
       lastModificationDate: this.lastModificationDate,
       public: this.public,
-      downloadURL: this.downloadURL
+      downloadURL: this.downloadURL,
+      color: this.color
     };
     if (this.version > 1) {
       delete obj.views;

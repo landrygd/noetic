@@ -291,6 +291,39 @@ export class BookService implements OnDestroy {
     });
   }
 
+  uploadImage(file: string): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      if ((await this.getUploadedImages()).length < 5 && !this.userService.userData.isPremium()) {
+        const path = 'books/' + this.book.id + '/image_' + this.firestore.createId() + '.jpeg';
+        this.firestorage.ref(path).putString(file, 'data_url').then(async () => {
+          const ref = await this.firestorage.ref(path).getDownloadURL().toPromise();
+          resolve(ref);
+        }).catch((err) => {
+          this.popupService.error(err);
+          reject();
+        });
+      } else {
+        this.popupService.error(this.ERRORS.imageLimit);
+        reject();
+      }
+    });
+  }
+
+  getUploadedImages(): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      const path = 'books/' + this.book.id
+      this.firestorage.ref(path).listAll().toPromise().then(async (data) => {
+        const res = [];
+        for (const item of data.items) {
+          if (item.name.match(/image_/g)) {
+            res.push(await item.getDownloadURL());
+          }
+        }
+        resolve(res);
+      }).catch((err) => reject(err));
+    });
+  }
+
   async deleteEntity(entity: Entity) {
     if (entity.img !==  '') {
       await this.firestorage.ref('books/' + this.book.id + '/@' + entity.key + '_img.jpeg').delete().toPromise();
@@ -306,30 +339,53 @@ export class BookService implements OnDestroy {
     this.popupService.toast(this.BOOK.backgroundChanged);
   }
 
-  searchByName(filter: string): Observable<any> {
-    const queryByName = this.firestore.collection(
+  async searchByName(filter: string, option: string): Promise<Book[]> {
+    const query = await this.firestore.collection(
        'books', ref => ref.where('public', '==', true)
-                          .where('lang', 'in', this.userService.langs)
+                          .orderBy(option, 'desc')
                           .orderBy('titleLower')
                           .startAt(filter.toLowerCase())
                           .endAt(filter.toLowerCase() + '\uf8ff')
                           .limit(20)
-      ).valueChanges();
-    return queryByName;
+      ).get().toPromise();
+    const res: Book[] = [];
+    query.forEach(element => {
+      res.push(new Book(element.data()));
+    });
+    return res;
   }
 
-  searchByTag(filter: string): Observable<any> {
-    const filterArray: string[] = filter.split(' ');
-    const res = [];
-    filterArray.forEach((val) => {
-      res.push(val.toLowerCase());
-    });
-    const queryByTag = this.firestore.collection(
+  async searchByCategory(category: string): Promise<Book[]> {
+    const query = await this.firestore.collection(
        'books', ref => ref.where('public', '==', true)
-                          .where('tags', 'array-contains-any', res)
+                          .where('category', '==', category)
+                          .orderBy('likes', 'desc')
                           .limit(20)
-      ).valueChanges();
-    return queryByTag;
+      ).get().toPromise();
+    const res: Book[] = [];
+    query.forEach(element => {
+      res.push(new Book(element.data()));
+    });
+    return res;
+  }
+
+  async searchByTag(filter: string, option: string): Promise<Book[]> {
+    const filterArray: string[] = filter.split(' ');
+    const tags = [];
+    filterArray.forEach((val) => {
+      tags.push(val.toLowerCase());
+    });
+    const query = await this.firestore.collection(
+       'books', ref => ref.where('public', '==', true)
+                          .orderBy(option, 'desc')
+                          .where('tags', 'array-contains-any', tags)
+                          .limit(20)
+      ).get().toPromise();
+    const res: Book[] = [];
+    query.forEach(element => {
+      res.push(new Book(element.data()));
+    });
+    return res;
   }
 
   // TODO

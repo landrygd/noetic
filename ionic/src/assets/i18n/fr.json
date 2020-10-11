@@ -160,10 +160,11 @@
 		"title3CarMin": "Le titre doit faire au moins plus de 3 caractères",
 		"title40CarMax": "Le titre doit faire moins 40 caractères",
 		"unratedComment": "Veuillez noter avant d'envoyer votre avis",
-    "noSpace": "Veuillez enlever les espaces",
+    	"noSpace": "Veuillez enlever les espaces",
 		"fieldMissing": "Champ manquant",
 		"idIncorrect": "L'identifiant ne doit contenir que des chiffres, des lettres et les carractères - et _",
-		"keyUneditable": "Impossible d'éditer un rôle clé"
+		"keyUneditable": "Impossible d'éditer un rôle clé",
+		"imageLimit": "Vous êtes limité à 10 images importés par livre"
   	},
 	"GAME": {
 		"answer": "Choisir une réponse",

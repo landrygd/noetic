@@ -16,6 +16,7 @@ import { AudioListComponent } from 'src/app/components/modals/audio-list/audio-l
 import { EntityModalComponent } from 'src/app/components/modals/entity-modal/entity-modal.component';
 import { IdFinderComponent } from 'src/app/components/modals/id-finder/id-finder.component';
 import { WallpapersSearchComponent } from 'src/app/components/modals/wallpapers-search/wallpapers-search.component';
+import { GalleryComponent } from 'src/app/components/modals/gallery/gallery.component';
 
 @NgModule({
   imports: [
@@ -36,7 +37,8 @@ import { WallpapersSearchComponent } from 'src/app/components/modals/wallpapers-
     CommandEntriesComponent,
     AudioListComponent,
     IdFinderComponent,
-    WallpapersSearchComponent
+    WallpapersSearchComponent,
+    GalleryComponent
   ]
 })
 export class ChatPageModule {}

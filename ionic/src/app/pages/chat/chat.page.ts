@@ -17,6 +17,7 @@ import { AudioListComponent } from 'src/app/components/modals/audio-list/audio-l
 import { Entity, Script } from 'src/app/classes/book';
 import { WallpapersSearchComponent } from 'src/app/components/modals/wallpapers-search/wallpapers-search.component';
 import { saveAs } from 'file-saver';
+import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 
 @Component({
   selector: 'app-chat',
@@ -62,6 +63,8 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   chatBarFocused = false;
 
   commands = [];
+
+  more = false;
 
   constructor(
     public bookService: BookService,
@@ -760,5 +763,26 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   useCommand(name) {
     this.text = Commands[name].ex[0];
+  }
+
+  async addImage() {
+    const modal = await this.modalCtrl.create({
+      component: UploadComponent,
+      componentProps: {
+        type: 'free',
+        gallery: true
+      }
+    });
+    await modal.present();
+    modal.onDidDismiss().then(async (data: any) => {
+      if (!data.data.url) {
+        const file = data.data;
+        const url = await this.bookService.uploadImage(file);
+        this.send(url);
+      } else {
+        this.send(data.data.url);
+      }
+      
+    });
   }
 }

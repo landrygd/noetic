@@ -87,9 +87,29 @@
   <ion-toolbar>
     <ion-textarea style="margin: 0" spellcheck="false" #chatBar (ionBlur)="onChatBarBlurred()" (ionFocus)="onChatBarFocused()" [disabled]='textarea' rows="1" [(ngModel)]='text' [placeholder]="'CHAT.enterMessage' | translate" (ionInput)="changeMsg()" (keypress)="enter($event.keyCode)"></ion-textarea>
     <ion-buttons slot="end">
+      <ion-button (click)="addImage()" expand="block" fill="clear" shape="round" color="primary">
+        <ion-icon slot="icon-only" name="image" ></ion-icon>
+      </ion-button>
+      <!-- <ion-button (click)="more = true" expand="block" fill="clear" shape="round" color="primary">
+        <ion-icon slot="icon-only" name="add" ></ion-icon>
+      </ion-button> -->
       <ion-button (click)="send()" expand="block" fill="clear" shape="round" color="primary">
         <ion-icon slot="icon-only" name="send" ></ion-icon>
       </ion-button>
     </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="more">
+    <ion-slides [options]="slides.avatarOpts">
+      <ion-slide style="padding: 7px">
+        <ion-fab-button (click)="more = false">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-fab-button>
+      </ion-slide>
+      <!-- <ion-slide style="padding: 7px">
+        <ion-fab-button (click)="searchGif()">
+          GIF
+        </ion-fab-button>
+      </ion-slide> -->
+    </ion-slides>
   </ion-toolbar>
 </ion-footer>

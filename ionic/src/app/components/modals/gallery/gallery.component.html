@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid fixed>
+      <ion-col *ngFor="let image of images">
+        <img (click)="dismiss({url: image})" [src]="image" alt="image">
+      </ion-col>
+  </ion-grid>
+</ion-content>

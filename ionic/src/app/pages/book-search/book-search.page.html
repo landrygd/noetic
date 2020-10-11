@@ -1,20 +1,37 @@
 <ion-header>
-  <ion-searchbar
-    mode="ios"
-    [(ngModel)]="filter" 
-    [placeholder]="'HOME.search' | translate" 
-    (ionChange)="search()" 
-    [debounce]="250"
-    showCancelButton="always"
-    searchIcon="search"
-    (ionCancel)="cancel()"
-    #searchBar
-    ></ion-searchbar>
+    <ion-searchbar
+      mode="ios"
+      [(ngModel)]="filter" 
+      [placeholder]="'HOME.search' | translate" 
+      (ionChange)="search()" 
+      [debounce]="250"
+      showCancelButton="always"
+      searchIcon="search"
+      (ionCancel)="cancel()"
+      #searchBar
+      ></ion-searchbar>
+    <ion-toolbar>
+      <ion-item button="false">
+        <ion-label>Trier par </ion-label>
+        <ion-select [value]="option" multiple="false">
+          <ion-select-option value="creationDate">les plus récents</ion-select-option>
+          <ion-select-option value="likes">les mieux notés</ion-select-option>
+          <ion-select-option value="view">les plus vues</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen>
-  <div *ngIf="filter.length !== 0; else nothing">
-    <div *ngIf="!loading && books.length !== 0; else noresult">
+  <ion-item *ngIf="category !== ''">
+    <ion-icon slot="start" [src]="'assets/icon/svg/' + category + '.svg'" color="primary"></ion-icon>
+    <ion-label>{{'CATEGORIES.' + category | translate}}</ion-label>
+    <ion-button (click)="category = ''" expand="block" fill="clear" shape="round">
+      <ion-icon slot="end" name="close"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <div *ngIf="filter.length !== 0 || category !== ''; else nothing">
+    <div *ngIf="books.length !== 0; else noresult">
       <ion-list style="height: 100vh" >
         <div>
           <ion-grid fixed>
@@ -30,11 +47,18 @@
   </div>
   
   <ng-template #nothing>
-    <div style="width: 100%; height: 100%;" class="center">
-      <ion-text color="medium">
-        <h2><ion-icon name="search"></ion-icon>  {{'SEARCH.nosearch' | translate}}</h2>
-      </ion-text>
-    </div>
+      <ion-grid fixed>
+        <ion-row>
+          <ion-col size="6" *ngFor="let cat of bookService.categories">
+            <ion-card>
+              <ion-item lines="none" button detail (click)="searchByCategory(cat)">
+                <ion-icon slot="start" [src]="'assets/icon/svg/' + cat + '.svg'" color="primary"></ion-icon>
+                <ion-label>{{'CATEGORIES.' + cat | translate}}</ion-label>
+              </ion-item>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
   </ng-template>
 
   <ng-template #noresult>
