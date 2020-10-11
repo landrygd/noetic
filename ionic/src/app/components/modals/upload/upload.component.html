@@ -7,10 +7,31 @@
 </ion-header>
 
 <ion-content style='height: 100%;'>
+  <!-- <div class="center">
+    <div class="upload-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody class="upload-name-style">
+                <tr *ngFor="let item of files; let i=index">
+                    <td><strong>{{ item.relativePath }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div> -->
+
+  <ngx-dropzone (change)="fileChangeEvent($event)" *ngIf="!isImage" style='height: 100%;'>
+    <ngx-dropzone-label>Upload your file</ngx-dropzone-label>
+  </ngx-dropzone>
+
   <image-cropper
       cropperMinHeight="200"
       style='height: 100%;'
-      [imageChangedEvent]="imageChangedEvent"
+      [imageFile]="file"
       [maintainAspectRatio]="!free"
       [containWithinAspectRatio]="!free"
       [aspectRatio]="ratio"
@@ -20,9 +41,9 @@
       (cropperReady)="cropperReady()"
       (loadImageFailed)="loadImageFailed()"
       [resizeToWidth]='width'
-      *ngIf="imported"
+      *ngIf="isImage"
   ></image-cropper>
-  <canvas #myCanvas></canvas>
+  <canvas #myCanvas style="height: 0" *ngIf="isImage"></canvas>
 </ion-content>
 
 <ion-footer *ngIf="COMMON && UPLOAD">
@@ -33,11 +54,6 @@
         Import from the gallery
       </ion-button>
     </ion-buttons>
-  </ion-toolbar>
-  <ion-toolbar>
-    <ion-item>
-      <input type="file" (change)="fileChangeEvent($event)"/>
-    </ion-item>
   </ion-toolbar>
   <ion-toolbar>
     <ion-buttons slot="end">

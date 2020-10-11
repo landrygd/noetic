@@ -11,6 +11,7 @@ import { CommandEntriesComponent } from './command-entries/command-entries.compo
 import { TranslateModule } from '@ngx-translate/core';
 import { AudioListComponent } from './audio-list/audio-list.component';
 import { GalleryComponent } from './gallery/gallery.component';
+import { NgxDropzoneModule } from 'ngx-dropzone';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { GalleryComponent } from './gallery/gallery.component';
     FormsModule,
     ImageCropperModule,
     TranslateModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxDropzoneModule
   ],
   exports: [
     UploadComponent,

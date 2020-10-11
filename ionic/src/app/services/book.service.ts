@@ -342,7 +342,6 @@ export class BookService implements OnDestroy {
   async searchByName(filter: string, option: string): Promise<Book[]> {
     const query = await this.firestore.collection(
        'books', ref => ref.where('public', '==', true)
-                          .orderBy(option, 'desc')
                           .orderBy('titleLower')
                           .startAt(filter.toLowerCase())
                           .endAt(filter.toLowerCase() + '\uf8ff')
@@ -543,6 +542,7 @@ export class BookService implements OnDestroy {
   async uploadBook() {
     // Sauvegarde
     this.book.version += 1;
+    this.book.interactive = this.isInteractive(this.book);
     await this.saveBook();
     // Upload
     const reference = this.firestorage.ref('books/' + this.book.id + '/book.json');
@@ -552,6 +552,27 @@ export class BookService implements OnDestroy {
     this.book.downloadURL = downloadURL;
     // Update Cover
     this.uploadCover();
+    this.popupService.toast(this.BOOK.uploaded)
+  }
+
+  isInteractive(book: Book) {
+    let res = false;
+    for (const script of book.scripts) {
+      for (const message of script.messages) {
+        if (message === "/question" || message === "/free") {
+          res = true;
+          break;
+        }
+        if (res) {
+          break;
+        }
+      }
+    }
+    return res;
+  }
+
+  popupInteractive() {
+    this.popupService.toast(this.BOOK.isInteractive);
   }
 
   // async syncBook2(curBookId = this.curBookId, cover: boolean = false): Promise<any> {

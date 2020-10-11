@@ -29,7 +29,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   path = 'unknowed';
   userId: string;
-  file: any;
+  file: File;
   ratio = 1;
   width = 200;
   free = false;
@@ -37,6 +37,9 @@ export class UploadComponent implements OnInit, OnDestroy {
   imageChangedEvent: any = '';
   croppedImage: any = '';
   imported = false;
+
+  isImage = false;
+  output: any;
 
   constructor(
     private modalController: ModalController,
@@ -82,15 +85,19 @@ export class UploadComponent implements OnInit, OnDestroy {
   }
 
   fileChangeEvent(event: any): void {
-    this.imageChangedEvent = event;
+    this.file =  event.addedFiles[0];
+    console.log(this.file);
+    if (this.file.type.includes('image')) {
+      this.isImage = true;
+    }
     this.imported = true;
   }
 
   async imageCropped(event: ImageCroppedEvent) {
     const mime = this.getBase64MimeType(event.base64);
-    this.file = event.base64;
+    this.output = event.base64;
     if (mime !== 'image/jpeg') {
-      this.file = await this.pngToJpeg(event.base64);
+      this.output = await this.pngToJpeg(event.base64);
     }
   }
   imageLoaded() {
@@ -109,9 +116,9 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   confirm() {
     if (this.type === 'userAvatar') {
-      this.userService.uploadAvatar(this.file);
+      this.userService.uploadAvatar(this.output);
     }
-    this.modalController.dismiss(this.file);
+    this.modalController.dismiss(this.output);
   }
 
   pngToJpeg(base64: string): Promise<string> {

@@ -188,6 +188,7 @@ export class Book {
   public: boolean;
   downloadURL: string;
   color: string;
+  interactive: boolean;
 
  // Content
   setup: {main: string};
@@ -213,6 +214,7 @@ export class Book {
     this.lastModificationDate = new Date().getTime();
     this.public = false;
     this.downloadURL = '';
+    this.interactive = false;
 
     this.setup = {
       main: 'main'
@@ -258,7 +260,8 @@ export class Book {
       lastModificationDate: this.lastModificationDate,
       public: this.public,
       downloadURL: this.downloadURL,
-      color: this.color
+      color: this.color,
+      interactive: this.interactive
     };
     if (this.version > 1) {
       delete obj.views;

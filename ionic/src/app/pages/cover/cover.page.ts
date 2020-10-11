@@ -150,7 +150,11 @@ export class CoverPage implements OnInit, OnDestroy {
     });
     await alert.present();
   }
-
+  
+  popupInteractive() {
+    this.bookService.popupInteractive()
+  }
+  
   // async more() {
   //   const alert = await this.alertController.create({
   //     header: this.COVER.changeVerso,

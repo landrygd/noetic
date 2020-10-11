@@ -6,6 +6,9 @@
         <ion-img src="../../../assets/cover/cover1.png" *ngIf="loadFailed"></ion-img>
       </ion-card>
     </ion-card>
+    <ion-fab-button style="position: absolute; z-index: 3; width: 30px; height: 30px; left: 100px;" *ngIf="book.interactive" (click)="popupInteractive()">
+      <ion-icon name="flash"></ion-icon>
+    </ion-fab-button>
     <ion-card style="width: 300px; height: 155px; position: absolute; top: 40px; left: 5px; margin: 0;" color="light">
         <div style="text-align: start; padding-left: 120px; display: flex; flex-wrap: wrap; justify-content: flex-start; height: 100%; align-content: center;">
           <ion-card-header style="padding: 0;">

@@ -22,9 +22,14 @@
       </ion-toolbar>
     </div>
     <div class="flex">
-      <ion-card style="height: 320px;width: 180px;" class="ion-no-margin" (click)="changeCover()" button>
-        <ion-img [src]="bookService.book.cover" style="height: 320px;width: 180px;"></ion-img>
-      </ion-card>
+      <div style="height: 320px;width: 180px; margin: 30px 30px 0 30px;">
+        <ion-fab-button style="position: absolute; z-index: 2; width: 50px; height: 50px; margin-left: 160px; margin-top: -20px" *ngIf="book.interactive" (click)="popupInteractive()">
+          <ion-icon name="flash"></ion-icon>
+        </ion-fab-button>
+        <ion-card  class="ion-no-margin" (click)="changeCover()" button>
+          <ion-img [src]="bookService.book.cover" style="height: 320px;width: 180px;"></ion-img>
+        </ion-card>
+      </div>
     </div>
     <div>
       <ion-textarea style="text-align: center; margin: auto; padding: 0; max-width: 400px; font-size: 24px;" 

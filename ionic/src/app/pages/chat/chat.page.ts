@@ -785,4 +785,8 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
       
     });
   }
+
+  importNoeScript() {
+    
+  }
 }

@@ -387,7 +387,9 @@
 			"emptyCategory": "Catégorie vide pour le moment",
 			"newChatError": "Impossible créer un tchat, votre livre est trop volumineux",
 			"shareMsg": "Voici un livre sur Noetic",
-			"shareSubject": "Partage de livre"
+			"shareSubject": "Partage de livre",
+			"uploaded": "Livre mis à jour",
+			"isInteractive": "Ce livre est interactif"
 		},
 		"CHAT": {
 			"changeChatName": "Changer le nom du tchat",

@@ -63,8 +63,6 @@ export class BookSearchPage implements OnInit {
   async searchByCategory(category: string) {
     this.books = await this.bookService.searchByCategory(category);
     this.category = category;
-    console.log(this.category);
-    console.log(this.books);
     this.loading = false;
   }
 

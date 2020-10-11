@@ -59,4 +59,8 @@ export class CardBookComponent implements OnInit, OnChanges {
   onImgLoaded() {
     this.loading = false;
   }
+  popupInteractive() {
+    this.bookService.popupInteractive()
+  }
+
 }
