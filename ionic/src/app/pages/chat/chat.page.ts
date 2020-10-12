@@ -68,7 +68,6 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     public bookService: BookService,
-    public modalCtrl: ModalController,
     public actionSheetController: ActionSheetController,
     public alertController: AlertController,
     public popup: PopupService,
@@ -78,9 +77,9 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     private userService: UserService,
     private translator: TranslateService,
     private themeService: ThemeService,
-    private firestore: AngularFirestore,
     private popupService: PopupService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private modalController: ModalController
     ) {}
 
   @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
@@ -181,7 +180,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
  }
 
  async showBackground() {
-  const modal = await this.modalCtrl.create({
+  const modal = await this.modalController.create({
     component: WallpapersSearchComponent
   });
   await modal.present();
@@ -501,7 +500,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   // }
 
   async manual(type = '') {
-    const modal = await this.modalCtrl.create({
+    const modal = await this.modalController.create({
     component: ManualComponent,
     componentProps: {type}
     });
@@ -584,7 +583,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async showAudio(type: string) {
-    const modal = await this.modalCtrl.create({
+    const modal = await this.modalController.create({
     component: AudioListComponent,
     componentProps: {type}
     });
@@ -766,7 +765,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async addImage() {
-    const modal = await this.modalCtrl.create({
+    const modal = await this.modalController.create({
       component: UploadComponent,
       componentProps: {
         type: 'free',
@@ -786,7 +785,17 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async import() {
-    this.script.messages = (await this.bookService.importNoeScript()).split('\n');
+    const modal = await this.modalController.create({
+      component: UploadComponent,
+      componentProps: { type: 'script' }
+      });
+    await modal.present();
+    modal.onDidDismiss().then((data) => {
+      const res: string = data.data;
+      if (res) {
+        this.script.messages = res.split('\n');
+      }
+    });
   }
 
 }

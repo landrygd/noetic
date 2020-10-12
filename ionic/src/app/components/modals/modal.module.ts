@@ -1,3 +1,4 @@
+import { UploadComponent } from './upload/upload.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,6 +22,7 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     CommandEntriesComponent,
     AudioListComponent,
     GalleryComponent,
+    UploadComponent
   ],
   imports: [
     CommonModule,
@@ -37,7 +39,8 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     ManualComponent,
     CommandEntriesComponent,
     AudioListComponent,
-    GalleryComponent
+    GalleryComponent,
+    UploadComponent
   ]
 })
 
