@@ -33,13 +33,14 @@ export class UploadComponent implements OnInit, OnDestroy {
   ratio = 1;
   width = 200;
   free = false;
+  lines: number;
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
   imported = false;
 
   isImage = false;
-  output: any;
+  output: string;
   accept = '*';
 
   constructor(
@@ -69,9 +70,9 @@ export class UploadComponent implements OnInit, OnDestroy {
       this.ratio = 1;
       this.width = 500;
     }
-    if (this.type === 'script') {
-      this.accept = 'noe';
-    }
+    // if (this.type === 'script') {
+    //   this.accept = 'noe';
+    // }
   }
 
   getTraduction() {
@@ -88,11 +89,14 @@ export class UploadComponent implements OnInit, OnDestroy {
     this.commonSub.unsubscribe();
   }
 
-  fileChangeEvent(event: any): void {
+  async fileChangeEvent(event: any) {
     this.file =  event.addedFiles[0];
-    console.log(this.file);
     if (this.file.type.includes('image')) {
       this.isImage = true;
+    }
+    if (this.type === 'script') {
+      this.output = await this.file.text();
+      this.lines = this.output.split('\n').length;
     }
     this.imported = true;
   }
@@ -118,12 +122,9 @@ export class UploadComponent implements OnInit, OnDestroy {
     this.modalController.dismiss();
   }
 
-  confirm() {
+  async confirm() {
     if (this.type === 'userAvatar') {
       this.userService.uploadAvatar(this.output);
-    }
-    if (this.type === 'script') {
-      this.output = this.file.text();
     }
     this.modalController.dismiss(this.output);
   }

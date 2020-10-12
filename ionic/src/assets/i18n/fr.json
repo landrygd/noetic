@@ -556,5 +556,59 @@
       "show": "Commande inconnue",
       "desc": "Commande inconnue"
     }
-  }
+  },
+  "TUTOS": [
+	{
+		"name": "Les bases",
+		"messages": []
+	},
+	{
+		"name": "Les images et sons",
+		"messages": []
+	},
+	{
+		"name": "Les variables",
+		"messages": [
+			"Tutoriel: les variables",
+			"Les variables servent à stocker sont des symboles associant un mot à une valeur",
+			"Elles sont noté sous la forme 'VAR_nomVariable'",
+			"Pour définir une variable, on utilise la commande '/set VAR_variable'",
+			"Par exemple, si 'VAR_nom' vaut 'Elisa', le message 'Bonjour VAR_nom' vaudra 'Bonjour Elisa'",
+			"COM_SET VAR_nom Elisa",
+			"Bonjour VAR_nom",
+			"On peut également utiliser les nombres dans les variables",
+			"Et y effectuer des opérations avec les commandes COM_ADD, COM_SET, COM_DIV, COM_MUL",
+			"Par exemple, cette ligne ajoute 1 à pièce:",
+			"COM_SET VAR_pièces 0",
+			"COM_ADD VAR_pièces 1",
+			"Enfin, on peut fixer une valeur aléatoire à une variable, comme ceci:",
+			"COM_RANDOM VAR_salle 1 9",
+			"La variable 'salle' vaut: VAR_salle"
+		]
+	},
+	{
+		"name": "L'algoritmie",
+		"messages": []
+	},
+	{
+		"name": "Le débogage",
+		"messages": []
+	},
+	{
+		"name": "L'architecture",
+		"messages": []
+	},
+	{
+		"name": "Les objets",
+		"messages": []
+	},
+	{
+		"name": "Le mode dynamique",
+		"messages": []
+	},
+	{
+		"name": "L'optimisation",
+		"messages": []
+	}
+  ]
 }

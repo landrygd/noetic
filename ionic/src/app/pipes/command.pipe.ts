@@ -63,7 +63,7 @@ export class CommandPipe implements PipeTransform {
   getCommandValues(str: string) {
     const words: string[] = str.split(' ');
     const firstWord = words.shift();
-    this.command = firstWord.slice(1);
+    this.command = firstWord.slice(1).toLocaleLowerCase();
     let opt = true;
     this.arg = '';
     this.args = [];

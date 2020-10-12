@@ -14,7 +14,7 @@ ion-card {
   padding: 10px;
   margin: 0 0 0 5px;
   border-radius: 20px;
-  max-width: 80%;
+  max-width: 80vw;
   min-height: 44px;
   display: flex;
   align-items: center;
@@ -40,6 +40,7 @@ ion-item {
 
 .editing-card {
   height: 44px;
+  margin: 0;
 }
 
 .editing-item {
@@ -50,7 +51,6 @@ ion-item {
 }
 
 .narrator {
-  margin: auto;
   text-align: center;
 }
 

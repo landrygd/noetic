@@ -48,14 +48,17 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   history: {action: string, index: number, logs: string[]}[] = [];
   historyIndex = -1;
 
-  tuto: string[] = [];
+  // tuto: string[] = [];
+  tuto: {name: string, messages: string[]};
 
   ERRORS: any = {};
   COMMON: any = {};
+  TUTOS: any = {};
 
   errorSub: Subscription;
   commonSub: Subscription;
   tutoSub: Subscription;
+  tutosSub: Subscription;
   actors: Entity[];
 
   tabColor = '#000';
@@ -201,14 +204,14 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
  }
 
   getTraduction() {
-    this.tutoSub = this.translator.get('TUTO').subscribe((val) => {
-      this.tuto = val;
-    });
     this.errorSub = this.translator.get('ERRORS').subscribe((val) => {
       this.ERRORS = val;
     });
     this.commonSub = this.translator.get('COMMON').subscribe((val) => {
       this.COMMON = val;
+    });
+    this.tutosSub = this.translator.get('TUTOS').subscribe((val) => {
+      this.TUTOS = val;
     });
   }
 
@@ -233,9 +236,6 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     if (this.themeService.darkMode) {
       this.tabColor = '#fff';
-    }
-    if (this.userService.haveTuto()) {
-      setTimeout(() => {this.showTuto(); }, 500);
     }
     this.scrollToBottom();
   }
@@ -306,7 +306,6 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
       }
     });
     this.update();
-    this.getTabs();
     setTimeout(() => this.scrollToBottom(), 50);
     setTimeout(() => {
       if (this.actor) {
@@ -466,8 +465,8 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   export() {
-    const blob = new Blob([this.messages.join('\n')], {type: 'text/plain;charset=utf-8'});
-    saveAs(blob, this.script.name + '.noe');
+    var file = new File([this.messages.join('\n')], this.script.name + '.noe', {type: 'text/plain;charset=utf-8'});
+    saveAs(file, this.script.name + '.noe');
   }
 
   // renameChat() {
@@ -516,62 +515,81 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
 
 
-  async showTuto(index = 0) {
-    if (this.tuto.length > index) {
-      const message = this.tuto[index];
-      const toast = await this.toastController.create({
-        message,
-        position: 'top',
-        color: 'primary',
-        buttons: [
-          {
-            icon: 'checkmark',
-            text: 'OK',
-            handler: () => {
-              toast.dismiss();
-              this.showTuto(index + 1);
-            }
-          },
-          {
-            icon: 'play-skip-forward',
-            text: 'Passer',
-            handler: () => {
-              toast.dismiss();
-              this.showTuto(this.tuto.length);
-            }
-          }
-        ],
-      });
-      toast.present();
-    } else {
-      this.userService.deleteTuto();
-    }
+  // async showTuto(index = 0) {
+  //   if (this.tuto.length > index) {
+  //     const message = this.tuto[index];
+  //     const toast = await this.toastController.create({
+  //       message,
+  //       position: 'top',
+  //       color: 'primary',
+  //       buttons: [
+  //         {
+  //           icon: 'checkmark',
+  //           text: 'OK',
+  //           handler: () => {
+  //             toast.dismiss();
+  //             this.showTuto(index + 1);
+  //           }
+  //         },
+  //         {
+  //           icon: 'play-skip-forward',
+  //           text: 'Passer',
+  //           handler: () => {
+  //             toast.dismiss();
+  //             this.showTuto(this.tuto.length);
+  //           }
+  //         }
+  //       ],
+  //     });
+  //     toast.present();
+  //   } else {
+  //     this.userService.deleteTuto();
+  //   }
+  // }
+
+  showTuto(tuto: {name: string, messages: string[]}) {
+    const messages = [];
+    tuto.messages.forEach((message) => {
+      message = message.replace(/VAR_/g, '$');
+      message = message.replace(/COM_/g, '/');
+      messages.push(message);
+    })
+    tuto.messages = messages;
+    this.tuto = tuto;
+    this.messages = tuto.messages;
+    this.update();
   }
 
-  async presentPopover(ev: CustomEvent<any>, index) {
-    const end = index >= this.tuto.length - 1;
-    const popover = await this.popoverController.create({
-      component: TutoPopoverComponent,
-      componentProps: {
-        info: this.tuto[index],
-        end
-      },
-      event: ev,
-      translucent: false
-    });
-    await popover.present();
-    const res = await popover.onDidDismiss();
-    if (!res.data.hasOwnProperty('cancel')) {
-      this.showTuto(index + 1);
-    } else {
-      this.userService.deleteTuto();
-      const alert = await this.alertController.create({
-        message: 'Vous pouvez toujours revoir ce tutoriel en le réactivant dans les paramètres du livre',
-        buttons: ['Ok'],
-      });
-      await alert.present();
-    }
+  closeTuto() {
+    this.tuto = undefined;
+    this.messages = [];
+    this.update();
   }
+ 
+  // async presentPopover(ev: CustomEvent<any>, index) {
+  //   const end = index >= this.tuto.length - 1;
+  //   const popover = await this.popoverController.create({
+  //     component: TutoPopoverComponent,
+  //     componentProps: {
+  //       info: this.tuto[index],
+  //       end
+  //     },
+  //     event: ev,
+  //     translucent: false
+  //   });
+  //   await popover.present();
+  //   const res = await popover.onDidDismiss();
+  //   if (!res.data.hasOwnProperty('cancel')) {
+  //     this.showTuto(index + 1);
+  //   } else {
+  //     this.userService.deleteTuto();
+  //     const alert = await this.alertController.create({
+  //       message: 'Vous pouvez toujours revoir ce tutoriel en le réactivant dans les paramètres du livre',
+  //       buttons: ['Ok'],
+  //     });
+  //     await alert.present();
+  //   }
+  // }
 
   changeMsg() {
     setTimeout(() => {
@@ -683,6 +701,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   update() {
     this.script.messages = this.messages.slice();
+    this.getTabs();
     this.bookService.book.setScript(this.script);
     this.bookService.saveBook();
   }
@@ -793,7 +812,8 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     modal.onDidDismiss().then((data) => {
       const res: string = data.data;
       if (res) {
-        this.script.messages = res.split('\n');
+        this.messages = res.split('\n');
+        this.update();
       }
     });
   }
