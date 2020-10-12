@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { UploadComponent } from './upload/upload.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { SearchUserComponent } from './search-user/search-user.component';
 import { WallpapersSearchComponent } from './wallpapers-search/wallpapers-search.component';
@@ -16,7 +15,6 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
 
 @NgModule({
   declarations: [
-    UploadComponent,
     SearchUserComponent,
     WallpapersSearchComponent,
     ManualComponent,
@@ -34,7 +32,6 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     NgxDropzoneModule
   ],
   exports: [
-    UploadComponent,
     SearchUserComponent,
     WallpapersSearchComponent,
     ManualComponent,

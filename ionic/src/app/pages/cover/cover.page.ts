@@ -102,26 +102,6 @@ export class CoverPage implements OnInit, OnDestroy {
     this.refreshComments();
     this.loading = false;
     this.getBanner();
-    // if (this.bookService.curBookId !== bookId) {
-    //   this.bookService.curBookId = this.curBookId;
-    //   this.verso = this.bookService.book.verso.length > 0;
-    //   this.loading = false;
-    //   this.commentService.syncComments(this.bookService.book.id);
-    //   this.getBanner();
-    //   if (this.authService.connected) {
-    //     this.inList = this.userService.haveFromList(this.bookService.book.id);
-    //     this.haveCommentedSub = this.commentService.haveCommented(this.bookService.book.id).subscribe((value) => {
-    //       if (value.length !== 0) {
-    //         const comment: any = value[0].payload.doc.data();
-    //         this.comment = comment;
-    //         this.commented = true;
-    //         this.lastRate = this.comment.rate;
-    //       }
-    //     });
-    //   }
-    // } else {
-    //   this.loading = false;
-    // }
   }
 
   async answer(userId) {
@@ -150,11 +130,11 @@ export class CoverPage implements OnInit, OnDestroy {
     });
     await alert.present();
   }
-  
+
   popupInteractive() {
-    this.bookService.popupInteractive()
+    this.bookService.popupInteractive();
   }
-  
+
   // async more() {
   //   const alert = await this.alertController.create({
   //     header: this.COVER.changeVerso,

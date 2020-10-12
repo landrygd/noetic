@@ -1,3 +1,4 @@
+import { NgxDropzoneModule } from 'ngx-dropzone';
 import { VariablesViewerComponent } from './modals/variables-viewer/variables-viewer.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgModule, ModuleWithProviders } from '@angular/core';
@@ -39,7 +40,8 @@ import { CommentComponent } from './comment/comment.component';
     FormsModule,
     ModalModule,
     PipesModule,
-    TranslateModule
+    TranslateModule,
+    NgxDropzoneModule
   ],
   exports: [
     CardBookComponent,

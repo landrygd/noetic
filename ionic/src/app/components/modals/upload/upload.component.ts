@@ -40,6 +40,7 @@ export class UploadComponent implements OnInit, OnDestroy {
 
   isImage = false;
   output: any;
+  accept = '*';
 
   constructor(
     private modalController: ModalController,
@@ -67,6 +68,9 @@ export class UploadComponent implements OnInit, OnDestroy {
       this.free = true;
       this.ratio = 1;
       this.width = 500;
+    }
+    if (this.type === 'script') {
+      this.accept = 'noe';
     }
   }
 
@@ -118,6 +122,9 @@ export class UploadComponent implements OnInit, OnDestroy {
     if (this.type === 'userAvatar') {
       this.userService.uploadAvatar(this.output);
     }
+    if (this.type === 'script') {
+      this.output = this.file.text();
+    }
     this.modalController.dismiss(this.output);
   }
 
@@ -156,7 +163,7 @@ export class UploadComponent implements OnInit, OnDestroy {
     componentProps: { }
     });
     await modal.present();
-    const data = await modal.onDidDismiss()
+    const data = await modal.onDidDismiss();
     if (data.data) {
       setTimeout(() => this.dismiss({url: data.data.url}), 100);
     }

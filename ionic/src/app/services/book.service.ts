@@ -1,9 +1,10 @@
+import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { User } from './../classes/user';
 import { Injectable, OnDestroy } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFirestoreCollection } from '@angular/fire/firestore/public_api';
 import { Observable, Subscription } from 'rxjs';
-import { NavController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { UserService } from './user.service';
 import { PopupService } from './popup.service';
@@ -90,7 +91,8 @@ export class BookService implements OnDestroy {
     public userService: UserService,
     private popupService: PopupService,
     private translator: TranslateService,
-    private storage: Storage
+    private storage: Storage,
+    private modalController: ModalController
   ) {
     this.booksCollection = this.firestore.collection('books');
     this.getTraduction();
@@ -311,7 +313,7 @@ export class BookService implements OnDestroy {
 
   getUploadedImages(): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      const path = 'books/' + this.book.id
+      const path = 'books/' + this.book.id;
       this.firestorage.ref(path).listAll().toPromise().then(async (data) => {
         const res = [];
         for (const item of data.items) {
@@ -502,6 +504,9 @@ export class BookService implements OnDestroy {
       reader.onloadend = () => {
           const jsonString = reader.result.toString();
           const book: Book = new Book(JSON.parse(jsonString));
+          book.downloadURL = this.book.downloadURL;
+          book.cover = this.book.cover;
+          book.banner = this.book.banner;
           this.saveBook(book);
           resolve(book);
       };
@@ -552,14 +557,14 @@ export class BookService implements OnDestroy {
     this.book.downloadURL = downloadURL;
     // Update Cover
     this.uploadCover();
-    this.popupService.toast(this.BOOK.uploaded)
+    this.popupService.toast(this.BOOK.uploaded);
   }
 
   isInteractive(book: Book) {
     let res = false;
     for (const script of book.scripts) {
       for (const message of script.messages) {
-        if (message === "/question" || message === "/free") {
+        if (message === '/question' || message === '/free') {
           res = true;
           break;
         }
@@ -842,6 +847,20 @@ export class BookService implements OnDestroy {
     this.userService.share(this.BOOK.shareMsg, this.BOOK.shareSubject, bookUrl);
   }
 
+  async importNoeScript(): Promise<any> {
+    const modal = await this.modalController.create({
+    component: UploadComponent,
+    componentProps: { type: 'script' }
+    });
+    await modal.present();
+    modal.onDidDismiss().then((data) => {
+      const res: string = data.data;
+      if (res) {
+        return res;
+      }
+    });
+  }
+
   newEntity(type: string, extraData = {}): Promise<string> {
     return new Promise(async (res, rej) => {
       const alert = await this.alertController.create({
@@ -940,7 +959,7 @@ export class BookService implements OnDestroy {
                   type: 'role'
                 });
                 this.book.addEntity(entity);
-                res(entity)
+                res(entity);
               } else {
                 this.popupService.toast(this.ERRORS.fieldMissing);
                 rej();

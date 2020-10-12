@@ -782,11 +782,11 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
       } else {
         this.send(data.data.url);
       }
-      
     });
   }
 
-  importNoeScript() {
-    
+  async import() {
+    this.script.messages = (await this.bookService.importNoeScript()).split('\n');
   }
+
 }

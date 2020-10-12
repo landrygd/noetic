@@ -24,7 +24,7 @@
     </div>
 </div> -->
 
-  <ngx-dropzone (change)="fileChangeEvent($event)" *ngIf="!isImage" style='height: 100%;'>
+  <ngx-dropzone [accept]="accept" (change)="fileChangeEvent($event)" *ngIf="!isImage" style='height: 100%;'>
     <ngx-dropzone-label>Upload your file</ngx-dropzone-label>
   </ngx-dropzone>
 

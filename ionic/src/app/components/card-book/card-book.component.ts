@@ -60,7 +60,7 @@ export class CardBookComponent implements OnInit, OnChanges {
     this.loading = false;
   }
   popupInteractive() {
-    this.bookService.popupInteractive()
+    this.bookService.popupInteractive();
   }
 
 }

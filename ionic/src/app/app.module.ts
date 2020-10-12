@@ -1,3 +1,4 @@
+import { NgxDropzoneModule } from 'ngx-dropzone';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -66,6 +67,7 @@ export function createTranslateLoader(http: HttpClient) {
     ImageCropperModule,
     ComponentModule,
     HttpClientModule,
+    NgxDropzoneModule,
     TimeagoModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
