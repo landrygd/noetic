@@ -60,7 +60,7 @@ import { CommentComponent } from './comment/comment.component';
 })
 
 export class ComponentModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<ComponentModule> {
     return {
       ngModule: ComponentModule,
     };
