@@ -1,4 +1,3 @@
-import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
 import { User } from './../classes/user';
 import { Injectable, OnDestroy } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -845,20 +844,6 @@ export class BookService implements OnDestroy {
   shareBook(bookId: string) {
     const bookUrl = 'https://app.noetic.site/book/' + bookId;
     this.userService.share(this.BOOK.shareMsg, this.BOOK.shareSubject, bookUrl);
-  }
-
-  async importNoeScript(): Promise<any> {
-    const modal = await this.modalController.create({
-    component: UploadComponent,
-    componentProps: { type: 'script' }
-    });
-    await modal.present();
-    modal.onDidDismiss().then((data) => {
-      const res: string = data.data;
-      if (res) {
-        return res;
-      }
-    });
   }
 
   newEntity(type: string, extraData = {}): Promise<string> {
