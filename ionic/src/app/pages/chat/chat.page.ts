@@ -222,9 +222,10 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.tutoSub.unsubscribe();
     this.errorSub.unsubscribe();
     this.commonSub.unsubscribe();
+    this.tutosSub.unsubscribe();
+    this.examplesSub.unsubscribe();
   }
 
   // getWallpaper() {
