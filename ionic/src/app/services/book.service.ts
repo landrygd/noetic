@@ -127,6 +127,10 @@ export class BookService implements OnDestroy {
     return this.firestore.createId();
   }
 
+  like() {
+    
+  }
+
   async openBook(bookId) {
     await this.popupService.loading();
     this.curBookId = bookId;

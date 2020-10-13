@@ -50,6 +50,8 @@ export class UserService implements OnDestroy {
   savesId: string[] = [];
   savesSub: Subscription;
 
+  likes: any[];
+
   usersCollection: AngularFirestoreCollection<any>;
   userDoc: AngularFirestoreDocument;
 
@@ -213,6 +215,7 @@ export class UserService implements OnDestroy {
           this.getMenuBooks();
           this.getBooks();
           this.getList();
+          this.getLikes();
           this.getSaves();
           this.syncNotifs();
           this.getFollowList();
@@ -315,6 +318,16 @@ export class UserService implements OnDestroy {
         res.push(doc.payload.doc.id);
       });
       this.books = res;
+    });
+  }
+
+  getLikes() {
+    this.bookSub = this.userDoc.collection('likes', ref => ref.orderBy('lastChanges', 'desc')).snapshotChanges().subscribe((val) => {
+      const res = [];
+      val.forEach(doc => {
+        res.push(doc.payload.doc.id);
+      });
+      this.likes = res;
     });
   }
 

@@ -52,6 +52,8 @@ export class CoverPage implements OnInit, OnDestroy {
 
   comments: Comment[] = [];
 
+  likedBook = false;
+
   constructor(
     public navCtrl: NavController,
     private toastController: ToastController,
@@ -85,6 +87,14 @@ export class CoverPage implements OnInit, OnDestroy {
     this.coverSub.unsubscribe();
     this.errosSub.unsubscribe();
     this.commonSub.unsubscribe();
+  }
+
+  like() {
+    this.bookService.like();
+  }
+
+  dislike() {
+    this.bookService.dislike();
   }
 
   async ionViewWillEnter() {

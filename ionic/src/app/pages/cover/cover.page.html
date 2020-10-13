@@ -61,6 +61,15 @@
       </p>
     </div>
     <div class="subscribe">
+      <div *ngIf="userService.connected">
+        <ion-fab-button (click)="like()" *ngIf="!bookService.likedBook" color="primary" style="height: 45px; width: 45px;">
+          <ion-icon name="heart"></ion-icon>
+        </ion-fab-button>
+        <ion-fab-button (click)="dislike()" *ngIf="bookService.likedBook" color="light" style="height: 45px; width: 45px;">
+          <ion-icon name="heart-dislike"></ion-icon>
+        </ion-fab-button>
+      </div>
+      
       <ion-button (click)="play()" expand="block" fill="solid" shape="round" [color]="book.color">
         <ion-icon name="play"></ion-icon>
         {{'COMMON.read' | translate}}
