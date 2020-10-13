@@ -50,15 +50,18 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
 
   // tuto: string[] = [];
   tuto: {name: string, messages: string[]};
+  example: {name: string, messages: string[]};
 
   ERRORS: any = {};
   COMMON: any = {};
   TUTOS: any = {};
+  EXAMPLES: any = {};
 
   errorSub: Subscription;
   commonSub: Subscription;
   tutoSub: Subscription;
   tutosSub: Subscription;
+  examplesSub: Subscription;
   actors: Entity[];
 
   tabColor = '#000';
@@ -212,6 +215,9 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     });
     this.tutosSub = this.translator.get('TUTOS').subscribe((val) => {
       this.TUTOS = val;
+    });
+    this.examplesSub = this.translator.get('EXAMPLES').subscribe((val) => {
+      this.EXAMPLES = val;
     });
   }
 
@@ -552,14 +558,26 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     tuto.messages.forEach((message) => {
       message = message.replace(/VAR_/g, '$');
       message = message.replace(/COM_/g, '/');
-      console.log(message);
       message = message.replace(/ICON_([a-z-_]*)/g, ':i-$1:');
-      console.log(message);
       messages.push(message);
     });
     tuto.messages = messages;
     this.tuto = tuto;
     this.messages = tuto.messages;
+    this.update();
+  }
+
+  showExample(example: {name: string, messages: string[]}) {
+    const messages = [];
+    example.messages.forEach((message) => {
+      message = message.replace(/VAR_/g, '$');
+      message = message.replace(/COM_/g, '/');
+      message = message.replace(/ICON_([a-z-_]*)/g, ':i-$1:');
+      messages.push(message);
+    });
+    example.messages = messages;
+    this.example = example;
+    this.messages = example.messages;
     this.update();
   }
 

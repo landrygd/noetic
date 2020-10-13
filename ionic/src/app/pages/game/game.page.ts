@@ -162,16 +162,15 @@ export class GamePage implements OnInit, OnDestroy {
         this.curLine = this.line + 1;
         this.time = 1000;
         this.msg = this.script[this.line];
+        if (this.msg.charAt(0) !== '/') {
+          this.msg = this.msg.replace(/\$[^\s\.]*/gi, (match) => {
+            return this.getVariable(match);
+          });
+        }
         if (this.msg.charAt(0) === '/') {
           this.time = -this.waitTime;
           if (this.msg.charAt(1) !== '/') {
             this.getCommandValues(this.msg);
-            // this.nomVar = this.getVariableName(this.args[0]);
-            // this.nomVar1 = this.getVariableName(this.args[1]);
-            // this.nomVar2 = this.getVariableName(this.args[2]);
-            // this.varValue = this.toVariable(this.args[0]);
-            // this.varValue1 = this.toVariable(this.args[1]);
-            // this.varValue2 = this.toVariable(this.args[2]);
             switch (this.command) {
               case 'go':
                 if (this.opts.includes('chat')) {
@@ -393,64 +392,23 @@ export class GamePage implements OnInit, OnDestroy {
     }
   }
 
-  getVariable() {
-    return this.setVariable('get');
+  isVariable(variable) {
+    return variable.charAt(0) === '$' || variable.charAt(0) === '@';
   }
 
-  // setVariable(operator) {
-  //   if (this.isActor(this.args[0])) {
-  //     const value = this.varValue1;
-  //     const path = this.arg.split('$');
-  //     const actorId = this.actorService.getActorId(this.toActorName(path[0]));
-  //     const nomVar = path[1].split(' ')[0];
-  //     if (!this.actors[actorId]) {
-  //       this.actors[actorId] = {};
-  //     }
-  //     if (operator === 'set') {
-  //       this.actors[actorId][nomVar] = value;
-  //     } else if (operator === 'random') {
-  //       this.actors[actorId][nomVar] = this.getRandom();
-  //     }
-  //     if (!this.actors[actorId][nomVar]) {
-  //       this.actors[actorId][nomVar] = 0;
-  //     }
-  //     if (operator === 'add') {
-  //       this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) + Number(value);
-  //     } else if (operator === 'sub') {
-  //       this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) - Number(value);
-  //     } else if (operator === 'mul') {
-  //       this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) * Number(value);
-  //     } else if (operator === 'div') {
-  //       this.actors[actorId][nomVar] = Number(this.actors[actorId][nomVar]) / Number(value);
-  //     }
-  //     return this.actors[actorId][nomVar];
-  //   } else {
-  //     const value = this.varValue1;
-  //     if (operator === 'set') {
-  //       this.variables[this.nomVar] = value;
-  //     } else if (operator === 'random') {
-  //       this.variables[this.nomVar] = this.getRandom();
-  //     }
-  //     if (!this.haveVariable(this.nomVar)) {
-  //       this.variables[this.nomVar] = 0;
-  //     }
-  //     if (operator === 'add') {
-  //       this.variables[this.nomVar] = Number(this.variables[this.nomVar]) + Number(value);
-  //     } else if (operator === 'sub') {
-  //       this.variables[this.nomVar] = Number(this.variables[this.nomVar]) - Number(value);
-  //     } else if (operator === 'mul') {
-  //       this.variables[this.nomVar] = Number(this.variables[this.nomVar]) * Number(value);
-  //     } else if (operator === 'div') {
-  //       this.variables[this.nomVar] = Number(this.variables[this.nomVar]) / Number(value);
-  //     }
-  //     return this.variables[this.nomVar];
-  //   }
+  getVariable(path: string) {
+    if (this.isVariable(path)) {
+      return this.setVariable('get', path);
+    } else {
+      return path;
+    }
+  }
 
-  //   return null;
-  // }
-  setVariable(operator) {
-    const path = this.args[0];
-    const value = this.args[1];
+  setVariable(operator, path = this.args[0]) {
+    let value;
+    if (operator !== 'get') {
+      value = this.getVariable(this.args[1]);
+    }
     let k = this.variables;
     let steps: string[] = path.split('.');
     if (steps[0].charAt(0) === '@') {

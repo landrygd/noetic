@@ -56,6 +56,22 @@
           </ion-card>
         </ion-col>
       </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title><ion-icon name="book"></ion-icon> Exemples</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-list>
+                <ion-item (click)="showExample(example)" button detail *ngFor="let example of EXAMPLES">
+                  <ion-label>{{example.name}}</ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
     </ion-grid>
   
     <!-- <ion-list>

@@ -7,7 +7,7 @@
     <app-avatar *ngIf="!ownPlayer || edit" [enabled]="true" [entity]="actor" class="ion-no-margin"></app-avatar>
     <div *ngIf="type === 'text'">
       <ion-card [color]="actor.color" [slot]="msgSlot">
-        <p [class]="editClass" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
+        <p [class]="editClass" [innerHTML]="msg | command | toHtml"></p>
       </ion-card>
     </div>
     <div *ngIf="type === 'image'">
@@ -24,7 +24,7 @@
   <ng-template #card>
     <div *ngIf="type === 'text'" style="margin: auto;">
       <ion-card [class]="'narrator ' + cardClass" color="medium">
-        <p [class]="editClass" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
+        <p [class]="editClass" [innerHTML]="msg | command | toHtml"></p>
       </ion-card>
     </div>
     <div *ngIf="type === 'image'" style="margin: auto;">
@@ -46,7 +46,7 @@
 
 <ng-template #command>
   <ion-item #ref button [color]="getItemColor()" detail="false" lines="none" [class]="itemClass" *ngIf="!isEnd(msg)">
-    <p slot="start" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml"></p>
+    <p slot="start" [innerHTML]="msg | command | toHtml"></p>
     <ion-button slot="end" *ngIf="selected && edit" (click)="logEdit($event)" expand="block" fill="clear"
       shape="round" class="ion-no-padding">
       <ion-icon name="ellipsis-vertical" [color]="getButtonColor()"></ion-icon>
@@ -69,7 +69,7 @@
         </ion-card-content>
         <ion-card-content style="padding-bottom: 0;" *ngIf="ownPlayer">
         </ion-card-content>
-        <ion-card-content style="padding-top: 0;" *ngIf="!typing" [innerHTML]="msg | variables:variablesJSON:actorsJSON | toHtml"></ion-card-content>
+        <ion-card-content style="padding-top: 0;" *ngIf="!typing" [innerHTML]="msg | toHtml"></ion-card-content>
         <ion-card-content *ngIf="typing" #ref>
           <ion-spinner name="dots" color="dark"></ion-spinner>
         </ion-card-content>
@@ -79,7 +79,7 @@
 
   <ion-col size="10" *ngIf="!bookService.actorsById[id]">
     <ion-card color="light" *ngIf="!button">
-      <ion-card-content *ngIf="!typing" [innerHTML]="msg | command | variables:variablesJSON:actorsJSON | toHtml">
+      <ion-card-content *ngIf="!typing" [innerHTML]="msg | command | toHtml">
       </ion-card-content>
       <ion-card-content *ngIf="typing" color="dark">
         <ion-spinner name="dots" color="dark"></ion-spinner>

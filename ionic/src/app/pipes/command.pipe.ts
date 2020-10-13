@@ -57,7 +57,7 @@ export class CommandPipe implements PipeTransform {
   }
 
   toChip(text: string) {
-    return '<strong> ' + text + ' </strong>';
+    return '<ion-text color="primary"> ' + text + ' </ion-text>';
   }
 
   getCommandValues(str: string) {
