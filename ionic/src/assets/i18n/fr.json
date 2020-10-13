@@ -560,16 +560,40 @@
   "TUTOS": [
 	{
 		"name": "Les bases",
-		"messages": []
+		"messages": [
+      "Pour lire le script:",
+      "appuyez sur 'Tester ICON_play'",
+      "Pour ajouter un message:",
+      "entrez du texte dans la barre de tchat",
+      "puis appuyez sur ICON_send.",
+      "Pour ajouter un acteur:",
+      "appuyez sur le bouton ICON_add puis ICON_person-add.",
+      "Pour envoyer un message avec un acteur:",
+      "appuyez sur son avatar",
+      "Pour modifier un message:",
+      "sélectionnez-le et réenvoyez le message modifié.",
+      "Pour insérer un message en dessous d'un autre:",
+      "sélectionnez un message,",
+      "appuyez sur 'Insérer un message ici'",
+      "puis envoyez votre message.",
+      "Pour supprimer un message:",
+      "sélectionnez-le puis appuyez sur :i-ellipsis-vertical:",
+      "Vous pouvez aussi utiliser les raccourcis",
+      "Ctrl+X/C/V/Z/Y et effacer"
+    ]
 	},
 	{
 		"name": "Les images et sons",
-		"messages": []
+		"messages": [
+      "Pour afficher une image:",
+      "envoyez directement l'url de votre image",
+      "comme ceci:",
+      "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib%2Fimages%2Fnight.jpg?alt=media&token=b2510c4c-70bd-446c-9ed5-01def1d76f84"
+    ]
 	},
 	{
 		"name": "Les variables",
 		"messages": [
-			"Tutoriel: les variables",
 			"Les variables servent à stocker sont des symboles associant un mot à une valeur",
 			"Elles sont noté sous la forme 'VAR_nomVariable'",
 			"Pour définir une variable, on utilise la commande '/set VAR_variable'",

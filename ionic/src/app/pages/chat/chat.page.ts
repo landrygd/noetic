@@ -465,7 +465,7 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   export() {
-    var file = new File([this.messages.join('\n')], this.script.name + '.noe', {type: 'text/plain;charset=utf-8'});
+    const file = new File([this.messages.join('\n')], this.script.name + '.noe', {type: 'text/plain;charset=utf-8'});
     saveAs(file, this.script.name + '.noe');
   }
 
@@ -552,8 +552,11 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     tuto.messages.forEach((message) => {
       message = message.replace(/VAR_/g, '$');
       message = message.replace(/COM_/g, '/');
+      console.log(message);
+      message = message.replace(/ICON_([a-z-_]*)/g, ':i-$1:');
+      console.log(message);
       messages.push(message);
-    })
+    });
     tuto.messages = messages;
     this.tuto = tuto;
     this.messages = tuto.messages;
@@ -565,7 +568,6 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     this.messages = [];
     this.update();
   }
- 
   // async presentPopover(ev: CustomEvent<any>, index) {
   //   const end = index >= this.tuto.length - 1;
   //   const popover = await this.popoverController.create({
