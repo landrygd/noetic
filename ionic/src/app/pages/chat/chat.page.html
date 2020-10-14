@@ -14,7 +14,16 @@
   <ion-toolbar *ngIf="tuto">
     <ion-item button="false">
         <ion-icon slot="start" name="school"></ion-icon>
-        <ion-label>Mode Tutoriel - {{tuto.name}}</ion-label>
+        <ion-label>{{'CHAT.tutoMode' | translate}} - {{tuto.name}}</ion-label>
+        <ion-button slot="end" (click)="closeTuto()" expand="block" fill="clear" shape="round">
+          <ion-icon slot="icon-only" name="close"></ion-icon>
+        </ion-button>
+    </ion-item>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="example">
+    <ion-item button="false">
+        <ion-icon slot="start" name="school"></ion-icon>
+        <ion-label>{{'CHAT.exampleMode' | translate}} - {{example.name}}</ion-label>
         <ion-button slot="end" (click)="closeTuto()" expand="block" fill="clear" shape="round">
           <ion-icon slot="icon-only" name="close"></ion-icon>
         </ion-button>
@@ -44,7 +53,7 @@
         <ion-col>
           <ion-card>
             <ion-card-header>
-              <ion-card-title><ion-icon name="school"></ion-icon> Tutoriels</ion-card-title>
+              <ion-card-title><ion-icon name="school"></ion-icon> {{'CHAT.tutos' | translate}}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <ion-list>
@@ -60,7 +69,7 @@
         <ion-col>
           <ion-card>
             <ion-card-header>
-              <ion-card-title><ion-icon name="book"></ion-icon> Exemples</ion-card-title>
+              <ion-card-title><ion-icon name="book"></ion-icon> {{'CHAT.examples' | translate}}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <ion-list>

@@ -89,12 +89,14 @@ export class CoverPage implements OnInit, OnDestroy {
     this.commonSub.unsubscribe();
   }
 
-  like() {
-    this.bookService.like();
+  async like() {
+    await this.bookService.like();
+    this.refreshLike();
   }
 
-  dislike() {
-    this.bookService.dislike();
+  async dislike() {
+    await this.bookService.dislike();
+    this.refreshLike();
   }
 
   async ionViewWillEnter() {
@@ -109,9 +111,16 @@ export class CoverPage implements OnInit, OnDestroy {
         this.navCtrl.navigateRoot('/');
       });
     }
+    this.refreshLike();
     this.refreshComments();
     this.loading = false;
     this.getBanner();
+  }
+
+  refreshLike() {
+    if (this.userService.connected) {
+      this.likedBook = this.userService.likes.includes(this.book.id);
+    }
   }
 
   async answer(userId) {

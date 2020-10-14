@@ -23,7 +23,7 @@
     </div>
     <div class="flex">
       <div style="height: 320px;width: 180px; margin: 30px 30px 0 30px;">
-        <ion-fab-button style="position: absolute; z-index: 2; width: 50px; height: 50px; margin-left: 160px; margin-top: -20px" *ngIf="book.interactive" (click)="popupInteractive()">
+        <ion-fab-button [color]="book.color" style="position: absolute; z-index: 2; width: 50px; height: 50px; margin-left: 160px; margin-top: -20px" *ngIf="book.interactive" (click)="popupInteractive()">
           <ion-icon name="flash"></ion-icon>
         </ion-fab-button>
         <ion-card  class="ion-no-margin" (click)="changeCover()" button>
@@ -49,23 +49,25 @@
         </ion-select>
       </ion-item>
       <div class="subscribe ion-no-margin" *ngIf="!bookService.isAuthor">
-        <ion-icon color="primary" *ngIf="bookService.book.category !== 'undefined'" class="ion-margin-end" [src]="'assets/icon/svg/' + bookService.book.category + '.svg'"></ion-icon>
-        <ion-text color="primary">
+        <ion-icon [color]="book.color" *ngIf="bookService.book.category !== 'undefined'" class="ion-margin-end" [src]="'assets/icon/svg/' + bookService.book.category + '.svg'"></ion-icon>
+        <ion-text [color]="book.color">
           <p class="ion-no-margin">{{bookService.book.category | category}}</p>
         </ion-text>
       </div>
     </div>
     <div class="subscribe ion-no-margin">
       <p>
-        {{bookService.book.views}}<ion-icon name="eye"></ion-icon>
+        {{bookService.book.likes}}<ion-icon name="heart"></ion-icon> 
+        {{bookService.book.views}}<ion-icon name="eye"></ion-icon> 
+        {{bookService.book.comments}}<ion-icon name="chatbox"></ion-icon>
       </p>
     </div>
     <div class="subscribe">
-      <div *ngIf="userService.connected">
-        <ion-fab-button (click)="like()" *ngIf="!bookService.likedBook" color="primary" style="height: 45px; width: 45px;">
+      <div *ngIf="userService.connected && !bookService.isAuthor">
+        <ion-fab-button (click)="like()" *ngIf="!likedBook" [color]="book.color" style="height: 45px; width: 45px;">
           <ion-icon name="heart"></ion-icon>
         </ion-fab-button>
-        <ion-fab-button (click)="dislike()" *ngIf="bookService.likedBook" color="light" style="height: 45px; width: 45px;">
+        <ion-fab-button (click)="dislike()" *ngIf="likedBook" color="light" style="height: 45px; width: 45px;">
           <ion-icon name="heart-dislike"></ion-icon>
         </ion-fab-button>
       </div>
@@ -77,14 +79,14 @@
       <ion-fab-button (click)="edit()" *ngIf="bookService.isAuthor" color="light" style="height: 45px; width: 45px;">
         <ion-icon name="create"></ion-icon>
       </ion-fab-button>
-      <div *ngIf="!bookService.isAuthor && userService.connected">
+      <!-- <div *ngIf="!bookService.isAuthor && userService.connected">
         <ion-fab-button (click)="addToList()" *ngIf="!inList" color="light" style="height: 45px; width: 45px;">
           <ion-icon name="add"></ion-icon>
         </ion-fab-button>
         <ion-fab-button (click)="removeFromList()" *ngIf="inList" color="light" style="height: 45px; width: 45px;">
           <ion-icon name="remove"></ion-icon>
         </ion-fab-button>
-      </div>
+      </div> -->
     </div>
     <div class="subscribe">
       <app-user-chip [userId]="bookService.book.author" ></app-user-chip>

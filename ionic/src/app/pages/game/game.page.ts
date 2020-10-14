@@ -404,11 +404,11 @@ export class GamePage implements OnInit, OnDestroy {
     }
   }
 
-  setVariable(operator, path = this.args[0]) {
-    let value;
-    if (operator !== 'get') {
+  setVariable(operator, path = this.args[0], value?) {
+    if (!value && operator !== 'get') {
       value = this.getVariable(this.args[1]);
     }
+    console.log(operator, path, value);
     let k = this.variables;
     let steps: string[] = path.split('.');
     if (steps[0].charAt(0) === '@') {
@@ -549,7 +549,7 @@ export class GamePage implements OnInit, OnDestroy {
               name: action.name,
               chat: key,
               type: 'chat',
-              key: key,
+              key,
               color: role.color
             };
             this.actions.push(res);
@@ -846,7 +846,7 @@ export class GamePage implements OnInit, OnDestroy {
   }
 
   send() {
-    this.variables[this.getVariableName(this.args[0])] = this.input;
+    this.setVariable('set', this.args[0], this.input);
     this.inputShowed = false;
     this.resume();
   }

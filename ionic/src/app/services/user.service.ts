@@ -50,7 +50,8 @@ export class UserService implements OnDestroy {
   savesId: string[] = [];
   savesSub: Subscription;
 
-  likes: any[];
+  likes: string[];
+  comments: string[];
 
   usersCollection: AngularFirestoreCollection<any>;
   userDoc: AngularFirestoreDocument;
@@ -214,8 +215,8 @@ export class UserService implements OnDestroy {
           this.traductionService.setLanguage(this.lang);
           this.getMenuBooks();
           this.getBooks();
-          this.getList();
           this.getLikes();
+          this.getComments();
           this.getSaves();
           this.syncNotifs();
           this.getFollowList();
@@ -331,15 +332,25 @@ export class UserService implements OnDestroy {
     });
   }
 
-  getList() {
-    this.listSub = this.userDoc.collection('list', ref => ref.orderBy('lastChanges', 'desc')).snapshotChanges().subscribe((val) => {
+  getComments() {
+    this.bookSub = this.userDoc.collection('comments', ref => ref.orderBy('lastChanges', 'desc')).snapshotChanges().subscribe((val) => {
       const res = [];
       val.forEach(doc => {
         res.push(doc.payload.doc.id);
       });
-      this.list = res;
+      this.comments = res;
     });
   }
+
+  // getList() {
+  //   this.listSub = this.userDoc.collection('list', ref => ref.orderBy('lastChanges', 'desc')).snapshotChanges().subscribe((val) => {
+  //     const res = [];
+  //     val.forEach(doc => {
+  //       res.push(doc.payload.doc.id);
+  //     });
+  //     this.list = res;
+  //   });
+  // }
 
   getSaves() {
     this.savesSub = this.userDoc.collection('saves', ref => ref.orderBy('lastChanges', 'desc')).snapshotChanges().subscribe((val) => {

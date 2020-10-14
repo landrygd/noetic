@@ -87,7 +87,11 @@
     "commands": "Commandes",
     "addActor": "Ajouter un acteur",
     "voidChat": "Tchat vide",
-    "test": "Tester"
+    "test": "Tester",
+    "tutoMode": "Mode tuto ",
+    "exampleMode": "Mode exemple ",
+    "tutos": "Tutoriels",
+    "examples": "Exemples"
 	},
 	"COMMON": {
 		"warningDelete": "Etes vous sûr de vouloir supprimer cet objet?",
@@ -782,6 +786,27 @@
 			"COM_label fin",
 			"Vous quittez le magasin"
     	]
-	}
-	]
+	}, {
+		"name": "Plus ou moins?",
+		"messages": [
+      "COM_random VAR_nombre 1 100",
+      "J'ai choisis un nombre entre 1 et 100",
+      "Lequel j'ai choisis à ton avis?",
+      "COM_label boucle",
+      "COM_input VAR_réponse",
+      "COM_if VAR_nombre < VAR_réponse",
+      "Non, mon nombre est plus petit!",
+      "COM_end",
+      "COM_if VAR_nombre > VAR_réponse",
+      "Non, mon nombre est plus grand!",
+      "COM_end",
+      "COM_if VAR_nombre = VAR_réponse",
+      "COM_go fin",
+      "COM_end",
+      "COM_go boucle",
+      "COM_label fin",
+      "Oui c'est bien VAR_nombre!"
+    ]
+  }
+]
 }

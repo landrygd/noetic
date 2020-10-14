@@ -189,6 +189,7 @@ export class Book {
   downloadURL: string;
   color: string;
   interactive: boolean;
+  comments: number;
 
  // Content
   setup: {main: string};
@@ -215,6 +216,7 @@ export class Book {
     this.public = false;
     this.downloadURL = '';
     this.interactive = false;
+    this.comments = 0;
 
     this.setup = {
       main: 'main'
@@ -261,7 +263,8 @@ export class Book {
       public: this.public,
       downloadURL: this.downloadURL,
       color: this.color,
-      interactive: this.interactive
+      interactive: this.interactive,
+      comments: this.comments
     };
     if (this.version > 1) {
       delete obj.views;

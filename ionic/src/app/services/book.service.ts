@@ -127,8 +127,27 @@ export class BookService implements OnDestroy {
     return this.firestore.createId();
   }
 
-  like() {
-    
+  async like() {
+    if (!this.userService.likes.includes(this.book.id)) {
+      this.book.likes += 1;
+      this.userService.likes.push(this.book.id);
+      await this.firestore.collection('books').doc(this.book.id).update({likes: this.book.likes});
+      await this.firestore.collection('users').doc(this.userService.userData.id).collection('likes')
+                                       .doc(this.book.id).set({lastChanges: Date.now()});
+    }
+  }
+
+  async dislike() {
+    const likes = this.userService.likes;
+    if (likes.includes(this.book.id)) {
+      this.book.likes -= 1;
+      const index = likes.indexOf(this.book.id);
+      likes.splice(index, 1);
+      this.userService.likes = likes;
+      await this.firestore.collection('books').doc(this.book.id).update({likes: this.book.likes});
+      await this.firestore.collection('users').doc(this.userService.userData.id).collection('likes')
+                                       .doc(this.book.id).delete();
+    }
   }
 
   async openBook(bookId) {
@@ -426,9 +445,16 @@ export class BookService implements OnDestroy {
   }
 
   sendComment(text: string) {
+    if (!this.userService.comments.includes(this.book.id)) {
+      this.book.comments += 1;
+      this.userService.comments.push(this.book.id);
+      this.firestore.collection('books').doc(this.book.id).update({comments: this.book.comments});
+      this.firestore.collection('users').doc(this.userService.userData.id).collection('comments')
+      .doc(this.book.id).set({lastChanges: Date.now()});
+    }
     this.firestore.collection('books').doc(this.book.id).collection('comments').doc(this.userService.userData.id).set(
       {text, date: Date.now(), userId: this.userService.userId}
-      );
+    );
   }
 
   addMediaRef(url: string, ref: string, type: string, tag: string) {
