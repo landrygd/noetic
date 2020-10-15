@@ -6,7 +6,7 @@ import { Storage } from '@ionic/storage';
   providedIn: 'root'
 })
 export class ThemeService {
-  darkMode = false;
+  darkMode = true;
 
   constructor(private plt: Platform, private storage: Storage) {
     this.plt.ready().then(() => {

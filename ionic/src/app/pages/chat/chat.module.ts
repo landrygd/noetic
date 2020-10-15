@@ -17,6 +17,7 @@ import { EntityModalComponent } from 'src/app/components/modals/entity-modal/ent
 import { IdFinderComponent } from 'src/app/components/modals/id-finder/id-finder.component';
 import { WallpapersSearchComponent } from 'src/app/components/modals/wallpapers-search/wallpapers-search.component';
 import { GalleryComponent } from 'src/app/components/modals/gallery/gallery.component';
+import { FaqComponent } from 'src/app/components/modals/faq/faq.component';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import { GalleryComponent } from 'src/app/components/modals/gallery/gallery.comp
     AudioListComponent,
     IdFinderComponent,
     WallpapersSearchComponent,
-    GalleryComponent
+    GalleryComponent,
+    FaqComponent
   ]
 })
 export class ChatPageModule {}

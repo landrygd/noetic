@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-searchbar #searchbar placeholder="{{'CHAT.faqPlaceholder' | translate}}" inputmode="text" type="text" (ionChange)="search($event.target.value)" [debounce]="250" showCancelButton="always" (ionCancel)="dismiss()"></ion-searchbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-card *ngFor="let res of results" color="light">
+      <ion-card-header>
+        <ion-card-title>{{res.question}}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        {{res.answer}}
+        <div *ngIf="res.example">
+          {{'CHAT.example' |translate}}: <br>
+          <code [innerHTML]="res.example | toHtml">
+  
+          </code>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>
