@@ -34,62 +34,60 @@
 </ion-content>
 
 <ion-footer>
-  <ion-toolbar>
-    <ion-row *ngIf="!question && !inputShowed; else event">
-      <ion-col size="12" *ngIf="settings.mode === 'next' && !ended">
-        <ion-item button (click)="next()" color="primary">
-          <ion-label style="margin: auto; text-align: center;">{{'COMMON.next' | translate}}</ion-label>
-        </ion-item>
-      </ion-col>
-      <ion-col size="12" *ngIf="ended">
-        <ion-item button (click)="exit()" color="primary">
-          <ion-label style="margin: auto; text-align: center;">{{'COMMON.leave' | translate}}</ion-label>
-        </ion-item>
-      </ion-col>
-      <ion-col size="12" *ngIf="settings.mode === 'action' && place">
-          <ion-list class="actions">
-            <ion-list-header>
-              <ion-chip style="margin: auto;" [color]="place.color">
-                <ion-label>@{{place.key}}</ion-label>
-              </ion-chip>
-            </ion-list-header>
-            <ion-item button detail *ngFor="let action of actions" (click)="playAction(action)">
-              <ion-icon *ngIf="action.type === 'chat'" slot="start" name="flash"></ion-icon>
-              <ion-icon *ngIf="action.type === 'go'" slot="start" name="arrow-forward"></ion-icon>
-              <ion-chip [color]="action.color" outline="true">
-                <ion-label>@{{action.key}}</ion-label>
-              </ion-chip>
-              <ion-chip [color]="action.color">
-                <ion-label>{{action.name}}</ion-label>
-              </ion-chip>
-            </ion-item>
-          </ion-list>
-          <!-- <ion-searchbar placeholder="Chercher une action" inputmode="text" type="text" [debounce]="250"></ion-searchbar> -->
-      </ion-col>
-      <!-- <ion-col size="4">
-        <ion-item>
-          <ion-label>{{'COMMON.auto' | translate}}</ion-label>
-          <ion-toggle [(ngModel)]="autoPlay" (ionChange)="toggleAuto()" slot="end"></ion-toggle>
-        </ion-item>
-      </ion-col> -->
-    </ion-row>
-    <ng-template #event>
-      <ion-row>
-        <ion-col size="12">
-          <ion-list *ngIf="question">
-            <ion-button (click)="answer(toVariable(ans))" expand="block" fill="solid" shape="round" *ngFor="let ans of answers">
-              {{this.toVariable(ans)}}
-            </ion-button>
-          </ion-list>
-      
-          <ion-item *ngIf="inputShowed">
-            <ion-input [(ngModel)]="input" type="text" [placeholder]="'GAME.input' | translate" (keypress)="enter($event.keyCode)"></ion-input>
-            <ion-button (click)="send()" expand="block" fill="clear" shape="round" slot="end">
-              <ion-icon slot="icon-only" name="send"></ion-icon>
-            </ion-button>
+  <ion-row *ngIf="!question && !inputShowed; else event">
+    <ion-col size="12" *ngIf="settings.mode === 'next' && !ended">
+      <ion-item button (click)="next()" color="primary">
+        <ion-label style="margin: auto; text-align: center;">{{'COMMON.next' | translate}}</ion-label>
+      </ion-item>
+    </ion-col>
+    <ion-col size="12" *ngIf="ended">
+      <ion-item button (click)="exit()" color="primary">
+        <ion-label style="margin: auto; text-align: center;">{{'COMMON.leave' | translate}}</ion-label>
+      </ion-item>
+    </ion-col>
+    <ion-col size="12" *ngIf="settings.mode === 'action' && place">
+        <ion-list class="actions">
+          <ion-list-header>
+            <ion-chip style="margin: auto;" [color]="place.color">
+              <ion-label>@{{place.key}}</ion-label>
+            </ion-chip>
+          </ion-list-header>
+          <ion-item button detail *ngFor="let action of actions" (click)="playAction(action)">
+            <ion-icon *ngIf="action.type === 'chat'" slot="start" name="flash"></ion-icon>
+            <ion-icon *ngIf="action.type === 'go'" slot="start" name="arrow-forward"></ion-icon>
+            <ion-chip [color]="action.color" outline="true">
+              <ion-label>@{{action.key}}</ion-label>
+            </ion-chip>
+            <ion-chip [color]="action.color">
+              <ion-label>{{action.name}}</ion-label>
+            </ion-chip>
           </ion-item>
-        </ion-col>
-      </ion-row>
-    </ng-template>
-  </ion-toolbar>
+        </ion-list>
+        <!-- <ion-searchbar placeholder="Chercher une action" inputmode="text" type="text" [debounce]="250"></ion-searchbar> -->
+    </ion-col>
+    <!-- <ion-col size="4">
+      <ion-item>
+        <ion-label>{{'COMMON.auto' | translate}}</ion-label>
+        <ion-toggle [(ngModel)]="autoPlay" (ionChange)="toggleAuto()" slot="end"></ion-toggle>
+      </ion-item>
+    </ion-col> -->
+  </ion-row>
+  <ng-template #event>
+    <ion-row>
+      <ion-col size="12">
+        <ion-list *ngIf="question">
+          <ion-button (click)="answer(toVariable(ans))" expand="block" fill="solid" shape="round" *ngFor="let ans of answers">
+            {{this.toVariable(ans)}}
+          </ion-button>
+        </ion-list>
+    
+        <ion-item *ngIf="inputShowed">
+          <ion-input [(ngModel)]="input" type="text" [placeholder]="'GAME.input' | translate" (keypress)="enter($event.keyCode)"></ion-input>
+          <ion-button (click)="send()" expand="block" fill="clear" shape="round" slot="end">
+            <ion-icon slot="icon-only" name="send"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ng-template>
 </ion-footer>

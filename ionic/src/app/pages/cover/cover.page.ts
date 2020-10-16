@@ -249,8 +249,14 @@ export class CoverPage implements OnInit, OnDestroy {
   }
 
   async refreshComments() {
-    this.comments = await this.bookService.getComments();
-    this.comment = await this.bookService.getComment();
+    if (this.book.comments > 0) {
+      this.comments = await this.bookService.getComments();
+    }
+    if (this.userService.connected) {
+      if (this.userService.comments.includes(this.book.id)) {
+        this.comment = await this.bookService.getComment();
+      }
+    }
   }
 
   addToList() {

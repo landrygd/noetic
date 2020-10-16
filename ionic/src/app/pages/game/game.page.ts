@@ -406,12 +406,15 @@ export class GamePage implements OnInit, OnDestroy {
 
   setVariable(operator, path = this.args[0], value?) {
     if (!value && operator !== 'get') {
-      value = this.getVariable(this.args[1]);
+      value = this.getVariable(this.args.slice(1).join(' '));
     }
     let k = this.variables;
     let steps: string[] = path.split('.');
     if (steps[0].charAt(0) === '@') {
       steps = steps.slice(0, 2);
+      if (steps.length === 1) {
+        return path;
+      }
     } else {
       steps = [steps[0]];
     }
