@@ -543,15 +543,15 @@
       "show": "Arrêter de jouer la musique §1",
       "desc": "Arrêter de jouer une musique"
 		},
-		"action": {
+	"free": {
       "show": "Passer en mode action libre",
       "desc": "Passer en mode action libre"
 		},
-		"place": {
+	"place": {
       "show": "Aller au lieu §1",
       "desc": "Changer de lieu"
 		},
-		"background": {
+	"background": {
       "show": "Changer l'arrière-plan à §1",
       "desc": "Changer d'arrière-plan"
     },
@@ -835,7 +835,7 @@
 		{
 			"question":"Comment passer en mode libre?",
 			"answer":"Avec la commande COM_free. A noter qu'il faut d'abord définir le lieu dans lequel apparaîtra le joueur",
-			"example": "COM_place @Cuisine\n/free"
+			"example": "COM_place @Cuisine\nCOM_free"
 		},
 		{
 			"question":"Comment poser une question?",

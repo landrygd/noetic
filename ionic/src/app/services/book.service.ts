@@ -525,7 +525,10 @@ export class BookService implements OnDestroy {
     });
   }
 
-  async downloadBook(url: string = this.book.downloadURL): Promise<Book> {
+  async downloadBook(url?): Promise<Book> {
+    if (!url) {
+      url = await this.firestorage.ref('books/' + this.book.id + '/book.json').getDownloadURL().toPromise();
+    }
     return new Promise (async (resolve) => {
       const blob = await this.getBlob(url);
       // Conversion du blob en json
@@ -869,7 +872,6 @@ export class BookService implements OnDestroy {
       this.firestore.collection('books').doc(bookId)
                     .collection('comments').doc(this.userService.userData.id)
                     .get().toPromise().then(async (data) => {
-                      console.log(data.data());
         resolve(data.data().text);
       }).catch((err) => reject(err));
     });

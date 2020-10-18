@@ -194,8 +194,8 @@ export class GamePage implements OnInit, OnDestroy {
                   }
                 }
                 break;
-              case 'action':
-                this.settings.mode = 'action';
+              case 'free':
+                this.settings.mode = 'free';
                 this.paused = true;
                 break;
               case 'place':
@@ -358,7 +358,7 @@ export class GamePage implements OnInit, OnDestroy {
         if (this.autoPlay) {
           this.nextTimer = setTimeout(() => {
             if (this.place) {
-              this.settings.mode = 'action';
+              this.settings.mode = 'free';
               this.paused = true;
             } else {
               this.end();
@@ -366,7 +366,7 @@ export class GamePage implements OnInit, OnDestroy {
           }, this.waitTime);
         } else {
           if (this.place) {
-            this.settings.mode = 'action';
+            this.settings.mode = 'free';
             this.paused = true;
           } else {
             this.end();
