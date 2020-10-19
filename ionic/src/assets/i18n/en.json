@@ -1,1 +1,817 @@
-{"BOOKSETTINGS":{"background":"Change background","delete":"Remove this product","deleteConfirm":"Are you sure you want to delete this book?","header":"Book settings","invitationSent":"Invitation sent","invite":"Invite a friend to cooperate","leave":"Withdraw from the book","leaveBookConfirm":"Are you sure you want to remove yourself from the authors of this book?","policyConfirm":"I respected the charter","policyError":"You must accept the rules of the Noetic charter","publish":"Publish this book","publishConfirm":"Are you sure you are making this book public? Its content must respect the rules of the Noetic charter","seePolicy":"SEE THE CHARTER","stopPublishingConfirm":"Are you sure you want to make this book private?","tuto":"Restart the tutorial","tutoReactivated":"Tutorial reactivated","unPublish":"Stop publishing this book","mainChat":"Main chat","selectMainChat":"select main chat","updateConfirm":"Are you sure you are publishing this version of the book?"},"BOOKTABS":{"story":"Screenplay","actors":"Stakeholder","places":"Locations"},"TUTO":{"0":"Welcome to the scenario editor, press &quot;OK&quot; to continue this tutorial or &quot;Skip&quot; to skip it","1":"You can enter text in the chat bar at the bottom of the screen","2":"To add an actor, press the &quot;&quot; button in the &quot;actor&quot; section","3":"To select / deselect him, tap on his avatar in the chat bar","4":"You can edit an actor by tapping on their avatar in the chat","5":"To make the chat dynamic, press the &quot;command&quot; section","6":"Here you can search for commands by pressing the magnifying glass","7":"Note that you can include variables in your texts with the sign &quot;$&quot;","8":"Example: &quot;/ input $ name&quot; then &quot;Hello $ name&quot;","9":"You can replay this tutorial by reactivating it in your project settings","10":"Enjoy your discoveries!"},"CATEGORIES":{"action":"Action","adventure":"An adventure game","fanfiction":"Fan fiction","fantastic":"Fantastique","fiction":"General fiction","horror":"Horror","humor":"Humor","mystery":"Mytérieux","nonfiction":"General Non-Fiction","romance":"Romance","scifi":"Science fiction","thriller":"thriller","undefined":"Uncategorized"},"CHART":{"rules":{"0":"To use racist, homophobic, sexist or any other politically incorrect subject.","1":"To be disrespectful to the reader, to harass or attack him.","2":"Spam, abuse sound effects.","3":"Spoiler without warning readers.","4":"Use pornographic or extreme violence content.","5":"Not to warn readers of offensive content or about a sensitive topic.","6":"To disclose private information of other people without consent.","7":"Plagiarize a story","8":"Do not mention the authors of the images used. Including the cover!"},"header":"Noetic Charter","intro":"It is strictly prohibited in any work:","outro":"Any user who does not respect these rules is liable to a ban."},"CHAT":{"alertSettingsHeader":"Post Chat Settings","avaibleAmbiances":"See the available moods","avaibleMusics":"See available music","avaibleSounds":"The sounds that are available:","enterMessage":"Enter a message...","tools":"Tools","actors":"Actors","commands":"Commands","avaibleBackgrounds":"See available backgrounds","addActor":"Add actor","voidChat":"Empty chat","test":"Tester","tutoMode":"Tutorial mode","exampleMode":"Example mode","tutos":"Hướng dẫn","examples":"Examples"},"COMMON":{"auto":"auto","leave":"Leave","comingSoon":"Coming soon","accept":"Accept","cancel":"Cancel","category":"Category","confirm":"Confirm","create":"Create","delete":"Delete","disconnected":"Disconnected","erase":"Erase","error":"Error","examples":"Examples","loading":"Loading...","more":"Find out more","next":"Next","no":"No","notifs":"Notice","ok":"OK.","options":"Options","read":"Reading","refuse":"Refusal","register":"Register","rename":"Rename","return":"Back","send":"Send","settings":"Settings","use":"Use","warning":"ATTENTION !","yes":"Yes","warningDelete":"Are you sure you want to delete this item?","edit":"Edit","name":"Last name ","desc":"Description","id":"Username","role":"Identifying role","nodesc":"No description.","change":"Edit","update":"Update","defaultValue":"Default value","chatName":"Chat name","vues":"views","likes":"like"},"COVER":{"addTag":"Add a tag","alertAnswerPlaceholder":"Please enter your answer","alertDescPlaceholder":"Your description","alertTagPlaceholder":"Tag Name","alertTitleHeader":"Change title","alertTitlePlaceholder":"Your title","alertVersoPlaceholder":"Your back","answer":"Answer","changeDesc":"Change description","changeVerso":"Change back","hideAuthorAnswer":"Hide the creator&#39;s response","more":"Find out more","seeAuthorAnswer":"See the creator&#39;s response","toastAddedToList":"Successfully! added to your wishlist","toastCommentSent":"Feedback Sent","toastRemovedFromList":"Properties were removed from the list","sendComment":"Leave a comment"},"ERRORS":{"5TagsMax":"Cannot have more than 5 tags for the same book.","buttonsNotAvaible":"Unable to execute buttons here.","invalidLabelName":"Unable to create label with this name.","title3CarMin":"The title must be at least more than 3 characters","title40CarMax":"Title must be at least 40 characters","unratedComment":"Please note before sending your review","noSpace":"Please remove the spaces","fieldMissing":"Field missing","idIncorrect":"The identifier must contain only numbers, letters and characters - and _","keyUneditable":"Cannot edit a key role","imageLimit":"You are limited to 10 images imported per book"},"GAME":{"answer":"Choose an answer","input":"Works with text inputs.","maxChatError":"A cat can only be used 10 times per minute maximum! It will be ignored while reading this exceeded quota.","maxLabelError":"A label can only be used 10 times per minute maximum! It will be ignored while reading this exceeded quota.","restartBook":"Restart the book","restartBookWarning":"By restarting this book, all of your backups will be permanently lost!","go":"Outbound"},"HOME":{"about":"About us","aboutApp":"ABOUT APPLICATION","aboutBlockup":"About Blockup","chart":"Noetic Charter","mostRecent":"Most recent","mostVue":"Best Viewed","noeticSite":"Noetic website","policy":"Privacy policy","popupRGPD":"By continuing to browse this site, you accept the use of cookies to provide you with targeted content adapted to your interests and to generate visit statistics.","rate":"Rate the application","report":"Report a problem","saves":"View Saved Items","search":"Find a story","share":"Share App","topRated":"Top Rated Products","creationDate":"Most recent","views":"Best Viewed","likes":"Highest Rated"},"LANGUAGES":{"arabic":"Arabic","chinese":"Chinese","english":"English","french":"French","german":"Allemand","hindi":"hindi","portugese":"Portuguese","russian":"Russian","spanish":"Spanish","swahili":"swahili"},"LOGIN":{"forgotPassword":"Forgot your password?","login":"Log in","noAccount":"No Account?","otherConnexion":"Or connect with","register":"Create Account","return":"Return to the site"},"MODALS":{"ACTOR":{"changeColor":"Change Color...","warningDesc":"By deleting this actor, you also delete all of their messages."},"MANUAL":{"cat":{"control":"Control","variables":"Variables","appearance":"Appearance","audio":"Audio"},"types":{"==":"equal","!=":"different","<=":"inferior or equal",">=":"superior or equal","<":"Strictly lower",">":"Strictly higher"},"args":{"name":"Last Name","value":"Value","variable":"Variable","min":"Minimum","max":"Maximum","secondes":"Seconds","sound":"Foley artist","music":"Music","ambiance":"Atmosphere","actor":"Stakeholder","message":"Message","answer":"Response","addanswer":"Add answer","operator":"Self-Checking","background":"background"},"opts":{"stop":"Stop","once":"Only once"},"ambiance":"Find an ambiance","command":"Search Order","music":"Find a music","sound":"Search for sound effects","forgotEntry":"Missing entry JSON","background":"Find a background"},"SEARCHUSER":{"search":"Search user"},"UPLOAD":{"error":"Error loading image. Please check if it is in .jpeg or .png format.","header":"Upload image"},"WALLPAPER":{"header":"Choose a Background"},"NEW-ENTITY":{"enterName":"Enter a name","id":"Username"},"ENTITY":{"addItem":"Add ticket item","addVariable":"Add variable","addAction":"Add an action","addRole":"Add role","addPlace":"Add a place","variables":"Variables","actions":"Actions","items":"Objects","linkedPlaces":"Related places"}},"NEWBOOK":{"changeCover":"Change Cover","create":"Create a Story","descMaxError":"Description must be less than 250 characters","descMinError":"Description must be at least 3 characters long","tagMaxError":"There should be no more than 5 tags","titleMaxError":"Title must be less than 40 characters","titleMinError":"The title must be at least more than 3 characters","versoMaxError":"Back side must be less than 2000 characters","description":"Enter description here . . .","title":"please enter a title!","tag":"Add a tag"},"NOTIFS":{"acceptInvWriting":"accepted your invitation on the book","invWriting":"invites you to write with him on the book","noNotif":"No notifications for the moment ..."},"OFFLINE":{"pleaseReconnect":"Please re-establish the connection to continue."},"PASSWORD":{"reinit":"Renew password"},"PRESENTATION":{"create":"Create","createDesc":"stories through interactive chats,","discover":"And discover:","discoverDesc":"what others have shared, you might be surprised!","invite":"Invite","inviteDesc":"your friends to create and / or play a story together,","letsGo":"Let's go!"},"PROFILE":{"changeBio":"Change bio","changePseudo":"Change Nickname","disconnect":"Log out","follow":"Follow Up","hisStories":"His stories","myFollows":"Watch List","myList":"My List","myStories":"My Stories","newBio":"New bio","newPseudo":"New user username.","noBio":"Nothing to say yet ...","share":"Share Profile","unfollow":"Stop Following To"},"REGISTER":{"accept":"Accept","passwordMaxError":"Password must be not more than 16 characters long","paswordMatchError":"Password Confirmation Doesn't Match","paswordMinError":"The password must contain at least 8 characters.","policyError":"You must acknowledge and agree to the privacy policy to register","privatePolicy":"the privacy policy","pseudoInvalidCarError":"Nickname to contain only numbers and letters","pseudoMaxError":"Nickname must not contain more than 30 characters","pseudoMinError":"Nickname must contain at least 4 characters"},"SEARCH":{"noresult":"No result","nosearch":"Null Searches"},"SERVICES":{"ACTOR":{"actorName":"Name of the actor","actorNameError":"Please enter a Name","newActor":"Add an actor"},"AUTH":{"confirmNewMail":"Your email address is now:","confirmPasswordWarning":"For security reasons, please enter your password","emailUsedError":"Email already used","password":"Password","passwordError":"Password incorrect","resetPasswordLink":"A password reset link has just been sent to your email address:"},"BOOK":{"header":{"place":"Create New Location","actor":"Create a new actor","type":"Create new type","script":"Create New Script","item":"Create New Item"},"addChat":"Add Chat","authorAlreadyError":"You are already the author of this book","authorMaxError":"There cannot be more than 10 authors per book","backgroundChanged":"Layout Background Changed","bookNotExistError":"Non-existent book","bookPublished":"Book published.","chatName":"Cat name","chatNameError":"Enter a name","chatReservedNameError":"Cannot use this name","chatUsedNameError":"Name in use","emptyCategory":"Empty category for the moment","newChatError":"Unable to create a cat, your book is too large","shareMsg":"Here is a book on Noetic","shareSubject":"Book sharing","uploaded":"Book updated","isInteractive":"This book is interactive"},"CHAT":{"changeChatName":"Change cat name","chatLogsMaxError":"Cannot send more than 1000 messages in a chat.","logMaxError":"Cannot send more than 800 characters","newChatName":"New cat name"},"USER":{"avaibleLanguages":"Available languages","copiedLink":"Link has been copied to clipboard.","languagesMax":"You cannot choose more than 10 languages","ownProfileError":"It&#39;s your own profile!","readingSaved":"Reading saved","report":"Report a problem","reportBook":"Report a book","reportMsg":"We will do our best to fix it as soon as possible. Any spam is punishable by ban.","reportPlaceholder":"Your problem:","reportSent":"Report sent","reportUser":"Report User","restartApp":"Please restart the application for your settings to take effect","shareAppMsg":"Here is Noetic, an app to create your own narrative games in the form of cats","shareAppSubject":"Noetic, an app to create narrative games with a chat","shareProfileMsg":"Here is my profile on Noetic:","shareProfileSubject":"Profile sharing","syncError":"Sync Error","userNotFoundError":"title.user_not_registered"},"PLACE":{"header":"New Location"}},"TABS":{"home":"Home","profile":"Profile"},"USERSETTINGS":{"changeMail":"Change Address","email":"Email","header":"User Settings","language":"Manage the application language","nightMode":"Dark Mode","reinitPassword":"Renew password","searchLanguages":"Manage the languages of the research books"},"COMMANDS":{"label":{"show":"Label §1","desc":"Add Bookmark"},"go":{"show":"Go to label §1","desc":"Redirect to a label"},"chat":{"show":"Go To Chatroom","desc":"Redirect to a chat"},"set":{"show":"Put §1 to §2","desc":"Set variable"},"if":{"show":"If §*","desc":"Test a variable"},"else":{"show":"Otherwise","desc":"Skip if the test is false"},"end":{"show":"End","desc":"Close a nesting"},"answer":{"show":"If response is: §*","desc":"Check Answer"},"clear":{"show":"Erase Messages","desc":"Erase Messages"},"add":{"show":"Add §2 to §1","desc":"Add a variable"},"sub":{"show":"Subtract §2 from §1","desc":"Subtract from a variable"},"div":{"show":"Divide §1 to §2","desc":"Divide a variable"},"mul":{"show":"Multiply §1 to §2","desc":"Multiply a variable"},"random":{"show":"Choose an integer between §1 and §2 for §3","desc":"Choose a random integer"},"wait":{"show":"Wait §1 seconds","desc":"Wait x seconds"},"input":{"show":"Request a value for §1","desc":"Request a value"},"sound":{"show":"Play Sound §1","desc":"Playing a sound"},"music":{"show":"Play Music §1","desc":"Playing a music"},"ambiance":{"show":"Play Ambient §1","desc":"Play an atmosphere"},"control":{"show":"Control the character §1","desc":"Show messages on the right"},"finish":{"show":"End of the story.","desc":"Ending a story"},"alert":{"show":"View Message","desc":"Show Alert"},"question":{"show":"Ask a question","desc":"Ask a question"},"stopsound":{"show":"Stop playing sound §1","desc":"Stop playing a sound"},"stopambiance":{"show":"Stop playing the mood §1","desc":"Stop playing a mood"},"stopmusic":{"show":"Stop playing music §1","desc":"Stop playing music"},"unknowed":{"show":"Unknown Command","desc":"Unknown Command"},"action":{"show":"Switch to free action mode","desc":"Switch to free action mode"},"place":{"show":"Go to place §1","desc":"Find a Forecast"},"background":{"show":"Change the background to §1","desc":"Change background"},"cursor":{"show":"Insert a message here","desc":"Insert message"}},"ACTORS":{"addActor":"Add actor"},"PLACES":{"addPlace":"Add a place"},"TUTOS":{"0":{"messages":{"0":"Read & Write","1":"To read the script:","2":"press &#39;Test ICON_play&#39;","3":"Add a message","4":"enter text in the chat bar","5":"then press ICON_send.","6":"Message edit","7":"select it and resend the edited message.","8":"To insert a message below another:","9":"Select a message","10":"press &#39;Insert message here&#39;","11":"Send your comment","12":"Delete a message","13":"select it then press: i-ellipsis-vertical:","14":"to post a comment.","15":"Enter your message preceded by //","16":"Like this:","17":"This is a comment","18":"Stakeholder","19":"To add an actor:","20":"press the button ICON_add-circle then ICON_person-add.","21":"To send a message with an actor:","22":"tap their avatar","23":"Shortcuts","24":"You can also use the shortcuts","25":"delete to delete messages","26":"Ctrl X to cut them","27":"Ctrl C to copy them","28":"Ctrl V to paste them","29":"Ctrl Z to undo an action","30":"Ctrl Y to redo an action","31":"orders","32":"To make the story dynamic,","33":"we use the commands, they take the form:","34":"// COM_nameCommand argument1 argument2 etc ...","35":"They can be used to play a sound,","36":"ask questions, go back etc ...","37":"To see all the available commands:","38":"press ICON_add-circle then ICON_terminal","39":"- Organization","40":"To organize yourself well in your project","41":"you can divide your scenario into several scripts","42":"then link them with the command: COM_chat chatName","43":"for example at the end of the episode1 script we can put:","44":"/ cat episode2"},"name":"The bases"},"1":{"messages":{"0":"Images","1":"POUR AFFICHER UNE IMAGE :","2":"send the url of your image directly","3":"Jump to:","4":"https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib/images/night.jpg?alt=media","5":"This also works for gifs:","6":"https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib/images/gatsby.gif?alt=media","7":"You can also import it directly","8":"by pressing ICON_image","9":"Videos","10":"For videos, we can use the links from Youtube","11":"https://www.youtube.com/watch?v=jNQXAC9IVRw","12":"Stakeholder","13":"To customize an actor:","14":"tap their avatar in messages.","15":"To change the chat background","16":"use the command: COM_background","17":"village of Son","18":"Play a sound:","19":"use the command: COM_sound, COM_ambiance or COM_music","20":"To stop a sound","21":"use the command: COM_stopsound, COM_stopambiance or / COM_stopmusic"},"name":"The images and sounds"},"2":{"messages":{"0":"Global Variables","1":"Global variables are used to store values","2":"They are noted in the form &#39;VAR_nomVariable&#39;","3":"To define a global variable","4":"we use the command &#39;COM_set VAR_variable&#39;","5":"For example, if &#39;VAR_name&#39; is equal to &#39;Elisa&#39;,","6":"the message &#39;Hello VAR_name&#39; will be equal to &#39;Hello Elisa&#39;","7":"COM_SET VAR_name Elisa","8":"Hello VAR_name","9":"Numerical values","10":"Variables can be numbers,","11":"we can perform operations","12":"with the commands COM_ADD, COM_SET, COM_DIV, COM_MUL","13":"For example, this line adds 1 to room:","14":"COM_SET VAR_parts 0","15":"COM_ADD VAR_parts 1","16":"To set a random value to a variable:","17":"We use the command: COM_RANDOM VAR_variable min max","18":"COM_RANDOM VAR_room 1 9","19":"The variable &#39;room&#39; is worth: VAR_salle","20":"--- Deboggage ---","21":"To follow the state of the variables during reading:","22":"press ICON_bug"},"name":"Two variables functions"},"3":{"messages":{"0":"Questions","1":"To ask a question:","2":"use the command: COM_question","3":"for each answer write:","4":"COM_answer Your response","5":"and the list of messages caused by the response","6":"then close your reply list with","7":"the command: COM_end","8":"An example follows:","9":"How are you?","10":"COM_question","11":"COM_answer I&#39;m fine","12":"I&#39;m doing pretty well thank you","13":"COM_answer Not good","14":"I don’t feel so well.","15":"COM_end","16":"Tip, you can generate a question by entering:","17":"the command: COM_question response1; answer2; etc ...","18":"TERMS & CONDITIONS","19":"To display messages according to variables,","20":"a condition must be added: COM_IF VAR_variable == value","21":"add messages to display","22":"then close the condition with the / end command","23":"You can use the operators: =,&gt;, &lt;,&gt; =, &lt;= and! =","24":"Example :","25":"COM_if VAR_live = 10","26":"Message 1","27":"Message 2","28":"Etc...","29":"COM_end","30":"here, messages will only be displayed if live is 10","31":"Loops","32":"You can make curls","33":"With the COM_label and COM_go commands","34":"Add a Rectangle","35":"use the command: COM_label","36":"To go to a marker:","37":"use the command: COM_go","38":"Example :","39":"COM_label loop","40":"These messages are sent","41":"an infinite number of times","42":"COM_go loop"},"name":"Algoritmy"},"4":{"messages":{"0":"Types","1":"An object is a container of variables and actions","2":"it is noted in the form: @nomObjet","3":"there are 4 types of objects:","4":"articles, places, actors and roles","5":"actors can send messages","6":"places contain articles and are linkable","7":"objects can be cloned","8":"and roles share their variables","9":"and actions with objects","10":"Variables","11":"On objects, variables are represented like this:","12":"@ objectName.variablename","13":"This syntax is used to organize the variables","14":"Instead of using many global variables","15":"Actions","16":"In free mode, the player can perform actions","17":"depending on the objects","18":"Actions are represented in the form: @object action1","19":"They will allow you to redirect a player to a script","20":"For example","21":"You are in the place @jardin containing the article @arrosoir","22":"The action: @watering can water the plants","23":"could redirect the player to the &#39;sprinkle&#39; script"},"name":"Objects"}},"EXAMPLES":{"0":{"messages":{"0":"COM_set VAR_pieces 10","1":"You are in a souvenir shop","2":"COM_label loop","3":"You have $ coins coins left","4":"What do you want to buy?","5":"COM_question","6":"COM_answer A keychain","7":"This keychain will cost you 3 coins","8":"COM_set VAR_article keychain","9":"COM_set VAR_prix 3","10":"COM_answer A snow globe","11":"This snow globe will cost you 7 coins","12":"COM_set VAR_article snow globe","13":"COM_set VAR_prix 7","14":"COM_answer A souvenir coin","15":"This coin will cost you 2 coins","16":"COM_set VAR_article souvenir coin","17":"COM_set VAR_prix 2","18":"COM_end","19":"COM_if VAR_pieces&gt; VAR_prix","20":"You buy $ item","21":"COM_sub VAR_pieces VAR_prix","22":"// Processing on the addition of an article","23":"COM_else","24":"Unable to purchase this item","25":"COM_end","26":"Would you like to continue shopping?","27":"COM_question","28":"COM_answer Yes","29":"// No need to add messages","30":"COM_answer No","31":"COM_go end","32":"COM_end","33":"COM_go loop","34":"COM_label end","35":"You leave the store"},"name":"Souvenir shop&#x0D;"},"1":{"messages":{"0":"COM_random VAR_number 1 100","1":"I chose a number between 1 and 100","2":"Which one do you think I chose?","3":"COM_label loop","4":"COM_input VAR_response","5":"COM_if VAR_number &lt;VAR_response","6":"No, my number is smaller!","7":"COM_end","8":"COM_if VAR_number&gt; VAR_response","9":"No, my number is greater!","10":"COM_end","11":"COM_if VAR_nombre = VAR_response","12":"COM_go end","13":"COM_end","14":"COM_go loop","15":"COM_label end","16":"Yes it is VAR_nombre!"},"name":"More or Less?"}}}
+{
+  "BOOKSETTINGS": {
+    "background": "Change background",
+    "delete": "Remove this product",
+    "deleteConfirm": "Are you sure you want to delete this book?",
+    "header": "Book settings",
+    "invitationSent": "Invitation sent",
+    "invite": "Invite a friend to cooperate",
+    "leave": "Withdraw from the book",
+    "leaveBookConfirm": "Are you sure you want to remove yourself from the authors of this book?",
+    "policyConfirm": "I respected the charter",
+    "policyError": "You must accept the rules of the Noetic charter",
+    "publish": "Publish this book",
+    "publishConfirm": "Are you sure you are making this book public? Its content must respect the rules of the Noetic charter",
+    "seePolicy": "SEE THE CHARTER",
+    "stopPublishingConfirm": "Are you sure you want to make this book private?",
+    "tuto": "Restart the tutorial",
+    "tutoReactivated": "Tutorial reactivated",
+    "unPublish": "Stop publishing this book",
+    "mainChat": "Main chat",
+    "selectMainChat": "select main chat",
+    "updateConfirm": "Are you sure you are publishing this version of the book?"
+  },
+  "BOOKTABS": {
+    "story": "Screenplay",
+    "actors": "Stakeholder",
+    "places": "Locations"
+  },
+  "TUTO": {
+    "0": "Welcome to the scenario editor, press &quot;OK&quot; to continue this tutorial or &quot;Skip&quot; to skip it",
+    "1": "You can enter text in the chat bar at the bottom of the screen",
+    "2": "To add an actor, press the &quot;&quot; button in the &quot;actor&quot; section",
+    "3": "To select / deselect him, tap on his avatar in the chat bar",
+    "4": "You can edit an actor by tapping on their avatar in the chat",
+    "5": "To make the chat dynamic, press the &quot;command&quot; section",
+    "6": "Here you can search for commands by pressing the magnifying glass",
+    "7": "Note that you can include variables in your texts with the sign &quot;$&quot;",
+    "8": "Example: &quot;/ input $ name&quot; then &quot;Hello $ name&quot;",
+    "9": "You can replay this tutorial by reactivating it in your project settings",
+    "10": "Enjoy your discoveries!"
+  },
+  "CATEGORIES": {
+    "action": "Action",
+    "adventure": "An adventure game",
+    "fanfiction": "Fan fiction",
+    "fantastic": "Fantastique",
+    "fiction": "General fiction",
+    "horror": "Horror",
+    "humor": "Humor",
+    "mystery": "Mytérieux",
+    "nonfiction": "General Non-Fiction",
+    "romance": "Romance",
+    "scifi": "Science fiction",
+    "thriller": "thriller",
+    "undefined": "Uncategorized"
+  },
+  "CHART": {
+    "rules": {
+      "0": "To use racist, homophobic, sexist or any other politically incorrect subject.",
+      "1": "To be disrespectful to the reader, to harass or attack him.",
+      "2": "Spam, abuse sound effects.",
+      "3": "Spoiler without warning readers.",
+      "4": "Use pornographic or extreme violence content.",
+      "5": "Not to warn readers of offensive content or about a sensitive topic.",
+      "6": "To disclose private information of other people without consent.",
+      "7": "Plagiarize a story",
+      "8": "Do not mention the authors of the images used. Including the cover!"
+    },
+    "header": "Noetic Charter",
+    "intro": "It is strictly prohibited in any work:",
+    "outro": "Any user who does not respect these rules is liable to a ban."
+  },
+  "CHAT": {
+    "alertSettingsHeader": "Post Chat Settings",
+    "avaibleAmbiances": "See the available moods",
+    "avaibleMusics": "See available music",
+    "avaibleSounds": "The sounds that are available:",
+    "enterMessage": "Enter a message...",
+    "tools": "Tools",
+    "actors": "Actors",
+    "commands": "Commands",
+    "avaibleBackgrounds": "See available backgrounds",
+    "addActor": "Add actor",
+    "voidChat": "Empty chat",
+    "test": "Tester",
+    "tutoMode": "Tutorial mode",
+    "exampleMode": "Example mode",
+    "tutos": "Hướng dẫn",
+    "examples": "Examples"
+  },
+  "COMMON": {
+    "auto": "auto",
+    "leave": "Leave",
+    "comingSoon": "Coming soon",
+    "accept": "Accept",
+    "cancel": "Cancel",
+    "category": "Category",
+    "confirm": "Confirm",
+    "create": "Create",
+    "delete": "Delete",
+    "disconnected": "Disconnected",
+    "erase": "Erase",
+    "error": "Error",
+    "examples": "Examples",
+    "loading": "Loading...",
+    "more": "Find out more",
+    "next": "Next",
+    "no": "No",
+    "notifs": "Notice",
+    "ok": "OK.",
+    "options": "Options",
+    "read": "Reading",
+    "refuse": "Refusal",
+    "register": "Register",
+    "rename": "Rename",
+    "return": "Back",
+    "send": "Send",
+    "settings": "Settings",
+    "use": "Use",
+    "warning": "ATTENTION !",
+    "yes": "Yes",
+    "warningDelete": "Are you sure you want to delete this item?",
+    "edit": "Edit",
+    "name": "Last name ",
+    "desc": "Description",
+    "id": "Username",
+    "role": "Identifying role",
+    "nodesc": "No description.",
+    "change": "Edit",
+    "update": "Update",
+    "defaultValue": "Default value",
+    "chatName": "Chat name",
+    "vues": "views",
+    "likes": "like"
+  },
+  "COVER": {
+    "addTag": "Add a tag",
+    "alertAnswerPlaceholder": "Please enter your answer",
+    "alertDescPlaceholder": "Your description",
+    "alertTagPlaceholder": "Tag Name",
+    "alertTitleHeader": "Change title",
+    "alertTitlePlaceholder": "Your title",
+    "alertVersoPlaceholder": "Your back",
+    "answer": "Answer",
+    "changeDesc": "Change description",
+    "changeVerso": "Change back",
+    "hideAuthorAnswer": "Hide the creator&#39;s response",
+    "more": "Find out more",
+    "seeAuthorAnswer": "See the creator&#39;s response",
+    "toastAddedToList": "Successfully! added to your wishlist",
+    "toastCommentSent": "Feedback Sent",
+    "toastRemovedFromList": "Properties were removed from the list",
+    "sendComment": "Leave a comment"
+  },
+  "ERRORS": {
+    "5TagsMax": "Cannot have more than 5 tags for the same book.",
+    "buttonsNotAvaible": "Unable to execute buttons here.",
+    "invalidLabelName": "Unable to create label with this name.",
+    "title3CarMin": "The title must be at least more than 3 characters",
+    "title40CarMax": "Title must be at least 40 characters",
+    "unratedComment": "Please note before sending your review",
+    "noSpace": "Please remove the spaces",
+    "fieldMissing": "Field missing",
+    "idIncorrect": "The identifier must contain only numbers, letters and characters - and _",
+    "keyUneditable": "Cannot edit a key role",
+    "imageLimit": "You are limited to 10 images imported per book"
+  },
+  "GAME": {
+    "answer": "Choose an answer",
+    "input": "Works with text inputs.",
+    "maxChatError": "A cat can only be used 10 times per minute maximum! It will be ignored while reading this exceeded quota.",
+    "maxLabelError": "A label can only be used 10 times per minute maximum! It will be ignored while reading this exceeded quota.",
+    "restartBook": "Restart the book",
+    "restartBookWarning": "By restarting this book, all of your backups will be permanently lost!",
+    "go": "Outbound"
+  },
+  "HOME": {
+    "about": "About us",
+    "aboutApp": "ABOUT APPLICATION",
+    "aboutBlockup": "About Blockup",
+    "chart": "Noetic Charter",
+    "mostRecent": "Most recent",
+    "mostVue": "Best Viewed",
+    "noeticSite": "Noetic website",
+    "policy": "Privacy policy",
+    "popupRGPD": "By continuing to browse this site, you accept the use of cookies to provide you with targeted content adapted to your interests and to generate visit statistics.",
+    "rate": "Rate the application",
+    "report": "Report a problem",
+    "saves": "View Saved Items",
+    "search": "Find a story",
+    "share": "Share App",
+    "topRated": "Top Rated Products",
+    "creationDate": "Most recent",
+    "views": "Best Viewed",
+    "likes": "Highest Rated"
+  },
+  "LANGUAGES": {
+    "arabic": "Arabic",
+    "chinese": "Chinese",
+    "english": "English",
+    "french": "French",
+    "german": "Allemand",
+    "hindi": "hindi",
+    "portugese": "Portuguese",
+    "russian": "Russian",
+    "spanish": "Spanish",
+    "swahili": "swahili"
+  },
+  "LOGIN": {
+    "forgotPassword": "Forgot your password?",
+    "login": "Log in",
+    "noAccount": "No Account?",
+    "otherConnexion": "Or connect with",
+    "register": "Create Account",
+    "return": "Return to the site"
+  },
+  "MODALS": {
+    "ACTOR": {
+      "changeColor": "Change Color...",
+      "warningDesc": "By deleting this actor, you also delete all of their messages."
+    },
+    "MANUAL": {
+      "cat": {
+        "control": "Control",
+        "variables": "Variables",
+        "appearance": "Appearance",
+        "audio": "Audio"
+      },
+      "types": {
+        "==": "equal",
+        "!=": "different",
+        "<=": "inferior or equal",
+        ">=": "superior or equal",
+        "<": "Strictly lower",
+        ">": "Strictly higher"
+      },
+      "args": {
+        "name": "Last Name",
+        "value": "Value",
+        "variable": "Variable",
+        "min": "Minimum",
+        "max": "Maximum",
+        "secondes": "Seconds",
+        "sound": "Foley artist",
+        "music": "Music",
+        "ambiance": "Atmosphere",
+        "actor": "Stakeholder",
+        "message": "Message",
+        "answer": "Response",
+        "addanswer": "Add answer",
+        "operator": "Self-Checking",
+        "background": "background"
+      },
+      "opts": {
+        "stop": "Stop",
+        "once": "Only once"
+      },
+      "ambiance": "Find an ambiance",
+      "command": "Search Order",
+      "music": "Find a music",
+      "sound": "Search for sound effects",
+      "forgotEntry": "Missing entry JSON",
+      "background": "Find a background"
+    },
+    "SEARCHUSER": {
+      "search": "Search user"
+    },
+    "UPLOAD": {
+      "error": "Error loading image. Please check if it is in .jpeg or .png format.",
+      "header": "Upload image"
+    },
+    "WALLPAPER": {
+      "header": "Choose a Background"
+    },
+    "NEW-ENTITY": {
+      "enterName": "Enter a name",
+      "id": "Username"
+    },
+    "ENTITY": {
+      "addItem": "Add ticket item",
+      "addVariable": "Add variable",
+      "addAction": "Add an action",
+      "addRole": "Add role",
+      "addPlace": "Add a place",
+      "variables": "Variables",
+      "actions": "Actions",
+      "items": "Objects",
+      "linkedPlaces": "Related places"
+    }
+  },
+  "NEWBOOK": {
+    "changeCover": "Change Cover",
+    "create": "Create a Story",
+    "descMaxError": "Description must be less than 250 characters",
+    "descMinError": "Description must be at least 3 characters long",
+    "tagMaxError": "There should be no more than 5 tags",
+    "titleMaxError": "Title must be less than 40 characters",
+    "titleMinError": "The title must be at least more than 3 characters",
+    "versoMaxError": "Back side must be less than 2000 characters",
+    "description": "Enter description here . . .",
+    "title": "please enter a title!",
+    "tag": "Add a tag"
+  },
+  "NOTIFS": {
+    "acceptInvWriting": "accepted your invitation on the book",
+    "invWriting": "invites you to write with him on the book",
+    "noNotif": "No notifications for the moment ..."
+  },
+  "OFFLINE": {
+    "pleaseReconnect": "Please re-establish the connection to continue."
+  },
+  "PASSWORD": {
+    "reinit": "Renew password"
+  },
+  "PRESENTATION": {
+    "create": "Create",
+    "createDesc": "stories through interactive chats,",
+    "discover": "And discover:",
+    "discoverDesc": "what others have shared, you might be surprised!",
+    "invite": "Invite",
+    "inviteDesc": "your friends to create and / or play a story together,",
+    "letsGo": "Let's go!"
+  },
+  "PROFILE": {
+    "changeBio": "Change bio",
+    "changePseudo": "Change Nickname",
+    "disconnect": "Log out",
+    "follow": "Follow Up",
+    "hisStories": "His stories",
+    "myFollows": "Watch List",
+    "myList": "My List",
+    "myStories": "My Stories",
+    "newBio": "New bio",
+    "newPseudo": "New user username.",
+    "noBio": "Nothing to say yet ...",
+    "share": "Share Profile",
+    "unfollow": "Stop Following To"
+  },
+  "REGISTER": {
+    "accept": "Accept",
+    "passwordMaxError": "Password must be not more than 16 characters long",
+    "paswordMatchError": "Password Confirmation Doesn't Match",
+    "paswordMinError": "The password must contain at least 8 characters.",
+    "policyError": "You must acknowledge and agree to the privacy policy to register",
+    "privatePolicy": "the privacy policy",
+    "pseudoInvalidCarError": "Nickname to contain only numbers and letters",
+    "pseudoMaxError": "Nickname must not contain more than 30 characters",
+    "pseudoMinError": "Nickname must contain at least 4 characters"
+  },
+  "SEARCH": {
+    "noresult": "No result",
+    "nosearch": "Null Searches"
+  },
+  "SERVICES": {
+    "ACTOR": {
+      "actorName": "Name of the actor",
+      "actorNameError": "Please enter a Name",
+      "newActor": "Add an actor"
+    },
+    "AUTH": {
+      "confirmNewMail": "Your email address is now:",
+      "confirmPasswordWarning": "For security reasons, please enter your password",
+      "emailUsedError": "Email already used",
+      "password": "Password",
+      "passwordError": "Password incorrect",
+      "resetPasswordLink": "A password reset link has just been sent to your email address:"
+    },
+    "BOOK": {
+      "header": {
+        "place": "Create New Location",
+        "actor": "Create a new actor",
+        "type": "Create new type",
+        "script": "Create New Script",
+        "item": "Create New Item"
+      },
+      "addChat": "Add Chat",
+      "authorAlreadyError": "You are already the author of this book",
+      "authorMaxError": "There cannot be more than 10 authors per book",
+      "backgroundChanged": "Layout Background Changed",
+      "bookNotExistError": "Non-existent book",
+      "bookPublished": "Book published.",
+      "chatName": "Cat name",
+      "chatNameError": "Enter a name",
+      "chatReservedNameError": "Cannot use this name",
+      "chatUsedNameError": "Name in use",
+      "emptyCategory": "Empty category for the moment",
+      "newChatError": "Unable to create a cat, your book is too large",
+      "shareMsg": "Here is a book on Noetic",
+      "shareSubject": "Book sharing",
+      "uploaded": "Book updated",
+      "isInteractive": "This book is interactive"
+    },
+    "CHAT": {
+      "changeChatName": "Change cat name",
+      "chatLogsMaxError": "Cannot send more than 1000 messages in a chat.",
+      "logMaxError": "Cannot send more than 800 characters",
+      "newChatName": "New cat name"
+    },
+    "USER": {
+      "avaibleLanguages": "Available languages",
+      "copiedLink": "Link has been copied to clipboard.",
+      "languagesMax": "You cannot choose more than 10 languages",
+      "ownProfileError": "It&#39;s your own profile!",
+      "readingSaved": "Reading saved",
+      "report": "Report a problem",
+      "reportBook": "Report a book",
+      "reportMsg": "We will do our best to fix it as soon as possible. Any spam is punishable by ban.",
+      "reportPlaceholder": "Your problem:",
+      "reportSent": "Report sent",
+      "reportUser": "Report User",
+      "restartApp": "Please restart the application for your settings to take effect",
+      "shareAppMsg": "Here is Noetic, an app to create your own narrative games in the form of cats",
+      "shareAppSubject": "Noetic, an app to create narrative games with a chat",
+      "shareProfileMsg": "Here is my profile on Noetic:",
+      "shareProfileSubject": "Profile sharing",
+      "syncError": "Sync Error",
+      "userNotFoundError": "title.user_not_registered"
+    },
+    "PLACE": {
+      "header": "New Location"
+    }
+  },
+  "TABS": {
+    "home": "Home",
+    "profile": "Profile"
+  },
+  "USERSETTINGS": {
+    "changeMail": "Change Address",
+    "email": "Email",
+    "header": "User Settings",
+    "language": "Manage the application language",
+    "nightMode": "Dark Mode",
+    "reinitPassword": "Renew password",
+    "searchLanguages": "Manage the languages of the research books"
+  },
+  "COMMANDS": {
+    "label": {
+      "show": "Label §1",
+      "desc": "Add Bookmark"
+    },
+    "go": {
+      "show": "Go to label §1",
+      "desc": "Redirect to a label"
+    },
+    "chat": {
+      "show": "Go To Chatroom",
+      "desc": "Redirect to a chat"
+    },
+    "set": {
+      "show": "Put §1 to §2",
+      "desc": "Set variable"
+    },
+    "if": {
+      "show": "If §*",
+      "desc": "Test a variable"
+    },
+    "else": {
+      "show": "Otherwise",
+      "desc": "Skip if the test is false"
+    },
+    "end": {
+      "show": "End",
+      "desc": "Close a nesting"
+    },
+    "answer": {
+      "show": "If response is: §*",
+      "desc": "Check Answer"
+    },
+    "clear": {
+      "show": "Erase Messages",
+      "desc": "Erase Messages"
+    },
+    "add": {
+      "show": "Add §2 to §1",
+      "desc": "Add a variable"
+    },
+    "sub": {
+      "show": "Subtract §2 from §1",
+      "desc": "Subtract from a variable"
+    },
+    "div": {
+      "show": "Divide §1 to §2",
+      "desc": "Divide a variable"
+    },
+    "mul": {
+      "show": "Multiply §1 to §2",
+      "desc": "Multiply a variable"
+    },
+    "random": {
+      "show": "Choose an integer between §1 and §2 for §3",
+      "desc": "Choose a random integer"
+    },
+    "wait": {
+      "show": "Wait §1 seconds",
+      "desc": "Wait x seconds"
+    },
+    "input": {
+      "show": "Request a value for §1",
+      "desc": "Request a value"
+    },
+    "sound": {
+      "show": "Play Sound §1",
+      "desc": "Playing a sound"
+    },
+    "music": {
+      "show": "Play Music §1",
+      "desc": "Playing a music"
+    },
+    "ambiance": {
+      "show": "Play Ambient §1",
+      "desc": "Play an atmosphere"
+    },
+    "control": {
+      "show": "Control the character §1",
+      "desc": "Show messages on the right"
+    },
+    "finish": {
+      "show": "End of the story.",
+      "desc": "Ending a story"
+    },
+    "alert": {
+      "show": "View Message",
+      "desc": "Show Alert"
+    },
+    "question": {
+      "show": "Ask a question",
+      "desc": "Ask a question"
+    },
+    "stopsound": {
+      "show": "Stop playing sound §1",
+      "desc": "Stop playing a sound"
+    },
+    "stopambiance": {
+      "show": "Stop playing the mood §1",
+      "desc": "Stop playing a mood"
+    },
+    "stopmusic": {
+      "show": "Stop playing music §1",
+      "desc": "Stop playing music"
+    },
+    "unknowed": {
+      "show": "Unknown Command",
+      "desc": "Unknown Command"
+    },
+    "action": {
+      "show": "Switch to free action mode",
+      "desc": "Switch to free action mode"
+    },
+    "place": {
+      "show": "Go to place §1",
+      "desc": "Find a Forecast"
+    },
+    "background": {
+      "show": "Change the background to §1",
+      "desc": "Change background"
+    },
+    "cursor": {
+      "show": "Insert a message here",
+      "desc": "Insert message"
+    }
+  },
+  "ACTORS": {
+    "addActor": "Add actor"
+  },
+  "PLACES": {
+    "addPlace": "Add a place"
+  },
+  "TUTOS": {
+    "0": {
+      "messages": {
+        "0": "Read & Write",
+        "1": "To read the script:",
+        "2": "press &#39;Test ICON_play&#39;",
+        "3": "Add a message",
+        "4": "enter text in the chat bar",
+        "5": "then press ICON_send.",
+        "6": "Message edit",
+        "7": "select it and resend the edited message.",
+        "8": "To insert a message below another:",
+        "9": "Select a message",
+        "10": "press &#39;Insert message here&#39;",
+        "11": "Send your comment",
+        "12": "Delete a message",
+        "13": "select it then press: i-ellipsis-vertical:",
+        "14": "to post a comment.",
+        "15": "Enter your message preceded by //",
+        "16": "Like this:",
+        "17": "This is a comment",
+        "18": "Stakeholder",
+        "19": "To add an actor:",
+        "20": "press the button ICON_add-circle then ICON_person-add.",
+        "21": "To send a message with an actor:",
+        "22": "tap their avatar",
+        "23": "Shortcuts",
+        "24": "You can also use the shortcuts",
+        "25": "delete to delete messages",
+        "26": "Ctrl X to cut them",
+        "27": "Ctrl C to copy them",
+        "28": "Ctrl V to paste them",
+        "29": "Ctrl Z to undo an action",
+        "30": "Ctrl Y to redo an action",
+        "31": "orders",
+        "32": "To make the story dynamic,",
+        "33": "we use the commands, they take the form:",
+        "34": "// COM_nameCommand argument1 argument2 etc ...",
+        "35": "They can be used to play a sound,",
+        "36": "ask questions, go back etc ...",
+        "37": "To see all the available commands:",
+        "38": "press ICON_add-circle then ICON_terminal",
+        "39": "- Organization",
+        "40": "To organize yourself well in your project",
+        "41": "you can divide your scenario into several scripts",
+        "42": "then link them with the command: COM_chat chatName",
+        "43": "for example at the end of the episode1 script we can put:",
+        "44": "/ cat episode2"
+      },
+      "name": "The bases"
+    },
+    "1": {
+      "messages": {
+        "0": "Images",
+        "1": "POUR AFFICHER UNE IMAGE :",
+        "2": "send the url of your image directly",
+        "3": "Jump to:",
+        "4": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib/images/night.jpg?alt=media",
+        "5": "This also works for gifs:",
+        "6": "https://firebasestorage.googleapis.com/v0/b/noetic-app.appspot.com/o/lib/images/gatsby.gif?alt=media",
+        "7": "You can also import it directly",
+        "8": "by pressing ICON_image",
+        "9": "Videos",
+        "10": "For videos, we can use the links from Youtube",
+        "11": "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+        "12": "Stakeholder",
+        "13": "To customize an actor:",
+        "14": "tap their avatar in messages.",
+        "15": "To change the chat background",
+        "16": "use the command: COM_background",
+        "17": "village of Son",
+        "18": "Play a sound:",
+        "19": "use the command: COM_sound, COM_ambiance or COM_music",
+        "20": "To stop a sound",
+        "21": "use the command: COM_stopsound, COM_stopambiance or / COM_stopmusic"
+      },
+      "name": "The images and sounds"
+    },
+    "2": {
+      "messages": {
+        "0": "Global Variables",
+        "1": "Global variables are used to store values",
+        "2": "They are noted in the form &#39;VAR_nomVariable&#39;",
+        "3": "To define a global variable",
+        "4": "we use the command &#39;COM_set VAR_variable&#39;",
+        "5": "For example, if &#39;VAR_name&#39; is equal to &#39;Elisa&#39;,",
+        "6": "the message &#39;Hello VAR_name&#39; will be equal to &#39;Hello Elisa&#39;",
+        "7": "COM_SET VAR_name Elisa",
+        "8": "Hello VAR_name",
+        "9": "Numerical values",
+        "10": "Variables can be numbers,",
+        "11": "we can perform operations",
+        "12": "with the commands COM_ADD, COM_SET, COM_DIV, COM_MUL",
+        "13": "For example, this line adds 1 to room:",
+        "14": "COM_SET VAR_parts 0",
+        "15": "COM_ADD VAR_parts 1",
+        "16": "To set a random value to a variable:",
+        "17": "We use the command: COM_RANDOM VAR_variable min max",
+        "18": "COM_RANDOM VAR_room 1 9",
+        "19": "The variable &#39;room&#39; is worth: VAR_salle",
+        "20": "--- Deboggage ---",
+        "21": "To follow the state of the variables during reading:",
+        "22": "press ICON_bug"
+      },
+      "name": "Two variables functions"
+    },
+    "3": {
+      "messages": {
+        "0": "Questions",
+        "1": "To ask a question:",
+        "2": "use the command: COM_question",
+        "3": "for each answer write:",
+        "4": "COM_answer Your response",
+        "5": "and the list of messages caused by the response",
+        "6": "then close your reply list with",
+        "7": "the command: COM_end",
+        "8": "An example follows:",
+        "9": "How are you?",
+        "10": "COM_question",
+        "11": "COM_answer I&#39;m fine",
+        "12": "I&#39;m doing pretty well thank you",
+        "13": "COM_answer Not good",
+        "14": "I don’t feel so well.",
+        "15": "COM_end",
+        "16": "Tip, you can generate a question by entering:",
+        "17": "the command: COM_question response1; answer2; etc ...",
+        "18": "TERMS & CONDITIONS",
+        "19": "To display messages according to variables,",
+        "20": "a condition must be added: COM_IF VAR_variable == value",
+        "21": "add messages to display",
+        "22": "then close the condition with the / end command",
+        "23": "You can use the operators: =,&gt;, &lt;,&gt; =, &lt;= and! =",
+        "24": "Example :",
+        "25": "COM_if VAR_live = 10",
+        "26": "Message 1",
+        "27": "Message 2",
+        "28": "Etc...",
+        "29": "COM_end",
+        "30": "here, messages will only be displayed if live is 10",
+        "31": "Loops",
+        "32": "You can make curls",
+        "33": "With the COM_label and COM_go commands",
+        "34": "Add a Rectangle",
+        "35": "use the command: COM_label",
+        "36": "To go to a marker:",
+        "37": "use the command: COM_go",
+        "38": "Example :",
+        "39": "COM_label loop",
+        "40": "These messages are sent",
+        "41": "an infinite number of times",
+        "42": "COM_go loop"
+      },
+      "name": "Algoritmy"
+    },
+    "4": {
+      "messages": {
+        "0": "Types",
+        "1": "An object is a container of variables and actions",
+        "2": "it is noted in the form: @nomObjet",
+        "3": "there are 4 types of objects:",
+        "4": "articles, places, actors and roles",
+        "5": "actors can send messages",
+        "6": "places contain articles and are linkable",
+        "7": "objects can be cloned",
+        "8": "and roles share their variables",
+        "9": "and actions with objects",
+        "10": "Variables",
+        "11": "On objects, variables are represented like this:",
+        "12": "@ objectName.variablename",
+        "13": "This syntax is used to organize the variables",
+        "14": "Instead of using many global variables",
+        "15": "Actions",
+        "16": "In free mode, the player can perform actions",
+        "17": "depending on the objects",
+        "18": "Actions are represented in the form: @object action1",
+        "19": "They will allow you to redirect a player to a script",
+        "20": "For example",
+        "21": "You are in the place @jardin containing the article @arrosoir",
+        "22": "The action: @watering can water the plants",
+        "23": "could redirect the player to the &#39;sprinkle&#39; script"
+      },
+      "name": "Objects"
+    }
+  },
+  "EXAMPLES": {
+    "0": {
+      "messages": {
+        "0": "COM_set VAR_pieces 10",
+        "1": "You are in a souvenir shop",
+        "2": "COM_label loop",
+        "3": "You have $ coins coins left",
+        "4": "What do you want to buy?",
+        "5": "COM_question",
+        "6": "COM_answer A keychain",
+        "7": "This keychain will cost you 3 coins",
+        "8": "COM_set VAR_article keychain",
+        "9": "COM_set VAR_prix 3",
+        "10": "COM_answer A snow globe",
+        "11": "This snow globe will cost you 7 coins",
+        "12": "COM_set VAR_article snow globe",
+        "13": "COM_set VAR_prix 7",
+        "14": "COM_answer A souvenir coin",
+        "15": "This coin will cost you 2 coins",
+        "16": "COM_set VAR_article souvenir coin",
+        "17": "COM_set VAR_prix 2",
+        "18": "COM_end",
+        "19": "COM_if VAR_pieces&gt; VAR_prix",
+        "20": "You buy $ item",
+        "21": "COM_sub VAR_pieces VAR_prix",
+        "22": "// Processing on the addition of an article",
+        "23": "COM_else",
+        "24": "Unable to purchase this item",
+        "25": "COM_end",
+        "26": "Would you like to continue shopping?",
+        "27": "COM_question",
+        "28": "COM_answer Yes",
+        "29": "// No need to add messages",
+        "30": "COM_answer No",
+        "31": "COM_go end",
+        "32": "COM_end",
+        "33": "COM_go loop",
+        "34": "COM_label end",
+        "35": "You leave the store"
+      },
+      "name": "Souvenir shop&#x0D;"
+    },
+    "1": {
+      "messages": {
+        "0": "COM_random VAR_number 1 100",
+        "1": "I chose a number between 1 and 100",
+        "2": "Which one do you think I chose?",
+        "3": "COM_label loop",
+        "4": "COM_input VAR_response",
+        "5": "COM_if VAR_number &lt;VAR_response",
+        "6": "No, my number is smaller!",
+        "7": "COM_end",
+        "8": "COM_if VAR_number&gt; VAR_response",
+        "9": "No, my number is greater!",
+        "10": "COM_end",
+        "11": "COM_if VAR_nombre = VAR_response",
+        "12": "COM_go end",
+        "13": "COM_end",
+        "14": "COM_go loop",
+        "15": "COM_label end",
+        "16": "Yes it is VAR_nombre!"
+      },
+      "name": "More or Less?"
+    }
+  }
+}
