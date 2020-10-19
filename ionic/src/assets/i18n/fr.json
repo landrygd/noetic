@@ -91,7 +91,10 @@
     "tutoMode": "Mode tuto ",
     "exampleMode": "Mode exemple ",
     "tutos": "Tutoriels",
-    "examples": "Exemples"
+	"examples": "Exemples",
+	"faq": "FAQ",
+	"faqPlaceholder": "Comment déclarer une variable?",
+	"example": "Exemple"
 	},
 	"COMMON": {
 		"warningDelete": "Etes vous sûr de vouloir supprimer cet objet?",
@@ -540,15 +543,15 @@
       "show": "Arrêter de jouer la musique §1",
       "desc": "Arrêter de jouer une musique"
 		},
-		"action": {
+	"free": {
       "show": "Passer en mode action libre",
       "desc": "Passer en mode action libre"
 		},
-		"place": {
+	"place": {
       "show": "Aller au lieu §1",
       "desc": "Changer de lieu"
 		},
-		"background": {
+	"background": {
       "show": "Changer l'arrière-plan à §1",
       "desc": "Changer d'arrière-plan"
     },
@@ -578,7 +581,7 @@
 			"appuyez sur 'Insérer un message ici'",
 			"puis envoyez votre message.",
 			"Pour supprimer un message:",
-			"sélectionnez-le puis appuyez sur :i-ellipsis-vertical:",
+			"sélectionnez-le puis appuyez sur ICON_ellipsis-vertical",
 			"Pour ajouter un commentaire:",
 			"Entrez votre message précédé de //",
 			"Comme ceci:",
@@ -789,24 +792,101 @@
 	}, {
 		"name": "Plus ou moins?",
 		"messages": [
-      "COM_random VAR_nombre 1 100",
-      "J'ai choisis un nombre entre 1 et 100",
-      "Lequel j'ai choisis à ton avis?",
-      "COM_label boucle",
-      "COM_input VAR_réponse",
-      "COM_if VAR_nombre < VAR_réponse",
-      "Non, mon nombre est plus petit!",
-      "COM_end",
-      "COM_if VAR_nombre > VAR_réponse",
-      "Non, mon nombre est plus grand!",
-      "COM_end",
-      "COM_if VAR_nombre = VAR_réponse",
-      "COM_go fin",
-      "COM_end",
-      "COM_go boucle",
-      "COM_label fin",
-      "Oui c'est bien VAR_nombre!"
-    ]
-  }
-]
+			"COM_random VAR_nombre 1 100",
+			"J'ai choisis un nombre entre 1 et 100",
+			"Lequel j'ai choisis à ton avis?",
+			"COM_label boucle",
+			"COM_input VAR_réponse",
+			"COM_if VAR_nombre < VAR_réponse",
+			"Non, mon nombre est plus petit!",
+			"COM_end",
+			"COM_if VAR_nombre > VAR_réponse",
+			"Non, mon nombre est plus grand!",
+			"COM_end",
+			"COM_if VAR_nombre = VAR_réponse",
+			"COM_go fin",
+			"COM_end",
+			"COM_go boucle",
+			"COM_label fin",
+			"Oui c'est bien VAR_nombre!"
+		]
+	}
+	],
+	"FAQ": [
+		{
+			"question":"Comment déclarer une variable?",
+			"answer":"Avec la commande: COM_set",
+			"example": "COM_set VAR_variable valeur"
+		},
+		{
+			"question":"Comment créer un acteur?",
+			"answer":"En appuyant sur le bouton ICON_add-circle puis ICON_person-add"
+		},
+		{
+			"question":"Comment créer une boucle?",
+			"answer":"Avec les commande COM_go et COM_label",
+			"example": "COM_label boucle\n// Instructions\nCOM_go boucle"
+		},
+		{
+			"question":"Comment tester une variable?",
+			"answer":"Avec les commandes COM_if et COM_end. On peut les tester avec les opérateurs =, <, >, <=, >= et !=",
+			"example": "COM_if VAR_variable = 42\n// Instructions\nCOM_end"
+		},
+		{
+			"question":"Comment passer en mode libre?",
+			"answer":"Avec la commande COM_free. A noter qu'il faut d'abord définir le lieu dans lequel apparaîtra le joueur",
+			"example": "COM_place @Cuisine\nCOM_free"
+		},
+		{
+			"question":"Comment poser une question?",
+			"answer":"Avec les commande COM_question, COM_answer et COM_end",
+			"example": "COM_question\nCOM_answer Phrase de réponse 1\n// Instructions de la réponse 1\nCOM_answer Phrase de réponse 2\n// Instructions de la réponse 2\nCOM_end"
+		},
+		{
+			"question":"Comment aller dans un autre tchat/script?",
+			"answer":"Avec la commande COM_chat",
+			"example": "COM_chat nomDuTchat"
+		},
+		{
+			"question":"Comment éditer un acteur?",
+			"answer":"En appuyant sur son avatar depuis le tchat ou en allant dans la section acteurs depuis le tableau de bord du projet."
+		},
+		{
+			"question":"Comment sortir d'une boucle?",
+			"answer":"Il faut réorienter le joueur vers un autre label ou tchat avec les commandes COM_label et COM_chat",
+			"example": "COM_label boucle\n// Instructions\nCOM_go sortie\n// Instructions\nCOM_go boucle\nCOM_label sortie"
+		},
+		{
+			"question":"Comment noter les variables des objets?",
+			"answer":"On les notes sous la forme: @nomObjet.nomVariable",
+			"example": "Alice a @alice.cartes cartes."
+		},
+		{
+			"question":"En quoi consiste le mode libre?",
+			"answer":"Il consiste à permettre au joueur de directement interagir avec les objets. Chaque objet dispose d'actions déclenchant d'autres scripts. Par exemple, l'objet @four peut contenir l'action chauffer déclanchant le script fourChauffer."
+		},
+		{
+			"question":"A quoi servent les lieux?",
+			"answer":"Ils servent de point de repère pour permettre au joueur d'interagir avec les object. Par exemple, le joueur est dans le lieu @salon, il peut ainsi interagir avec l'objet @canapé ou @table"
+		},
+		{
+			"question":"A quoi servent les labels?",
+			"answer":"On peut considérer les labels comme des marques pages vers lequels on peut aller. Ils sont très utiles pour faire des saut en arrière oou en avant dans un script avec la commande: COM_go",
+			"example": "COM_go sautAvant\n// Instructions\nCOM_label sautAvant\nCOM_label sautArrière\n// Instructions\nCOM_label sautArrière"
+		},
+		{
+			"question":"Comment aller dans un autre lieu?",
+			"answer":"Avec la commande COM_place",
+			"example": "COM_place @nomDuLieu"
+		},
+		{
+			"question":"Comment arrêter une musique/son/ambiance?",
+			"answer":"Avec les commandes COM_stopMusic, COM_stopAmbiance et COM_stopSound",
+			"example":"COM_stopMusic music1"
+		},
+		{
+			"question":"Peut on jouer des sons en même temps?",
+			"answer":"Oui, sauf les musiques"
+		}
+	]
 }

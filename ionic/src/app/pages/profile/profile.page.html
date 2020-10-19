@@ -78,34 +78,19 @@
           <ion-icon name="library"></ion-icon>
           {{'PROFILE.myStories' | translate}}
         </h1>
-        <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userService.books.length !== 0">
-          <ion-slide>
-          </ion-slide>
+        <ion-slides class="slides" [options]="slides.largeOpts" *ngIf="userService.books.length !== 0">
           <ion-slide *ngFor="let bookId of userService.books">
             <app-card-book [id]="bookId"></app-card-book>
           </ion-slide>
-          <ion-slide>
-          </ion-slide>
         </ion-slides>
-      </div>
-    
-      <h2 class="section" *ngIf="userService.list.length !== 0">
-        <ion-icon name="list"></ion-icon>
-        {{'PROFILE.myList' | translate}}
-      </h2>
-    
-      <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.list.length !== 0">
-        <ion-slide *ngFor="let bookId of userService.list">
-          <app-card-book [id]="bookId"></app-card-book>
-        </ion-slide>
-      </ion-slides>
+      </div> 
     
       <h2 class="section" *ngIf="userService.followList.length !== 0">
         <ion-icon name="people"></ion-icon>
         {{'PROFILE.myFollows' | translate}}
       </h2>
 
-      <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.followList.length !== 0">
+      <ion-slides class="slides" [options]="slides.largeOpts" *ngIf="userService.followList.length !== 0">
         <!-- <ion-slide *ngFor="let book of userService.followList">
           <app-card-book [book]=""></app-card-book>
         </ion-slide> -->
@@ -117,13 +102,9 @@
           <ion-icon name="library"></ion-icon>
           {{'PROFILE.hisStories' | translate}}
         </h1>
-        <ion-slides class="slides" [options]="slides.coverFlowOpts" *ngIf="userService.curUserBooks.length !== 0">
-          <ion-slide>
-          </ion-slide>
+        <ion-slides class="slides" [options]="slides.largeOpts" *ngIf="userService.curUserBooks.length !== 0">
           <ion-slide *ngFor="let bookId of userService.curUserBooks">
             <app-card-book [id]="bookId"></app-card-book>
-          </ion-slide>
-          <ion-slide>
           </ion-slide>
         </ion-slides>
       </div>

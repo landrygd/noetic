@@ -118,6 +118,7 @@ export class SettingsBookPage implements OnInit, OnDestroy {
               this.bookService.publishBook();
             } else {
               this.popupService.alert(this.BOOKSETTINGS.policyError);
+              this.bookService.book.public = true;
             }
           }
         }
@@ -138,6 +139,7 @@ export class SettingsBookPage implements OnInit, OnDestroy {
           text: this.COMMON.yes,
           handler: () => {
             this.bookService.unpublishBook();
+            this.bookService.book.public = false;
           }
         }
       ]

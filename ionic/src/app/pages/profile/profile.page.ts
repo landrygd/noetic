@@ -257,7 +257,9 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   back() {
-    this.userService.curUserBooksSub.unsubscribe();
+    if (!this.userService.curUserBooksSub.closed) {
+      this.userService.curUserBooksSub.unsubscribe();
+    }
   }
 
   share() {

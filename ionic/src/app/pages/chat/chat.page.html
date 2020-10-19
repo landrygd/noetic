@@ -24,7 +24,7 @@
     <ion-item button="false">
         <ion-icon slot="start" name="school"></ion-icon>
         <ion-label>{{'CHAT.exampleMode' | translate}} - {{example.name}}</ion-label>
-        <ion-button slot="end" (click)="closeTuto()" expand="block" fill="clear" shape="round">
+        <ion-button slot="end" (click)="closeExample()" expand="block" fill="clear" shape="round">
           <ion-icon slot="icon-only" name="close"></ion-icon>
         </ion-button>
     </ion-item>
@@ -51,13 +51,25 @@
     <ion-grid fixed>
       <ion-row>
         <ion-col>
-          <ion-card>
+          <ion-card color="light">
+            <ion-card-header>
+              <ion-card-title><ion-icon name="help-circle"></ion-icon> {{'CHAT.faq' | translate}}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-searchbar placeholder="{{'CHAT.faqPlaceholder' | translate}}" inputmode="text" type="text" (click)="showFaq()"></ion-searchbar>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-card color="light">
             <ion-card-header>
               <ion-card-title><ion-icon name="school"></ion-icon> {{'CHAT.tutos' | translate}}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              <ion-list>
-                <ion-item (click)="showTuto(tuto)" button detail *ngFor="let tuto of TUTOS">
+              <ion-list color="light">
+                <ion-item color="light" (click)="showTuto(tuto)" button detail *ngFor="let tuto of TUTOS">
                   <ion-label>{{tuto.name}}</ion-label>
                 </ion-item>
               </ion-list>
@@ -67,13 +79,13 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-card>
+          <ion-card color="light">
             <ion-card-header>
               <ion-card-title><ion-icon name="book"></ion-icon> {{'CHAT.examples' | translate}}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              <ion-list>
-                <ion-item (click)="showExample(example)" button detail *ngFor="let example of EXAMPLES">
+              <ion-list color="light">
+                <ion-item color="light" (click)="showExample(example)" button detail *ngFor="let example of EXAMPLES">
                   <ion-label>{{example.name}}</ion-label>
                 </ion-item>
               </ion-list>
@@ -155,7 +167,7 @@
   <ion-button (click)="showBackground()" expand="block" fill="solid" shape="round" *ngIf="command === '/background'">
     {{'CHAT.avaibleBackgrounds' | translate}}
   </ion-button>
-  <ion-toolbar>
+  <ion-toolbar *ngIf="completions.length === 0">
     <ion-button (click)="newActor()" expand="block" fill="clear" shape="round" *ngIf="actors.length === 0">
       {{'CHAT.addActor' | translate}}
     </ion-button>
@@ -167,6 +179,15 @@
         </div>
       </ion-slide>
     </ion-slides>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="completions.length > 0">
+    <ion-content [ngStyle]="{'height': compHeight}">
+      <ion-list color="light">
+        <ion-item color="light" *ngFor="let completion of completions" button detail (click)="text = completion">
+          <ion-label>{{completion}}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
   </ion-toolbar>
   <ion-toolbar>
     <ion-textarea style="margin: 0" spellcheck="false" #chatBar (ionBlur)="onChatBarBlurred()" (ionFocus)="onChatBarFocused()" [disabled]='textarea' rows="1" [(ngModel)]='text' [placeholder]="'CHAT.enterMessage' | translate" (ionInput)="changeMsg()" (keypress)="enter($event.keyCode)"></ion-textarea>

@@ -169,7 +169,6 @@ export class AuthService implements OnDestroy {
         name: auth.user.displayName,
         nameLower: auth.user.displayName.toLowerCase(),
         first: true,
-        tuto: true,
         lang: this.traductionService.getCurLanguage(),
         avatar: auth.user.photoURL
       });

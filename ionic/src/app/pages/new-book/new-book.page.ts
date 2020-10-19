@@ -41,6 +41,8 @@ export class NewBookPage implements OnInit, OnDestroy {
     private popupService: PopupService,
     ) {
     this.bookId = this.bookService.generateBookId();
+    this.bookService.book = new Book();
+    this.bookService.book.id = this.bookId;
     const max = 3;
     const min = 1;
     const coverNumber = Math.floor(Math.random() * (max - min + 1) + min);
@@ -73,7 +75,7 @@ export class NewBookPage implements OnInit, OnDestroy {
   }
 
 
-  confirm() {
+  async confirm() {
     const form = this.bookForm.value;
     const title: string = form.name;
     const author = this.userService.userId;
@@ -98,18 +100,16 @@ export class NewBookPage implements OnInit, OnDestroy {
       this.popupService.alert(this.NEWBOOK.versoMaxError);
       return;
     }
-
-    this.bookService.book = new Book();
-    this.bookService.book.id = this.bookId;
     this.bookService.book.title = title;
     this.bookService.book.titleLower = title.toLowerCase();
     this.bookService.book.description = form.desc;
-    this.bookService.book.cover = this.cover;
     this.bookService.book.category = form.cat;
     this.bookService.book.language = this.traductionService.getCurLanguage();
     this.bookService.book.author = author;
-
-    this.bookService.newBook();
+    await this.bookService.newBook();
+    if (this.cover.charAt(0) !== '.') {
+      this.bookService.uploadCoverImg(this.cover);
+    }
   }
 
   async changeCover() {
@@ -123,7 +123,7 @@ export class NewBookPage implements OnInit, OnDestroy {
     modal.onDidDismiss()
       .then(async (data) => {
         if (data.data) {
-          this.cover = await this.bookService.uploadCoverImg(data.data);
+          this.cover = data.data;
           this.coverSize = '';
           setTimeout(() => this.coverSize = 'cover', 50);
         }

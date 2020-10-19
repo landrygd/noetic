@@ -316,9 +316,9 @@
     "name": "cursor",
     "cat": "shadow"
   },
-  "action": {
+  "free": {
     "icon": "flash",
-    "name": "action",
+    "name": "free",
     "cat": "control"
   }
 }

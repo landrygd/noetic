@@ -12,6 +12,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AudioListComponent } from './audio-list/audio-list.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { FaqComponent } from './faq/faq.component';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 
 
 @NgModule({
@@ -22,7 +24,8 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     CommandEntriesComponent,
     AudioListComponent,
     GalleryComponent,
-    UploadComponent
+    UploadComponent,
+    FaqComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +34,8 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     ImageCropperModule,
     TranslateModule,
     ReactiveFormsModule,
-    NgxDropzoneModule
+    NgxDropzoneModule,
+    PipesModule
   ],
   exports: [
     SearchUserComponent,
@@ -40,7 +44,8 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
     CommandEntriesComponent,
     AudioListComponent,
     GalleryComponent,
-    UploadComponent
+    UploadComponent,
+    FaqComponent
   ]
 })
 

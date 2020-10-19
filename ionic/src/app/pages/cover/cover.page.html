@@ -27,7 +27,7 @@
           <ion-icon name="flash"></ion-icon>
         </ion-fab-button>
         <ion-card  class="ion-no-margin" (click)="changeCover()" button>
-          <ion-img [src]="bookService.book.cover" style="height: 320px;width: 180px;"></ion-img>
+          <ion-img [src]="cover" (ionError)="cover = '../../../assets/cover/cover1.png'" style="height: 320px;width: 180px;"></ion-img>
         </ion-card>
       </div>
     </div>

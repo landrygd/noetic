@@ -175,11 +175,11 @@ export class BookService implements OnDestroy {
     await this.popupService.loading(this.COMMON.loading, 'creation');
     book.addScript(new Script({name: 'main'}));
     this.book = book;
-    this.saveBook();
+    await this.uploadBook();
     // Ajouter l'id référant dans user
     this.userService.addBookRef(book.id);
     // Créer le livre, l'ouvir et y ajouter un chat
-    this.firestore.collection('/books').doc(book.id).set(book.getCover()).then(async () => {
+    await this.firestore.collection('/books').doc(book.id).set(book.getCover()).then(async () => {
       // Upload le cover si une image est chargée
       await this.navCtrl.pop().then( async () => {
         await this.showBook(book);
@@ -296,6 +296,7 @@ export class BookService implements OnDestroy {
   }
 
   uploadCover() {
+    // TODO
     this.firestore.collection('books').doc(this.book.id).update(this.book.getCover());
   }
 
@@ -524,7 +525,10 @@ export class BookService implements OnDestroy {
     });
   }
 
-  async downloadBook(url: string = this.book.downloadURL): Promise<Book> {
+  async downloadBook(url?): Promise<Book> {
+    if (!url) {
+      url = await this.firestorage.ref('books/' + this.book.id + '/book.json').getDownloadURL().toPromise();
+    }
     return new Promise (async (resolve) => {
       const blob = await this.getBlob(url);
       // Conversion du blob en json
@@ -848,12 +852,14 @@ export class BookService implements OnDestroy {
           const comment = doc.data();
           usersId.push(comment.userId);
         }
-        const users: User[] = await this.userService.getUsers(usersId);
-        for (const doc of data.docs) {
-          const comment = doc.data();
-          comment.user = users.filter(ref => ref.id === comment.userId)[0];
-          delete comment.userId;
-          comments.push(new Comment(comment));
+        if (usersId.length > 0) {
+          const users: User[] = await this.userService.getUsers(usersId);
+          for (const doc of data.docs) {
+            const comment = doc.data();
+            comment.user = users.filter(ref => ref.id === comment.userId)[0];
+            delete comment.userId;
+            comments.push(new Comment(comment));
+          }
         }
         this.comments = comments;
         resolve(comments.slice(0, 3));

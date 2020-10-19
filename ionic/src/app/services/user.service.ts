@@ -25,13 +25,12 @@ export class UserService implements OnDestroy {
   mostVueSub: Subscription;
   topRatedSub: Subscription;
   mostRecentSub: Subscription;
+  likeSub: Subscription;
 
   userId: string;
   user: Observable<unknown>;
   books: any[] = [];
   bookSub: Subscription;
-  list: any[] = [];
-  listSub: Subscription;
   userData: User;
   lang: string;
   userNotifs: any[];
@@ -245,7 +244,7 @@ export class UserService implements OnDestroy {
     this.userSub.unsubscribe();
     this.savesSub.unsubscribe();
     this.bookSub.unsubscribe();
-    this.listSub.unsubscribe();
+    this.likeSub.unsubscribe();
     this.followListSub.unsubscribe();
     this.userNotifsSub.unsubscribe();
     this.connected = false;
@@ -323,7 +322,7 @@ export class UserService implements OnDestroy {
   }
 
   getLikes() {
-    this.bookSub = this.userDoc.collection('likes', ref => ref.orderBy('lastChanges', 'desc')).snapshotChanges().subscribe((val) => {
+    this.likeSub = this.userDoc.collection('likes', ref => ref.orderBy('lastChanges', 'desc')).snapshotChanges().subscribe((val) => {
       const res = [];
       val.forEach(doc => {
         res.push(doc.payload.doc.id);
@@ -562,13 +561,13 @@ export class UserService implements OnDestroy {
   // }
 
   haveFromList(bookId) {
-    const list: any[] = this.list;
-    const index = list.indexOf(bookId);
-    if (index > -1) {
-      return true;
-    } else {
-      return false;
-    }
+    // const list: any[] = this.list;
+    // const index = list.indexOf(bookId);
+    // if (index > -1) {
+    //   return true;
+    // } else {
+    //   return false;
+    // }
   }
 
   // getUsersByName(userName): Observable<any> {

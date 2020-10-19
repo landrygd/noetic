@@ -26,6 +26,7 @@ export class CoverPage implements OnInit, OnDestroy {
   inList = false;
 
   comment = '';
+  
 
   commented = false;
   lastRate = 0;
@@ -43,6 +44,8 @@ export class CoverPage implements OnInit, OnDestroy {
   haveCommentedSub: Subscription;
 
   background = 'url("../../../assets/banner.png")';
+  // cover = 'url("../../../assets/cover/cover1.png")';
+  cover = '../../../assets/cover/cover1.png';
 
   verso = false;
 
@@ -115,6 +118,9 @@ export class CoverPage implements OnInit, OnDestroy {
     this.refreshComments();
     this.loading = false;
     this.getBanner();
+    if (this.book.cover !== '') {
+      this.cover = this.bookService.book.cover
+    }
   }
 
   refreshLike() {
@@ -249,8 +255,14 @@ export class CoverPage implements OnInit, OnDestroy {
   }
 
   async refreshComments() {
-    this.comments = await this.bookService.getComments();
-    this.comment = await this.bookService.getComment();
+    if (this.book.comments > 0) {
+      this.comments = await this.bookService.getComments();
+    }
+    if (this.userService.connected) {
+      if (this.userService.comments.includes(this.book.id)) {
+        this.comment = await this.bookService.getComment();
+      }
+    }
   }
 
   addToList() {

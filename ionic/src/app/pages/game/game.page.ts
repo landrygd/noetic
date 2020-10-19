@@ -163,7 +163,7 @@ export class GamePage implements OnInit, OnDestroy {
         this.time = 1000;
         this.msg = this.script[this.line];
         if (this.msg.charAt(0) !== '/') {
-          this.msg = this.msg.replace(/\$[^\s\.]*/gi, (match) => {
+          this.msg = this.msg.replace(/(\$|@)[^\s]*/gi, (match) => {
             return this.getVariable(match);
           });
         }
@@ -194,8 +194,8 @@ export class GamePage implements OnInit, OnDestroy {
                   }
                 }
                 break;
-              case 'action':
-                this.settings.mode = 'action';
+              case 'free':
+                this.settings.mode = 'free';
                 this.paused = true;
                 break;
               case 'place':
@@ -358,7 +358,7 @@ export class GamePage implements OnInit, OnDestroy {
         if (this.autoPlay) {
           this.nextTimer = setTimeout(() => {
             if (this.place) {
-              this.settings.mode = 'action';
+              this.settings.mode = 'free';
               this.paused = true;
             } else {
               this.end();
@@ -366,7 +366,7 @@ export class GamePage implements OnInit, OnDestroy {
           }, this.waitTime);
         } else {
           if (this.place) {
-            this.settings.mode = 'action';
+            this.settings.mode = 'free';
             this.paused = true;
           } else {
             this.end();
@@ -406,13 +406,15 @@ export class GamePage implements OnInit, OnDestroy {
 
   setVariable(operator, path = this.args[0], value?) {
     if (!value && operator !== 'get') {
-      value = this.getVariable(this.args[1]);
+      value = this.getVariable(this.args.slice(1).join(' '));
     }
-    console.log(operator, path, value);
     let k = this.variables;
     let steps: string[] = path.split('.');
     if (steps[0].charAt(0) === '@') {
       steps = steps.slice(0, 2);
+      if (steps.length === 1) {
+        return path;
+      }
     } else {
       steps = [steps[0]];
     }

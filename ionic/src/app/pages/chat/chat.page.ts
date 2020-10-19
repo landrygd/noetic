@@ -18,6 +18,7 @@ import { Entity, Script } from 'src/app/classes/book';
 import { WallpapersSearchComponent } from 'src/app/components/modals/wallpapers-search/wallpapers-search.component';
 import { saveAs } from 'file-saver';
 import { UploadComponent } from 'src/app/components/modals/upload/upload.component';
+import { FaqComponent } from 'src/app/components/modals/faq/faq.component';
 
 @Component({
   selector: 'app-chat',
@@ -42,6 +43,9 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   messages: string[];
   lastClosed: number;
   tabs: any[] = [];
+  compHeight: string;
+
+  completions: string[] = [];
 
   command = '';
 
@@ -182,6 +186,14 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
             break;
         }
       }
+    } else {
+      switch (event.key) {
+        case 'Tab':
+          if (this.completions.length > 0) {
+            this.text = this.completions[0];
+          }
+          break;
+      }
     }
  }
 
@@ -214,10 +226,27 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
       this.COMMON = val;
     });
     this.tutosSub = this.translator.get('TUTOS').subscribe((val) => {
-      this.TUTOS = val;
+      if (Array.isArray(val)) {
+        this.TUTOS = val;
+      } else {
+        this.TUTOS = [];
+        Object.values(val).forEach((element: any) => {
+          element.messages = Object.values(element.messages);
+          this.TUTOS.push(element);
+        });
+      }
+      
     });
     this.examplesSub = this.translator.get('EXAMPLES').subscribe((val) => {
-      this.EXAMPLES = val;
+      if (Array.isArray(val)) {
+        this.EXAMPLES = val;
+      } else {
+        this.EXAMPLES = [];
+        Object.values(val).forEach((element: any) => {
+          element.messages = Object.values(element.messages);
+          this.EXAMPLES.push(element);
+        });
+      }
     });
   }
 
@@ -587,6 +616,12 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     this.messages = [];
     this.update();
   }
+
+  closeExample() {
+    this.example = undefined;
+    this.messages = [];
+    this.update();
+  }
   // async presentPopover(ev: CustomEvent<any>, index) {
   //   const end = index >= this.tuto.length - 1;
   //   const popover = await this.popoverController.create({
@@ -615,6 +650,16 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
   changeMsg() {
     setTimeout(() => {
       this.command = this.text.split(' ')[0];
+      if (this.command.charAt(0) === '/') {
+        const command = this.command.slice(1).toLocaleLowerCase();
+        const keys = Object.keys(Commands).filter(val => val.includes(command));
+        const res = [];
+        keys.forEach(val => res.push('/'+val));
+        this.completions = res;
+        this.compHeight = Math.min(this.completions.length * 44, 130) + 'px';
+      } else {
+        this.completions = [];
+      }
       setTimeout(() => {
         this.scrollToBottom();
       }, 100);
@@ -839,4 +884,12 @@ export class ChatPage implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  async showFaq() {
+    const modal = await this.modalController.create({
+    component: FaqComponent
+    });
+
+    await modal.present();
+
+  }
 }
