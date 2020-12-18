@@ -163,7 +163,7 @@ export class GamePage implements OnInit, OnDestroy {
         this.time = 1000;
         this.msg = this.script[this.line];
         if (this.msg.charAt(0) !== '/') {
-          this.msg = this.msg.replace(/(\$|@)[^\s]*/gi, (match) => {
+          this.msg = this.msg.replace(/\$[a-zA-Z\u00C0-\u00FF0-9]+|@[a-zA-Z\u00C0-\u00FF0-9]+\.[a-zA-Z\u00C0-\u00FF0-9]+/gi, (match) => {
             return this.getVariable(match);
           });
         }
@@ -398,7 +398,12 @@ export class GamePage implements OnInit, OnDestroy {
 
   getVariable(path: string) {
     if (this.isVariable(path)) {
-      return this.setVariable('get', path);
+      const variable = this.setVariable('get', path);
+      if (variable) {
+        return variable;
+      } else {
+        return path;
+      }
     } else {
       return path;
     }
@@ -780,12 +785,12 @@ export class GamePage implements OnInit, OnDestroy {
         if (cpt > 0) {
           cpt -= 1;
         } else {
-
           return res;
         }
       }
     }
     // pas de réponse
+    this.end();
     return [];
   }
 
