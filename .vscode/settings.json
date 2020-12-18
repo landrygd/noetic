@@ -1,3 +1,6 @@
 {
-  "terminal.explorerKind": "external"
+  "terminal.explorerKind": "external",
+  "files.exclude": {
+    "**/.git": false
+  }
 }

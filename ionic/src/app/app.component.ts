@@ -7,6 +7,9 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { TraductionService } from './services/traductionService.service';
 import { ThemeService } from './services/theme.service';
 import { NetworkService } from './services/network.service';
+import { BookService } from './services/book.service';
+import { UserService } from './services/user.service';
+import { User } from './classes/user';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +17,8 @@ import { NetworkService } from './services/network.service';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent {
+  categories: string[];
+
   constructor(
     private translator: TraductionService,
     // tslint:disable-next-line: no-shadowed-variable
@@ -23,8 +28,11 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     public themeService: ThemeService,
+    private bookService: BookService,
+    public userService: UserService
   ) {
     this.initializeApp();
+    this.categories = this.bookService.categories;
   }
 
   initializeApp() {
@@ -34,4 +42,6 @@ export class AppComponent {
     });
     this.translator.init();
   }
+
+  onClick() {}
 }

@@ -87,6 +87,7 @@ export class UserService implements OnDestroy {
     ) {
       this.usersCollection = this.firestore.collection('users');
       this.getTraduction();
+      this.userData = new User({});
   }
 
   async getTraduction() {

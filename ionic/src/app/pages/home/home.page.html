@@ -1,9 +1,9 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar class="search">
-    <ion-img src="/assets/logo.png" style="width: 4em;" slot="start" class="ion-margin"></ion-img>
+    <ion-label color="primary" style="font-family: OleoScript; font-size: 24px; margin: 10px;" slot="start">Noetic</ion-label>
     <ion-searchbar
       style="padding: 0;"
-      mode="ios"
+      mode="md"
       [placeholder]="'HOME.search' | translate" 
       [debounce]="250" 
       showCancelButton="never"
@@ -16,9 +16,7 @@
         </ion-button>
       </ion-buttons>
   </ion-toolbar>
-</ion-header>
-
-
+</ion-header> -->
 
 <ion-content>
 
@@ -30,34 +28,6 @@
     <app-card-book style="position: relative;" [book]="book"></app-card-book>
   </div>
   
-
-  <!-- <h2 class="section" *ngIf="userService.savesId.length !== 0">
-    <ion-icon name="save"></ion-icon>
-    {{'HOME.saves' | translate}}
-  </h2> -->
-
-  <!-- <ion-slides class="slides" [options]="slides.basicOpts" *ngIf="userService.savesId.length !== 0">
-    <ion-slide *ngFor="let bookId of userService.savesId">
-      <app-card-book [bookId]="bookId"></app-card-book>
-    </ion-slide>
-  </ion-slides> -->
-
-  <!-- <h2 class="section">
-    <ion-icon name="star"></ion-icon>
-    {{'HOME.topRated' | translate}}
-  </h2>
-
-  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="topRatedBooks; else loadingTopRated">
-    <ion-slide *ngFor="let book of topRatedBooks">
-      <app-card-book [book]="book"></app-card-book>
-    </ion-slide>
-  </ion-slides>
-
-  <ng-template #loadingTopRated>
-    <div style="height: 300px; display: flex; align-content: center!important; align-items: center!important; justify-content: center;">
-      <ion-spinner name="bubbles"></ion-spinner>
-    </div>
-  </ng-template> -->
 
   <ion-list>
     <div *ngFor="let section of sections">
@@ -71,24 +41,3 @@
       </ion-slides>
     </div>
   </ion-list>
-  
-  
-  
-
-  <!-- <h2 class="section">
-    <ion-icon name="time"></ion-icon>
-    {{'HOME.mostRecent' | translate}}
-  </h2>
-
-  <ion-slides class="slides" [options]="slides.basicOpts" class="ion-no-margin" *ngIf="mostRecentBooks; else loadingMostRecent">
-    <ion-slide *ngFor="let book of mostRecentBooks">
-      <app-card-book [book]="book"></app-card-book>
-    </ion-slide>
-  </ion-slides>
-
-  <ng-template #loadingMostRecent>
-    <div style="height: 300px; display: flex; align-content: center!important; align-items: center!important; justify-content: center;">
-      <ion-spinner name="bubbles"></ion-spinner>
-    </div>
-  </ng-template>
-</ion-content> -->

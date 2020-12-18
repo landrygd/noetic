@@ -35,6 +35,8 @@ import { MediaService } from './services/media.service';
 import { Facebook } from '@ionic-native/facebook/ngx';
 import { Globalization } from '@ionic-native/globalization/ngx';
 import { TimeagoModule } from 'ngx-timeago';
+import { IonCustomScrollbarModule } from 'ion-custom-scrollbar';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyDAZRFBAHjrS8Ww03U95mMhX1-AD9rPDGo',
@@ -68,7 +70,9 @@ export function createTranslateLoader(http: HttpClient) {
     ComponentModule,
     HttpClientModule,
     NgxDropzoneModule,
+    IonCustomScrollbarModule,
     TimeagoModule.forRoot(),
+    NgScrollbarModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

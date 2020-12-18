@@ -13,6 +13,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/cdk": "^11.0.3",
     "@angular/common": "^10.1.5",
     "@angular/core": "^10.1.5",
     "@angular/fire": "^6.0.2",
@@ -58,9 +59,11 @@
     "es6-promise-plugin": "^4.2.2",
     "file-saver": "^2.0.2",
     "firebase": "^7.23.0",
+    "ion-custom-scrollbar": "^1.0.8",
     "ionic-text-avatar": "^1.1.0",
     "ngx-dropzone": "^2.2.2",
     "ngx-image-cropper": "^3.1.9",
+    "ngx-scrollbar": "^7.4.1",
     "ngx-timeago": "^1.0.4",
     "rxjs": "^6.5.5",
     "time-ago-pipe": "^1.3.2",
@@ -69,7 +72,7 @@
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.900",
-    "@angular-devkit/build-angular": "^0.1001.6",
+    "@angular-devkit/build-angular": "^0.1100.4",
     "@angular/cli": "~10.1.6",
     "@angular/compiler": "~10.1.5",
     "@angular/compiler-cli": "~10.1.5",

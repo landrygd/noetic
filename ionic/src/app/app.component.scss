@@ -1,0 +1,24 @@
+.search {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .section {
+    margin-left: 10px;
+    margin-bottom: 5px;
+  }
+  
+  .header {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 25vh;
+    padding-top: 1px;
+    display: flex;
+    justify-content: center;
+  }
+  ion-searchbar {
+    --border-radius: 50px;
+  }
+  
