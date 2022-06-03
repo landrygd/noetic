@@ -15,7 +15,7 @@
   "dependencies": {
     "@angular/cdk": "^11.0.3",
     "@angular/common": "^10.1.5",
-    "@angular/core": "^10.1.5",
+    "@angular/core": "^11.0.5",
     "@angular/fire": "^6.0.2",
     "@angular/forms": "~10.1.5",
     "@angular/platform-browser": "~10.1.5",
